@@ -1,12 +1,15 @@
 import Link from "next/link"
 import { useSession } from "next-auth/react";
+import logo from "../../public/logo.png"
 
 const Nav: React.FC = () => {
   const { data: session } = useSession();
     return (
       <div className="flex h-20 w-full items-center justify-around bg-white">
         <div>
-          img
+          <Link href="/">
+            <img className="mr-8 inline h-8" src={logo.src} alt="" />
+          </Link>
           <Link href="#">Home</Link>
           <Link href="#">Shop By Generation</Link>
           <Link href="#">Shop By Wheels</Link>
@@ -22,9 +25,7 @@ const Nav: React.FC = () => {
           ) : (
             <Link href="/api/auth/signin">Login</Link>
           )}
-          {session ? (
-            <Link href="/admin">Admin</Link>
-          ) : null}
+          {session ? <Link href="/admin">Admin</Link> : null}
         </div>
       </div>
     );
