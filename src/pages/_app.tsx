@@ -5,8 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import Nav from "./components/Nav";
-import Footer from "./components/Footer";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
