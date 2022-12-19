@@ -1,6 +1,8 @@
 import Link from "next/link"
+import { useSession } from "next-auth/react";
 
 const Nav: React.FC = () => {
+  const { data: session } = useSession();
     return (
       <div className="flex h-20 w-full items-center justify-around bg-white">
         <div>
@@ -15,7 +17,14 @@ const Nav: React.FC = () => {
         <div>
           <Link href="#">Search</Link>
           <Link href="#">Cart</Link>
-          <Link href="#">Login</Link>
+          {session ? (
+            <Link href="/api/auth/signout">Logout</Link>
+          ) : (
+            <Link href="/api/auth/signin">Login</Link>
+          )}
+          {session ? (
+            <Link href="/admin">Admin</Link>
+          ) : null}
         </div>
       </div>
     );
