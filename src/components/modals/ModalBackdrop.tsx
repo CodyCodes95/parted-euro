@@ -1,9 +1,7 @@
-import Link from "next/link";
 
 const ModalBackDrop: React.FC = () => {
   return (
     <div className="absolute top-0 left-0 h-screen w-full bg-[#000000e1]">
-
     </div>
   );
 };

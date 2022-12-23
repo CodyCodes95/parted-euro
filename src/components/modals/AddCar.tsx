@@ -1,4 +1,5 @@
 import React from "react";
+import AddCarFormSection from "./AddCarFormSection";
 import ModalBackDrop from "./ModalBackdrop";
 
 interface AddCarProps {
@@ -7,12 +8,17 @@ interface AddCarProps {
 }
 
 const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
+
+  const [series, setSeries] = React.useState<string>("");
+  const [generation, setGeneration] = React.useState<string>("");
+  const [model, setModel] = React.useState<string>("");
+
   return (
     <div
       id="defaultModal"
       aria-hidden="true"
       className={`h-modal fixed top-0 left-0 right-0 z-50 flex w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        showModal ? "hidden" : ""
+        showModal ? "" : "hidden"
       }`}
     >
       <ModalBackDrop />
@@ -56,36 +62,9 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
                 <option value="BMW">BMW</option>
               </select>
             </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Series
-              </label>
-              <input
-                type="text"
-                id="base-input"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Generation
-              </label>
-              <input
-                type="text"
-                id="base-input"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Model
-              </label>
-              <input
-                type="text"
-                id="base-input"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              />
-            </div>
+           <AddCarFormSection title="Series" data={[]} value={series} setValue={setSeries} />
+           <AddCarFormSection title="Generation" data={[]} value={generation} setValue={setGeneration} />
+           <AddCarFormSection title="Model" data={[]} value={model} setValue={setModel} />
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
