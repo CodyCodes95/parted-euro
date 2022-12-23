@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Footer: React.FC = () => {
   return (
-    <div className="flex h-20 w-full flex-col items-center justify-around bg-white">
-      <div className="flex">
+    <div className="flex w-full flex-col items-center justify-around bg-white border-t-2">
+      <div className="flex mt-4">
         <div className="flex flex-col">
           <h4>Looking for something we don't have listed?</h4>
           <p>Feel free to call or email us at:</p>
