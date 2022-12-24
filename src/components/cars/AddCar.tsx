@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { trpc } from "../../utils/trpc";
-import AddCarFormSection from "./AddCarFormSection";
-import ModalBackDrop from "./ModalBackdrop";
+import FormSection from "../FormSection";
+import ModalBackDrop from "../modals/ModalBackdrop";
 
 interface AddCarProps {
   showModal: boolean;
@@ -57,9 +57,7 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                ></path>
+                <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path>
               </svg>
               <span className="sr-only">Close modal</span>
             </button>
@@ -76,19 +74,19 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
                 <option value="BMW">BMW</option>
               </select>
             </div>
-            <AddCarFormSection
+            <FormSection
               title="Series"
               data={[...new Set(cars.data?.map((car) => car.series))]}
               value={series}
               setValue={setSeries}
             />
-            <AddCarFormSection
+            <FormSection
               title="Generation"
               data={[...new Set(cars.data?.map((car) => car.generation))]}
               value={generation}
               setValue={setGeneration}
             />
-            <AddCarFormSection
+            <FormSection
               title="Model"
               data={[...new Set(cars.data?.map((car) => car.model))]}
               value={model}

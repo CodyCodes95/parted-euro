@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { useSession } from "next-auth/react";
 import logo from "../../public/logo.png"
-import NavLink from "./modals/Nav/NavLink";
+import NavLink from "./Nav/NavLink";
 
 const Nav: React.FC = () => {
   const { data: session } = useSession();

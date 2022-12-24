@@ -15,16 +15,3 @@ export const carRouter = router({
     return ctx.prisma.car.findMany();
   })
 });
-
-// export const carRouter = router({
-//   hello: publicProcedure
-//     .input(z.object({ text: z.string().nullish() }).nullish())
-//     .query(({ input }) => {
-//       return {
-//         greeting: `Hello ${input?.text ?? "world"}`,
-//       };
-//     }),
-//   getAll: publicProcedure.query(({ ctx }) => {
-//     return ctx.prisma.example.findMany();
-//   }),
-// });

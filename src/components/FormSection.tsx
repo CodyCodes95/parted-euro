@@ -1,13 +1,13 @@
 import React from "react";
 
-interface AddCarFormSectionProps {
+interface FormSectionProps {
   title: string;
   data: any;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AddCarFormSection: React.FC<AddCarFormSectionProps> = ({ title, data, value, setValue }) => {
+const FormSection: React.FC<FormSectionProps> = ({ title, data, value, setValue }) => {
   
   const [newValue, setNewValue] = React.useState<boolean>(false);
 
@@ -47,4 +47,4 @@ const AddCarFormSection: React.FC<AddCarFormSectionProps> = ({ title, data, valu
   );
 };
 
-export default AddCarFormSection;
+export default FormSection;

@@ -26,7 +26,7 @@ const Home: NextPage = () => {
             <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
             <p className="mt-2 text-xl">
               Shop our wide range of second-hand parts from various
-              BMW`&apos;`s.
+              BMW&apos;s.
             </p>
           </div>
         </div>
