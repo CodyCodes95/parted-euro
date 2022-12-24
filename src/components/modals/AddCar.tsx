@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import AddCarFormSection from "./AddCarFormSection";
 import ModalBackDrop from "./ModalBackdrop";
@@ -14,13 +14,10 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
   const [series, setSeries] = React.useState<string>("");
   const [generation, setGeneration] = React.useState<string>("");
   const [model, setModel] = React.useState<string>("");
+  const cars = trpc.cars.getAll.useQuery()
+  console.log(cars)
 
-  const saveCar = trpc.cars.createCar.useMutation(
-    // make:make,
-    // series: series,
-    // generation: generation,
-    // model: model,
-  )
+  const saveCar = trpc.cars.createCar.useMutation()
 
   const onSave = async () => {
     const result = await saveCar.mutateAsync({
@@ -31,6 +28,15 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
     });
     console.log(result);
   }
+
+  useEffect(() => {
+    return () => {
+      setMake("");
+      setSeries("");
+      setGeneration("");
+      setModel("");
+    }
+  }, [])
 
   return (
     <div
@@ -81,9 +87,9 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
                 <option value="BMW">BMW</option>
               </select>
             </div>
-           <AddCarFormSection title="Series" data={[]} value={series} setValue={setSeries} />
-           <AddCarFormSection title="Generation" data={[]} value={generation} setValue={setGeneration} />
-           <AddCarFormSection title="Model" data={[]} value={model} setValue={setModel} />
+           <AddCarFormSection title="Series" data={cars.data?.map(car => car.series)} value={series} setValue={setSeries} />
+           <AddCarFormSection title="Generation" data={cars.data?.map(car => car.generation)} value={generation} setValue={setGeneration} />
+           <AddCarFormSection title="Model" data={cars.data?.map(car => car.model)} value={model} setValue={setModel} />
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button

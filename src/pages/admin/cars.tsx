@@ -19,7 +19,7 @@ const Cars: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
           <main className="flex min-h-screen flex-col items-center justify-center bg-white">
-              <AddCar showModal={showModal} setShowModal={setShowModal} />
+        {showModal ? <AddCar showModal={showModal} setShowModal={setShowModal} /> : null}
               <button onClick={() => setShowModal(!showModal) as any}>Add car</button>
               <div className="w-[75%] h-full flex">
                   <div className="w-[50%] flex flex-col">

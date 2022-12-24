@@ -10,6 +10,11 @@ interface AddCarFormSectionProps {
 const AddCarFormSection: React.FC<AddCarFormSectionProps> = ({ title, data, value, setValue }) => {
   
   const [newValue, setNewValue] = React.useState<boolean>(false);
+  const [options, setOptions] = React.useState([])
+
+  React.useEffect(() => {
+    setOptions(data)
+  }, [])
 
   return (
     <div className="mb-6">
@@ -23,9 +28,10 @@ const AddCarFormSection: React.FC<AddCarFormSectionProps> = ({ title, data, valu
             newValue ? "hidden" : "visible"
           }`}
         >
-          {data.map((item: any) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
+          <option value="">{title}</option>
+          {data?.map((item: any, i:number) => (
+            <option key={i} value={item}>
+              {item}
             </option>
           ))}
         </select>
