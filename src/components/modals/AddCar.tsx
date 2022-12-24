@@ -9,15 +9,14 @@ interface AddCarProps {
 }
 
 const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
-
   const [make, setMake] = React.useState<string>("BMW");
   const [series, setSeries] = React.useState<string>("");
   const [generation, setGeneration] = React.useState<string>("");
   const [model, setModel] = React.useState<string>("");
-  const cars = trpc.cars.getAll.useQuery()
-  console.log(cars)
+  const cars = trpc.cars.getAll.useQuery();
+  console.log(cars);
 
-  const saveCar = trpc.cars.createCar.useMutation()
+  const saveCar = trpc.cars.createCar.useMutation();
 
   const onSave = async () => {
     const result = await saveCar.mutateAsync({
@@ -27,16 +26,10 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
       model: model,
     });
     console.log(result);
-  }
-
-  useEffect(() => {
-    return () => {
-      setMake("");
-      setSeries("");
-      setGeneration("");
-      setModel("");
-    }
-  }, [])
+    setSeries("");
+    setGeneration("");
+    setModel("");
+  };
 
   return (
     <div
@@ -87,9 +80,24 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
                 <option value="BMW">BMW</option>
               </select>
             </div>
-           <AddCarFormSection title="Series" data={cars.data?.map(car => car.series)} value={series} setValue={setSeries} />
-           <AddCarFormSection title="Generation" data={cars.data?.map(car => car.generation)} value={generation} setValue={setGeneration} />
-           <AddCarFormSection title="Model" data={cars.data?.map(car => car.model)} value={model} setValue={setModel} />
+            <AddCarFormSection
+              title="Series"
+              data={[...new Set(cars.data?.map((car) => car.series))]}
+              value={series}
+              setValue={setSeries}
+            />
+            <AddCarFormSection
+              title="Generation"
+              data={[...new Set(cars.data?.map((car) => car.generation))]}
+              value={generation}
+              setValue={setGeneration}
+            />
+            <AddCarFormSection
+              title="Model"
+              data={[...new Set(cars.data?.map((car) => car.model))]}
+              value={model}
+              setValue={setModel}
+            />
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
