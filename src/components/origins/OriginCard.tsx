@@ -1,13 +1,13 @@
 import React from "react";
 
-interface OriginCardProps {
+// interface OriginCardProps {
 //   title: string;
 //   data: any;
 //   value: string;
 //   setValue: React.Dispatch<React.SetStateAction<string>>;
-}
+// }
 
-const OriginCard: React.FC<OriginCardProps> = ({
+const OriginCard: React.FC = ({
 
 }) => {
   const [newValue, setNewValue] = React.useState<boolean>(false);

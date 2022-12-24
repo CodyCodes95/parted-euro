@@ -5,28 +5,15 @@ export const originRouter = router({
   createOrigin: publicProcedure
     .input(
       z.object({
-        vin: z.string(),
+        vin: z.string().min(5),
         cost: z.number(),
-        carId: z.string(),
+        carId: z.string().min(3),
       })
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.origin.create({ data: input });
     }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.car.findMany();
+    return ctx.prisma.origin.findMany();
   }),
 });
-
-// export const carRouter = router({
-//   hello: publicProcedure
-//     .input(z.object({ text: z.string().nullish() }).nullish())
-//     .query(({ input }) => {
-//       return {
-//         greeting: `Hello ${input?.text ?? "world"}`,
-//       };
-//     }),
-//   getAll: publicProcedure.query(({ ctx }) => {
-//     return ctx.prisma.example.findMany();
-//   }),
-// });
