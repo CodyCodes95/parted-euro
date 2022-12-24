@@ -74,3 +74,24 @@ model Car {
   generation String
   model      String
 }
+
+// model Part {
+
+// }
+
+// model Origin {
+//   vin String @id
+//   costPrice Int
+// }
+
+// model Listing {
+//   id String @id @default(cuid())
+//   name String
+//   description String
+//   condition String
+//   price Int
+//   weight Int
+//   length Int
+//   width Int
+//   height Int
+// }
