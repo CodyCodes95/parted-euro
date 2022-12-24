@@ -72,13 +72,13 @@ model Car {
   series     String
   generation String
   model      String
-  Origin     Origin[]
+  // Origin     Origin[]
 }
 
 model Origin {
   vin       String @id @unique
   costPrice Int
-  car       Car    @relation(fields: [carId], references: [id])
+  // car       Car    @relation(fields: [carId], references: [id])
   carId     String
 }
 

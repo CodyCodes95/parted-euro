@@ -8,14 +8,12 @@ export const carRouter = router({
     generation: z.string(),
     model: z.string()
   }))
-    .mutation(({ input }) => {
-      return {
-        // ctx.prisma.car.create({data: input}) ???? create ? input??
-      }
+    .mutation(({ctx, input }) => {
+      return ctx.prisma.car.create({data: input})
     }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.car.findMany();
-  }),
+  })
 });
 
 // export const carRouter = router({
