@@ -75,14 +75,16 @@ model Car {
   model      String
 }
 
+model Origin {
+  vin String @id @unique
+  costPrice Int
+  // car Car WRITE RELATION??
+}
+
 // model Part {
 
 // }
 
-// model Origin {
-//   vin String @id
-//   costPrice Int
-// }
 
 // model Listing {
 //   id String @id @default(cuid())

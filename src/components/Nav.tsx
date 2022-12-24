@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useSession } from "next-auth/react";
 import logo from "../../public/logo.png"
+import NavLink from "./modals/Nav/NavLink";
 
 const Nav: React.FC = () => {
   const { data: session } = useSession();
@@ -10,22 +11,22 @@ const Nav: React.FC = () => {
           <Link href="/">
             <img className="mr-8 inline h-8" src={logo.src} alt="" />
           </Link>
-          <Link href="#">Home</Link>
-          <Link href="#">Shop By Generation</Link>
-          <Link href="#">Shop By Wheels</Link>
-          <Link href="#">Cars Wrecking Now</Link>
-          <Link href="#">Warrenty & Return Policy</Link>
-          <Link href="#">Contact</Link>
+          <NavLink href="#" title="Home" />
+          <NavLink href="#" title="Shop By Generation" />
+          <NavLink href="#" title="Shop By Wheels" />
+          <NavLink href="#" title="Cars Wrecking Now" />
+          <NavLink href="#" title="Warrenty & Return Policy" />
+          <NavLink href="#" title="Contact" />
         </div>
         <div>
-          <Link href="#">Search</Link>
-          <Link href="#">Cart</Link>
+          <NavLink href="#" title="Search" />
+          <NavLink href="#" title="Cart" />
           {session ? (
-            <Link href="/api/auth/signout">Logout</Link>
+            <NavLink href="/api/auth/signout" title="Logout" />
           ) : (
-            <Link href="/api/auth/signin">Login</Link>
+            <NavLink href="/api/auth/signin"  title="Login"/>
           )}
-          {session ? <Link href="/admin">Admin</Link> : null}
+          {session ? <NavLink href="/admin" title="Admin" /> : null}
         </div>
       </div>
     );

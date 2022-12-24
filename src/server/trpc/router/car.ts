@@ -10,7 +10,7 @@ export const carRouter = router({
   }))
     .mutation(({ input }) => {
       return {
-        // ctx.prisma.car. ???? create ? input??
+        // ctx.prisma.car.create({data: input}) ???? create ? input??
       }
     }),
   getAll: publicProcedure.query(({ ctx }) => {
