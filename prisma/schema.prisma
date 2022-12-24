@@ -69,16 +69,16 @@ model VerificationToken {
 model Car {
   id         String   @id @default(cuid())
   make       String
-  series     String?
+  series     String
   generation String
   model      String
-  // Origin     Origin[]
+  Origin     Origin[]
 }
 
 model Origin {
   vin       String @id @unique
-  costPrice Int
-  // car       Car    @relation(fields: [carId], references: [id])
+  cost Int
+  car       Car    @relation(fields: [carId], references: [id])
   carId     String
 }
 

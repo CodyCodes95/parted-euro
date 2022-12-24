@@ -7,8 +7,6 @@ import React from "react";
 import { trpc } from "../../utils/trpc";
 
 const Cars: NextPage = () => {
-    const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-    
     const [showModal, setShowModal] = React.useState(false)
 
   return (

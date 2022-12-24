@@ -10,11 +10,6 @@ interface AddCarFormSectionProps {
 const AddCarFormSection: React.FC<AddCarFormSectionProps> = ({ title, data, value, setValue }) => {
   
   const [newValue, setNewValue] = React.useState<boolean>(false);
-  const [options, setOptions] = React.useState([])
-
-  React.useEffect(() => {
-    setOptions(data)
-  }, [])
 
   return (
     <div className="mb-6">

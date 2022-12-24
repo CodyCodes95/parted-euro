@@ -5,7 +5,7 @@ import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 
 const Admin: NextPage = () => {
-  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
@@ -24,7 +24,7 @@ const Admin: NextPage = () => {
           </Link>
         </div>
         <div className="w-[50%] flex items-center justify-center">
-          <Link className="" href="/admin/cars">
+          <Link className="" href="/admin/origins">
             Origins
           </Link>
           <Link className="" href="/admin/cars">
