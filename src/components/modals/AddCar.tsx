@@ -1,4 +1,5 @@
 import React from "react";
+import { trpc } from "../../utils/trpc";
 import AddCarFormSection from "./AddCarFormSection";
 import ModalBackDrop from "./ModalBackdrop";
 
@@ -9,13 +10,17 @@ interface AddCarProps {
 
 const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
 
+  const [make, setMake] = React.useState<string>("BMW");
   const [series, setSeries] = React.useState<string>("");
   const [generation, setGeneration] = React.useState<string>("");
   const [model, setModel] = React.useState<string>("");
 
-  const saveCar = async () => {
-    
-  }
+  const saveCar = trpc.cars.createCar.useMutation({
+    // make:make,
+    // series: series,
+    // generation: generation,
+    // model: model,
+  })
 
   return (
     <div
