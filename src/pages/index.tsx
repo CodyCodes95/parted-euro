@@ -16,11 +16,18 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
-        <div className="w-full flex items-center justify-center">
-          <img src={carImg.src} alt="hero" className="w-full max-h-screen object-cover" />
+        <div className="flex w-full items-center justify-center">
+          <img
+            src={carImg.src}
+            alt="hero"
+            className="max-h-screen w-full object-cover"
+          />
           <div className="absolute text-center text-white">
             <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
-            <p className="mt-2 text-xl">Shop our wide range of second-hand parts from various BMW's.</p>
+            <p className="mt-2 text-xl">
+              Shop our wide range of second-hand parts from various
+              BMW`&apos;`s.
+            </p>
           </div>
         </div>
       </main>

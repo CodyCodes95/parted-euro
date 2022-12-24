@@ -2,16 +2,16 @@ import Link from "next/link";
 
 const Footer: React.FC = () => {
   return (
-    <div className="flex w-full flex-col items-center justify-around bg-white border-t-2">
+    <div className="flex w-full flex-col items-center justify-around border-t-2 bg-white">
       <div className="flex justify-between">
-        <div className="flex flex-col justify-center items-center p-4 text-sm">
-          <h4>Looking for something we don't have listed?</h4>
+        <div className="flex flex-col items-center justify-center p-4 text-sm">
+          <h4>Looking for something we don`&apos;`t have listed?</h4>
           <div className="p-2"></div>
           <p>Feel free to call or email us at:</p>
           <p>Mobile: 0412 371 588</p>
           <p>Email: contact@partedeuro.com</p>
         </div>
-        <div className="flex flex-col w-[50%] p-4 text-sm">
+        <div className="flex w-[50%] flex-col p-4 text-sm">
           <p className="p-1">
             All products listed are available for pickup, as well as road
             freight Australia-wide (with very few products exempt from freight).
