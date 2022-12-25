@@ -19,7 +19,7 @@ const Admin: NextPage = () => {
           <Link className="" href="/admin/cars">
             Cars
           </Link>
-          <Link className="" href="/admin/cars">
+          <Link className="" href="/admin/listings">
             Listings
           </Link>
         </div>
