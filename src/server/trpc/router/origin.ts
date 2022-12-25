@@ -6,7 +6,7 @@ export const originRouter = router({
     .input(
       z.object({
         vin: z.string().min(5),
-        cost: z.number(),
+        cost: z.number().min(100).max(100000000),
         carId: z.string().min(3),
       })
     )
