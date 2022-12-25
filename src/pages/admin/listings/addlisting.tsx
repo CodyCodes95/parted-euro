@@ -47,77 +47,53 @@ const AddListing: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
-        <div className="w-72">
-          <Input color="teal" label="Username" />
-        </div>
         <div className="space-y-6 p-6">
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Title
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={title}
+              label="title"
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Description
-            </label>
-            <input
-              type="textarea"
+          <div className="w-72">
+            <Input
               value={description}
+              label="description"
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Price
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={price}
+              label="price"
               onChange={(e) => setPrice(Number(e.target.value) * 100)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Weight
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={weight}
+              label="weight"
               onChange={(e) => setWeight(Number(e.target.value) * 1000)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Price
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={length}
+              label="length"
               onChange={(e) => setLength(Number(e.target.value) * 10)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Width
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={width}
+              label="width"
               onChange={(e) => setWidth(Number(e.target.value) * 10)}
             />
           </div>
-          <div className="">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Height
-            </label>
-            <input
-              type="text"
+          <div className="w-72">
+            <Input
               value={height}
+              label="height"
               onChange={(e) => setHeight(Number(e.target.value) * 10)}
             />
           </div>
