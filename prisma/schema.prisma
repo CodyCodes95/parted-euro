@@ -69,35 +69,62 @@ model VerificationToken {
 }
 
 model Car {
-  id         String   @id @default(cuid())
-  make       String
-  series     String
-  generation String
-  model      String
-  Origin     Origin[]
+  id          String        @id @default(cuid())
+  make        String
+  series      String
+  generation  String
+  model       String
+  Origin      Origin[]
+  Part        Part[]
+  PartsOnCars PartsOnCars[]
 }
 
 model Origin {
-  vin   String @id @unique
-  cost  Int
-  car   Car    @relation(fields: [carId], references: [id])
-  carId String
+  vin       String   @id @unique
+  cost      Int
+  car       Car      @relation(fields: [carId], references: [id])
+  year      Int
+  carId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Part      Part[]
 }
 
-// model Part {
+model Listing {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  condition   String
+  price       Int
+  weight      Int
+  length      Int
+  width       Int
+  height      Int
+  parts       Part[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
-// }
+model Part {
+  id          String        @id @default(cuid())
+  partNo      String
+  name        String
+  listing     Listing       @relation(fields: [listingId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  origin      Origin        @relation(fields: [originVin], references: [vin])
+  originVin   String
+  listingId   String
+  cars        Car[]
+  PartsOnCars PartsOnCars[]
+}
 
-// model Listing {
-//   id String @id @default(cuid())
-//   name String
-//   description String
-//   condition String
-//   price Int
-//   weight Int
-//   length Int
-//   width Int
-//   height Int
-// }
-
-// new
+model PartsOnCars {
+  id        String   @id @default(cuid())
+  part      Part     @relation(fields: [partId], references: [id])
+  car       Car      @relation(fields: [carId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  partId    String
+  carId     String
+}

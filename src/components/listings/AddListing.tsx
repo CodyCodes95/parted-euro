@@ -3,28 +3,44 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
 
-interface AddCarProps {
+interface AddListingProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddOrigin: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
-  const [vin, setVin] = React.useState<string>("");
-  const [cost, setCost] = React.useState<number>(0);
-  const [carId, setCarId] = React.useState<string>("");
+const AddListing: React.FC<AddListingProps> = ({ showModal, setShowModal }) => {
+  const [title, setTitle] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
+  const [condition, setCondition] = React.useState<string>("");
+  const [price, setPrice] = React.useState<number>(0);
+  const [weight, setWeight] = React.useState<number>(0);
+  const [length, setLength] = React.useState<number>(0);
+  const [width, setWidth] = React.useState<number>(0);
+  const [height, setHeight] = React.useState<number>(0);
+  const [parts, setParts] = React.useState<object>([]);
 
   const cars = trpc.cars.getAll.useQuery();
-  const saveOrigin = trpc.origins.createOrigin.useMutation();
+  const saveListing = trpc.listings.createListing.useMutation();
 
   const onSave = async () => {
-    const result = await saveOrigin.mutateAsync({
-      vin: vin,
-      cost: cost,
-      carId: carId,
+    const result = await saveListing.mutateAsync({
+        title: title,
+        description: description,
+        condition: condition,
+        price: price,
+        weight: weight,
+        length: length,
+        width: width,
+        height: height,
     });
-    setVin("");
-    setCost(0);
-    setCarId("");
+      setTitle("");
+      setDescription("");
+      setCondition("");
+      setPrice(0);
+      setWeight(0);
+      setLength(0);
+      setWidth(0);
+      setHeight(0);
   };
 
   return (
@@ -40,7 +56,7 @@ const AddOrigin: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Add a origin
+              Add a listing
             </h3>
             <button
               onClick={() => setShowModal(!showModal) as any}
@@ -105,7 +121,7 @@ const AddOrigin: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save origin
+              Save listing
             </button>
           </div>
         </div>
@@ -114,4 +130,4 @@ const AddOrigin: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
   );
 };
 
-export default AddOrigin;
+export default AddListing;

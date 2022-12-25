@@ -1,12 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import AddCar from "../../components/cars/AddCar";
 import React from "react";
-
 import { trpc } from "../../utils/trpc";
-import OriginCard from "../../components/origins/OriginCard";
-import AddOrigin from "../../components/origins/AddOrigin";
+import AddListing from "../../components/listings/AddListing";
 
 const Listings: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
@@ -20,7 +17,7 @@ const Listings: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
         {showModal ? (
-          <AddOrigin showModal={showModal} setShowModal={setShowModal} />
+          <AddListing showModal={showModal} setShowModal={setShowModal} />
         ) : null}
         <div>
           <button onClick={() => setShowModal(!showModal)}>Add Origin</button>
