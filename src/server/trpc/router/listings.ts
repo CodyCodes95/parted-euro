@@ -13,6 +13,7 @@ export const listingRouter = router({
         length: z.number(),
         width: z.number(),
         height: z.number(),
+        images: z.string()
       })
     )
     .mutation(({ ctx, input }) => {

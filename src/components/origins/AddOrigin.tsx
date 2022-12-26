@@ -65,9 +65,9 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
           </div>
           <div className="space-y-6 p-6">
             <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              VIN
-            </label>
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                VIN
+              </label>
               <input
                 type="text"
                 value={vin}
@@ -80,13 +80,16 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Cost price
               </label>
-              <input
-                type="number"
-                value={cost}
-                onChange={(e) => setCost(Number(e.target.value))}
-                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              <div className="flex">
+                {/* <span className="absolute top-[100px]">$</span> */}
+                <input
+                  type="number"
+                  value={cost || undefined}
+                  onChange={(e) => setCost(Number(e.target.value))}
+                  className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
-              />
+                />
+              </div>
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
