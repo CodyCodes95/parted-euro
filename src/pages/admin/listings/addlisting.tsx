@@ -16,6 +16,7 @@ const AddListing: NextPage = () => {
   const [length, setLength] = React.useState<number>(0);
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
+  const [images, setImages] = React.useState<object>([]);
   const [parts, setParts] = React.useState<object>([]);
 
   const cars = trpc.cars.getAll.useQuery();
@@ -74,7 +75,7 @@ const AddListing: NextPage = () => {
           </div>
           <div className="w-72">
             <Input
-              value={price}
+              value={price || undefined}
               type="number"
               label="Price"
               onChange={(e) => setPrice(Number(e.target.value))}
@@ -82,7 +83,7 @@ const AddListing: NextPage = () => {
           </div>
           <div className="w-72">
             <Input
-              value={weight}
+              value={weight || undefined}
               type="number"
               label="Weight"
               onChange={(e) => setWeight(Number(e.target.value))}
@@ -90,7 +91,7 @@ const AddListing: NextPage = () => {
           </div>
           <div className="w-72">
             <Input
-              value={length}
+              value={length || undefined}
               type="number"
               label="Length"
               onChange={(e) => setLength(Number(e.target.value))}
@@ -98,7 +99,7 @@ const AddListing: NextPage = () => {
           </div>
           <div className="w-72">
             <Input
-              value={width}
+              value={width || undefined}
               type="number"
               label="Width"
               onChange={(e) => setWidth(Number(e.target.value))}
@@ -106,7 +107,7 @@ const AddListing: NextPage = () => {
           </div>
           <div className="w-72">
             <Input
-              value={height}
+              value={height || undefined}
               type="number"
               label="Height"
               onChange={(e) => setHeight(Number(e.target.value))}

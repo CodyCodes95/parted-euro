@@ -1,14 +1,13 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
-
 export const partRouter = router({
   createPart: publicProcedure
     .input(
       z.object({
-          name: z.string().min(3),
-          partNo: z.string().min(3),
-          originVin: z.string().min(3),
+        name: z.string().min(3),
+        partNo: z.string().min(3),
+        originVin: z.string().min(3),
       })
     )
     .mutation(({ ctx, input }) => {

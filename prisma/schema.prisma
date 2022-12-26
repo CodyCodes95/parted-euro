@@ -100,6 +100,7 @@ model Listing {
   length      Int
   width       Int
   height      Int
+  images      Json
   parts       Part[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
