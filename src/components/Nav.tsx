@@ -2,8 +2,31 @@ import Link from "next/link"
 import { useSession } from "next-auth/react";
 import logo from "../../public/logo.png"
 import NavLink from "./Nav/NavLink";
+import { useEffect, useState } from "react";
 
 const Nav: React.FC = () => {
+
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  const handleWindowSizeChange = () => {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (width <= 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [width])
+
   const { data: session } = useSession();
     return (
       <div className="flex h-20 w-full items-center justify-around bg-white">
