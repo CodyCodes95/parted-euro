@@ -32,6 +32,7 @@ const AddListing: NextPage = () => {
       length: (length * 10),
       width: (width * 10),
       height: (height * 10),
+      images: JSON.stringify(images),
     });
     setTitle("");
     setDescription("");
