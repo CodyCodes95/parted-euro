@@ -9,25 +9,23 @@ interface AddPartProps {
 }
 
 const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
-  const [vin, setVin] = React.useState<string>("");
-  const [cost, setCost] = React.useState<number>(0);
-  const [carId, setCarId] = React.useState<string>("");
-  const [year, setYear] = React.useState<number>(0);
+  const [partNo, setPartNo] = React.useState<string>("");
+  const [name, setName] = React.useState<string>("");
+  const [originVin, setOriginVin] = React.useState<string>("");
+  const [compatibleCars, setCompatibleCars] = React.useState<string>("");
 
   const cars = trpc.cars.getAll.useQuery();
-  const saveOrigin = trpc.origins.createOrigin.useMutation();
+  const savePart = trpc.parts.createPart.useMutation();
 
   const onSave = async () => {
-    const result = await saveOrigin.mutateAsync({
-      vin: vin,
-      cost: cost,
-      carId: carId,
-      year: year,
+    const result = await savePart.mutateAsync({
+      partNo: partNo,
+      name: name,
+      originVin: originVin,
     });
-    setVin("");
-    setCost(0);
-    setCarId("");
-    setYear(0);
+    setPartNo("");
+    setName("");
+    setOriginVin("");
   };
 
   return (
@@ -43,7 +41,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Add a origin
+              Add a part
             </h3>
             <button
               onClick={() => setShowModal(!showModal) as any}
@@ -66,48 +64,36 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
           <div className="space-y-6 p-6">
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                VIN
+                Name
               </label>
               <input
                 type="text"
-                value={vin}
-                onChange={(e) => setVin(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Cost price
+                Part No.
               </label>
               <input
                 type="number"
-                value={cost}
-                onChange={(e) => setCost(Number(e.target.value))}
+                value={partNo}
+                onChange={(e) => setPartNo(e.target.value)}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Car
+                Origin
               </label>
               <input
                 type="text"
-                value={carId}
-                onChange={(e) => setCarId(e.target.value)}
-                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
-              dark:focus:ring-blue-500`}
-              />
-            </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Year
-              </label>
-              <input
-                type="text"
-                value={carId}
-                onChange={(e) => setYear(Number(e.target.value))}
+                value={origin}
+                onChange={(e) => setOriginVin(e.target.value)}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
