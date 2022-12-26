@@ -3,39 +3,39 @@ import { useSession } from "next-auth/react";
 import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
 import { useEffect, useState } from "react";
-import ModalBackDrop from "./modals/ModalBackdrop";
-const isMobile = true;
+import NavBackdrop from "./Nav/NavBackdrop";
+const isMobile = false;
 
 const Nav: React.FC = () => {
-  const [width, setWidth] = useState<number>(window?.innerWidth);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  // const [width, setWidth] = useState<number>(window?.innerWidth);
+  // const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth);
-  };
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
+  // const handleWindowSizeChange = () => {
+  //   setWidth(window.innerWidth);
+  // };
+  // useEffect(() => {
+  //   window.addEventListener("resize", handleWindowSizeChange);
+  //   return () => {
+  //     window.removeEventListener("resize", handleWindowSizeChange);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (width <= 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [width]);
+  // useEffect(() => {
+  //   if (width <= 768) {
+  //     setIsMobile(true);
+  //   } else {
+  //     setIsMobile(false);
+  //   }
+  // }, [width]);
 
   const { data: session } = useSession();
 
   if (isMobile)
     return (
       <>
-        {showMenu ? <ModalBackDrop /> : null}
-        <div className="flex h-20 w-full items-center justify-between">
+        {showMenu ? <NavBackdrop /> : null}
+        <div className="fixed flex h-20 w-full items-center justify-between bg-white z-[100]">
           <p onClick={() => setShowMenu(!showMenu)}>Hamburger</p>
           <Link href="/">
             <img className="mr-8 inline h-8" src={logo.src} alt="" />
@@ -46,14 +46,14 @@ const Nav: React.FC = () => {
             showMenu ? "translate-x-[15rem]" : ""
           }`}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-20">
             <NavLink href="#" title="Shop By Generation" />
             <NavLink href="#" title="Shop By Wheels" />
             <NavLink href="#" title="Cars Wrecking Now" />
             <NavLink href="#" title="Warrenty & Return Policy" />
             <NavLink href="#" title="Contact" />
           </div>
-          <div className="flex flex-col">
+          <div className="flex">
             <NavLink href="#" title="Search" />
             <NavLink href="#" title="Cart" />
             {session ? (
