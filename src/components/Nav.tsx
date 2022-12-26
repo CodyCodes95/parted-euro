@@ -6,26 +6,26 @@ import { useEffect, useState } from "react";
 
 const Nav: React.FC = () => {
 
-  const [width, setWidth] = useState<number>(window.innerWidth);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  // const [width, setWidth] = useState<number>(window.innerWidth);
+  // const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
+  // const handleWindowSizeChange = () => {
+  //   setWidth(window.innerWidth);
+  // }
+  // useEffect(() => {
+  //   window.addEventListener("resize", handleWindowSizeChange);
+  //   return () => {
+  //     window.removeEventListener("resize", handleWindowSizeChange);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (width <= 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [width])
+  // useEffect(() => {
+  //   if (width <= 768) {
+  //     setIsMobile(true);
+  //   } else {
+  //     setIsMobile(false);
+  //   }
+  // }, [width])
 
   const { data: session } = useSession();
     return (

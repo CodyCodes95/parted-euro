@@ -16,22 +16,38 @@ const AddListing: NextPage = () => {
   const [length, setLength] = React.useState<number>(0);
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
-  const [images, setImages] = React.useState<object>([]);
+  const [images, setImages] = React.useState<any>([]);
   const [parts, setParts] = React.useState<object>([]);
 
   const cars = trpc.cars.getAll.useQuery();
   const saveListing = trpc.listings.createListing.useMutation();
+
+  const handleImageAttach = (e: any) => {
+    Array.from(e.target.files).forEach((file: any) => {
+      const reader = new FileReader();
+      reader.onload = (onLoadEvent: any) => {
+        setImages((imageState:any) => [...imageState, onLoadEvent.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  useEffect(() => {
+    images.forEach((image:string, i:number) => {
+      console.log(`image ${i}: ${image}`)
+    })
+  }, [images]);
 
   const onSave = async () => {
     const result = await saveListing.mutateAsync({
       title: title,
       description: description,
       condition: condition,
-      price: (price *100),
-      weight: (weight * 1000),
-      length: (length * 10),
-      width: (width * 10),
-      height: (height * 10),
+      price: price * 100,
+      weight: weight * 1000,
+      length: length * 10,
+      width: width * 10,
+      height: height * 10,
       images: JSON.stringify(images),
     });
     setTitle("");
@@ -120,7 +136,13 @@ const AddListing: NextPage = () => {
             aria-label="upload picture"
             component="label"
           >
-            <input hidden accept="image/*" type="file" />
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              multiple={true}
+              onChange={handleImageAttach}
+            />
             <PhotoCamera />
           </IconButton>
         </div>
