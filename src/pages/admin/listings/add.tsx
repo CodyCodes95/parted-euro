@@ -17,7 +17,7 @@ const AddListing: NextPage = () => {
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
   const [images, setImages] = React.useState<any>([]);
-  const [parts, setParts] = React.useState<object>([]);
+  const [parts, setParts] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
   const saveListing = trpc.listings.createListing.useMutation();
@@ -34,7 +34,7 @@ const AddListing: NextPage = () => {
 
   useEffect(() => {
     images.forEach((image:string, i:number) => {
-      console.log(`image ${i}: ${image}`)
+      console.log(JSON.stringify(images))
     })
   }, [images]);
 
@@ -131,20 +131,23 @@ const AddListing: NextPage = () => {
               onChange={(e) => setHeight(Number(e.target.value))}
             />
           </div>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-          >
-            <input
-              hidden
-              accept="image/*"
-              type="file"
-              multiple={true}
-              onChange={handleImageAttach}
-            />
-            <PhotoCamera />
-          </IconButton>
+          <div className="flex items-center justify-between">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+            >
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                multiple={true}
+                onChange={handleImageAttach}
+              />
+              <PhotoCamera />
+            </IconButton>
+            <p>{images.length} Photos attached</p>
+          </div>
         </div>
       </main>
     </>
