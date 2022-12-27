@@ -4,30 +4,30 @@ import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
 import { useEffect, useState } from "react";
 import NavBackdrop from "./Nav/NavBackdrop";
-const isMobile = false;
 
 const Nav: React.FC = () => {
-  // const [width, setWidth] = useState<number>(window?.innerWidth);
-  // const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [width, setWidth] = useState<number>();
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
-  // const handleWindowSizeChange = () => {
-  //   setWidth(window.innerWidth);
-  // };
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleWindowSizeChange);
-  //   return () => {
-  //     window.removeEventListener("resize", handleWindowSizeChange);
-  //   };
-  // }, []);
+  const handleWindowSizeChange = () => {
+    setWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   if (width <= 768) {
-  //     setIsMobile(true);
-  //   } else {
-  //     setIsMobile(false);
-  //   }
-  // }, [width]);
+  useEffect(() => {
+    if (width && width <= 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [width]);
 
   const { data: session } = useSession();
 
