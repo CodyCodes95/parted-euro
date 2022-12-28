@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
@@ -21,16 +21,6 @@ interface AddPartProps {
 //   { label: "Another root option", value: "value_4" },
 // ];
 
-const thing = [
-  {
-    id: "clc4g27p00000mzbctsx8nvld",
-    make: "BMW",
-    series: "3 Series",
-    generation: "E46",
-    model: "M3",
-  },
-];
-
 interface ICar {
   id: string;
   make: string;
@@ -45,39 +35,46 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const [originVin, setOriginVin] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<string>("");
   const [options, setOptions] = React.useState<any>([]);
-  const [cars, setCars] = React.useState<ICar[]>([]);
 
   const getAllCars = trpc.cars.getAll.useQuery();
   const savePart = trpc.parts.createPart.useMutation();
 
+  // useEffect(() => {
+  //   orderOptions
+  //   return () => {
+  //     setOptions([]);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    const { data: cars } = getAllCars;
-  }, []);
-
-  useEffect(() => {
-    const temp = {} as any;
-    const tempOptions = cars?.map((car: ICar) => {
-      if (!temp[car.generation]) {
-        temp[car.generation] = car.generation;
-        return {
-          label: `${car.generation}`,
-          options: [
+  useMemo(() => {
+    getAllCars.data?.forEach((car: ICar) => {
+      setOptions((prevState: any) => {
+        if (prevState.some((group: any) => group.label === car.series)) {
+          return prevState.map((group: any) => {
+            if (group.label === car.series) {
+              group.options.push({
+                label: `${car.generation} ${car.model}`,
+                value: car.id,
+              });
+            }
+            return group;
+          });
+        } else {
+          return [
+            ...prevState,
             {
-              label: `${car.model}`,
-              value: car.id,
+              label: car.series,
+              options: [
+                { label: `${car.generation} ${car.model}`, value: car.id },
+              ],
             },
-          ],
-        };
-      }
-      // temp[car.generation] = car.generation
-      // return {
-      //   label: `${car.make} ${car.series} ${car.generation} ${car.model}`,
-      //   value: car.id
-      // }
+          ];
+        }
+      });
     });
-    setOptions(tempOptions);
-  }, [cars]);
+  }, [getAllCars.data]);
+
+  // const temp = [] as any
 
   const onSave = async () => {
     const result = await savePart.mutateAsync({
