@@ -9,14 +9,75 @@ interface AddPartProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+// const options = [
+//   {
+//     label: "Group 1",
+//     options: [
+//       { label: "Group 1, option 1", value: "value_1" },
+//       { label: "Group 1, option 2", value: "value_2" },
+//     ],
+//   },
+//   { label: "A root option", value: "value_3" },
+//   { label: "Another root option", value: "value_4" },
+// ];
+
+const thing = [
+  {
+    id: "clc4g27p00000mzbctsx8nvld",
+    make: "BMW",
+    series: "3 Series",
+    generation: "E46",
+    model: "M3",
+  },
+];
+
+interface ICar {
+  id: string;
+  make: string;
+  series: string;
+  generation: string;
+  model: string;
+}
+
 const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [originVin, setOriginVin] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<string>("");
+  const [options, setOptions] = React.useState<any>([]);
+  const [cars, setCars] = React.useState<ICar[]>([]);
 
-  const cars = trpc.cars.getAll.useQuery();
+  const getAllCars = trpc.cars.getAll.useQuery();
   const savePart = trpc.parts.createPart.useMutation();
+
+
+  useEffect(() => {
+    const { data: cars } = getAllCars;
+  }, []);
+
+  useEffect(() => {
+    const temp = {} as any;
+    const tempOptions = cars?.map((car: ICar) => {
+      if (!temp[car.generation]) {
+        temp[car.generation] = car.generation;
+        return {
+          label: `${car.generation}`,
+          options: [
+            {
+              label: `${car.model}`,
+              value: car.id,
+            },
+          ],
+        };
+      }
+      // temp[car.generation] = car.generation
+      // return {
+      //   label: `${car.make} ${car.series} ${car.generation} ${car.model}`,
+      //   value: car.id
+      // }
+    });
+    setOptions(tempOptions);
+  }, [cars]);
 
   const onSave = async () => {
     const result = await savePart.mutateAsync({
@@ -106,7 +167,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
               <Select
                 // defaultValue={"Select"}
                 isMulti
-                // options={colourOptions}
+                options={options}
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
