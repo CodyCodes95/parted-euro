@@ -1,11 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
+import Select from "react-select";
 
 interface AddOriginProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface ICar {
+  id: string;
+  make: string;
+  series: string;
+  generation: string;
+  model: string;
 }
 
 const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
@@ -13,9 +22,38 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
   const [cost, setCost] = React.useState<number>(0);
   const [carId, setCarId] = React.useState<string>("");
   const [year, setYear] = React.useState<number>(0);
+  const [options, setOptions] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
   const saveOrigin = trpc.origins.createOrigin.useMutation();
+
+    useMemo(() => {
+      cars.data?.forEach((car: ICar) => {
+        setOptions((prevState: any) => {
+          if (prevState.some((group: any) => group.label === car.series)) {
+            return prevState.map((group: any) => {
+              if (group.label === car.series) {
+                group.options.push({
+                  label: `${car.generation} ${car.model}`,
+                  value: car.id,
+                });
+              }
+              return group;
+            });
+          } else {
+            return [
+              ...prevState,
+              {
+                label: car.series,
+                options: [
+                  { label: `${car.generation} ${car.model}`, value: car.id },
+                ],
+              },
+            ];
+          }
+        });
+      });
+    }, [cars.data]);
 
   const onSave = async () => {
     const result = await saveOrigin.mutateAsync({
@@ -66,6 +104,17 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
           <div className="space-y-6 p-6">
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Car
+              </label>
+              <Select
+                onChange={(e:any) => setCarId(e.value)}
+                options={options}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 VIN
               </label>
               <input
@@ -93,23 +142,11 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Car
-              </label>
-              <input
-                type="text"
-                value={carId}
-                onChange={(e) => setCarId(e.target.value)}
-                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
-              dark:focus:ring-blue-500`}
-              />
-            </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Year
               </label>
               <input
-                type="text"
-                value={carId}
+                type="Number"
+                value={year || undefined}
                 onChange={(e) => setYear(Number(e.target.value))}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}

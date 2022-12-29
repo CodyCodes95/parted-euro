@@ -9,18 +9,6 @@ interface AddPartProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// const options = [
-//   {
-//     label: "Group 1",
-//     options: [
-//       { label: "Group 1, option 1", value: "value_1" },
-//       { label: "Group 1, option 2", value: "value_2" },
-//     ],
-//   },
-//   { label: "A root option", value: "value_3" },
-//   { label: "Another root option", value: "value_4" },
-// ];
-
 interface ICar {
   id: string;
   make: string;
@@ -38,13 +26,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
 
   const getAllCars = trpc.cars.getAll.useQuery();
   const savePart = trpc.parts.createPart.useMutation();
-
-  // useEffect(() => {
-  //   orderOptions
-  //   return () => {
-  //     setOptions([]);
-  //   };
-  // }, []);
 
   useMemo(() => {
     getAllCars.data?.forEach((car: ICar) => {
@@ -74,7 +55,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
     });
   }, [getAllCars.data]);
 
-  // const temp = [] as any
 
   const onSave = async () => {
     const result = await savePart.mutateAsync({
@@ -162,7 +142,9 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
                 Compatible Cars
               </label>
               <Select
-                // defaultValue={"Select"}
+                onChange={(e) => {
+                  console.log(e);
+                }}
                 isMulti
                 options={options}
                 className="basic-multi-select"
