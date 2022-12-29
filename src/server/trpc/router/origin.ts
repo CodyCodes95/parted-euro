@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
-const currentYear:number = new Date().getFullYear();
+const currentYear: number = new Date().getFullYear();
 
 export const originRouter = router({
   createOrigin: publicProcedure
@@ -18,5 +18,8 @@ export const originRouter = router({
     }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.origin.findMany();
+  }),
+  getAllWithCars: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.origin.findMany({ include: { car: true } });
   }),
 });

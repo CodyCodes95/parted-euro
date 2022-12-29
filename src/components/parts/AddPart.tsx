@@ -17,19 +17,28 @@ interface ICar {
   model: string;
 }
 
+interface IOrigin {
+  vin: string;
+  car: ICar;
+  year: number;
+  cost: number;
+}
+
 const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [originVin, setOriginVin] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<string>("");
-  const [options, setOptions] = React.useState<any>([]);
+  const [carOptions, setCarOptions] = React.useState<any>([]);
+  const [donorOptions, setDonorOptions] = React.useState<any>([])
 
-  const getAllCars = trpc.cars.getAll.useQuery();
+  const cars = trpc.cars.getAll.useQuery();
+  const origins = trpc.origins.getAllWithCars.useQuery();
   const savePart = trpc.parts.createPart.useMutation();
 
   useMemo(() => {
-    getAllCars.data?.forEach((car: ICar) => {
-      setOptions((prevState: any) => {
+    cars.data?.forEach((car: ICar) => {
+      setCarOptions((prevState: any) => {
         if (prevState.some((group: any) => group.label === car.series)) {
           return prevState.map((group: any) => {
             if (group.label === car.series) {
@@ -53,7 +62,21 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
         }
       });
     });
-  }, [getAllCars.data]);
+  }, [cars.data]);
+
+  useMemo(() => {
+    origins.data?.forEach((origin: (IOrigin)) => {
+      setDonorOptions((prevState: any) => {
+        return [
+          ...prevState,
+          {
+            label: `${origin.vin} ${origin.year} ${origin.car.generation} ${origin.car.model}`,
+            value: origin.vin,
+          }
+          ]
+      });
+    });
+  }, [origins.data])
 
 
   const onSave = async () => {
@@ -118,7 +141,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
                 Part No.
               </label>
               <input
-                type="number"
                 value={partNo}
                 onChange={(e) => setPartNo(e.target.value)}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
@@ -127,14 +149,13 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Origin
+                Donor Car (Origin)
               </label>
-              <input
-                type="text"
-                value={originVin}
-                onChange={(e) => setOriginVin(e.target.value)}
-                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
-              dark:focus:ring-blue-500`}
+              <Select
+                onChange={(e:any) => setOriginVin(e?.value as string)}
+                options={donorOptions}
+                className="basic-multi-select"
+                classNamePrefix="select"
               />
             </div>
             <div className="mb-6">
@@ -146,7 +167,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
                   console.log(e);
                 }}
                 isMulti
-                options={options}
+                options={carOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
