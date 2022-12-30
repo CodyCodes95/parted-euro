@@ -27,7 +27,8 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
   const cars = trpc.cars.getAll.useQuery();
   const saveOrigin = trpc.origins.createOrigin.useMutation();
 
-    useMemo(() => {
+  useMemo(() => {
+    setOptions([]);
       cars.data?.forEach((car: ICar) => {
         setOptions((prevState: any) => {
           if (prevState.some((group: any) => group.label === car.series)) {

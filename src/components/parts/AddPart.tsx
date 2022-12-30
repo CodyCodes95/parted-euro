@@ -49,6 +49,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const savePartCarRelation = trpc.parts.createCarRelation.useMutation();
 
   useMemo(() => {
+    setCarOptions([]);
     cars.data?.forEach((car: ICar) => {
       setCarOptions((prevState: Array<NestedOptions>) => {
         if (prevState.some((group: NestedOptions) => group.label === car.series)) {
@@ -77,6 +78,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   }, [cars.data]);
 
   useMemo(() => {
+    setDonorOptions([]);
     origins.data?.forEach((origin: IOrigin) => {
       setDonorOptions((prevState: Array<Options>) => {
         return [
@@ -108,10 +110,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
     setName("");
     setOriginVin("");
   };
-
-  useEffect(() => {
-    console.log(compatibleCars);
-  }, [compatibleCars]);
 
   return (
     <div
