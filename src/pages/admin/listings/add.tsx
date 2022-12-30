@@ -1,10 +1,49 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../../utils/trpc";
 import { Input } from "@material-tailwind/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
+import Select from "react-select";
+
+interface Options {
+  label: string;
+  value: string;
+}
+
+interface NestedOptions {
+  label: string;
+  options: Array<Options>;
+}
+
+interface ICar {
+  id: string;
+  make: string;
+  series: string;
+  generation: string;
+  model: string;
+}
+
+interface IOrigin {
+  vin: string;
+  car: ICar;
+  year: number;
+  cost: number;
+}
+
+interface IPart {
+  id: string;
+  partNo: string;
+  name: string;
+  originVin: string;
+  listingId: string;
+  createdAt: string;
+  updatedAt: string;
+  cars: any;
+  origin: IOrigin
+  listing: any;
+}
 
 const AddListing: NextPage = () => {
   const [title, setTitle] = React.useState<string>("");
@@ -16,12 +55,50 @@ const AddListing: NextPage = () => {
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
   const [images, setImages] = React.useState<Array<string>>([]);
-  const [parts, setParts] = React.useState<any>([]);
+  const [parts, setParts] = React.useState<Array<string>>([]);
+  const [partOptions, setPartOptions] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
+  const allParts = trpc.parts.getAll.useQuery();
   const saveListing = trpc.listings.createListing.useMutation();
   const uploadImage = trpc.listings.uploadListingImage.useMutation();
+  const associateListingToPart = trpc.parts.updateListingOnPart.useMutation();
   const saveImageRelation = trpc.images.createImageRelation.useMutation();
+
+    useMemo(() => {
+      allParts.data?.forEach((part: any) => {
+        setPartOptions((prevState: Array<NestedOptions>) => {
+              if (
+                prevState.some(
+                  (group: NestedOptions) => group.label === part.origin.vin
+                )
+              ) {
+                return prevState.map((group: NestedOptions) => {
+                  if (group.label === part.origin.vin) {
+                    group.options.push({
+                      label: part.partNo,
+                      value: part.id,
+                    });
+                  }
+                  return group;
+                });
+              } else {
+                return [
+                  ...prevState,
+                  {
+                    label: part.origin.vin,
+                    options: [
+                                    {
+                  label: part.partNo,
+                  value: part.id,
+                }
+                    ],
+                  },
+                ];
+              }
+        });
+      });
+    }, [allParts.data]);
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -57,6 +134,12 @@ const AddListing: NextPage = () => {
         url: imageRes.url,
       })
     });
+    parts.forEach((partId: string) => {
+      associateListingToPart.mutateAsync({
+        listingId: listingId,
+        partId: partId,
+      });
+    })
     setTitle("");
     setDescription("");
     setCondition("");
@@ -136,6 +219,21 @@ const AddListing: NextPage = () => {
               type="number"
               label="Height"
               onChange={(e) => setHeight(Number(e.target.value))}
+            />
+          </div>
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+              Parts
+            </label>
+            <Select
+              onChange={(e: any) => {
+                setParts(e.map((part: Options) => part.value));
+              }}
+              isMulti
+              options={partOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              closeMenuOnSelect={false}
             />
           </div>
           <div className="flex items-center justify-between">
