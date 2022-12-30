@@ -5,7 +5,6 @@ import { trpc } from "../../../utils/trpc";
 import { Input } from "@material-tailwind/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
 
 const AddListing: NextPage = () => {
   const [title, setTitle] = React.useState<string>("");
@@ -39,8 +38,6 @@ const AddListing: NextPage = () => {
   };
 
   const onSave = async () => {
-    let promises: any = [];
-    let imageUrls: any = [];
     const result = await saveListing.mutateAsync({
       title: title,
       description: description,
