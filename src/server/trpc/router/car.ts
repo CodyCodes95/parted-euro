@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc";
 
 export const carRouter = router({
   createCar: publicProcedure.input(z.object({
@@ -11,7 +11,7 @@ export const carRouter = router({
     .mutation(({ctx, input }) => {
       return ctx.prisma.car.create({data: input})
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.car.findMany();
   })
 });

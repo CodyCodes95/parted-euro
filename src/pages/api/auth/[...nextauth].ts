@@ -9,9 +9,10 @@ import { prisma } from "../../../server/db/client";
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    session({ session, user }) {
+    session({ session, user }:any) {
       if (session.user) {
         session.user.id = user.id;
+        session.user.isAdmin = user.isAdmin
       }
       return session;
     },
