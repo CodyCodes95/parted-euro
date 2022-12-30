@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc";
 
 export const partRouter = router({
-  createPart: publicProcedure
+  createPart: adminProcedure
     .input(
       z.object({
         name: z.string().min(3),
@@ -13,14 +13,14 @@ export const partRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.create({ data: input });
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.part.findMany({
       include: {
         origin: true,
       },
     });
   }),
-  createCarRelation: publicProcedure
+  createCarRelation: adminProcedure
     .input(
       z.array(
         z.object({
@@ -32,7 +32,7 @@ export const partRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.partsOnCars.createMany({ data: input });
     }),
-  updateListingOnPart: publicProcedure
+  updateListingOnPart: adminProcedure
     .input(
       z.object({
         partId: z.string().min(3),

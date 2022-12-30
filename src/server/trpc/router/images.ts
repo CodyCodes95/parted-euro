@@ -1,10 +1,11 @@
+import { adminProcedure } from './../trpc';
 import { z } from "zod";
 import { env } from "../../../env/server.mjs";
 import { router, publicProcedure } from "../trpc";
 import cloudinary from "../../../utils/cloudinary.mjs";
 
 export const imagesRouter = router({
-  uploadListingImage: publicProcedure
+  uploadListingImage: adminProcedure
     .input(
       z.object({
         image: z.string(),
@@ -21,7 +22,7 @@ export const imagesRouter = router({
           return res;
         });
     }),
-  createImageRelation: publicProcedure
+  createImageRelation: adminProcedure
     .input(
       z.object({
         url: z.string().min(3),

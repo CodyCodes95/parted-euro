@@ -1,9 +1,10 @@
+import { adminProcedure } from './../trpc';
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import cloudinary from "../../../utils/cloudinary.mjs";
 
 export const listingRouter = router({
-  uploadListingImage: publicProcedure
+  uploadListingImage: adminProcedure
     .input(
       z.object({
         image: z.string(),
@@ -17,7 +18,7 @@ export const listingRouter = router({
       });
       return uploadedImage;
     }),
-  createListing: publicProcedure
+  createListing: adminProcedure
     .input(
       z.object({
         title: z.string().min(3),
@@ -33,7 +34,7 @@ export const listingRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.listing.create({ data: input });
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.listing.findMany();
   }),
 });

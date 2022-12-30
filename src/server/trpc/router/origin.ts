@@ -1,10 +1,11 @@
+import { adminProcedure } from './../trpc';
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 const currentYear: number = new Date().getFullYear();
 
 export const originRouter = router({
-  createOrigin: publicProcedure
+  createOrigin: adminProcedure
     .input(
       z.object({
         vin: z.string().min(5),
@@ -16,10 +17,10 @@ export const originRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.origin.create({ data: input });
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.origin.findMany();
   }),
-  getAllWithCars: publicProcedure.query(({ ctx }) => {
+  getAllWithCars: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.origin.findMany({ include: { car: true } });
   }),
 });
