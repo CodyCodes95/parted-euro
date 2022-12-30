@@ -16,29 +16,31 @@ const AddListing: NextPage = () => {
   const [length, setLength] = React.useState<number>(0);
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
-  const [images, setImages] = React.useState<any>([]);
+  const [images, setImages] = React.useState<Array<string>>([]);
+  // const [imageUrls, setImageUrls] = React.useState<Array<string>>([]);
   const [parts, setParts] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
   const saveListing = trpc.listings.createListing.useMutation();
+  const uploadImage = trpc.listings.uploadListingImage.useMutation();
+  const saveImageRelation = trpc.images.createImageRelation.useMutation();
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
       const reader = new FileReader();
       reader.onload = (onLoadEvent: any) => {
-        setImages((imageState:any) => [...imageState, onLoadEvent.target.result]);
+        setImages((imageState: any) => [
+          ...imageState,
+          onLoadEvent.target.result,
+        ]);
       };
       reader.readAsDataURL(file);
     });
   };
 
-  useEffect(() => {
-    images.forEach((image:string, i:number) => {
-      console.log(JSON.stringify(images))
-    })
-  }, [images]);
-
   const onSave = async () => {
+    let promises: any = [];
+    let imageUrls: any = [];
     const result = await saveListing.mutateAsync({
       title: title,
       description: description,
@@ -48,7 +50,16 @@ const AddListing: NextPage = () => {
       length: length * 10,
       width: width * 10,
       height: height * 10,
-      images: JSON.stringify(images),
+    });
+    const listingId = result.id;
+    images.forEach(async (image: string) => {
+      const imageRes = await uploadImage.mutateAsync({
+        image: image,
+      });
+      const relationRes = await saveImageRelation.mutateAsync({
+        listingId: listingId,
+        url: imageRes.url,
+      })
     });
     setTitle("");
     setDescription("");
@@ -148,6 +159,7 @@ const AddListing: NextPage = () => {
             </IconButton>
             <p>{images.length} Photos attached</p>
           </div>
+          <button onClick={onSave}>Create</button>
         </div>
       </main>
     </>

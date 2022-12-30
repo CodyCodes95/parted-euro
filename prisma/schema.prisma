@@ -99,10 +99,10 @@ model Listing {
   length      Int
   width       Int
   height      Int
-  images      Json
   parts       Part[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  Images      Images[]
 }
 
 model Part {
@@ -116,6 +116,15 @@ model Part {
   originVin String
   listingId String?
   cars      PartsOnCars[]
+}
+
+model Images {
+  id        String   @id @default(cuid())
+  url       String
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PartsOnCars {

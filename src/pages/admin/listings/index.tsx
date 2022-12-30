@@ -16,7 +16,7 @@ const Listings: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
         <div>
-          <Link href="./listings/addlisting">Add Listing</Link>
+          <Link href="./listings/add">Add Listing</Link>
         </div>
         <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
       </main>

@@ -5,6 +5,7 @@ import { carRouter } from "./car";
 import { exampleRouter } from "./example";
 import { listingRouter } from './listings';
 import { partRouter } from './parts';
+import { imagesRouter } from './images';
 
 export const appRouter = router({
   example: exampleRouter,
@@ -12,6 +13,7 @@ export const appRouter = router({
   origins: originRouter,
   listings: listingRouter,
   parts: partRouter,
+  images: imagesRouter,
   auth: authRouter,
 });
 
