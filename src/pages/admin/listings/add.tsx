@@ -16,7 +16,6 @@ const AddListing: NextPage = () => {
   const [width, setWidth] = React.useState<number>(0);
   const [height, setHeight] = React.useState<number>(0);
   const [images, setImages] = React.useState<Array<string>>([]);
-  // const [imageUrls, setImageUrls] = React.useState<Array<string>>([]);
   const [parts, setParts] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
