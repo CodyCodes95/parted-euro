@@ -18,12 +18,12 @@ export const partRouter = router({
   }),
   createCarRelation: publicProcedure
     .input(
-      z.object({
-        carId: z.string().min(3),
+      z.array(z.object({
         partId: z.string().min(3),
-      })
+        carId: z.string().min(3),
+      }))
   )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.partsOnCars.create({ data: input });
+      return ctx.prisma.partsOnCars.createMany({ data: input });
     }),
 });

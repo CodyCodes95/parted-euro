@@ -2,7 +2,8 @@ import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
-import Select from "react-select";
+import Select, { MultiValue, SingleValue } from "react-select";
+import { value } from "@material-tailwind/react/types/components/chip";
 
 interface AddPartProps {
   showModal: boolean;
@@ -24,13 +25,23 @@ interface IOrigin {
   cost: number;
 }
 
+interface Options {
+  label: string;
+  value: string;
+}
+
+interface NestedOptions {
+  label: string;
+  options: Array<Options>;
+}
+
 const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [originVin, setOriginVin] = React.useState<string>("");
-  const [compatibleCars, setCompatibleCars] = React.useState<any>([]);
-  const [carOptions, setCarOptions] = React.useState<any>([]);
-  const [donorOptions, setDonorOptions] = React.useState<any>([]);
+  const [compatibleCars, setCompatibleCars] = React.useState<Array<String>>([]);
+  const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
+  const [donorOptions, setDonorOptions] = React.useState<Array<Options>>([]);
 
   const cars = trpc.cars.getAll.useQuery();
   const origins = trpc.origins.getAllWithCars.useQuery();
@@ -39,9 +50,9 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
 
   useMemo(() => {
     cars.data?.forEach((car: ICar) => {
-      setCarOptions((prevState: any) => {
-        if (prevState.some((group: any) => group.label === car.series)) {
-          return prevState.map((group: any) => {
+      setCarOptions((prevState: Array<NestedOptions>) => {
+        if (prevState.some((group: NestedOptions) => group.label === car.series)) {
+          return prevState.map((group: NestedOptions) => {
             if (group.label === car.series) {
               group.options.push({
                 label: `${car.generation} ${car.model}`,
@@ -67,7 +78,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
 
   useMemo(() => {
     origins.data?.forEach((origin: IOrigin) => {
-      setDonorOptions((prevState: any) => {
+      setDonorOptions((prevState: Array<Options>) => {
         return [
           ...prevState,
           {
@@ -85,11 +96,14 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
       name: name,
       originVin: originVin,
     });
-    const partId = result.id;
-    const carRelationResult = await savePartCarRelation.mutateAsync({
-      partId: partId,
-      carId: compatibleCars,
+    const partId = result.id
+    const carRelations = compatibleCars.map((carId: any) => {
+      return {
+        partId: partId,
+        carId: carId,
+      };
     });
+    await savePartCarRelation.mutateAsync(carRelations);
     setPartNo("");
     setName("");
     setOriginVin("");
@@ -161,7 +175,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
                 Donor Car (Origin)
               </label>
               <Select
-                onChange={(e: any) => setOriginVin(e?.value as string)}
+                onChange={(e: SingleValue<Options>) => setOriginVin(e?.value as string)}
                 options={donorOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
@@ -172,8 +186,10 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
                 Compatible Cars
               </label>
               <Select
-                onChange={(e:any) => setCompatibleCars(e.value)}
-                // isMulti
+                onChange={(e: any) => {
+                  setCompatibleCars(e.map((car:Options) => car.value));
+                }}
+                isMulti
                 options={carOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"

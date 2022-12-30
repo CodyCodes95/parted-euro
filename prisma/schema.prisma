@@ -69,14 +69,13 @@ model VerificationToken {
 }
 
 model Car {
-  id          String        @id @default(cuid())
-  make        String
-  series      String
-  generation  String
-  model       String
-  Origin      Origin[]
-  Part        Part[]
-  PartsOnCars PartsOnCars[]
+  id         String        @id @default(cuid())
+  make       String
+  series     String
+  generation String
+  model      String
+  Origin     Origin[]
+  Part       PartsOnCars[]
 }
 
 model Origin {
@@ -107,25 +106,25 @@ model Listing {
 }
 
 model Part {
-  id          String        @id @default(cuid())
-  partNo      String
-  name        String
-  listing     Listing?       @relation(fields: [listingId], references: [id])
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  origin      Origin        @relation(fields: [originVin], references: [vin])
-  originVin   String
-  listingId   String?
-  cars        Car[]
-  PartsOnCars PartsOnCars[]
+  id        String        @id @default(cuid())
+  partNo    String
+  name      String
+  listing   Listing?      @relation(fields: [listingId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  origin    Origin        @relation(fields: [originVin], references: [vin])
+  originVin String
+  listingId String?
+  cars      PartsOnCars[]
 }
 
 model PartsOnCars {
-  id        String   @id @default(cuid())
   part      Part     @relation(fields: [partId], references: [id])
   car       Car      @relation(fields: [carId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   partId    String
   carId     String
+
+  @@id([partId, carId])
 }
