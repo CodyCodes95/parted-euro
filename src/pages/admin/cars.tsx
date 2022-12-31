@@ -12,6 +12,14 @@ interface Data {
   generation: string;
 }
 
+interface ICar {
+  id: string;
+  make: string;
+  series: string;
+  generation: string;
+  model: string;
+}
+
 const Cars: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
@@ -23,7 +31,7 @@ const Cars: NextPage = () => {
     setRows([]);
     if (!cars.data) return;
     setHeadCells((): any => {
-      const cells = Object.keys(cars.data[0])
+      const cells = Object.keys(cars.data[0] as ICar)
         .filter((key) => key !== "id")
         .map((key: any) => {
           return {

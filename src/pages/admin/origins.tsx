@@ -7,9 +7,10 @@ import SortedTable from "../../components/tables/SortedTable";
 
 interface IOrigin {
   vin: string;
-  car: ICar;
   year: number;
   cost: number;
+  createdAt: Date | string
+  updatedAt: Date | string
 }
 interface ICar {
   id: string;
@@ -26,11 +27,12 @@ const Origins: NextPage = () => {
   const [rows, setRows] = useState<IOrigin[]>([]);
 
   useMemo(() => {
-     setHeadCells([]);
+    console.log(origins.data);
+    setHeadCells([]);
     setRows([]);
     if (!origins.data) return;
     setHeadCells((): any => {
-      const cells = Object.keys(origins.data[0])
+      const cells = Object.keys(origins.data[0] as IOrigin)
         .filter((key) => key !== "id")
         .map((key: any) => {
           return {
@@ -42,9 +44,17 @@ const Origins: NextPage = () => {
         });
       return cells;
     });
-    origins.data?.forEach((car) => {
-      setRows((prev) => [...prev, car]);
-    });
+    const newRows = origins.data?.map((origin) => {
+      return {
+        vin: origin.vin,
+        year: origin.year,
+        cost: origin.cost,
+        createdAt: new Date(origin.createdAt).toLocaleDateString(),
+        updatedAt: new Date(origin.updatedAt).toLocaleDateString(),
+      };
+    }
+    );
+    setRows(newRows);
   }, [origins.data]);
 
   return (
