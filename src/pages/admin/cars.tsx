@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import AddCar from "../../components/cars/AddCar";
-
 import { trpc } from "../../utils/trpc";
 import SortedTable from "../../components/tables/SortedTable";
 import { useMemo, useState } from "react";
@@ -13,27 +12,20 @@ interface Data {
   generation: string;
 }
 
-interface ICar {
-  id: string;
-  make: string;
-  series: string;
-  generation: string;
-  model: string;
-}
-
-
 const Cars: NextPage = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [headCells, setHeadCells] = useState<readonly string[]>([]);
-    const [rows, setRows] = useState<Data[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [headCells, setHeadCells] = useState<readonly string[]>([]);
+  const [rows, setRows] = useState<Data[]>([]);
   const cars = trpc.cars.getAll.useQuery();
-  
+
   useMemo(() => {
     setHeadCells([]);
     setRows([]);
-      if (!cars.data) return;
-      setHeadCells(() => {
-        const cells = Object.keys(cars.data[0]).filter(key => key !== "id").map((key: any) => {
+    if (!cars.data) return;
+    setHeadCells((): any => {
+      const cells = Object.keys(cars.data[0])
+        .filter((key) => key !== "id")
+        .map((key: any) => {
           return {
             disablePadding: false,
             id: key,
@@ -41,13 +33,12 @@ const Cars: NextPage = () => {
             label: key,
           };
         });
-        return cells;
-      });
-      cars.data?.forEach((car) => {
-        setRows((prev) => [...prev, car]);
-      });
-    }, [cars.data]);;
-
+      return cells;
+    });
+    cars.data?.forEach((car) => {
+      setRows((prev) => [...prev, car]);
+    });
+  }, [cars.data]);
 
   return (
     <>
@@ -60,7 +51,7 @@ const Cars: NextPage = () => {
         {showModal ? (
           <AddCar showModal={showModal} setShowModal={setShowModal} />
         ) : null}
-        <SortedTable headCells={headCells} rows={rows} />
+        <SortedTable headCells={headCells} rows={rows} title="Cars" />
       </main>
     </>
   );

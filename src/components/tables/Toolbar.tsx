@@ -27,10 +27,11 @@ import AddCar from "../cars/AddCar";
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  title: string
 }
 
 export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+  const { numSelected, title } = props;
 
   return (
     <Toolbar
@@ -62,7 +63,7 @@ export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Cars
+          {title}
         </Typography>
       )}
       {numSelected > 0 ? (

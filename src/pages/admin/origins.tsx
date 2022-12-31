@@ -1,15 +1,51 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import AddCar from "../../components/cars/AddCar";
-import React from "react";
-
+import React, { useMemo, useState } from "react";
 import { trpc } from "../../utils/trpc";
-import OriginCard from "../../components/origins/OriginCard";
 import AddOrigin from "../../components/origins/AddOrigin";
+import SortedTable from "../../components/tables/SortedTable";
+
+interface IOrigin {
+  vin: string;
+  car: ICar;
+  year: number;
+  cost: number;
+}
+interface ICar {
+  id: string;
+  make: string;
+  series: string;
+  generation: string;
+  model: string;
+}
 
 const Origins: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
+  const origins = trpc.origins.getAll.useQuery();
+  const [headCells, setHeadCells] = useState<readonly string[]>([]);
+  const [rows, setRows] = useState<IOrigin[]>([]);
+
+  useMemo(() => {
+     setHeadCells([]);
+    setRows([]);
+    if (!origins.data) return;
+    setHeadCells((): any => {
+      const cells = Object.keys(origins.data[0])
+        .filter((key) => key !== "id")
+        .map((key: any) => {
+          return {
+            disablePadding: false,
+            id: key,
+            numeric: false,
+            label: key,
+          };
+        });
+      return cells;
+    });
+    origins.data?.forEach((car) => {
+      setRows((prev) => [...prev, car]);
+    });
+  }, [origins.data]);
 
   return (
     <>
@@ -25,7 +61,7 @@ const Origins: NextPage = () => {
         <div>
           <button onClick={() => setShowModal(!showModal)}>Add Origin</button>
         </div>
-        <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
+        <SortedTable headCells={headCells} rows={rows} title={"Origins"} />
       </main>
     </>
   );
