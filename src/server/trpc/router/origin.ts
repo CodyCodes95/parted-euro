@@ -1,4 +1,4 @@
-import { adminProcedure } from './../trpc';
+import { adminProcedure } from "./../trpc";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
@@ -23,4 +23,30 @@ export const originRouter = router({
   getAllWithCars: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.origin.findMany({ include: { car: true } });
   }),
+  getAllDashboard: adminProcedure.query(({ ctx }) => {
+    return ctx.prisma.origin.findMany({
+      select: {
+        vin: true,
+        year: true,
+        car: {
+          select: {
+            series: true,
+            generation: true,
+            model: true,
+          },
+        },
+        cost: true,
+        Part: {
+          select: {
+            listing: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        },
+        createdAt: true,
+      },
+    });
+  })
 });

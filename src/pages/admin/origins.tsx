@@ -4,44 +4,40 @@ import React, { useMemo, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import AddOrigin from "../../components/origins/AddOrigin";
 import SortedTable from "../../components/tables/SortedTable";
-
-interface IOrigin {
-  vin: string;
-  year: number;
-  cost: number;
-  createdAt: Date | string
-  updatedAt: Date | string
-}
-interface ICar {
-  id: string;
-  make: string;
-  series: string;
-  generation: string;
-  model: string;
-}
+import { Origin } from "@prisma/client";
+import { Car } from "@prisma/client";
 
 const Origins: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
-  const origins = trpc.origins.getAll.useQuery();
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
-  const [rows, setRows] = useState<IOrigin[]>([]);
+  const [rows, setRows] = useState<Origin[]>([]);
+  const origins = trpc.origins.getAllDashboard.useQuery();
 
   useMemo(() => {
-    console.log(origins.data);
     setHeadCells([]);
     setRows([]);
+    console.log(origins.data)
     if (!origins.data) return;
+    const hideColumns = ["Part", "createdAt"]
     setHeadCells((): any => {
-      const cells = Object.keys(origins.data[0] as IOrigin)
-        .filter((key) => key !== "id")
+      const cells = Object.keys(origins.data[0] as any)
+        .filter((key) => {
+          if (hideColumns.includes(key)) return false;
+          return true;
+        })
         .map((key: any) => {
-          return {
-            disablePadding: false,
-            id: key,
-            numeric: false,
-            label: key,
-          };
+          if (typeof origins.data[0][key] === "object") {
+
+          }
+            return {
+              disablePadding: false,
+              id: key,
+              numeric: false,
+              label: key,
+            };
         });
+      console.log(cells)
+      // insert cells series generation and model after the year cell
       return cells;
     });
     const newRows = origins.data?.map((origin) => {
@@ -50,10 +46,11 @@ const Origins: NextPage = () => {
         year: origin.year,
         cost: origin.cost,
         createdAt: new Date(origin.createdAt).toLocaleDateString(),
-        updatedAt: new Date(origin.updatedAt).toLocaleDateString(),
+        series: origin.car.series,
+        generation: origin.car.generation,
+        model: origin.car.model,
       };
-    }
-    );
+    });
     setRows(newRows);
   }, [origins.data]);
 
@@ -71,7 +68,7 @@ const Origins: NextPage = () => {
         <div>
           <button onClick={() => setShowModal(!showModal)}>Add Origin</button>
         </div>
-        <SortedTable headCells={headCells} rows={rows} title={"Origins"} />
+        <SortedTable headCells={headCells} rows={rows} title={"Origins"} rowId={"vin"} />
       </main>
     </>
   );

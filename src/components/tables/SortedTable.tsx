@@ -60,13 +60,13 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-const SortedTable: React.FC<any> = ({ headCells, rows, title }: any) => {
+const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id" }: any) => {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof Data>("make");
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -149,17 +149,17 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title }: any) => {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: any, index): any => {
-                  const isItemSelected = isSelected(row.id);
+                  const isItemSelected = isSelected(row[rowId]);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, row[rowId])}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={row[rowId]}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
