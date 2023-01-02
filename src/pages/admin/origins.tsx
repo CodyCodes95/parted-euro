@@ -17,8 +17,8 @@ const Origins: NextPage = () => {
     setHeadCells([]);
     setRows([]);
     if (!origins.data) return;
-    const hideColumns = ["updatedAt", "Part", "car"]
-    const nestedColumns = [{ car: ["series", "generation", "model"] }]
+    const hideColumns = ["updatedAt", "Part", "car"];
+    const nestedColumns = [{ car: ["series", "generation", "model"] }];
     setHeadCells((): any => {
       const cells = Object.keys(origins.data[0] as any)
         .filter((key) => {
@@ -27,29 +27,29 @@ const Origins: NextPage = () => {
           return true;
         })
         .map((key: any) => {
-            return {
-              disablePadding: false,
-              id: key,
-              numeric: false,
-              label: key,
-            };
-        })
+          return {
+            disablePadding: false,
+            id: key,
+            numeric: false,
+            label: key,
+          };
+        });
       nestedColumns.forEach((nestedColumn) => {
         Object.values(nestedColumn).forEach((nestedColumnValue) => {
           nestedColumnValue.forEach((nestedColumnValueValue) => {
-            cells.splice(cells.indexOf("year")-1, 0, {
+            cells.splice(cells.indexOf("year") - 1, 0, {
               disablePadding: false,
               id: nestedColumnValueValue,
               numeric: false,
               label: nestedColumnValueValue,
-              });
+            });
           });
-        }
-        );
-      })
+        });
+      });
       return cells;
     });
     const newRows = origins.data?.map((origin) => {
+      origin.Part.forEach(part => console.log(part.listing))
       return {
         vin: origin.vin,
         year: origin.year,
@@ -58,15 +58,18 @@ const Origins: NextPage = () => {
         series: origin.car.series,
         generation: origin.car.generation,
         model: origin.car.model,
-        totalListedParts: origin.Part.reduce((acc,cur) => acc + cur.price, 0)
+        totalListedParts: origin.Part.reduce((acc, part) => {
+          if (part.listing === null) return acc;
+          return acc + part?.listing?.price + acc
+        },0),
       };
     });
     setRows(newRows);
   }, [origins.data]);
 
   useEffect(() => {
-    console.log(rows)
-  }, [rows])
+    console.log(rows);
+  }, [rows]);
 
   return (
     <>
@@ -82,7 +85,12 @@ const Origins: NextPage = () => {
         <div>
           <button onClick={() => setShowModal(!showModal)}>Add Origin</button>
         </div>
-        <SortedTable headCells={headCells} rows={rows} title={"Origins"} rowId={"vin"} />
+        <SortedTable
+          headCells={headCells}
+          rows={rows}
+          title={"Origins"}
+          rowId={"vin"}
+        />
       </main>
     </>
   );

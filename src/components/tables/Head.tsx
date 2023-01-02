@@ -61,6 +61,7 @@ export default function EnhancedTableHead(props: any) {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
+              className="capitalize"
             >
               {headCell.label}
               {orderBy === headCell.id ? (
