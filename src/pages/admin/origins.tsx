@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import AddOrigin from "../../components/origins/AddOrigin";
 import SortedTable from "../../components/tables/SortedTable";
@@ -16,28 +16,37 @@ const Origins: NextPage = () => {
   useMemo(() => {
     setHeadCells([]);
     setRows([]);
-    console.log(origins.data)
     if (!origins.data) return;
-    const hideColumns = ["Part", "createdAt"]
+    const hideColumns = ["updatedAt", "Part", "car"]
+    const nestedColumns = [{ car: ["series", "generation", "model"] }]
     setHeadCells((): any => {
       const cells = Object.keys(origins.data[0] as any)
         .filter((key) => {
           if (hideColumns.includes(key)) return false;
+          if (nestedColumns[key]) return false;
           return true;
         })
         .map((key: any) => {
-          if (typeof origins.data[0][key] === "object") {
-
-          }
             return {
               disablePadding: false,
               id: key,
               numeric: false,
               label: key,
             };
-        });
-      console.log(cells)
-      // insert cells series generation and model after the year cell
+        })
+      nestedColumns.forEach((nestedColumn) => {
+        Object.values(nestedColumn).forEach((nestedColumnValue) => {
+          nestedColumnValue.forEach((nestedColumnValueValue) => {
+            cells.splice(cells.indexOf("year")-1, 0, {
+              disablePadding: false,
+              id: nestedColumnValueValue,
+              numeric: false,
+              label: nestedColumnValueValue,
+              });
+          });
+        }
+        );
+      })
       return cells;
     });
     const newRows = origins.data?.map((origin) => {
@@ -49,10 +58,15 @@ const Origins: NextPage = () => {
         series: origin.car.series,
         generation: origin.car.generation,
         model: origin.car.model,
+        totalListedParts: origin.Part.reduce((acc,cur) => acc + cur.price, 0)
       };
     });
     setRows(newRows);
   }, [origins.data]);
+
+  useEffect(() => {
+    console.log(rows)
+  }, [rows])
 
   return (
     <>
