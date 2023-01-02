@@ -41,6 +41,7 @@ export const originRouter = router({
             listing: {
               select: {
                 price: true,
+                sold: true,
               },
             },
           },

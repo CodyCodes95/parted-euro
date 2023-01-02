@@ -49,7 +49,6 @@ const Origins: NextPage = () => {
       return cells;
     });
     const newRows = origins.data?.map((origin) => {
-      origin.Part.forEach(part => console.log(part.listing))
       return {
         vin: origin.vin,
         year: origin.year,
@@ -58,6 +57,14 @@ const Origins: NextPage = () => {
         series: origin.car.series,
         generation: origin.car.generation,
         model: origin.car.model,
+        totalUnsoldParts: origin.Part.reduce((acc, part) => {
+          if (part.listing === null || part.listing.sold) return acc;
+          return acc + part?.listing?.price + acc
+        }, 0),
+        totalSoldParts: origin.Part.reduce((acc, part) => {
+          if (part.listing === null || !part.listing.sold) return acc;
+          return acc + part?.listing?.price + acc
+        }, 0),
         totalListedParts: origin.Part.reduce((acc, part) => {
           if (part.listing === null) return acc;
           return acc + part?.listing?.price + acc
