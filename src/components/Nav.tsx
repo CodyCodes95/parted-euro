@@ -48,9 +48,9 @@ const Nav: React.FC = () => {
         >
           <div className="flex flex-col mt-20">
             <NavLink href="#" title="Shop By Generation" />
-            <NavLink href="#" title="Shop By Wheels" />
+            {/* <NavLink href="#" title="Shop By Wheels" /> */}
             <NavLink href="#" title="Cars Wrecking Now" />
-            <NavLink href="#" title="Warrenty & Return Policy" />
+            <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
             <NavLink href="#" title="Contact" />
           </div>
           <div className="flex">
@@ -68,16 +68,16 @@ const Nav: React.FC = () => {
     );
 
   return (
-    <div className="flex h-20 w-full items-center justify-around bg-white">
+    <div className="flex h-20 w-full items-center justify-around bg-white border-b-2 mb-6">
       <div>
         <Link href="/">
           <img className="mr-8 inline h-8" src={logo.src} alt="" />
         </Link>
         <NavLink href="#" title="Home" />
         <NavLink href="#" title="Shop By Generation" />
-        <NavLink href="#" title="Shop By Wheels" />
+        {/* <NavLink href="#" title="Shop By Wheels" /> */}
         <NavLink href="#" title="Cars Wrecking Now" />
-        <NavLink href="#" title="Warrenty & Return Policy" />
+        <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
         <NavLink href="#" title="Contact" />
       </div>
       <div>

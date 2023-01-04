@@ -41,7 +41,7 @@ interface IPart {
   createdAt: string;
   updatedAt: string;
   cars: any;
-  origin: IOrigin
+  origin: IOrigin;
   listing: any;
 }
 
@@ -65,40 +65,40 @@ const AddListing: NextPage = () => {
   const associateListingToPart = trpc.parts.updateListingOnPart.useMutation();
   const saveImageRelation = trpc.images.createImageRelation.useMutation();
 
-    useMemo(() => {
-      allParts.data?.forEach((part: any) => {
-        setPartOptions((prevState: Array<NestedOptions>) => {
-              if (
-                prevState.some(
-                  (group: NestedOptions) => group.label === part.origin.vin
-                )
-              ) {
-                return prevState.map((group: NestedOptions) => {
-                  if (group.label === part.origin.vin) {
-                    group.options.push({
-                      label: part.partNo,
-                      value: part.id,
-                    });
-                  }
-                  return group;
-                });
-              } else {
-                return [
-                  ...prevState,
-                  {
-                    label: part.origin.vin,
-                    options: [
-                                    {
+  useMemo(() => {
+    allParts.data?.forEach((part: any) => {
+      setPartOptions((prevState: Array<NestedOptions>) => {
+        if (
+          prevState.some(
+            (group: NestedOptions) => group.label === part.origin.vin
+          )
+        ) {
+          return prevState.map((group: NestedOptions) => {
+            if (group.label === part.origin.vin) {
+              group.options.push({
+                label: part.partNo,
+                value: part.id,
+              });
+            }
+            return group;
+          });
+        } else {
+          return [
+            ...prevState,
+            {
+              label: part.origin.vin,
+              options: [
+                {
                   label: part.partNo,
                   value: part.id,
-                }
-                    ],
-                  },
-                ];
-              }
-        });
+                },
+              ],
+            },
+          ];
+        }
       });
-    }, [allParts.data]);
+    });
+  }, [allParts.data]);
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -125,21 +125,23 @@ const AddListing: NextPage = () => {
       height: height * 10,
     });
     const listingId = result.id;
-    images.forEach(async (image: string) => {
+    const imagePromises = images.map(async (image: string) => {
       const imageRes = await uploadImage.mutateAsync({
         image: image,
       });
-      const relationRes = await saveImageRelation.mutateAsync({
+      return saveImageRelation.mutateAsync({
         listingId: listingId,
         url: imageRes.url,
-      })
+      });
     });
-    parts.forEach((partId: string) => {
-      associateListingToPart.mutateAsync({
+    const partPromises = parts.map((partId: string) => {
+      return associateListingToPart.mutateAsync({
         listingId: listingId,
         partId: partId,
       });
-    })
+    });
+    await Promise.all([...imagePromises, ...partPromises]);
+    console.log("finished");
     setTitle("");
     setDescription("");
     setCondition("");
