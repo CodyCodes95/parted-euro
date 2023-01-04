@@ -51,7 +51,7 @@ const Nav: React.FC = () => {
             {/* <NavLink href="#" title="Shop By Wheels" /> */}
             <NavLink href="#" title="Cars Wrecking Now" />
             <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
-            <NavLink href="#" title="Contact" />
+            <NavLink href="/contact" title="Contact" />
           </div>
           <div className="flex">
             <NavLink href="#" title="Search" />
@@ -78,7 +78,7 @@ const Nav: React.FC = () => {
         {/* <NavLink href="#" title="Shop By Wheels" /> */}
         <NavLink href="#" title="Cars Wrecking Now" />
         <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
-        <NavLink href="#" title="Contact" />
+        <NavLink href="/contact" title="Contact" />
       </div>
       <div>
         <NavLink href="#" title="Search" />
