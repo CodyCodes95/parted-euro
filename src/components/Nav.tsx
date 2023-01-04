@@ -4,6 +4,7 @@ import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
 import { useEffect, useState } from "react";
 import NavBackdrop from "./Nav/NavBackdrop";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -68,13 +69,13 @@ const Nav: React.FC = () => {
     );
 
   return (
-    <div className="flex h-20 w-full items-center justify-around bg-white border-b-2 mb-6">
-      <div>
+    <div className="flex h-20 w-full items-center justify-between bg-white border-b-2 px-16 py-8">
+      <div className="flex items-center">
         <Link href="/">
           <img className="mr-8 inline h-8" src={logo.src} alt="" />
         </Link>
         <NavLink href="#" title="Home" />
-        <NavLink href="#" title="Shop By Generation" />
+        <NavLink href="#" expand={true} title="Shop By Generation" />
         {/* <NavLink href="#" title="Shop By Wheels" /> */}
         <NavLink href="#" title="Cars Wrecking Now" />
         <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
