@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Link from "next/link";
+import IosShareIcon from "@mui/icons-material/IosShare";
 import { useMemo, useState } from "react";
-import Listings from ".";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -83,13 +83,13 @@ const Listing: NextPage = () => {
             </p>
             <p>Usually ready in 4 hours</p>
           </div>
-          <div className="my-2">
+          <div className="my-6">
             <h4 className="text-xl">OEM Part Numbers:</h4>
             {listing.data?.parts.map((part) => {
               return <p key={part.partNo}>{part.partNo}</p>;
             })}
           </div>
-          <div className="my-2">
+          <div className="my-6">
             <h4 className="text-xl">Fitment:</h4>
             This part fits the following cars:
             {listing.data?.parts.map((part) => {
@@ -110,27 +110,33 @@ const Listing: NextPage = () => {
               fitment for their specific car.{" "}
             </p>
           </div>
-          <div className="my-2">
+          <div className="my-6">
             <h4 className="text-xl">Condition</h4>
             {listing.data?.condition}
           </div>
-          <div className="my-2">
+          <div className="my-6">
             <h4 className="text-xl">Donor Car:</h4>
             {listing.data?.parts.map((part) => {
               return (
-                <p>
+                <p key={part.partNo}>
                   {part.origin.year} {part.origin.car.generation}{" "}
                   {part.origin.car.model}
                 </p>
               );
             })}
           </div>
-          <div className="my-2">
+          <div className="my-6">
             <h4 className="text-xl">Shipping:</h4>
             <p>Shipping is available for this item.</p>
             <p>Available for pickup from our Knoxfield Warehouse. </p>
           </div>
-          <button>Share</button>
+          <div
+            onClick={() => navigator.clipboard.writeText(window.location.href)}
+            className="flex cursor-pointer items-center"
+          >
+            <IosShareIcon />
+            <button className="ml-2 mt-2">Share</button>
+          </div>
         </div>
       </div>
       <div>
