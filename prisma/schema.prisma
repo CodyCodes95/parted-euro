@@ -123,7 +123,7 @@ model Images {
   id        String   @id @default(cuid())
   url       String
   listingId String
-  listing   Listing  @relation(fields: [listingId], references: [id])
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

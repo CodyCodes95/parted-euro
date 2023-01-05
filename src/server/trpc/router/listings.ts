@@ -1,4 +1,4 @@
-import { adminProcedure } from './../trpc';
+import { adminProcedure } from "./../trpc";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 // import eBayApi from "ebay-api";
@@ -35,21 +35,38 @@ export const listingRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.listing.create({ data: input });
     }),
-  getAllAvailable: publicProcedure.input(
+  getAllAvailable: publicProcedure
+    .input(
       z.object({
         generation: z.string().min(3).optional(),
         model: z.string().min(3).optional(),
         series: z.string().min(3).optional(),
       })
-  )
+    )
     .query(({ ctx }) => {
       return ctx.prisma.listing.findMany({
         include: {
           Images: true,
-      },
-      where: {
-        sold: false,
-      }
-    });
-  }),
+        },
+        where: {
+          sold: false,
+        },
+      });
+    }),
+  getListing: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.listing.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          Images: true,
+        },
+      });
+    }),
 });

@@ -4,6 +4,7 @@ import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
 import placeholder from "../../../public/placeholder.png";
 import SearchIcon from "@mui/icons-material/Search";
+import Link from "next/link";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -30,19 +31,26 @@ const Listings: NextPage = () => {
       </div>
       <div className="flex w-full flex-wrap items-center justify-center p-4">
         {listings.data?.map((listing) => (
-          <div className="m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between group">
-            <div className="max-h-[634px]">
-              <img
-                src={listing.Images[0]?.url}
-                className="h-full duration-100 ease-linear group-hover:scale-105"
-                alt=""
-              />
-            </div>
-            <div className="flex flex-col">
-              <p className="border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black max-w-fit">{listing.title}</p>
-              <p className="text-lg">{formatter.format(listing.price/100).split("A")[1]} AUD</p>
-            </div>
-          </div>
+          <Link
+            className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+            href={`listings/listing?id=${listing.id}`}
+          >
+              <div className="max-h-[634px]">
+                <img
+                  src={listing.Images[0]?.url}
+                  className="h-full duration-100 ease-linear group-hover:scale-105"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
+                  {listing.title}
+                </p>
+                <p className="text-lg">
+                  {formatter.format(listing.price / 100).split("A")[1]} AUD
+                </p>
+              </div>
+          </Link>
         ))}
       </div>
     </div>
