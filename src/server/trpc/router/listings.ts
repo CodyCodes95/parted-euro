@@ -35,7 +35,21 @@ export const listingRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.listing.create({ data: input });
     }),
-  getAll: adminProcedure.query(({ ctx }) => {
-    return ctx.prisma.listing.findMany();
+  getAllAvailable: publicProcedure.input(
+      z.object({
+        generation: z.string().min(3).optional(),
+        model: z.string().min(3).optional(),
+        series: z.string().min(3).optional(),
+      })
+  )
+    .query(({ ctx }) => {
+      return ctx.prisma.listing.findMany({
+        include: {
+          Images: true,
+      },
+      where: {
+        sold: false,
+      }
+    });
   }),
 });

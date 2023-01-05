@@ -81,7 +81,7 @@ const Nav: React.FC = () => {
         <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
         <NavLink href="/contact" title="Contact" />
       </div>
-      <div>
+      <div className="flex items-center">
         <NavLink href="#" title="Search" />
         <NavLink href="#" title="Cart" />
         {session ? (

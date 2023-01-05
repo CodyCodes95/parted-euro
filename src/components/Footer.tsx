@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   return (
     <div className="flex w-full flex-col items-center justify-around border-t-2 bg-white p-6">
       <div className="flex justify-between">
-        <div className="flex flex-col justify-center p-4 text-md text-[#4d4d4d]">
+        <div className="text-md flex flex-col justify-center p-4 text-[#4d4d4d]">
           <h4 className="text-xl font-bold">
             Looking for something we don&apos;t have listed?
           </h4>
@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
           <p>Mobile: 0412 371 588</p>
           <p>Email: contact@partedeuro.com</p>
         </div>
-        <div className="flex w-[50%] flex-col p-4 text-md text-[#4d4d4d]">
+        <div className="text-md flex w-[50%] flex-col p-4 text-[#4d4d4d]">
           <p className="p-1">
             All products listed are available for pickup, as well as road
             freight Australia-wide (with very few products exempt from freight).
@@ -31,10 +31,10 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="flex w-20 justify-between py-2">
-        <Link href="#">
+        <Link href="https://www.facebook.com/partedeuro">
           <FacebookIcon className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998]" />
         </Link>
-        <Link href="#">
+        <Link href="https://www.instagram.com/partedeuro/">
           <InstagramIcon className="h-8 w-8 duration-300 ease-in-out hover:fill-[#d62976]" />
         </Link>
       </div>
