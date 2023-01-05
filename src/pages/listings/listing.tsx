@@ -40,7 +40,7 @@ const Listing: NextPage = () => {
                     key={image.id}
                     onClick={() => setMainImage(image.url)}
                     src={image.url}
-                    className="m-2 h-[161px] w-[161px] border-2"
+                    className="m-2 h-[161px] w-[161px] border-2 hover:opacity-50"
                     alt=""
                   />
                 );
@@ -61,7 +61,6 @@ const Listing: NextPage = () => {
               onClick={() => console.log("clicked")}
               className="mb-4 h-12 w-96 bg-[#1976d2]"
               loading={false}
-              loadingPosition="end"
               variant="contained"
             >
               Add to Cart
@@ -70,7 +69,6 @@ const Listing: NextPage = () => {
               onClick={() => console.log("clicked")}
               className="mb-4 h-12 w-96 bg-[#3c3844] text-white hover:bg-black"
               loading={false}
-              loadingPosition="end"
               variant="text"
             >
               Buy Now
@@ -119,8 +117,8 @@ const Listing: NextPage = () => {
             {listing.data?.parts.map((part) => {
               return (
                 <p key={part.partNo}>
-                  {part.origin.year} {part.origin.car.generation}{" "}
-                  {part.origin.car.model}
+                  {part.origin.year} {part.origin.car.generation} 
+                  {part.origin.car.model} // VIN: {part.origin.vin}
                 </p>
               );
             })}

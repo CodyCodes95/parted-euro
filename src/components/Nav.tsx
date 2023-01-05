@@ -7,11 +7,13 @@ import NavBackdrop from "./Nav/NavBackdrop";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
+import { TextField } from "@mui/material";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -59,7 +61,7 @@ const Nav: React.FC = () => {
           <div className="flex">
             <NavLink href="#" title="Search" />
             <div className="p-2">
-            <ShoppingCartIcon />
+              <ShoppingCartIcon />
             </div>
             {session ? (
               <NavLink href="/api/auth/signout" title="Logout" />
@@ -86,13 +88,16 @@ const Nav: React.FC = () => {
         <NavLink href="/contact" title="Contact" />
       </div>
       <div className="flex items-center">
-        <div className="p-2 cursor-pointer">
+        <div
+          onClick={() => setShowSearch(!showSearch)}
+          className="cursor-pointer p-2"
+        >
           <SearchIcon />
         </div>
-        <div className="p-2 cursor-pointer">
+        <div className="cursor-pointer p-2">
           <ShoppingCartIcon />
         </div>
-        <div className="p-2 cursor-pointer">
+        <div className="cursor-pointer p-2">
           <PersonIcon />
         </div>
         {/* {session ? (
@@ -101,6 +106,19 @@ const Nav: React.FC = () => {
           <NavLink href="/api/auth/signin" title="Login" />
         )}
         {session ? <NavLink href="/admin" title="Admin" /> : null} */}
+      </div>
+      {showSearch ? (
+        <NavBackdrop showSearch={showSearch} setShowSearch={setShowSearch} />
+      ) : null}
+      <div
+        className={`absolute top-[-5rem] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
+          showSearch ? "translate-y-[5rem]" : ""
+        }`}
+      >
+        <TextField className="w-[33%]" label="Search" id="fullWidth" />
+        <div className="relative">
+          <SearchIcon className="absolute top-[-9px] right-2" />
+        </div>
       </div>
     </div>
   );

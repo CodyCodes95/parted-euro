@@ -79,6 +79,7 @@ export const listingRouter = router({
               partNo: true,
               origin: {
                 select: {
+                  vin: true,
                   year: true,
                   car: true,
                 }
