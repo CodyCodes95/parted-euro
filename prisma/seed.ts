@@ -32,6 +32,12 @@ async function main() {
             {
                 make: "BMW",
                 series: "5 Series",
+                generation: "E39",
+                model: "535i",
+            },
+            {
+                make: "BMW",
+                series: "5 Series",
                 generation: "E60",
                 model: "M5",
             },
@@ -68,6 +74,12 @@ async function main() {
             {
                 make: "BMW",
                 series: "F Series",
+                generation: "F80",
+                model: "M3",
+            },
+            {
+                make: "BMW",
+                series: "F Series",
                 generation: "F82",
                 model: "M4",
             },
@@ -79,7 +91,64 @@ async function main() {
             },
         ]
     })
-    console.log({cars})
+    const firstCar = await prisma.car.findFirst()
+    const fiveSeries = await prisma.car.findFirst({
+        where: {
+            model: "535i"
+        }
+    })
+    const m3 = await prisma.car.findFirst({
+        where: {
+            generation: "F80"
+        }
+    })
+    const m4 = await prisma.car.findFirst({
+        where: {
+            generation: "F82"
+        }
+    })
+
+    const origins = await prisma.origin.createMany({
+      data: [
+        {
+          vin: "WBSBL92060JR08716",
+          year: 2003,
+          cost: 2300000,
+          mileage: 141000,
+          carId: firstCar.id,
+        },
+        {
+          vin: "WBADN22000GE68930",
+          year: 1999,
+          cost: 1500000,
+          mileage: 220000,
+          carId: fiveSeries.id,
+        },
+        {
+          vin: "WBS3R922090K345058",
+          year: 2016,
+          cost: 300000,
+          mileage: 24000,
+          carId: m4.id,
+        },
+        {
+          vin: "WBS8M920105G47739",
+          year: 2015,
+          cost: 40000,
+          mileage: 21000,
+          carId: m3.id,
+        },
+      ],
+    });
+
+    // const parts = await prisma.part.createMany({
+    //     data: [
+    //         {
+
+    //         }
+    //     ]
+    // })
+    console.log(cars, origins)
 }
 main()
   .then(async () => {
