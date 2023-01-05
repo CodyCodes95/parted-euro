@@ -74,6 +74,7 @@ model Car {
   series     String
   generation String
   model      String
+  body       String?
   Origin     Origin[]
   Part       PartsOnCars[]
 }

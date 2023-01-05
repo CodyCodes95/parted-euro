@@ -8,6 +8,14 @@ async function main() {
                 series: "3 Series",
                 generation: "E46",
                 model: "M3",
+                body: "Coupe"
+            },
+            {
+                make: "BMW",
+                series: "3 Series",
+                generation: "E46",
+                model: "M3",
+                body: "Convertible"
             },
             {
                 make: "BMW",
