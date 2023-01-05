@@ -66,6 +66,7 @@ const AddListing: NextPage = () => {
   const saveImageRelation = trpc.images.createImageRelation.useMutation();
 
   useMemo(() => {
+    setPartOptions([]);
     allParts.data?.forEach((part: any) => {
       setPartOptions((prevState: Array<NestedOptions>) => {
         if (
