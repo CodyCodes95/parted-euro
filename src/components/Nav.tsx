@@ -4,7 +4,9 @@ import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
 import { useEffect, useState } from "react";
 import NavBackdrop from "./Nav/NavBackdrop";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import SearchIcon from "@mui/icons-material/Search";
+import PersonIcon from "@mui/icons-material/Person";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -36,7 +38,7 @@ const Nav: React.FC = () => {
     return (
       <>
         {showMenu ? <NavBackdrop /> : null}
-        <div className="fixed flex h-20 w-full items-center justify-between bg-white z-[100]">
+        <div className="fixed z-[100] flex h-20 w-full items-center justify-between bg-white">
           <p onClick={() => setShowMenu(!showMenu)}>Hamburger</p>
           <Link href="/">
             <img className="mr-8 inline h-8" src={logo.src} alt="" />
@@ -47,7 +49,7 @@ const Nav: React.FC = () => {
             showMenu ? "translate-x-[15rem]" : ""
           }`}
         >
-          <div className="flex flex-col mt-20">
+          <div className="mt-20 flex flex-col">
             <NavLink href="#" title="Shop By Generation" />
             {/* <NavLink href="#" title="Shop By Wheels" /> */}
             <NavLink href="#" title="Cars Wrecking Now" />
@@ -56,7 +58,9 @@ const Nav: React.FC = () => {
           </div>
           <div className="flex">
             <NavLink href="#" title="Search" />
-            <NavLink href="#" title="Cart" />
+            <div className="p-2">
+            <ShoppingCartIcon />
+            </div>
             {session ? (
               <NavLink href="/api/auth/signout" title="Logout" />
             ) : (
@@ -69,7 +73,7 @@ const Nav: React.FC = () => {
     );
 
   return (
-    <div className="flex h-20 w-full items-center justify-between bg-white border-b-2 px-16 py-8">
+    <div className="flex h-20 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
       <div className="flex items-center">
         <Link href="/">
           <img className="mr-8 inline h-8" src={logo.src} alt="" />
@@ -82,14 +86,21 @@ const Nav: React.FC = () => {
         <NavLink href="/contact" title="Contact" />
       </div>
       <div className="flex items-center">
-        <NavLink href="#" title="Search" />
-        <NavLink href="#" title="Cart" />
-        {session ? (
+        <div className="p-2 cursor-pointer">
+          <SearchIcon />
+        </div>
+        <div className="p-2 cursor-pointer">
+          <ShoppingCartIcon />
+        </div>
+        <div className="p-2 cursor-pointer">
+          <PersonIcon />
+        </div>
+        {/* {session ? (
           <NavLink href="/api/auth/signout" title="Logout" />
         ) : (
           <NavLink href="/api/auth/signin" title="Login" />
         )}
-        {session ? <NavLink href="/admin" title="Admin" /> : null}
+        {session ? <NavLink href="/admin" title="Admin" /> : null} */}
       </div>
     </div>
   );
