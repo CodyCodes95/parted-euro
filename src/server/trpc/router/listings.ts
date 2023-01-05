@@ -64,9 +64,37 @@ export const listingRouter = router({
         where: {
           id: input.id,
         },
-        include: {
+        select: {
+          title: true,
+          description: true,
+          condition: true,
+          price: true,
+          weight: true,
+          length: true,
+          width: true,
+          height: true,
           Images: true,
-        },
+          parts: {
+            select: {
+              partNo: true,
+              origin: {
+                select: {
+                  year: true,
+                  car: true,
+                }
+              },
+              cars: {
+                select: {
+                  car: true
+                },
+              },
+            },
+          }
+        }
+        // include: {
+        //   Images: true,
+        //   parts: true,
+        // },
       });
     }),
 });

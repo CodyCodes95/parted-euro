@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import Listings from ".";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -18,9 +19,13 @@ const Listing: NextPage = () => {
     id: router.query.id as string,
   });
 
-  const [mainImage, setMainImage] = useState<string | undefined>(
-    listing.data?.Images[0]?.url
-  );
+  const [mainImage, setMainImage] = useState<string>("");
+
+  useMemo(() => {
+    if (listing.data?.Images[0]) {
+      setMainImage(listing.data.Images[0].url);
+    }
+  }, [listing.data]);
 
   return (
     <div className="flex min-h-screen w-full flex-col p-24">
@@ -32,6 +37,7 @@ const Listing: NextPage = () => {
               {listing.data?.Images.map((image) => {
                 return (
                   <img
+                    key={image.id}
                     onClick={() => setMainImage(image.url)}
                     src={image.url}
                     className="m-2 h-[161px] w-[161px] border-2"
@@ -45,7 +51,10 @@ const Listing: NextPage = () => {
         <div className="w-[50%] pl-[80px]">
           <h1 className="text-6xl">{listing.data?.title}</h1>
           <h4 className="my-6 text-xl">
-            {formatter.format(listing.data?.price / 100).split("A")[1]} AUD
+            {listing.data?.price
+              ? formatter.format(listing.data?.price / 100).split("A")[1]
+              : null}{" "}
+            AUD
           </h4>
           <div className="flex flex-col">
             <LoadingButton
@@ -59,7 +68,7 @@ const Listing: NextPage = () => {
             </LoadingButton>
             <LoadingButton
               onClick={() => console.log("clicked")}
-              className="bg-[#3c3844] mb-4 h-12 w-96 text-white hover:bg-black"
+              className="mb-4 h-12 w-96 bg-[#3c3844] text-white hover:bg-black"
               loading={false}
               loadingPosition="end"
               variant="text"
@@ -67,40 +76,70 @@ const Listing: NextPage = () => {
               Buy Now
             </LoadingButton>
           </div>
-          <p>
-            Pickup available at{" "}
-            <span id="link to gmap">Parted Euro Warehouse</span>
-          </p>
-          <p>Usually ready in 4 hours</p>
-          <h4>OEM Part Numbers:</h4>
-          parts.map each part no
-          <h4>Fitment:</h4>
-          parts.map all compatable cars
-          <p>
-            Please confirm part numbers prior to purchase. May suit other models
-            that aren't listed.
-          </p>
-          <p>
-            It is the buyers responsibility to confirm part numbers and fitment
-            for their specific car.{" "}
-          </p>
-          <h4>Condition</h4>
-          listing.condition
-          <h4>Donor Car:</h4>
-          listing.origin
-          <h4>Shipping:</h4>
-          <p>Shipping is available for this item.</p>
-          <p>Available for pickup from our Knoxfield Warehouse. </p>
+          <div className="p-2 text-sm">
+            <p>
+              Pickup available at{" "}
+              <span id="link to gmap">Parted Euro Warehouse</span>
+            </p>
+            <p>Usually ready in 4 hours</p>
+          </div>
+          <div className="my-2">
+            <h4 className="text-xl">OEM Part Numbers:</h4>
+            {listing.data?.parts.map((part) => {
+              return <p key={part.partNo}>{part.partNo}</p>;
+            })}
+          </div>
+          <div className="my-2">
+            <h4 className="text-xl">Fitment:</h4>
+            This part fits the following cars:
+            {listing.data?.parts.map((part) => {
+              return part.cars.map((car) => {
+                return (
+                  <p key={car.car.id}>
+                    {car.car.generation} {car.car.model}
+                  </p>
+                );
+              });
+            })}
+            <p>
+              Please confirm part numbers prior to purchase. May suit other
+              models that aren't listed.
+            </p>
+            <p>
+              It is the buyers responsibility to confirm part numbers and
+              fitment for their specific car.{" "}
+            </p>
+          </div>
+          <div className="my-2">
+            <h4 className="text-xl">Condition</h4>
+            {listing.data?.condition}
+          </div>
+          <div className="my-2">
+            <h4 className="text-xl">Donor Car:</h4>
+            {listing.data?.parts.map((part) => {
+              return (
+                <p>
+                  {part.origin.year} {part.origin.car.generation}{" "}
+                  {part.origin.car.model}
+                </p>
+              );
+            })}
+          </div>
+          <div className="my-2">
+            <h4 className="text-xl">Shipping:</h4>
+            <p>Shipping is available for this item.</p>
+            <p>Available for pickup from our Knoxfield Warehouse. </p>
+          </div>
           <button>Share</button>
         </div>
       </div>
       <div>
-        <h4>You may also like</h4>
-        <div className="flex">
-          <div className="w-[22%]">related product</div>
-          <div className="w-[22%]">related product</div>
-          <div className="w-[22%]">related product</div>
-          <div className="w-[22%]">related product</div>
+        <h4 className="mt-12 text-4xl">You may also like</h4>
+        <div className="flex items-center justify-center text-center">
+          <div className="w-[25%]">related product</div>
+          <div className="w-[25%]">related product</div>
+          <div className="w-[25%]">related product</div>
+          <div className="w-[25%]">related product</div>
         </div>
       </div>
     </div>
@@ -111,7 +150,6 @@ export default Listing;
 
 const test = [
   {
-    id: "clcila8pl0000ehvs7ohci9rg",
     title: "Multiple images",
     description: "you heard me",
     condition: "Used",
@@ -120,9 +158,6 @@ const test = [
     length: 100,
     width: 100,
     height: 100,
-    createdAt: "2023-01-05T04:29:35.001Z",
-    updatedAt: "2023-01-05T04:29:35.001Z",
-    sold: false,
     Images: [
       {
         id: "clcilaerb0002ehvsuw0t4vs7",
@@ -144,6 +179,41 @@ const test = [
         listingId: "clcila8pl0000ehvs7ohci9rg",
         createdAt: "2023-01-05T04:29:42.840Z",
         updatedAt: "2023-01-05T04:29:42.840Z",
+      },
+    ],
+    parts: [
+      {
+        partNo: "52207903035",
+        origin: {
+          year: 1999,
+          car: {
+            id: "clca6iy4u0002ehwfolqd8jvr",
+            make: "BMW",
+            series: "5 Series",
+            generation: "E39",
+            model: "M5",
+          },
+        },
+        cars: [
+          {
+            car: {
+              id: "clca6iy4u0002ehwfolqd8jvr",
+              make: "BMW",
+              series: "5 Series",
+              generation: "E39",
+              model: "M5",
+            },
+          },
+          {
+            car: {
+              id: "clca6iy4u0007ehwf31h02caj",
+              make: "BMW",
+              series: "X Series",
+              generation: "E53",
+              model: "X5",
+            },
+          },
+        ],
       },
     ],
   },
