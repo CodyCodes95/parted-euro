@@ -3,6 +3,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 // import eBayApi from "ebay-api";
 import cloudinary from "../../../utils/cloudinary.mjs";
+import { input } from "@material-tailwind/react";
 
 export const listingRouter = router({
   uploadListingImage: adminProcedure
@@ -38,21 +39,57 @@ export const listingRouter = router({
   getAllAvailable: publicProcedure
     .input(
       z.object({
-        generation: z.string().min(3).optional(),
-        model: z.string().min(3).optional(),
-        series: z.string().min(3).optional(),
+        generation: z.string().optional(),
+        model: z.string().optional(),
+        series: z.string().optional(),
       })
     )
-    .query(({ ctx }) => {
-      return ctx.prisma.listing.findMany({
+    .query(async({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findMany({
         include: {
           Images: true,
+          parts: true,
         },
         where: {
           sold: false,
         },
       });
+      if (!input.generation || !input.model || !input.series) {
+        return listings;
+      } else {
+        // const filteredListings = listings.filter((listing: typeof listings[0]) => {
+        //   return (
+        //     listing.parts.
+        //     // listing.car.generation === input.generation &&
+        //     // listing.car.model === input.model &&
+        //     // listing.car.series === input.series
+        //   );
+        // });
+        // return filteredListings;
+        console.log("err")
+      }
     }),
+  // This getallavailable is one that works. I am going to do some manual filtering after 
+  // prisma fetch to only return matching listings for generation, model, and series
+  // Ideally, this would all be done with one prisma query, but I am not sure how to do that
+  // getAllAvailable: publicProcedure
+  //   .input(
+  //     z.object({
+  //       generation: z.string().min(3).optional(),
+  //       model: z.string().min(3).optional(),
+  //       series: z.string().min(3).optional(),
+  //     })
+  //   )
+  //   .query(({ ctx }) => {
+  //     return ctx.prisma.listing.findMany({
+  //       include: {
+  //         Images: true,
+  //       },
+  //       where: {
+  //         sold: false,
+  //       },
+  //     });
+  //   }),
   getListing: publicProcedure
     .input(
       z.object({

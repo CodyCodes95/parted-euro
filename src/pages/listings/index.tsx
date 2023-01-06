@@ -9,17 +9,20 @@ import Link from "next/link";
 const Listings: NextPage = () => {
   const router = useRouter();
 
+  const {series, generation, model} = router.query;
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "AUD",
     minimumFractionDigits: 2,
   });
 
-    console.log(router.query);
-
-    let input = {}
-
-    const listings = trpc.listings.getAllAvailable.useQuery({});
+  const listings = trpc.listings.getAllAvailable.useQuery({
+    series: series as string,
+    generation: generation as string,
+    model: model as string,
+  });
+  
     
   return (
     <div className="flex min-h-screen w-full flex-col p-24">

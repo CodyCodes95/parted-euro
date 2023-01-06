@@ -105,7 +105,12 @@ const Home: NextPage = () => {
                 <div className="mt-4 flex items-center justify-center text-black">
                   <div
                     className="cursor-pointer"
-                    onClick={() => setCarSelectOpen(!carSelectOpen)}
+                    onClick={() => {
+                      setCarSelectOpen(!carSelectOpen);
+                      setSeries("");
+                      setGeneration("");
+                      setModel("");
+                    }}
                   >
                     <ArrowBackIcon fontSize="large" className="text-white" />
                   </div>
@@ -130,6 +135,7 @@ const Home: NextPage = () => {
                     isDisabled={modelOptions.length === 0}
                   />
                   <Button
+                    onClick={() => window.location.href = `/listings?series=${series}&generation=${generation}&model=${model}`}
                     className="border-white text-sm text-white"
                     variant="outlined"
                   >
