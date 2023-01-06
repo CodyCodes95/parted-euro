@@ -118,7 +118,7 @@ const Listing: NextPage = () => {
               return (
                 <p key={part.partNo}>
                   {part.donor.year} {part.donor.car.generation}
-                  {part.donor.car.model} // VIN: {part.donor.vin}
+                  {part.donor.car.model} // VIN: {part.donor.vin} // {part.donor.mileage}KM
                 </p>
               );
             })}

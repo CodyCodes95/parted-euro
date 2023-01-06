@@ -120,6 +120,7 @@ export const listingRouter = router({
                   vin: true,
                   year: true,
                   car: true,
+                  mileage: true,
                 },
               },
               cars: {

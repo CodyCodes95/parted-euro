@@ -108,35 +108,35 @@ async function main() {
     },
   });
 
-  const donors = await prisma.donor.createMany({
+    const donors = await prisma.donor.createMany({
     data: [
       {
         vin: "WBSBL92060JR08716",
         year: 2003,
         cost: 2300000,
         mileage: 141000,
-        carId: firstCar.id,
+        carId: firstCar?.id || "",
       },
       {
         vin: "WBADN22000GE68930",
         year: 1999,
         cost: 1500000,
         mileage: 220000,
-        carId: fiveSeries.id,
+        carId: fiveSeries?.id || ""
       },
       {
         vin: "WBS3R922090K345058",
         year: 2016,
         cost: 300000,
         mileage: 24000,
-        carId: m4.id,
+        carId: m4?.id || ""
       },
       {
         vin: "WBS8M920105G47739",
         year: 2015,
         cost: 40000,
         mileage: 21000,
-        carId: m3.id,
+        carId: m3?.id || ""
       },
     ],
   });
@@ -190,7 +190,68 @@ async function main() {
       },
     ],
   });
-  console.log(cars, donors);
+    
+  const partLeft = await prisma.part.findFirst({})
+  const partRight = await prisma.part.findFirst({
+    where: {
+      partNo: "52207903036"
+    }
+  })
+    
+    
+    
+    const singleItemListing = await prisma.listing.create({
+        data: {
+            title: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Left",
+            description: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
+            condition: "Good",
+            price: 100,
+            weight: 10,
+            height: 10,
+            width: 10,
+            length: 10,
+            sold: false,
+            parts: {
+                connect: {
+                    id: partLeft?.id || ""
+                }
+            }
+        }
+    })
+  
+  const setListing = await prisma.listing.create({
+    data: {
+      title: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
+      description: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
+      condition: "Whole set is immaculate",
+      price: 100,
+      weight: 20,
+      height: 10,
+      width: 10,
+      length: 10,
+      sold: false,
+      parts: {
+        connect: [
+          {
+            id: partLeft?.id || "",
+          },
+          {
+            id: partRight?.id || "",
+          }
+        ]
+      },
+    },
+  });
+
+    const listing = await prisma.listing.findFirst({})
+
+    const testImage = await prisma.images.create({
+      data: {
+        url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
+        listingId: listing?.id || "",
+      },
+    });
+  console.log(cars, donors, parts);
 }
 main()
   .then(async () => {

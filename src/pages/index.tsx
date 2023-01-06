@@ -96,7 +96,6 @@ const Home: NextPage = () => {
                   </Button>
                 </div>
               </div>
-              {/* right-[-100rem] duration-150 ease-linear ${carSelectOpen ? "translate-x-[-100rem]" : "" */}
               <div
                 className={` absolute translate-x-[100rem] duration-150 ease-linear ${
                   carSelectOpen ? "translate-x-[0rem]" : ""
