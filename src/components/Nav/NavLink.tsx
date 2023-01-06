@@ -21,9 +21,20 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
   }
 
   return (
-    <div className="p-2">
-      <Link onClick={() => expand ? expandMenu() : null} className="hover:border-b-2 border-gray-300 duration-100 ease-in-out" href={href}>{title}</Link>
-      {expand ? <ExpandMoreIcon className={`transition-transform duration-100 ${expanded ? "rotate-180" : ""}`} /> : null}
+    <div onClick={() => (expand ? expandMenu() : null)} className="p-2">
+      <Link
+        className="border-gray-300 duration-100 ease-in-out hover:border-b-2"
+        href={href}
+      >
+        {title}
+      </Link>
+      {expand ? (
+        <ExpandMoreIcon
+          className={`transition-transform duration-100 ${
+            expanded ? "rotate-180" : ""
+          }`}
+        />
+      ) : null}
     </div>
   );
 };
