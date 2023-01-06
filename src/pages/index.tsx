@@ -4,10 +4,30 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import carImg from "../../public/car.jpg"
 import { trpc } from "../utils/trpc";
+import { Button } from "@material-tailwind/react";
+import { MenuItem, Select } from "@mui/material";
+import { useMemo, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 
 const Home: NextPage = () => {
-  // const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  // const cars = trpc.cars.getAll.useQuery();
+  
+  const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
+  const [series, setSeries] = useState<string>("");
+  const [generation, setGeneration] = useState<string>("");
+  const [model, setModel] = useState<string>("");
+  const [seriesOptions, setSeriesOptions] = useState<Array<string>>([]);
+  const [generationOptions, setGenerationOptions] = useState<Array<string>>([]);
+  const [modelOptions, setModelOptions] = useState<Array<string>>([]);
+
+  const cars = trpc.cars.getAllUniqueFields.useQuery();
+
+  useMemo(() => {
+    setSeriesOptions(cars.data?.series || []);
+    setGenerationOptions(cars.data?.generations || []);
+    setModelOptions(cars.data?.models || []);
+  }, [cars.data])
+
   return (
     <>
       <Head>
@@ -22,12 +42,91 @@ const Home: NextPage = () => {
             alt="hero"
             className="max-h-screen w-full object-cover"
           />
-          <div className="absolute text-center text-white">
-            <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
-            <p className="mt-2 text-xl">
-              Shop our wide range of second-hand parts from various
-              BMW&apos;s.
-            </p>
+          <div className="absolute w-[50%] text-center text-white">
+            <div className="flex w-full flex-col items-center">
+              <div
+                className={`absolute w-full duration-150 ease-linear ${
+                  carSelectOpen ? "translate-x-[-100rem]" : ""
+                }`}
+              >
+                <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
+                <p className="mt-2 text-xl">
+                  Shop our wide range of second-hand parts from various
+                  BMW&apos;s.
+                </p>
+                <div className="mt-4 flex  justify-around ">
+                  <Button
+                    className="ml-28 border-white text-sm text-white"
+                    variant="outlined"
+                    onClick={() => setCarSelectOpen(!carSelectOpen)}
+                  >
+                    Shop By Car
+                  </Button>
+                  <Button
+                    className="mr-28 border-white text-sm text-white"
+                    variant="outlined"
+                  >
+                    Browse ALl
+                  </Button>
+                </div>
+              </div>
+              {/* right-[-100rem] duration-150 ease-linear ${carSelectOpen ? "translate-x-[-100rem]" : "" */}
+              <div
+                className={` absolute translate-x-[100rem] duration-150 ease-linear ${
+                  carSelectOpen ? "translate-x-[0rem]" : ""
+                }`}
+              >
+                <div className="flex items-center justify-center">
+                  <div className="cursor-pointer" onClick={() => setCarSelectOpen(!carSelectOpen)}>
+                    <ArrowBackIcon fontSize="large" />
+                  </div>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    className="m-4 bg-white"
+                    id="demo-simple-select"
+                    value={series}
+                    label="Series"
+                    placeholder="Series"
+                    onChange={(e) => setSeries(e.target.value)}
+                  >
+                    {seriesOptions.map((option) => (
+                      <MenuItem value={option}>{option}</MenuItem>
+                    ))}
+                  </Select>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    className="m-4 bg-white"
+                    id="demo-simple-select"
+                    value={generation}
+                    label="Generation"
+                    onChange={(e) => setGeneration(e.target.value)}
+                  >
+                    {generationOptions.map((option) => (
+                      <MenuItem value={option}>{option}</MenuItem>
+                    ))}
+                  </Select>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    className="m-4 bg-white"
+                    color="primary"
+                    id="demo-simple-select"
+                    value={model}
+                    label="Model"
+                    onChange={(e) => setModel(e.target.value)}
+                  >
+                    {modelOptions.map((option) => (
+                      <MenuItem value={option}>{option}</MenuItem>
+                    ))}
+                  </Select>
+                  <Button
+                    className="border-white text-sm text-white"
+                    variant="outlined"
+                  >
+                    Search
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

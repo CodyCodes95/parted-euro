@@ -21,9 +21,9 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
   }
 
   return (
-    <div onClick={() => (expand ? expandMenu() : null)} className="p-2">
+    <div onClick={() => (expand ? expandMenu() : null)} className="p-2 group">
       <Link
-        className="border-gray-300 duration-100 ease-in-out hover:border-b-2"
+        className="border-gray-300 duration-100 ease-in-out group-hover:border-b-2"
         href={href}
       >
         {title}
