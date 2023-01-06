@@ -141,60 +141,64 @@ async function main() {
     ],
   });
 
-  const parts = await prisma.part.createMany({
+  const partDetails = await prisma.partDetail.createMany({
     data: [
       {
-        name: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Left",
+        name: "E46 M3 Rear Seat Lateral Trim Panel Left",
         partNo: "52207903035",
-        donorVin: "WBSBL92060JR08716",
       },
       {
-        name: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Right",
+        name: "E46 M3 Rear Seat Lateral Trim Panel Right",
         partNo: "52207903036",
-        donorVin: "WBSBL92060JR08716",
       },
       {
-        name: "E46 M3 Door Cards Imola Red Driver Front",
+        name: "E46 M3 Door Cards Driver Front",
         partNo: "51417890952",
-        donorVin: "WBSBL92060JR08716",
       },
       {
-        name: "E46 M3 Door Cards Imola Red Passenger Front",
+        name: "E46 M3 Door Cards Passenger Front",
         partNo: "51417890951",
-        donorVin: "WBSBL92060JR08716",
       },
       {
-        name: "E46 M3 Door Cards Imola Red Passenger Driver Rear",
+        name: "E46 M3 Door Cards Passenger Driver Rear",
         partNo: "51437890784",
-        donorVin: "WBSBL92060JR08716",
       },
       {
-        name: "E46 M3 Door Cards Imola Red Passenger Driver Rear",
+        name: "E46 M3 Door Cards Passenger Driver Rear",
         partNo: "51437890784",
-        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "Cylinder Head Cover Right",
         partNo: "11121702856",
-        donorVin: "WBADN22000GE68930",
       },
       {
         name: "Cylinder Head Cover Left",
         partNo: "11121702857",
-        donorVin: "WBADN22000GE68930",
       },
       {
         name: "Master Window Lifter Driver Switch",
         partNo: "61319362126",
-        donorVin: "WBS3R922090K345058",
       },
     ],
   });
+
+  const parts = await prisma.part.createMany({
+    data: [
+      {
+        partDetailsId: "52207903035",
+        donorVin: "WBSBL92060JR08716",
+      },
+      {
+        partDetailsId: "52207903036",
+        donorVin: "WBSBL92060JR08716",
+      }
+    ]
+  })
     
   const partLeft = await prisma.part.findFirst({})
   const partRight = await prisma.part.findFirst({
     where: {
-      partNo: "52207903036"
+      partDetailsId: "52207903036"
     }
   })
     
@@ -202,15 +206,15 @@ async function main() {
     
     const singleItemListing = await prisma.listing.create({
         data: {
-            title: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Left",
-            description: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
+            title: "E46 M3 Rear Seat Lateral Trim Panel Left",
+            description: "E46 M3 Rear Seat Lateral Trim Panel Set",
             condition: "Good",
             price: 100,
             weight: 10,
             height: 10,
             width: 10,
             length: 10,
-            sold: false,
+        sold: false,
             parts: {
                 connect: {
                     id: partLeft?.id || ""
@@ -221,8 +225,8 @@ async function main() {
   
   const setListing = await prisma.listing.create({
     data: {
-      title: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
-      description: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Set",
+      title: "E46 M3 Rear Seat Lateral Trim Panel Set",
+      description: "E46 M3 Rear Seat Lateral Trim Panel Set",
       condition: "Whole set is immaculate",
       price: 100,
       weight: 20,
@@ -245,7 +249,7 @@ async function main() {
 
     const listing = await prisma.listing.findFirst({})
 
-    const testImage = await prisma.images.create({
+    const testImage = await prisma.image.create({
       data: {
         url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
         listingId: listing?.id || "",

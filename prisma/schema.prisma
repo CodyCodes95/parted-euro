@@ -69,14 +69,14 @@ model VerificationToken {
 }
 
 model Car {
-  id         String        @id @default(cuid())
+  id         String       @id @default(cuid())
   make       String
   series     String
   generation String
   model      String
   body       String?
   Donor      Donor[]
-  Part       PartsOnCars[]
+  parts      PartDetail[]
 }
 
 model Donor {
@@ -104,38 +104,36 @@ model Listing {
   parts       Part[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Images      Images[]
+  Images      Image[]
   sold        Boolean  @default(false)
+  // quantity will simply be the amount of non unique parts in the same listing
 }
 
 model Part {
-  id        String        @id @default(cuid())
-  partNo    String
-  name      String
-  listing   Listing[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  donor     Donor         @relation(fields: [donorVin], references: [vin])
-  donorVin  String
-  cars      PartsOnCars[]
+  id            String     @id @default(cuid())
+  partDetails   PartDetail @relation(fields: [partDetailsId], references: [partNo])
+  partDetailsId String
+  listing       Listing[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  donorVin      String
+  donor         Donor      @relation(fields: [donorVin], references: [vin])
 }
 
-model Images {
+model PartDetail {
+  partNo    String @id @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cars      Car[]
+  parts     Part[]
+}
+
+model Image {
   id        String   @id @default(cuid())
   url       String
   listingId String
   listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model PartsOnCars {
-  part      Part     @relation(fields: [partId], references: [id])
-  car       Car      @relation(fields: [carId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  partId    String
-  carId     String
-
-  @@id([partId, carId])
 }
