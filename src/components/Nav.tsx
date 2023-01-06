@@ -8,6 +8,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import { TextField } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -41,7 +42,9 @@ const Nav: React.FC = () => {
       <>
         {showMenu ? <NavBackdrop /> : null}
         <div className="fixed z-[100] flex h-20 w-full items-center justify-between bg-white">
-          <p onClick={() => setShowMenu(!showMenu)}>Hamburger</p>
+          <div className="cursor-pointer" onClick={() => setShowMenu(!showMenu)}>
+            <MenuIcon fontSize="large"/>
+          </div>
           <Link href="/">
             <img className="mr-8 inline h-8" src={logo.src} alt="" />
           </Link>
@@ -59,15 +62,18 @@ const Nav: React.FC = () => {
             <NavLink href="/contact" title="Contact" />
           </div>
           <div className="flex">
-            <NavLink href="#" title="Search" />
+            <div
+              onClick={() => setShowSearch(!showSearch)}
+              className="cursor-pointer p-2"
+            >
+              <SearchIcon />
+            </div>
             <div className="p-2">
               <ShoppingCartIcon />
             </div>
-            {session ? (
-              <NavLink href="/api/auth/signout" title="Logout" />
-            ) : (
-              <NavLink href="/api/auth/signin" title="Login" />
-            )}
+            <div className="p-2">
+              <PersonIcon />
+            </div>
             {session ? <NavLink href="/admin" title="Admin" /> : null}
           </div>
         </div>
