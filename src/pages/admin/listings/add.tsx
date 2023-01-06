@@ -25,7 +25,7 @@ interface ICar {
   model: string;
 }
 
-interface IOrigin {
+interface IDonor {
   vin: string;
   car: ICar;
   year: number;
@@ -36,12 +36,12 @@ interface IPart {
   id: string;
   partNo: string;
   name: string;
-  originVin: string;
+  donorVin: string;
   listingId: string;
   createdAt: string;
   updatedAt: string;
   cars: any;
-  origin: IOrigin;
+  donor: IDonor;
   listing: any;
 }
 
@@ -71,11 +71,11 @@ const AddListing: NextPage = () => {
       setPartOptions((prevState: Array<NestedOptions>) => {
         if (
           prevState.some(
-            (group: NestedOptions) => group.label === part.origin.vin
+            (group: NestedOptions) => group.label === part.donor.vin
           )
         ) {
           return prevState.map((group: NestedOptions) => {
-            if (group.label === part.origin.vin) {
+            if (group.label === part.donor.vin) {
               group.options.push({
                 label: part.partNo,
                 value: part.id,
@@ -87,7 +87,7 @@ const AddListing: NextPage = () => {
           return [
             ...prevState,
             {
-              label: part.origin.vin,
+              label: part.donor.vin,
               options: [
                 {
                   label: part.partNo,

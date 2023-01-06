@@ -44,7 +44,7 @@ export const listingRouter = router({
         series: z.string().optional(),
       })
     )
-    .query(async({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const listings = await ctx.prisma.listing.findMany({
         include: {
           Images: true,
@@ -66,11 +66,11 @@ export const listingRouter = router({
         //   );
         // });
         // return filteredListings;
-        console.log("err")
-        return []
+        console.log("err");
+        return [];
       }
     }),
-  // This getallavailable is one that works. I am going to do some manual filtering after 
+  // This getallavailable is one that works. I am going to do some manual filtering after
   // prisma fetch to only return matching listings for generation, model, and series
   // Ideally, this would all be done with one prisma query, but I am not sure how to do that
   // getAllAvailable: publicProcedure
@@ -115,21 +115,21 @@ export const listingRouter = router({
           parts: {
             select: {
               partNo: true,
-              origin: {
+              donor: {
                 select: {
                   vin: true,
                   year: true,
                   car: true,
-                }
+                },
               },
               cars: {
                 select: {
-                  car: true
+                  car: true,
                 },
               },
             },
-          }
-        }
+          },
+        },
         // include: {
         //   Images: true,
         //   parts: true,

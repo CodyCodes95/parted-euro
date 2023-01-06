@@ -75,11 +75,11 @@ model Car {
   generation String
   model      String
   body       String?
-  Origin     Origin[]
+  Donor      Donor[]
   Part       PartsOnCars[]
 }
 
-model Origin {
+model Donor {
   vin       String   @id @unique
   cost      Int
   car       Car      @relation(fields: [carId], references: [id])
@@ -115,8 +115,8 @@ model Part {
   listing   Listing?      @relation(fields: [listingId], references: [id])
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
-  origin    Origin        @relation(fields: [originVin], references: [vin])
-  originVin String
+  donor     Donor         @relation(fields: [donorVin], references: [vin])
+  donorVin  String
   listingId String?
   cars      PartsOnCars[]
 }

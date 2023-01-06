@@ -1,16 +1,16 @@
-import { originRouter } from './origin';
+import { donorRouter } from "./donor";
 import { router } from "../trpc";
 import { authRouter } from "./auth";
 import { carRouter } from "./car";
 import { exampleRouter } from "./example";
-import { listingRouter } from './listings';
-import { partRouter } from './parts';
-import { imagesRouter } from './images';
+import { listingRouter } from "./listings";
+import { partRouter } from "./parts";
+import { imagesRouter } from "./images";
 
 export const appRouter = router({
   example: exampleRouter,
   cars: carRouter,
-  origins: originRouter,
+  donors: donorRouter,
   listings: listingRouter,
   parts: partRouter,
   images: imagesRouter,

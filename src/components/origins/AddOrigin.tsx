@@ -4,7 +4,7 @@ import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
 import Select from "react-select";
 
-interface AddOriginProps {
+interface AddDonorProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -17,7 +17,7 @@ interface ICar {
   model: string;
 }
 
-const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
+const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
   const [vin, setVin] = React.useState<string>("");
   const [cost, setCost] = React.useState<number>(0);
   const [carId, setCarId] = React.useState<string>("");
@@ -25,43 +25,43 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
   const [options, setOptions] = React.useState<any>([]);
 
   const cars = trpc.cars.getAll.useQuery();
-  const saveOrigin = trpc.origins.createOrigin.useMutation();
+  const saveDonor = trpc.donors.createDonor.useMutation();
 
   useMemo(() => {
     setOptions([]);
-      cars.data?.forEach((car: ICar) => {
-        setOptions((prevState: any) => {
-          if (prevState.some((group: any) => group.label === car.series)) {
-            return prevState.map((group: any) => {
-              if (group.label === car.series) {
-                group.options.push({
-                  label: `${car.generation} ${car.model}`,
-                  value: car.id,
-                });
-              }
-              return group;
-            });
-          } else {
-            return [
-              ...prevState,
-              {
-                label: car.series,
-                options: [
-                  { label: `${car.generation} ${car.model}`, value: car.id },
-                ],
-              },
-            ];
-          }
-        });
+    cars.data?.forEach((car: ICar) => {
+      setOptions((prevState: any) => {
+        if (prevState.some((group: any) => group.label === car.series)) {
+          return prevState.map((group: any) => {
+            if (group.label === car.series) {
+              group.options.push({
+                label: `${car.generation} ${car.model}`,
+                value: car.id,
+              });
+            }
+            return group;
+          });
+        } else {
+          return [
+            ...prevState,
+            {
+              label: car.series,
+              options: [
+                { label: `${car.generation} ${car.model}`, value: car.id },
+              ],
+            },
+          ];
+        }
       });
-    }, [cars.data]);
+    });
+  }, [cars.data]);
 
   const onSave = async () => {
-    const result = await saveOrigin.mutateAsync({
+    const result = await saveDonor.mutateAsync({
       vin: vin,
       cost: cost,
       carId: carId,
-      year: year
+      year: year,
     });
     setVin("");
     setCost(0);
@@ -82,7 +82,7 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Add a origin
+              Add a donor
             </h3>
             <button
               onClick={() => setShowModal(!showModal) as any}
@@ -108,7 +108,7 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
                 Car
               </label>
               <Select
-                onChange={(e:any) => setCarId(e.value)}
+                onChange={(e: any) => setCarId(e.value)}
                 options={options}
                 className="basic-multi-select"
                 classNamePrefix="select"
@@ -161,7 +161,7 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save origin
+              Save donor
             </button>
           </div>
         </div>
@@ -170,4 +170,4 @@ const AddOrigin: React.FC<AddOriginProps> = ({ showModal, setShowModal }) => {
   );
 };
 
-export default AddOrigin;
+export default AddDonor;

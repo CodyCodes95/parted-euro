@@ -4,8 +4,8 @@ import { router, publicProcedure } from "../trpc";
 
 const currentYear: number = new Date().getFullYear();
 
-export const originRouter = router({
-  createOrigin: adminProcedure
+export const donorRouter = router({
+  createDonor: adminProcedure
     .input(
       z.object({
         vin: z.string().min(5),
@@ -15,16 +15,16 @@ export const originRouter = router({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.origin.create({ data: input });
+      return ctx.prisma.donor.create({ data: input });
     }),
   getAll: adminProcedure.query(({ ctx }) => {
-    return ctx.prisma.origin.findMany();
+    return ctx.prisma.donor.findMany();
   }),
   getAllWithCars: adminProcedure.query(({ ctx }) => {
-    return ctx.prisma.origin.findMany({ include: { car: true } });
+    return ctx.prisma.donor.findMany({ include: { car: true } });
   }),
   getAllDashboard: adminProcedure.query(({ ctx }) => {
-    return ctx.prisma.origin.findMany({
+    return ctx.prisma.donor.findMany({
       select: {
         vin: true,
         year: true,
@@ -49,5 +49,5 @@ export const originRouter = router({
         createdAt: true,
       },
     });
-  })
+  }),
 });

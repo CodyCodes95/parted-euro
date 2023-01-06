@@ -5,7 +5,6 @@ import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 
 const Admin: NextPage = () => {
-
   return (
     <>
       <Head>
@@ -22,9 +21,9 @@ const Admin: NextPage = () => {
             Listings
           </Link>
         </div>
-        <div className="w-[50%] flex items-center justify-center">
-          <Link className="" href="/admin/origins">
-            Origins
+        <div className="flex w-[50%] items-center justify-center">
+          <Link className="" href="/admin/donors">
+            Donors
           </Link>
           <Link className="" href="/admin/parts">
             Parts

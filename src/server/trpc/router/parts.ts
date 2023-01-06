@@ -7,7 +7,7 @@ export const partRouter = router({
       z.object({
         name: z.string().min(3),
         partNo: z.string().min(3),
-        originVin: z.string().min(3),
+        donorVin: z.string().min(3),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -16,7 +16,7 @@ export const partRouter = router({
   getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.part.findMany({
       include: {
-        origin: true,
+        donor: true,
       },
     });
   }),
@@ -38,11 +38,11 @@ export const partRouter = router({
         partId: z.string().min(3),
         listingId: z.string().min(3),
       })
-  )
-    .mutation(({ ctx, input }) => { 
+    )
+    .mutation(({ ctx, input }) => {
       return ctx.prisma.part.update({
         where: {
-          id: input.partId
+          id: input.partId,
         },
         data: {
           listingId: input.listingId,

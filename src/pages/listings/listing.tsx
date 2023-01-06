@@ -117,8 +117,8 @@ const Listing: NextPage = () => {
             {listing.data?.parts.map((part) => {
               return (
                 <p key={part.partNo}>
-                  {part.origin.year} {part.origin.car.generation} 
-                  {part.origin.car.model} // VIN: {part.origin.vin}
+                  {part.donor.year} {part.donor.car.generation}
+                  {part.donor.car.model} // VIN: {part.donor.vin}
                 </p>
               );
             })}
@@ -188,7 +188,7 @@ const test = [
     parts: [
       {
         partNo: "52207903035",
-        origin: {
+        donor: {
           year: 1999,
           car: {
             id: "clca6iy4u0002ehwfolqd8jvr",

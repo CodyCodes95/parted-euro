@@ -108,7 +108,7 @@ async function main() {
     },
   });
 
-  const origins = await prisma.origin.createMany({
+  const donors = await prisma.donor.createMany({
     data: [
       {
         vin: "WBSBL92060JR08716",
@@ -146,51 +146,51 @@ async function main() {
       {
         name: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Left",
         partNo: "52207903035",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "E46 M3 Rear Seat Lateral Trim Panel Imola Red Right",
         partNo: "52207903036",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "E46 M3 Door Cards Imola Red Driver Front",
         partNo: "51417890952",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "E46 M3 Door Cards Imola Red Passenger Front",
         partNo: "51417890951",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "E46 M3 Door Cards Imola Red Passenger Driver Rear",
         partNo: "51437890784",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "E46 M3 Door Cards Imola Red Passenger Driver Rear",
         partNo: "51437890784",
-        originVin: "WBSBL92060JR08716",
+        donorVin: "WBSBL92060JR08716",
       },
       {
         name: "Cylinder Head Cover Right",
         partNo: "11121702856",
-        originVin: "WBADN22000GE68930",
+        donorVin: "WBADN22000GE68930",
       },
       {
         name: "Cylinder Head Cover Left",
         partNo: "11121702857",
-        originVin: "WBADN22000GE68930",
+        donorVin: "WBADN22000GE68930",
       },
       {
         name: "Master Window Lifter Driver Switch",
         partNo: "61319362126",
-        originVin: "WBS3R922090K345058",
+        donorVin: "WBS3R922090K345058",
       },
     ],
   });
-  console.log(cars, origins);
+  console.log(cars, donors);
 }
 main()
   .then(async () => {

@@ -18,7 +18,7 @@ interface ICar {
   model: string;
 }
 
-interface IOrigin {
+interface IDonor {
   vin: string;
   car: ICar;
   year: number;
@@ -38,13 +38,13 @@ interface NestedOptions {
 const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
-  const [originVin, setOriginVin] = React.useState<string>("");
+  const [donorVin, setDonorVin] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<Array<string>>([]);
   const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
   const [donorOptions, setDonorOptions] = React.useState<Array<Options>>([]);
 
   const cars = trpc.cars.getAll.useQuery();
-  const origins = trpc.origins.getAllWithCars.useQuery();
+  const donors = trpc.donors.getAllWithCars.useQuery();
   const savePart = trpc.parts.createPart.useMutation();
   const savePartCarRelation = trpc.parts.createCarRelation.useMutation();
 
@@ -52,7 +52,9 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
     setCarOptions([]);
     cars.data?.forEach((car: ICar) => {
       setCarOptions((prevState: Array<NestedOptions>) => {
-        if (prevState.some((group: NestedOptions) => group.label === car.series)) {
+        if (
+          prevState.some((group: NestedOptions) => group.label === car.series)
+        ) {
           return prevState.map((group: NestedOptions) => {
             if (group.label === car.series) {
               group.options.push({
@@ -79,26 +81,26 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
 
   useMemo(() => {
     setDonorOptions([]);
-    origins.data?.forEach((origin: IOrigin) => {
+    donors.data?.forEach((donor: IDonor) => {
       setDonorOptions((prevState: Array<Options>) => {
         return [
           ...prevState,
           {
-            label: `${origin.vin} ${origin.year} ${origin.car.generation} ${origin.car.model}`,
-            value: origin.vin,
+            label: `${donor.vin} ${donor.year} ${donor.car.generation} ${donor.car.model}`,
+            value: donor.vin,
           },
         ];
       });
     });
-  }, [origins.data]);
+  }, [donors.data]);
 
   const onSave = async () => {
     const result = await savePart.mutateAsync({
       partNo: partNo,
       name: name,
-      originVin: originVin,
+      donorVin: donorVin,
     });
-    const partId = result.id
+    const partId = result.id;
     const carRelations = compatibleCars.map((carId: any) => {
       return {
         partId: partId,
@@ -108,7 +110,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
     await savePartCarRelation.mutateAsync(carRelations);
     setPartNo("");
     setName("");
-    setOriginVin("");
+    setDonorVin("");
   };
 
   return (
@@ -170,10 +172,12 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Donor Car (Origin)
+                Donor Car (Donor)
               </label>
               <Select
-                onChange={(e: SingleValue<Options>) => setOriginVin(e?.value as string)}
+                onChange={(e: SingleValue<Options>) =>
+                  setDonorVin(e?.value as string)
+                }
                 options={donorOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
@@ -185,7 +189,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
               </label>
               <Select
                 onChange={(e: any) => {
-                  setCompatibleCars(e.map((car:Options) => car.value));
+                  setCompatibleCars(e.map((car: Options) => car.value));
                 }}
                 isMulti
                 options={carOptions}
