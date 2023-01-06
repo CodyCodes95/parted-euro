@@ -92,6 +92,11 @@ async function main() {
     ],
   });
   const firstCar = await prisma.car.findFirst();
+  const vert = await prisma.car.findFirst({
+    where: {
+      body: "Convertible",
+    },
+  });
   const fiveSeries = await prisma.car.findFirst({
     where: {
       model: "535i",
@@ -141,46 +146,124 @@ async function main() {
     ],
   });
 
-  const partDetails = await prisma.partDetail.createMany({
-    data: [
-      {
-        name: "E46 M3 Rear Seat Lateral Trim Panel Left",
-        partNo: "52207903035",
+ await prisma.partDetail.create({
+    data: {
+      name: "E46 M3 Rear Seat Lateral Trim Panel Left",
+      partNo: "52207903035",
+      cars: {
+        connect: {
+          id: firstCar?.id || "",
+        },
       },
-      {
-        name: "E46 M3 Rear Seat Lateral Trim Panel Right",
-        partNo: "52207903036",
+    },
+ });
+  
+   await prisma.partDetail.create({
+    data: {
+      name: "E46 M3 Rear Seat Lateral Trim Panel Right",
+      partNo: "52207903036",
+      cars: {
+        connect: {
+          id: firstCar?.id || "",
+        },
       },
-      {
-        name: "E46 M3 Door Cards Driver Front",
-        partNo: "51417890952",
+    },
+   });
+  
+  await prisma.partDetail.create({
+    data: {
+      name: "E46 M3 Door Cards Driver Front",
+      partNo: "51417890952",
+      cars: {
+        connect: [{
+          id: firstCar?.id || "",
+        }, {
+          id: vert?.id || ""
+        }],
       },
-      {
-        name: "E46 M3 Door Cards Passenger Front",
-        partNo: "51417890951",
-      },
-      {
-        name: "E46 M3 Door Cards Passenger Driver Rear",
-        partNo: "51437890784",
-      },
-      {
-        name: "E46 M3 Door Cards Passenger Driver Rear",
-        partNo: "51437890784",
-      },
-      {
-        name: "Cylinder Head Cover Right",
-        partNo: "11121702856",
-      },
-      {
-        name: "Cylinder Head Cover Left",
-        partNo: "11121702857",
-      },
-      {
-        name: "Master Window Lifter Driver Switch",
-        partNo: "61319362126",
-      },
-    ],
+    },
   });
+
+  await prisma.partDetail.create({
+    data: {
+      name: "E46 M3 Door Cards Passenger Front",
+      partNo: "51417890951",
+      cars: {
+        connect: [{
+          id: firstCar?.id || "",
+        }, {
+          id: vert?.id || ""
+        }],
+      },
+    },
+  });
+
+  await prisma.partDetail.create({
+    data: {
+      name: "E46 M3 Door Cards Passenger Driver Rear",
+      partNo: "51437890784",
+      cars: {
+        connect: [{
+          id: firstCar?.id || "",
+        }, {
+          id: vert?.id || ""
+        }],
+      },
+    },
+  });
+  
+  await prisma.partDetail.create({
+    data: {
+      name: "Cylinder Head Cover Right",
+      partNo: "11121702856",
+      cars: {
+        connect: {
+          id: fiveSeries?.id || "",
+        },
+      },
+    },
+  });
+
+  await prisma.partDetail.create({
+    data: {
+      name: "Cylinder Head Cover Left",
+      partNo: "11121702857",
+      cars: {
+        connect: {
+          id: fiveSeries?.id || "",
+        },
+      },
+    },
+  });
+
+  await prisma.partDetail.create({
+    data: {
+      name: "Master Window Lifter Driver Switch",
+      partNo: "61319362126",
+      cars: {
+        connect: {
+          id: m4?.id || "",
+        },
+      },
+    },
+  });
+
+  await prisma.partDetail.create({
+    data: {
+      name: "F8X M3 / M4 Passenger Air Vent",
+      partNo: "64229346226",
+      cars: {
+        connect: [
+          {
+            id: m3?.id || "",
+          },
+          {
+            id: m4?.id || "",
+          },
+        ]
+      }
+    }
+  })
 
   const parts = await prisma.part.createMany({
     data: [
@@ -191,9 +274,41 @@ async function main() {
       {
         partDetailsId: "52207903036",
         donorVin: "WBSBL92060JR08716",
+      },
+      {
+        partDetailsId: "51417890952",
+        donorVin: "WBSBL92060JR08716",
+      },
+      {
+        partDetailsId: "51417890951",
+        donorVin: "WBSBL92060JR08716",
+      },
+      {
+        partDetailsId: "51437890784",
+        donorVin: "WBSBL92060JR08716",
+      },
+      {
+        partDetailsId: "11121702856",
+        donorVin: "WBADN22000GE68930",
+      },
+      {
+        partDetailsId: "11121702857",
+        donorVin: "WBADN22000GE68930",
+      },
+      {
+        partDetailsId: "11121702857",
+        donorVin: "WBS3R922090K345058",
+      },
+      {
+        partDetailsId: "64229346226",
+        donorVin: "WBS3R922090K345058"
+      },
+      {
+        partDetailsId: "64229346226",
+        donorVin: "WBS8M920105G47739"
       }
-    ]
-  })
+    ],
+  });
     
   const partLeft = await prisma.part.findFirst({})
   const partRight = await prisma.part.findFirst({
@@ -201,8 +316,29 @@ async function main() {
       partDetailsId: "52207903036"
     }
   })
-    
-    
+  const headCoverLeft = await prisma.part.findFirst({
+    where: {
+      partDetailsId: "11121702856"
+    }
+  })
+  const headCoverRight = await prisma.part.findFirst({
+    where: {
+      partDetailsId: "11121702857"
+    } 
+  })
+  const firstAirVent = await prisma.part.findFirst({
+    where: {
+      partDetailsId: "64229346226",
+      donorVin: "WBS3R922090K345058"
+    }
+  })
+  const secondAirVent = await prisma.part.findFirst({
+    where: {
+      partDetailsId: "64229346226",
+      donorVin: "WBS8M920105G47739",
+    },
+  });
+      
     
     const singleItemListing = await prisma.listing.create({
         data: {
@@ -214,7 +350,6 @@ async function main() {
             height: 10,
             width: 10,
             length: 10,
-        sold: false,
             parts: {
                 connect: {
                     id: partLeft?.id || ""
@@ -233,7 +368,6 @@ async function main() {
       height: 10,
       width: 10,
       length: 10,
-      sold: false,
       parts: {
         connect: [
           {
@@ -247,15 +381,69 @@ async function main() {
     },
   });
 
-    const listing = await prisma.listing.findFirst({})
+  const headCoverListing = await prisma.listing.create({
+    data: {
+      title: "E39 Cylinder Head Cover Set",
+      description: "E39 Cylinder Head Cover Set",
+      condition: "Good",
+      price: 4500,
+      weight: 20,
+      height: 10,
+      width: 10,
+      length: 10,
+      parts: {
+        connect: [
+          {
+            id: headCoverLeft?.id || "",
+          },
+          {
+            id: headCoverRight?.id || "",
+          }
+        ]
+      },
+    },
+  });
 
-    const testImage = await prisma.image.create({
+  const airVentListing = await prisma.listing.create({
+    data: {
+      title: "F8X M3 / M4 Air Vent Set",
+      description: "F8X M3 / M4 Air Vent Set",
+      condition: "Good",
+      price: 4000,
+      weight: 20,
+      height: 10,
+      width: 10,
+      length: 10,
+      parts: {
+        connect: [
+          {
+            id: firstAirVent?.id || "",
+          },
+          {
+            id: secondAirVent?.id || "",
+          }
+        ]
+      },
+    },
+  });
+      
+
+  const listings = await prisma.listing.findMany({})
+  
+  const imagePromises = listings.map((listing) => {
+    return prisma.image.create({
       data: {
         url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
         listingId: listing?.id || "",
       },
     });
-  console.log(cars, donors, parts);
+  })
+
+  await Promise.all(imagePromises)
+
+  const images = await prisma.image.findMany({})
+
+  console.log(cars, donors, parts, {listings: listings.length}, {images: images.length});
 }
 main()
   .then(async () => {

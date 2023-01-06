@@ -104,8 +104,8 @@ model Listing {
   parts       Part[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Images      Image[]
-  sold        Boolean  @default(false)
+  images      Image[]
+  active        Boolean  @default(false)
   // quantity will simply be the amount of non unique parts in the same listing
 }
 
