@@ -1,4 +1,4 @@
-import { adminProcedure } from "./../trpc";
+import { adminProcedure } from "../trpc";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
@@ -12,6 +12,7 @@ export const donorRouter = router({
         cost: z.number().min(100).max(100000000),
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
+        mileage: z.number().min(0).max(100000000),
       })
     )
     .mutation(({ ctx, input }) => {

@@ -112,12 +112,11 @@ model Part {
   id        String        @id @default(cuid())
   partNo    String
   name      String
-  listing   Listing?      @relation(fields: [listingId], references: [id])
+  listing   Listing[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   donor     Donor         @relation(fields: [donorVin], references: [vin])
   donorVin  String
-  listingId String?
   cars      PartsOnCars[]
 }
 
