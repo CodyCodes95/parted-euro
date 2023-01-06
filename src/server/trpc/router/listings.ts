@@ -67,6 +67,7 @@ export const listingRouter = router({
         // });
         // return filteredListings;
         console.log("err")
+        return []
       }
     }),
   // This getallavailable is one that works. I am going to do some manual filtering after 
