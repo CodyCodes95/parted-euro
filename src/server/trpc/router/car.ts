@@ -14,24 +14,61 @@ export const carRouter = router({
   getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.car.findMany();
   }),
-  getAllUniqueFields: publicProcedure.query(async ({ ctx }) => {
+  getAllSeries: publicProcedure.query(async ({ ctx }) => {
     const cars = await ctx.prisma.car.findMany({
       select: {
-        model: true,
-        generation: true,
         series: true,
       }
     });
-    const models = cars.map((car) => car.model);
-    const uniqueModels = [...new Set(models)];
-    const generations = cars.map((car) => car.generation);
-    const uniqueGenerations = [...new Set(generations)].sort()
     const series = cars.map((car) => car.series).sort()
-    const uniqueSeries = [...new Set(series)].sort()
+    const uniqueSeries = [...new Set(series)].sort().map(series => {
+      return {
+        label: series,
+        value: series
+      }
+    })
     return {
-      models: uniqueModels,
-      generations: uniqueGenerations,
       series: uniqueSeries
     }
-  })
+  }),
+  getMatchingGenerations: publicProcedure.input(z.object({
+    series: z.string().min(2)
+  })).query(async ({ ctx, input }) => {
+    const cars = await ctx.prisma.car.findMany({
+      where: {
+        series: input.series
+      }
+    })
+    const generations = cars.map((car) => car.generation).sort()
+    const uniqueGenerations = [...new Set(generations)].sort().map(generation => {
+      return {
+        label: generation,
+        value: generation
+      }
+    })
+    return {
+      generations: uniqueGenerations
+    }
+  }),
+  getMatchingModels: publicProcedure.input(z.object({
+    series: z.string().min(2),
+    generation: z.string().min(2)
+  })).query(async ({ ctx, input }) => {
+    const cars = await ctx.prisma.car.findMany({
+      where: {
+        series: input.series,
+        generation: input.generation
+      }
+    })
+    const models = cars.map((car) => car.model).sort()
+    const uniqueModels = [...new Set(models)].sort().map(model => {
+      return {
+        label: model,
+        value: model
+      }
+    })
+    return {
+      models: uniqueModels
+    }
+  }),
 });

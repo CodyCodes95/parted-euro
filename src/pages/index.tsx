@@ -5,9 +5,14 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import carImg from "../../public/car.jpg"
 import { trpc } from "../utils/trpc";
 import { Button } from "@material-tailwind/react";
-import { MenuItem, Select } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Select from "react-select";
+
+interface IOptions {
+  label: string;
+  value: string;
+}
 
 
 const Home: NextPage = () => {
@@ -16,17 +21,29 @@ const Home: NextPage = () => {
   const [series, setSeries] = useState<string>("");
   const [generation, setGeneration] = useState<string>("");
   const [model, setModel] = useState<string>("");
-  const [seriesOptions, setSeriesOptions] = useState<Array<string>>([]);
-  const [generationOptions, setGenerationOptions] = useState<Array<string>>([]);
-  const [modelOptions, setModelOptions] = useState<Array<string>>([]);
+  const [seriesOptions, setSeriesOptions] = useState<Array<IOptions>>([]);
+  const [generationOptions, setGenerationOptions] = useState<Array<IOptions>>([]);
+  const [modelOptions, setModelOptions] = useState<Array<IOptions>>([]);
 
-  const cars = trpc.cars.getAllUniqueFields.useQuery();
+  const cars = trpc.cars.getAllSeries.useQuery({}, {
+    onSuccess: (data) => {
+      setSeriesOptions(data.series);
+    }
+  });
 
-  useMemo(() => {
-    setSeriesOptions(cars.data?.series || []);
-    setGenerationOptions(cars.data?.generations || []);
-    setModelOptions(cars.data?.models || []);
-  }, [cars.data])
+  const generations = trpc.cars.getMatchingGenerations.useQuery({series}, {
+    enabled: series !== "",
+    onSuccess: (data) => {
+      setGenerationOptions(data.generations);
+    }
+  });
+
+  const models = trpc.cars.getMatchingModels.useQuery({ series, generation }, {
+    enabled: generation !== "",
+    onSuccess: (data) => {
+      setModelOptions(data.models);
+    }
+  });
 
   return (
     <>
@@ -76,48 +93,13 @@ const Home: NextPage = () => {
                   carSelectOpen ? "translate-x-[0rem]" : ""
                 }`}
               >
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center mt-4 text-black">
                   <div className="cursor-pointer" onClick={() => setCarSelectOpen(!carSelectOpen)}>
-                    <ArrowBackIcon fontSize="large" />
+                    <ArrowBackIcon fontSize="large" className="text-white"/>
                   </div>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    className="m-4 bg-white"
-                    id="demo-simple-select"
-                    value={series}
-                    label="Series"
-                    placeholder="Series"
-                    onChange={(e) => setSeries(e.target.value)}
-                  >
-                    {seriesOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    className="m-4 bg-white"
-                    id="demo-simple-select"
-                    value={generation}
-                    label="Generation"
-                    onChange={(e) => setGeneration(e.target.value)}
-                  >
-                    {generationOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    className="m-4 bg-white"
-                    color="primary"
-                    id="demo-simple-select"
-                    value={model}
-                    label="Model"
-                    onChange={(e) => setModel(e.target.value)}
-                  >
-                    {modelOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
+                  <Select className="mx-4 w-36" placeholder="Series" options={seriesOptions} onChange={(e) => setSeries(e.value)} />
+                  <Select className="mx-4 w-36" placeholder="Generation" options={generationOptions} onChange={(e) => setGeneration(e.value) } />
+                  <Select className="mx-4 w-36" placeholder="Model" options={modelOptions} onChange={(e) => setModel(e.value) } />
                   <Button
                     className="border-white text-sm text-white"
                     variant="outlined"
