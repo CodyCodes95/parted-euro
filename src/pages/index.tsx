@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import carImg from "../../public/car.jpg"
+import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
 import { Button } from "@material-tailwind/react";
 import { useEffect, useMemo, useState } from "react";
@@ -14,36 +14,45 @@ interface IOptions {
   value: string;
 }
 
-
 const Home: NextPage = () => {
-  
   const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
   const [series, setSeries] = useState<string>("");
   const [generation, setGeneration] = useState<string>("");
   const [model, setModel] = useState<string>("");
   const [seriesOptions, setSeriesOptions] = useState<Array<IOptions>>([]);
-  const [generationOptions, setGenerationOptions] = useState<Array<IOptions>>([]);
+  const [generationOptions, setGenerationOptions] = useState<Array<IOptions>>(
+    []
+  );
   const [modelOptions, setModelOptions] = useState<Array<IOptions>>([]);
 
-  const cars = trpc.cars.getAllSeries.useQuery({}, {
-    onSuccess: (data) => {
-      setSeriesOptions(data.series);
+  const cars = trpc.cars.getAllSeries.useQuery(
+    {},
+    {
+      onSuccess: (data) => {
+        setSeriesOptions(data.series);
+      },
     }
-  });
+  );
 
-  const generations = trpc.cars.getMatchingGenerations.useQuery({series}, {
-    enabled: series !== "",
-    onSuccess: (data) => {
-      setGenerationOptions(data.generations);
+  const generations = trpc.cars.getMatchingGenerations.useQuery(
+    { series },
+    {
+      enabled: series !== "",
+      onSuccess: (data) => {
+        setGenerationOptions(data.generations);
+      },
     }
-  });
+  );
 
-  const models = trpc.cars.getMatchingModels.useQuery({ series, generation }, {
-    enabled: generation !== "",
-    onSuccess: (data) => {
-      setModelOptions(data.models);
+  const models = trpc.cars.getMatchingModels.useQuery(
+    { series, generation },
+    {
+      enabled: generation !== "",
+      onSuccess: (data) => {
+        setModelOptions(data.models);
+      },
     }
-  });
+  );
 
   return (
     <>
@@ -93,13 +102,33 @@ const Home: NextPage = () => {
                   carSelectOpen ? "translate-x-[0rem]" : ""
                 }`}
               >
-                <div className="flex items-center justify-center mt-4 text-black">
-                  <div className="cursor-pointer" onClick={() => setCarSelectOpen(!carSelectOpen)}>
-                    <ArrowBackIcon fontSize="large" className="text-white"/>
+                <div className="mt-4 flex items-center justify-center text-black">
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setCarSelectOpen(!carSelectOpen)}
+                  >
+                    <ArrowBackIcon fontSize="large" className="text-white" />
                   </div>
-                  <Select className="mx-4 w-36" placeholder="Series" options={seriesOptions} onChange={(e) => setSeries(e.value)} />
-                  <Select className="mx-4 w-36" placeholder="Generation" options={generationOptions} onChange={(e) => setGeneration(e.value) } />
-                  <Select className="mx-4 w-36" placeholder="Model" options={modelOptions} onChange={(e) => setModel(e.value) } />
+                  <Select
+                    className="mx-4 w-36"
+                    placeholder="Series"
+                    options={seriesOptions}
+                    onChange={(e) => setSeries(e.value)}
+                  />
+                  <Select
+                    className="mx-4 w-36"
+                    placeholder="Generation"
+                    options={generationOptions}
+                    onChange={(e) => setGeneration(e.value)}
+                    isDisabled={generationOptions.length === 0}
+                  />
+                  <Select
+                    className="mx-4 w-36"
+                    placeholder="Model"
+                    options={modelOptions}
+                    onChange={(e) => setModel(e.value)}
+                    isDisabled={modelOptions.length === 0}
+                  />
                   <Button
                     className="border-white text-sm text-white"
                     variant="outlined"
