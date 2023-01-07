@@ -10,6 +10,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { TextField } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
+import AdminMenu from "./Nav/AdminMenu";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -17,6 +18,7 @@ const Nav: React.FC = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
+    const [openAdminMenu, setOpenAdminMenu] = useState(false);
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -120,13 +122,14 @@ const Nav: React.FC = () => {
           } ${showLogin && !session ? "visible" : ""}`}
         >
           {session ? (
-            <PersonIcon onClick={() => (window.location.href = "/admin")} />
+            <PersonIcon onClick={() => (setOpenAdminMenu(!openAdminMenu))} />
           ) : (
             <LoginIcon
               onClick={() => (window.location.href = "/api/auth/signin")}
             />
           )}
         </div>
+        {openAdminMenu ? <AdminMenu open={openAdminMenu} setOpen={setOpenAdminMenu} /> : null}
         {/* {session ? (
           <NavLink href="/api/auth/signout" title="Logout" />
         ) : (
