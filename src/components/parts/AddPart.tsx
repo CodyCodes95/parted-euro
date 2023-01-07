@@ -121,7 +121,7 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
         showModal ? "" : "hidden"
       }`}
     >
-      <ModalBackDrop />
+      <ModalBackDrop setShowModal={setShowModal}/>
       <div className="relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
