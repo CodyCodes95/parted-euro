@@ -63,7 +63,6 @@ const AddListing: NextPage = () => {
   const allParts = trpc.parts.getAll.useQuery();
   const saveListing = trpc.listings.createListing.useMutation();
   const uploadImage = trpc.listings.uploadListingImage.useMutation();
-  const associateListingToPart = trpc.parts.updateListingOnPart.useMutation();
   const saveImageRelation = trpc.images.createImageRelation.useMutation();
 
   useMemo(() => {
@@ -136,13 +135,13 @@ const AddListing: NextPage = () => {
         url: imageRes.url,
       });
     });
-    const partPromises = parts.map((partId: string) => {
-      return associateListingToPart.mutateAsync({
-        listingId: listingId,
-        partId: partId,
-      });
-    });
-    await Promise.all([...imagePromises, ...partPromises]);
+    // const partPromises = parts.map((partId: string) => {
+    //   return associateListingToPart.mutateAsync({
+    //     listingId: listingId,
+    //     partId: partId,
+    //   });
+    // });
+    await Promise.all([...imagePromises]);
     console.log("finished");
     setTitle("");
     setDescription("");

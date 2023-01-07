@@ -30,6 +30,6 @@ export const imagesRouter = router({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.images.create({ data: input });
+      return ctx.prisma.image.create({ data: input });
     }),
 });

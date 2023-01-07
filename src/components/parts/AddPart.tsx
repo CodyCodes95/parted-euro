@@ -45,69 +45,68 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
 
   const cars = trpc.cars.getAll.useQuery();
   const donors = trpc.donors.getAllWithCars.useQuery();
-  const savePart = trpc.parts.createPart.useMutation();
-  const savePartCarRelation = trpc.parts.createCarRelation.useMutation();
+  const savePartDetail = trpc.parts.createPartDetail.useMutation();
 
-  useMemo(() => {
-    setCarOptions([]);
-    cars.data?.forEach((car: ICar) => {
-      setCarOptions((prevState: Array<NestedOptions>) => {
-        if (
-          prevState.some((group: NestedOptions) => group.label === car.series)
-        ) {
-          return prevState.map((group: NestedOptions) => {
-            if (group.label === car.series) {
-              group.options.push({
-                label: `${car.generation} ${car.model}`,
-                value: car.id,
-              });
-            }
-            return group;
-          });
-        } else {
-          return [
-            ...prevState,
-            {
-              label: car.series,
-              options: [
-                { label: `${car.generation} ${car.model}`, value: car.id },
-              ],
-            },
-          ];
-        }
-      });
-    });
-  }, [cars.data]);
+  // useMemo(() => {
+  //   setCarOptions([]);
+  //   cars.data?.forEach((car: ICar) => {
+  //     setCarOptions((prevState: Array<NestedOptions>) => {
+  //       if (
+  //         prevState.some((group: NestedOptions) => group.label === car.series)
+  //       ) {
+  //         return prevState.map((group: NestedOptions) => {
+  //           if (group.label === car.series) {
+  //             group.options.push({
+  //               label: `${car.generation} ${car.model}`,
+  //               value: car.id,
+  //             });
+  //           }
+  //           return group;
+  //         });
+  //       } else {
+  //         return [
+  //           ...prevState,
+  //           {
+  //             label: car.series,
+  //             options: [
+  //               { label: `${car.generation} ${car.model}`, value: car.id },
+  //             ],
+  //           },
+  //         ];
+  //       }
+  //     });
+  //   });
+  // }, [cars.data]);
 
-  useMemo(() => {
-    setDonorOptions([]);
-    donors.data?.forEach((donor: IDonor) => {
-      setDonorOptions((prevState: Array<Options>) => {
-        return [
-          ...prevState,
-          {
-            label: `${donor.vin} ${donor.year} ${donor.car.generation} ${donor.car.model}`,
-            value: donor.vin,
-          },
-        ];
-      });
-    });
-  }, [donors.data]);
+  // useMemo(() => {
+  //   setDonorOptions([]);
+  //   donors.data?.forEach((donor: IDonor) => {
+  //     setDonorOptions((prevState: Array<Options>) => {
+  //       return [
+  //         ...prevState,
+  //         {
+  //           label: `${donor.vin} ${donor.year} ${donor.car.generation} ${donor.car.model}`,
+  //           value: donor.vin,
+  //         },
+  //       ];
+  //     });
+  //   });
+  // }, [donors.data]);
 
   const onSave = async () => {
-    const result = await savePart.mutateAsync({
+    const result = await savePartDetail.mutateAsync({
       partNo: partNo,
       name: name,
       donorVin: donorVin,
     });
-    const partId = result.id;
-    const carRelations = compatibleCars.map((carId: any) => {
-      return {
-        partId: partId,
-        carId: carId,
-      };
-    });
-    await savePartCarRelation.mutateAsync(carRelations);
+    const partId = result.partNo;
+    // const carRelations = compatibleCars.map((carId: any) => {
+    //   return {
+    //     partId: partId,
+    //     carId: carId,
+    //   };
+    // });
+    // await savePartCarRelation.mutateAsync(carRelations);
     setPartNo("");
     setName("");
     setDonorVin("");
