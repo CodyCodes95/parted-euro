@@ -55,7 +55,7 @@ export const listingRouter = router({
           title: {
             contains: input.search || "",
           },
-          active: false,
+          active: true,
           // active: true,
         },
       });

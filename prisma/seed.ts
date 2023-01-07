@@ -132,14 +132,14 @@ async function main() {
       {
         vin: "WBS3R922090K345058",
         year: 2016,
-        cost: 300000,
+        cost: 3000000,
         mileage: 24000,
         carId: m4?.id || ""
       },
       {
         vin: "WBS8M920105G47739",
         year: 2015,
-        cost: 40000,
+        cost: 4000000,
         mileage: 21000,
         carId: m3?.id || ""
       },
@@ -350,6 +350,7 @@ async function main() {
             height: 10,
             width: 10,
             length: 10,
+            active: true,
             parts: {
                 connect: {
                     id: partLeft?.id || ""
@@ -368,6 +369,7 @@ async function main() {
       height: 10,
       width: 10,
       length: 10,
+      active: true,
       parts: {
         connect: [
           {
@@ -391,6 +393,7 @@ async function main() {
       height: 10,
       width: 10,
       length: 10,
+      active: true,
       parts: {
         connect: [
           {
@@ -414,6 +417,7 @@ async function main() {
       height: 10,
       width: 10,
       length: 10,
+      active: true,
       parts: {
         connect: [
           {

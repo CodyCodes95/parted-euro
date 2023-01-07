@@ -29,6 +29,7 @@ export const donorRouter = router({
       select: {
         vin: true,
         year: true,
+        mileage: true,
         car: {
           select: {
             series: true,
@@ -37,12 +38,12 @@ export const donorRouter = router({
           },
         },
         cost: true,
-        Part: {
+        parts: {
           select: {
             listing: {
               select: {
                 price: true,
-                sold: true,
+                active: true,
               },
             },
           },

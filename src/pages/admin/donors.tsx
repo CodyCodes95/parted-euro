@@ -8,19 +8,24 @@ import { Donor } from "@prisma/client";
 import { Car } from "@prisma/client";
 
 const Donors: NextPage = () => {
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "AUD",
+      minimumFractionDigits: 2,
+    });
+
+
   const [showModal, setShowModal] = React.useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
   const [rows, setRows] = useState<Donor[]>([]);
-  const donors = trpc.donors.getAllDashboard.useQuery();
-
-  useMemo(() => {
-    setHeadCells([]);
-    setRows([]);
-    if (!donors.data) return;
+  const donors = trpc.donors.getAllDashboard.useQuery({}, {
+    onSuccess: (data) => {
+       setRows([]);
     const hideColumns = ["updatedAt", "Part", "car"];
     const nestedColumns = [{ car: ["series", "generation", "model"] }];
     setHeadCells((): any => {
-      const cells = Object.keys(donors.data[0] as any)
+      const cells = Object.keys(data[0] as any)
         .filter((key) => {
           if (hideColumns.includes(key)) return false;
           if (nestedColumns[key]) return false;
@@ -48,31 +53,36 @@ const Donors: NextPage = () => {
       });
       return cells;
     });
-    const newRows = donors.data?.map((donor) => {
+    const newRows = data?.map((donor) => {
       return {
         vin: donor.vin,
         year: donor.year,
-        cost: donor.cost,
+        mileage: `${donor.mileage}KM`,
+        cost: formatter.format(donor.cost / 100).split("A")[1],
         createdAt: new Date(donor.createdAt).toLocaleDateString(),
         series: donor.car.series,
         generation: donor.car.generation,
         model: donor.car.model,
-        totalUnsoldParts: donor.Part.reduce((acc, part) => {
-          if (part.listing === null || part.listing.sold) return acc;
+        totalUnsoldParts: donor.parts.reduce((acc, part) => {
+          if (part.listing === null || !part.listing.active) return acc;
+          console.log(part)
           return acc + part?.listing?.price + acc;
         }, 0),
-        totalSoldParts: donor.Part.reduce((acc, part) => {
-          if (part.listing === null || !part.listing.sold) return acc;
+        totalSoldParts: donor.parts.reduce((acc, part) => {
+          if (part.listing === null || !part.listing.active) return acc;
           return acc + part?.listing?.price + acc;
         }, 0),
-        totalListedParts: donor.Part.reduce((acc, part) => {
+        totalListedParts: donor.parts.reduce((acc, part) => {
           if (part.listing === null) return acc;
           return acc + part?.listing?.price + acc;
         }, 0),
       };
     });
     setRows(newRows);
-  }, [donors.data]);
+    }
+})
+
+
 
   useEffect(() => {
     console.log(rows);
@@ -90,7 +100,6 @@ const Donors: NextPage = () => {
           <AddDonor showModal={showModal} setShowModal={setShowModal} />
         ) : null}
         <div>
-          <button onClick={() => setShowModal(!showModal)}>Add Donor</button>
         </div>
         <SortedTable
           headCells={headCells}
@@ -104,3 +113,127 @@ const Donors: NextPage = () => {
 };
 
 export default Donors;
+
+
+const thing = [
+  {
+    vin: "WBADN22000GE68930",
+    year: 1999,
+    mileage: 220000,
+    car: {
+      series: "5 Series",
+      generation: "E39",
+      model: "535i",
+    },
+    cost: 1500000,
+    parts: [
+      {
+        listing: [
+          {
+            price: 4500,
+            active: true,
+          },
+        ],
+      },
+      {
+        listing: [
+          {
+            price: 4500,
+            active: true,
+          },
+        ],
+      },
+    ],
+    createdAt: "2023-01-07T05:42:10.838Z",
+  },
+  {
+    vin: "WBS3R922090K345058",
+    year: 2016,
+    mileage: 24000,
+    car: {
+      series: "F Series",
+      generation: "F82",
+      model: "M4",
+    },
+    cost: 300000,
+    parts: [
+      {
+        listing: [],
+      },
+      {
+        listing: [
+          {
+            price: 4000,
+            active: true,
+          },
+        ],
+      },
+    ],
+    createdAt: "2023-01-07T05:42:10.838Z",
+  },
+  {
+    vin: "WBS8M920105G47739",
+    year: 2015,
+    mileage: 21000,
+    car: {
+      series: "F Series",
+      generation: "F80",
+      model: "M3",
+    },
+    cost: 40000,
+    parts: [
+      {
+        listing: [
+          {
+            price: 4000,
+            active: true,
+          },
+        ],
+      },
+    ],
+    createdAt: "2023-01-07T05:42:10.838Z",
+  },
+  {
+    vin: "WBSBL92060JR08716",
+    year: 2003,
+    mileage: 141000,
+    car: {
+      series: "3 Series",
+      generation: "E46",
+      model: "M3",
+    },
+    cost: 2300000,
+    parts: [
+      {
+        listing: [
+          {
+            price: 100,
+            active: true,
+          },
+          {
+            price: 100,
+            active: true,
+          },
+        ],
+      },
+      {
+        listing: [
+          {
+            price: 100,
+            active: true,
+          },
+        ],
+      },
+      {
+        listing: [],
+      },
+      {
+        listing: [],
+      },
+      {
+        listing: [],
+      },
+    ],
+    createdAt: "2023-01-07T05:42:10.838Z",
+  },
+];
