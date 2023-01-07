@@ -42,6 +42,7 @@ export const listingRouter = router({
         generation: z.string().optional(),
         model: z.string().optional(),
         series: z.string().optional(),
+        search: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {

@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import placeholder from "../../../public/placeholder.png";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -22,12 +23,18 @@ const Listings: NextPage = () => {
     generation: generation as string,
     model: model as string,
   });
+
+  const [search, setSearch] = useState<string>("");
+
+  useEffect(() => {
+    
+  })
   
     
   return (
     <div className="flex min-h-screen w-full flex-col p-24">
       <div className="flex w-full items-center justify-center">
-        <TextField className="w-[33%]" label="Search" id="fullWidth" />
+        <TextField value={search} onChange={(e) => setSearch(e.target.value)} className="w-[33%]" label="Search" id="fullWidth" />
         <div className="relative">
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
