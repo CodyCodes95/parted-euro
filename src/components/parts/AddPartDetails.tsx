@@ -21,7 +21,12 @@ interface NestedOptions {
   options: Array<Options>;
 }
 
-const AddPartDetails: React.FC<AddPartProps> = ({ showModal, setShowModal, error, success }) => {
+const AddPartDetails: React.FC<AddPartProps> = ({
+  showModal,
+  setShowModal,
+  error,
+  success,
+}) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<Array<string>>([]);
@@ -29,53 +34,63 @@ const AddPartDetails: React.FC<AddPartProps> = ({ showModal, setShowModal, error
 
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
-        setCarOptions([]);
-        data.forEach((car: Car) => {
-          setCarOptions((prevState: Array<NestedOptions>) => {
-            if (
-              prevState.some((group: NestedOptions) => group.label === car.series)
-            ) {
-              return prevState.map((group: NestedOptions) => {
-                if (group.label === car.series) {
-                  group.options.push({
+      setCarOptions([]);
+      data.forEach((car: Car) => {
+        setCarOptions((prevState: Array<NestedOptions>) => {
+          if (
+            prevState.some((group: NestedOptions) => group.label === car.series)
+          ) {
+            return prevState.map((group: NestedOptions) => {
+              if (group.label === car.series) {
+                group.options.push({
+                  label: `${car.generation} ${car.model} ${car.body || ""}`,
+                  value: car.id,
+                });
+              }
+              return group;
+            });
+          } else {
+            return [
+              ...prevState,
+              {
+                label: car.series,
+                options: [
+                  {
                     label: `${car.generation} ${car.model} ${car.body || ""}`,
                     value: car.id,
-                  });
-                }
-                return group;
-              });
-            } else {
-              return [
-                ...prevState,
-                {
-                  label: car.series,
-                  options: [
-                    { label: `${car.generation} ${car.model} ${car.body || ""}`, value: car.id },
-                  ],
-                },
-              ];
-            }
-          });
+                  },
+                ],
+              },
+            ];
+          }
         });
-    }
+      });
+    },
   });
   const savePartDetail = trpc.parts.createPartDetail.useMutation();
 
-  const onSave = async () => {
-    const result = await savePartDetail.mutateAsync({
-      partNo: partNo,
-      name: name,
-      cars: compatibleCars,
-    }, {
-      onSuccess: () => {
-        success(`Part ${result.partNo} successfully created`);
+  const onSave = async (exit: boolean) => {
+    const result = await savePartDetail.mutateAsync(
+      {
+        partNo: partNo,
+        name: name,
+        cars: compatibleCars,
       },
-      onError: (err) => {
-        error(err.message);
+      {
+        onSuccess: () => {
+          success(`Part ${partNo} successfully created`);
+          setPartNo("");
+          setName("");
+          setCompatibleCars([]);
+          if (exit) {
+            setShowModal(false);
+          }
+        },
+        onError: (err) => {
+          error(err.message);
+        },
       }
-    });
-    setPartNo("");
-    setName("");
+    );
   };
 
   return (
@@ -86,7 +101,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({ showModal, setShowModal, error
         showModal ? "" : "hidden"
       }`}
     >
-      <ModalBackDrop setShowModal={setShowModal}/>
+      <ModalBackDrop setShowModal={setShowModal} />
       <div className="relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -152,12 +167,20 @@ const AddPartDetails: React.FC<AddPartProps> = ({ showModal, setShowModal, error
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
-              onClick={onSave as any}
+              onClick={() => onSave(true)}
               data-modal-toggle="defaultModal"
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save part
+              Save and Exit
+            </button>
+            <button
+              onClick={() => onSave(false)}
+              data-modal-toggle="defaultModal"
+              type="button"
+              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Save
             </button>
           </div>
         </div>
