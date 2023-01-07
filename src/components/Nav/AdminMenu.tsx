@@ -57,7 +57,7 @@ export default function AdminMenu({open, setOpen}:any) {
 
   return (
     <Stack
-      className={`absolute top-[4rem] right-6 ${
+      className={`absolute top-[4rem] right-6 z-[100] ${
         open ? "visible" : "invisible"
       }`}
       direction="row"

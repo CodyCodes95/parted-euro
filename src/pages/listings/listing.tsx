@@ -2,9 +2,9 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Link from "next/link";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { useMemo, useState } from "react";
+import { Car } from "@prisma/client";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -103,7 +103,7 @@ const Listing: NextPage = () => {
               return acc;
             }, [] as any[])
             .map((part) => {
-              return part.partDetails.cars.map((car) => {
+              return part.partDetails.cars.map((car: Car) => {
                 return (
                   <p key={car.id}>
                     {car.generation} {car.model}
@@ -168,52 +168,3 @@ const Listing: NextPage = () => {
 };
 
 export default Listing;
-
-const test = [
-  {
-    title: "E46 M3 Rear Seat Lateral Trim Panel Left",
-    description: "E46 M3 Rear Seat Lateral Trim Panel Set",
-    condition: "Good",
-    price: 100,
-    weight: 10,
-    length: 10,
-    width: 10,
-    height: 10,
-    images: [
-      {
-        id: "clck5jep3000yehri83fd4agg",
-        url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
-        listingId: "clck5je7z000oehri1vasv73z",
-        createdAt: "2023-01-06T06:44:21.159Z",
-        updatedAt: "2023-01-06T06:44:21.159Z",
-      },
-    ],
-    parts: [
-      {
-        donor: {
-          vin: "WBSBL92060JR08716",
-          year: 2003,
-          car: {
-            id: "clck5jcwo0000ehri48eejx11",
-            make: "BMW",
-            series: "3 Series",
-            generation: "E46",
-            model: "M3",
-            body: "Coupe",
-          },
-          mileage: 141000,
-        },
-        partDetails: {
-          partNo: "52207903035",
-          cars: [
-            {
-              generation: "E46",
-              model: "M3",
-            },
-          ],
-        },
-      },
-    ],
-  },
-];
-
