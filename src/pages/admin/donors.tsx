@@ -43,7 +43,7 @@ const Donors: NextPage = () => {
           nestedColumns.forEach((nestedColumn) => {
             Object.values(nestedColumn).forEach((nestedColumnValue) => {
               nestedColumnValue.forEach((nestedColumnValueValue) => {
-                cells.splice(5 - 3, 0, {
+                cells.splice(2, 0, {
                   disablePadding: false,
                   id: nestedColumnValueValue,
                   numeric: false,
@@ -73,21 +73,35 @@ const Donors: NextPage = () => {
             vin: donor.vin,
             year: donor.year,
             mileage: `${donor.mileage}KM`,
-            // cost: formatter.format(donor.cost / 100).split("A")[1],
             cost: donor.cost,
             createdAt: new Date(donor.createdAt).toLocaleDateString(),
             series: donor.car.series,
             generation: donor.car.generation,
             model: donor.car.model,
             parts: `${donor.parts.length} Parts`,
-            totalUnsoldParts: donor.parts.reduce((acc, part) => {
-              if (part.sold) return acc;
-              const listingsTotal = part?.listing?.reduce((accum, listing) => {
-                if (listing.active) return accum + listing.price;
-                return accum;
-              }, 0);
-              return listingsTotal + acc;
-            }, 0),
+            totalUnsoldParts: donor.parts
+              .reduce((acc, cur) => {
+                if (cur.listing.length === 0) return acc;
+                if (
+                  !acc.some(
+                    (part) => part.listing.id === cur.listing.id
+                  )
+                ) {
+                  acc.push(cur);
+                }
+                return acc;
+              }, [] as any[])
+              .reduce((acc, part) => {
+                if (part.sold) return acc;
+                const listingsTotal = part?.listing?.reduce(
+                  (accum, listing) => {
+                    if (listing.active) return accum + listing.price;
+                    return accum;
+                  },
+                  0
+                );
+                return listingsTotal + acc;
+              }, 0),
             totalSoldParts: donor.parts.reduce((acc, part) => {
               if (part.soldPrice === null || !part.sold) return acc;
               return part.soldPrice + acc;

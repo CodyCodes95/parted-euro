@@ -24,6 +24,12 @@ interface Data {
   generation: string;
 }
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "AUD",
+    minimumFractionDigits: 2,
+  });
+
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -196,7 +202,13 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                                     className="h-6 w-24 rounded-md bg-[#98d219a3]"
                                   />
                                 }
-                                <p className="">${row[headCell.id]}</p>
+                                <p className="">
+                                  {
+                                    formatter
+                                      .format(row[headCell.id] / 100)
+                                      .split("A")[1]
+                                  }
+                                </p>
                               </TableCell>
                             );
                           }
@@ -208,7 +220,9 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                               headCell.disablePadding ? "none" : "normal"
                             }
                           >
-                            {row[headCell.id]}
+                            {headCell.id === "cost" ?   formatter
+                                      .format(row[headCell.id] / 100)
+                                      .split("A")[1] : row[headCell.id]}
                           </TableCell>
                         );
                       })}
