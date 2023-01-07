@@ -6,11 +6,14 @@ import AddDonor from "../../components/donors/AddDonor";
 import SortedTable from "../../components/tables/SortedTable";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AddPart from "../../components/parts/AddPart";
 
 const Donors: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+  const [showPartModal, setShowPartModal] = useState(false);
+  const [donorVin, setDonorVin] = React.useState<string>("");
 
   const success = (message: string) => toast.success(message);
   
@@ -50,8 +53,7 @@ const Donors: NextPage = () => {
               });
             });
           });
-          cells.push(
-            {
+          cells.splice(8, 0,  {
               disablePadding: false,
               id: "totalSoldParts",
               numeric: true,
@@ -62,8 +64,14 @@ const Donors: NextPage = () => {
               id: "totalUnsoldParts",
               numeric: true,
               label: "Total Unsold Parts",
-            }
-          );
+            },
+          )
+            cells.push({
+              disablePadding: false,
+              id: "addParts",
+              numeric: true,
+              label: "Add Parts",
+            });
           return cells;
         });
         const newRows = data?.map((donor) => {
@@ -100,23 +108,12 @@ const Donors: NextPage = () => {
               if (part.soldPrice === null || !part.sold) return acc;
               return part.soldPrice + acc;
             }, 0),
-            // totalListedParts: donor.parts.reduce((acc, part) => {
-            //   if (part.listing === null) return acc;
-            //   const listingsTotal = part?.listing?.reduce((accum, listing) => {
-            //     return accum + listing.price;
-            //   }, 0);
-            //   return listingsTotal + acc;
-            // }, 0),
           };
         });
         setRows(newRows);
       },
     }
   );
-
-  useEffect(() => {
-    console.log(rows);
-  }, [rows]);
 
   return (
     <>
@@ -130,12 +127,18 @@ const Donors: NextPage = () => {
         {showModal ? (
           <AddDonor success={success} error={error} showModal={showModal} setShowModal={setShowModal} />
         ) : null}
+        {showPartModal ? (
+          <AddPart donorVin={donorVin} success={success} error={error} showModal={showPartModal} setShowModal={setShowPartModal} />
+        ) : null}
         <SortedTable
           headCells={headCells}
           rows={rows}
           title={"Donors"}
           rowId={"vin"}
           setShowModal={setShowModal}
+          showPartModal={showPartModal}
+          setShowPartModal={setShowPartModal}
+          setDonorVin={setDonorVin}
         />
       </main>
     </>

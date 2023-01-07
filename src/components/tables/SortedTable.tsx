@@ -24,11 +24,11 @@ interface Data {
   generation: string;
 }
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "AUD",
-    minimumFractionDigits: 2,
-  });
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "AUD",
+  minimumFractionDigits: 2,
+});
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -68,7 +68,16 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setShowModal }: any) => {
+const SortedTable: React.FC<any> = ({
+  headCells,
+  rows,
+  title,
+  rowId = "id",
+  setShowModal,
+  showPartModal,
+  setShowPartModal,
+  setDonorVin,
+}: any) => {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof Data>("make");
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -138,7 +147,9 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar title={title} numSelected={selected.length} />
-        <Button onClick={() => setShowModal(true)} variant="outlined">Add {title}</Button>
+        <Button onClick={() => setShowModal(true)} variant="outlined">
+          Add {title}
+        </Button>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -199,10 +210,10 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                                         : 0
                                     }
                                     variant="determinate"
-                                    className="h-6 w-24 rounded-md bg-[#98d219a3]"
+                                    className="h-6 rounded-md bg-[#98d219a3]"
                                   />
                                 }
-                                <p className="">
+                                <p className="text-center">
                                   {
                                     formatter
                                       .format(row[headCell.id] / 100)
@@ -212,7 +223,27 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                               </TableCell>
                             );
                           }
-                        return ( 
+                        if (headCell.id === "addParts") {
+                          return (
+                            <TableCell
+                              key={headCell.id}
+                              align={"left"}
+                              padding={
+                                headCell.disablePadding ? "none" : "normal"
+                              }
+                            >
+                              <button
+                                onClick={() => {
+                                  setDonorVin(row.vin)
+                                  setShowPartModal(true);
+                                }}
+                              >
+                                Add Part
+                              </button>
+                            </TableCell>
+                          );
+                        }
+                        return (
                           <TableCell
                             key={headCell.id}
                             align={"left"}
@@ -220,9 +251,11 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                               headCell.disablePadding ? "none" : "normal"
                             }
                           >
-                            {headCell.id === "cost" ?   formatter
-                                      .format(row[headCell.id] / 100)
-                                      .split("A")[1] : row[headCell.id]}
+                            {headCell.id === "cost"
+                              ? formatter
+                                  .format(row[headCell.id] / 100)
+                                  .split("A")[1]
+                              : row[headCell.id]}
                           </TableCell>
                         );
                       })}
