@@ -4,49 +4,37 @@ import AddCar from "../../components/cars/AddCar";
 import { trpc } from "../../utils/trpc";
 import SortedTable from "../../components/tables/SortedTable";
 import { useMemo, useState } from "react";
-
-interface Data {
-  make: string;
-  model: string;
-  series: string;
-  generation: string;
-}
-
-interface ICar {
-  id: string;
-  make: string;
-  series: string;
-  generation: string;
-  model: string;
-}
+import { Car } from "@prisma/client";
 
 const Cars: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
-  const [rows, setRows] = useState<Data[]>([]);
-  const cars = trpc.cars.getAll.useQuery();
-
-  useMemo(() => {
-    setHeadCells([]);
-    setRows([]);
-    if (!cars.data) return;
-    setHeadCells((): any => {
-      const cells = Object.keys(cars.data[0] as ICar)
-        .filter((key) => key !== "id")
-        .map((key: any) => {
-          return {
-            disablePadding: false,
-            id: key,
-            numeric: false,
-            label: key,
-          };
+  const [rows, setRows] = useState<Car[]>([]);
+  const cars = trpc.cars.getAll.useQuery(
+    {},
+    {
+      onSuccess: (data) => {
+        setHeadCells([]);
+        setRows([]);
+        setHeadCells((): any => {
+          const cells = Object.keys(data[0] as Car)
+            .filter((key) => key !== "id")
+            .map((key: any) => {
+              return {
+                disablePadding: false,
+                id: key,
+                numeric: false,
+                label: key,
+              };
+            });
+          return cells;
         });
-      return cells;
-    });
-    cars.data?.forEach((car) => {
-      setRows((prev) => [...prev, car]);
-    });
-  }, [cars.data]);
+        data?.forEach((car) => {
+          setRows((prev) => [...prev, car]);
+        });
+      },
+    }
+  );
 
   return (
     <>
@@ -59,7 +47,12 @@ const Cars: NextPage = () => {
         {showModal ? (
           <AddCar showModal={showModal} setShowModal={setShowModal} />
         ) : null}
-        <SortedTable headCells={headCells} rows={rows} title="Cars" setShowModal={setShowModal} />
+        <SortedTable
+          headCells={headCells}
+          rows={rows}
+          title="Cars"
+          setShowModal={setShowModal}
+        />
       </main>
     </>
   );

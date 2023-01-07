@@ -6,7 +6,8 @@ export const carRouter = router({
     make: z.string().min(2),
     series: z.string().min(2),
     generation: z.string().min(2),
-    model: z.string().min(2)
+    model: z.string().min(2),
+    body: z.string().nullish()
   }))
     .mutation(({ctx, input }) => {
       return ctx.prisma.car.create({data: input})
