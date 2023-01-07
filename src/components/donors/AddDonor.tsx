@@ -25,7 +25,7 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, e
   const [options, setOptions] = useState<ISelectOptions[]>([]);
 
   const cars = trpc.cars.getAll.useQuery(
-    {},
+    undefined,
     {
       onSuccess: (data) => {
         setOptions([]);

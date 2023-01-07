@@ -17,7 +17,7 @@ const Donors: NextPage = () => {
   const error = (message: string) => toast.error(message)
 
   const donors = trpc.donors.getAllDashboard.useQuery(
-    {},
+    undefined,
     {
       onSuccess: (data) => {
         setRows([]);

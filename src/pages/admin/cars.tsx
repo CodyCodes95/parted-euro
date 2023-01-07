@@ -11,7 +11,7 @@ const Cars: NextPage = () => {
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
   const [rows, setRows] = useState<Car[]>([]);
   const cars = trpc.cars.getAll.useQuery(
-    {},
+    undefined,
     {
       onSuccess: (data) => {
         setHeadCells([]);
