@@ -42,7 +42,7 @@ const Donors: NextPage = () => {
       nestedColumns.forEach((nestedColumn) => {
         Object.values(nestedColumn).forEach((nestedColumnValue) => {
           nestedColumnValue.forEach((nestedColumnValueValue) => {
-            cells.splice(cells.indexOf("year") - 1, 0, {
+            cells.splice(cells.indexOf("year") - 3, 0, {
               disablePadding: false,
               id: nestedColumnValueValue,
               numeric: false,
@@ -64,17 +64,27 @@ const Donors: NextPage = () => {
         generation: donor.car.generation,
         model: donor.car.model,
         totalUnsoldParts: donor.parts.reduce((acc, part) => {
-          if (part.listing === null || !part.listing.active) return acc;
-          console.log(part)
-          return acc + part?.listing?.price + acc;
+          if (part.listing === null) return acc;
+          const listingsTotal = part?.listing?.reduce((accum, listing) => {
+            if (listing.active) return accum + listing.price;
+            return accum;
+          }, 0);
+          return listingsTotal + acc;
         }, 0),
         totalSoldParts: donor.parts.reduce((acc, part) => {
-          if (part.listing === null || !part.listing.active) return acc;
-          return acc + part?.listing?.price + acc;
+          if (part.listing === null) return acc;
+          const listingsTotal = part?.listing?.reduce((accum, listing) => {
+            if (!listing.active) return accum + listing.price;
+            return accum;
+          }, 0);
+          return listingsTotal + acc;
         }, 0),
         totalListedParts: donor.parts.reduce((acc, part) => {
           if (part.listing === null) return acc;
-          return acc + part?.listing?.price + acc;
+          const listingsTotal = part?.listing?.reduce((accum, listing) => {
+            return accum + listing.price;
+          }, 0);
+          return listingsTotal + acc;
         }, 0),
       };
     });
