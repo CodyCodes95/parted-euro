@@ -59,7 +59,7 @@ const Cars: NextPage = () => {
         {showModal ? (
           <AddCar showModal={showModal} setShowModal={setShowModal} />
         ) : null}
-        <SortedTable headCells={headCells} rows={rows} title="Cars" />
+        <SortedTable headCells={headCells} rows={rows} title="Cars" setShowModal={setShowModal} />
       </main>
     </>
   );

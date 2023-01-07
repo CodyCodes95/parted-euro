@@ -14,6 +14,7 @@ import { trpc } from "../../utils/trpc";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead from "./Head";
 import { useState } from "react";
+import { Button } from "@material-tailwind/react";
 
 interface Data {
   make: string;
@@ -60,7 +61,7 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id" }: any) => {
+const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setShowModal }: any) => {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof Data>("make");
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -130,6 +131,7 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id" }: any)
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar title={title} numSelected={selected.length} />
+        <Button onClick={() => setShowModal(true)} variant="outlined">Add {title}</Button>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -176,13 +178,14 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id" }: any)
                           <TableCell
                             key={headCell.label}
                             align={headCell.numeric ? "right" : "left"}
-                            padding={headCell.disablePadding ? "none" : "normal"}
+                            padding={
+                              headCell.disablePadding ? "none" : "normal"
+                            }
                           >
                             {row[headCell.label]}
                           </TableCell>
                         );
-                      })
-                      }
+                      })}
                     </TableRow>
                   );
                 })}

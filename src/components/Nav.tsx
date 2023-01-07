@@ -86,8 +86,8 @@ const Nav: React.FC = () => {
     <div className="flex h-20 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
       <button
         onClick={() => {
-          if (session) return
-          setShowLogin(!showLogin)
+          if (session) return;
+          setShowLogin(!showLogin);
         }}
         className="absolute left-0 cursor-default text-white"
       >
@@ -115,9 +115,9 @@ const Nav: React.FC = () => {
           <ShoppingCartIcon />
         </div>
         <div
-          className={`relative cursor-pointer p-2 duration-150 ease-linear ${
-            !session ? "absolute translate-x-[5em]" : ""
-          } ${showLogin ? "" : "translate-x-[10rem]"}`}
+          className={`cursor-pointer p-2 ${
+            !session && !showLogin ? "invisible" : ""
+          } ${showLogin && !session ? "visible" : ""}`}
         >
           {session ? (
             <PersonIcon onClick={() => (window.location.href = "/admin")} />
