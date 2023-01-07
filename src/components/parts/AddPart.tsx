@@ -97,7 +97,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
     const result = await savePartDetail.mutateAsync({
       partNo: partNo,
       name: name,
-      donorVin: donorVin,
     });
     const partId = result.partNo;
     // const carRelations = compatibleCars.map((carId: any) => {
