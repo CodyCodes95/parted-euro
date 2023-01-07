@@ -6,6 +6,7 @@ import placeholder from "../../../public/placeholder.png";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -18,17 +19,18 @@ const Listings: NextPage = () => {
     minimumFractionDigits: 2,
   });
 
+  const [search, setSearch] = useState<string>("");
+
+  // const debouncedSearch = useDebounce(search, 1000)
+
   const listings = trpc.listings.getAllAvailable.useQuery({
     series: series as string,
     generation: generation as string,
     model: model as string,
+    // search: debouncedSearch
   });
 
-  const [search, setSearch] = useState<string>("");
 
-  useEffect(() => {
-    
-  })
   
     
   return (

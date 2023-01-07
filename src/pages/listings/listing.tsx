@@ -83,14 +83,26 @@ const Listing: NextPage = () => {
           </div>
           <div className="my-6">
             <h4 className="text-xl">OEM Part Numbers:</h4>
-            {listing.data?.parts.map((part) => {
+            {listing.data?.parts.reduce((acc, cur) => {
+              if (!acc.some((part) => part.partDetails.partNo === cur.partDetails.partNo)) {
+                acc.push(cur);
+              }
+              return acc;
+            }, [] as any[]
+            ).map((part) => {
               return <p key={part.partDetails.partNo}>{part.partDetails.partNo}</p>;
             })}
           </div>
           <div className="my-6">
             <h4 className="text-xl">Fitment:</h4>
             This part fits the following cars:
-            {listing.data?.parts.map((part) => {
+            {listing.data?.parts.reduce((acc, cur) => {
+              if (!acc.some((part) => part.partDetails.partNo === cur.partDetails.partNo)) {
+                acc.push(cur);
+              }
+              return acc;
+            }, [] as any[])
+            .map((part) => {
               return part.partDetails.cars.map((car) => {
                 return (
                   <p key={car.id}>
@@ -114,7 +126,12 @@ const Listing: NextPage = () => {
           </div>
           <div className="my-6">
             <h4 className="text-xl">Donor Car:</h4>
-            {listing.data?.parts.map((part) => {
+            {listing.data?.parts.reduce((acc, cur) => {
+              if (!acc.some((part) => part.donor.vin === cur.donor.vin)) {
+                acc.push(cur);
+              }
+              return acc;
+            }, [] as any[]).map((part) => {
               return (
                 <p key={part.partDetails.partNo}>
                   {part.donor.year} {part.donor.car.generation}
@@ -197,5 +214,58 @@ const test = [
         },
       },
     ],
+  },
+];
+
+const parts = [
+  {
+    donor: {
+      vin: "WBSBL92060JR08716",
+      year: 2003,
+      car: {
+        id: "clck5jcwo0000ehri48eejx11",
+        make: "BMW",
+        series: "3 Series",
+        generation: "E46",
+        model: "M3",
+        body: "Coupe",
+      },
+      mileage: 141000,
+    },
+    partDetails: {
+      partNo: "52207903035",
+      cars: [
+        {
+          id: "clck5jcwo0000ehri48eejx11",
+          generation: "E46",
+          model: "M3",
+        },
+      ],
+    },
+  },
+  {
+    donor: {
+      vin: "WBSBL92060JR08716",
+      year: 2003,
+      car: {
+        id: "clck5jcwo0000ehri48eejx11",
+        make: "BMW",
+        series: "3 Series",
+        generation: "E46",
+        model: "M3",
+        body: "Coupe",
+      },
+      mileage: 141000,
+    },
+    partDetails: {
+      partNo: "52207903036",
+      cars: [
+        {
+          id: "clck5jcwo0000ehri48eejx11",
+          generation: "E46",
+          model: "M3",
+        },
+      ],
+    },
   },
 ];
