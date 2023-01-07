@@ -8,6 +8,8 @@ import { Car } from "@prisma/client";
 interface AddPartProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  success: (message: string) => void;
+  error: (message: string) => void;
 }
 
 
@@ -21,7 +23,7 @@ interface NestedOptions {
   options: Array<Options>;
 }
 
-const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
+const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal, success, error }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [donorVin, setDonorVin] = React.useState<string>("");
