@@ -41,7 +41,7 @@ const Listings: NextPage = () => {
           >
               <div className="max-h-[634px]">
                 <img
-                  src={listing.Images[0]?.url}
+                  src={listing.images[0]?.url}
                   className="h-full duration-100 ease-linear group-hover:scale-105"
                   alt=""
                 />

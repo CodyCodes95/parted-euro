@@ -47,11 +47,12 @@ export const listingRouter = router({
     .query(async ({ ctx, input }) => {
       const listings = await ctx.prisma.listing.findMany({
         include: {
-          Images: true,
+          images: true,
           parts: true,
         },
         where: {
-          sold: false,
+          active: false,
+          // active: true,
         },
       });
       if (!input.generation || !input.model || !input.series) {
@@ -111,11 +112,10 @@ export const listingRouter = router({
           length: true,
           width: true,
           height: true,
-          Images: true,
+          images: true,
           parts: {
             select: {
-              partNo: true,
-              donor: {
+                 donor: {
                 select: {
                   vin: true,
                   year: true,
@@ -123,18 +123,22 @@ export const listingRouter = router({
                   mileage: true,
                 },
               },
-              cars: {
+              partDetails: {
                 select: {
-                  car: true,
-                },
-              },
+                  partNo: true,
+                  cars: {
+                    select: {
+                      id: true,
+                      generation: true,
+                      model: true
+                    }
+                  }
+                }
+              }
             },
           },
         },
-        // include: {
-        //   Images: true,
-        //   parts: true,
-        // },
+
       });
     }),
 });

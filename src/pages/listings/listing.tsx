@@ -22,8 +22,8 @@ const Listing: NextPage = () => {
   const [mainImage, setMainImage] = useState<string>("");
 
   useMemo(() => {
-    if (listing.data?.Images[0]) {
-      setMainImage(listing.data.Images[0].url);
+    if (listing.data?.images[0]) {
+      setMainImage(listing.data.images[0].url);
     }
   }, [listing.data]);
 
@@ -34,7 +34,7 @@ const Listing: NextPage = () => {
           <div className="flex flex-col">
             <img src={mainImage} alt="" />
             <div className="flex w-full">
-              {listing.data?.Images.map((image) => {
+              {listing.data?.images.map((image) => {
                 return (
                   <img
                     key={image.id}
@@ -84,17 +84,17 @@ const Listing: NextPage = () => {
           <div className="my-6">
             <h4 className="text-xl">OEM Part Numbers:</h4>
             {listing.data?.parts.map((part) => {
-              return <p key={part.partNo}>{part.partNo}</p>;
+              return <p key={part.partDetails.partNo}>{part.partDetails.partNo}</p>;
             })}
           </div>
           <div className="my-6">
             <h4 className="text-xl">Fitment:</h4>
             This part fits the following cars:
             {listing.data?.parts.map((part) => {
-              return part.cars.map((car) => {
+              return part.partDetails.cars.map((car) => {
                 return (
-                  <p key={car.car.id}>
-                    {car.car.generation} {car.car.model}
+                  <p key={car.id}>
+                    {car.generation} {car.model}
                   </p>
                 );
               });
@@ -116,7 +116,7 @@ const Listing: NextPage = () => {
             <h4 className="text-xl">Donor Car:</h4>
             {listing.data?.parts.map((part) => {
               return (
-                <p key={part.partNo}>
+                <p key={part.partDetails.partNo}>
                   {part.donor.year} {part.donor.car.generation}
                   {part.donor.car.model} // VIN: {part.donor.vin} // {part.donor.mileage}KM
                 </p>
@@ -154,70 +154,47 @@ export default Listing;
 
 const test = [
   {
-    title: "Multiple images",
-    description: "you heard me",
-    condition: "Used",
-    price: 100000,
-    weight: 10000,
-    length: 100,
-    width: 100,
-    height: 100,
-    Images: [
+    title: "E46 M3 Rear Seat Lateral Trim Panel Left",
+    description: "E46 M3 Rear Seat Lateral Trim Panel Set",
+    condition: "Good",
+    price: 100,
+    weight: 10,
+    length: 10,
+    width: 10,
+    height: 10,
+    images: [
       {
-        id: "clcilaerb0002ehvsuw0t4vs7",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672892979/listings/ddxh15ejzrl380qqmuqp.png",
-        listingId: "clcila8pl0000ehvs7ohci9rg",
-        createdAt: "2023-01-05T04:29:42.840Z",
-        updatedAt: "2023-01-05T04:29:42.840Z",
-      },
-      {
-        id: "clcilaerc0003ehvswowwycua",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
-        listingId: "clcila8pl0000ehvs7ohci9rg",
-        createdAt: "2023-01-05T04:29:42.840Z",
-        updatedAt: "2023-01-05T04:29:42.840Z",
-      },
-      {
-        id: "clcilaerc0005ehvsllsuyx27",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672892982/listings/palju1ftbzhz2l5lmfr6.png",
-        listingId: "clcila8pl0000ehvs7ohci9rg",
-        createdAt: "2023-01-05T04:29:42.840Z",
-        updatedAt: "2023-01-05T04:29:42.840Z",
+        id: "clck5jep3000yehri83fd4agg",
+        url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
+        listingId: "clck5je7z000oehri1vasv73z",
+        createdAt: "2023-01-06T06:44:21.159Z",
+        updatedAt: "2023-01-06T06:44:21.159Z",
       },
     ],
     parts: [
       {
-        partNo: "52207903035",
         donor: {
-          year: 1999,
+          vin: "WBSBL92060JR08716",
+          year: 2003,
           car: {
-            id: "clca6iy4u0002ehwfolqd8jvr",
+            id: "clck5jcwo0000ehri48eejx11",
             make: "BMW",
-            series: "5 Series",
-            generation: "E39",
-            model: "M5",
+            series: "3 Series",
+            generation: "E46",
+            model: "M3",
+            body: "Coupe",
           },
+          mileage: 141000,
         },
-        cars: [
-          {
-            car: {
-              id: "clca6iy4u0002ehwfolqd8jvr",
-              make: "BMW",
-              series: "5 Series",
-              generation: "E39",
-              model: "M5",
+        partDetails: {
+          partNo: "52207903035",
+          cars: [
+            {
+              generation: "E46",
+              model: "M3",
             },
-          },
-          {
-            car: {
-              id: "clca6iy4u0007ehwf31h02caj",
-              make: "BMW",
-              series: "X Series",
-              generation: "E53",
-              model: "X5",
-            },
-          },
-        ],
+          ],
+        },
       },
     ],
   },
