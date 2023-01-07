@@ -4,20 +4,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import AddDonor from "../../components/donors/AddDonor";
 import SortedTable from "../../components/tables/SortedTable";
-import LinearProgress, {
-  linearProgressClasses,
-} from "@mui/material/LinearProgress";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Donors: NextPage = () => {
-  // const formatter = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "AUD",
-  //   minimumFractionDigits: 2,
-  // });
-
   const [showModal, setShowModal] = React.useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+
+  const success = (message: string) => toast.success(message);
+  
+  const error = (message: string) => toast.error(message)
+
   const donors = trpc.donors.getAllDashboard.useQuery(
     {},
     {
@@ -80,13 +78,9 @@ const Donors: NextPage = () => {
             model: donor.car.model,
             parts: `${donor.parts.length} Parts`,
             totalUnsoldParts: donor.parts
-              .reduce((acc, cur:any) => {
+              .reduce((acc, cur: any) => {
                 if (cur.listing.length === 0) return acc;
-                if (
-                  !acc.some(
-                    (part) => part.listing.id === cur.listing.id
-                  )
-                ) {
+                if (!acc.some((part) => part.listing.id === cur.listing.id)) {
                   acc.push(cur);
                 }
                 return acc;
@@ -94,7 +88,7 @@ const Donors: NextPage = () => {
               .reduce((acc, part) => {
                 if (part.sold) return acc;
                 const listingsTotal = part?.listing?.reduce(
-                  (accum:number, listing:any) => {
+                  (accum: number, listing: any) => {
                     if (listing.active) return accum + listing.price;
                     return accum;
                   },
@@ -132,10 +126,10 @@ const Donors: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
+        <ToastContainer />
         {showModal ? (
-          <AddDonor showModal={showModal} setShowModal={setShowModal} />
+          <AddDonor success={success} error={error} showModal={showModal} setShowModal={setShowModal} />
         ) : null}
-        <div></div>
         <SortedTable
           headCells={headCells}
           rows={rows}

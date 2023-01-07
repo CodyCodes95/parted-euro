@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
-import FormSection from "../FormSection";
 import Select from "react-select";
 import { Car } from "@prisma/client";
-import { LoadingButton } from "@mui/lab";
 
 interface AddDonorProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  success: (message: string) => void;
+  error: (message: string) => void;
 }
 
 interface ISelectOptions {
@@ -16,7 +16,7 @@ interface ISelectOptions {
   value: string;
 }
 
-const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
+const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, error }) => {
   const [vin, setVin] = useState<string>("");
   const [cost, setCost] = useState<number>(0);
   const [carId, setCarId] = useState<string>("");
@@ -73,6 +73,7 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
       },
       {
         onSuccess: () => {
+          success(`Donor ${vin} successfully created`);
           setMileage(0);
           setVin("");
           setCost(0);
@@ -83,8 +84,8 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
           } else {
           }
         },
-        onError: () => {
-          console.log("error");
+        onError: (err) => {
+          error(err.message)
         },
       }
     );
