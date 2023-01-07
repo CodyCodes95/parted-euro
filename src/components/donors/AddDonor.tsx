@@ -1,72 +1,93 @@
-import React, { useEffect, useMemo } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import FormSection from "../FormSection";
 import Select from "react-select";
+import { Car } from "@prisma/client";
+import { LoadingButton } from "@mui/lab";
 
 interface AddDonorProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface ICar {
-  id: string;
-  make: string;
-  series: string;
-  generation: string;
-  model: string;
+interface ISelectOptions {
+  label: string;
+  value: string;
 }
 
 const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
-  const [vin, setVin] = React.useState<string>("");
-  const [cost, setCost] = React.useState<number>(0);
-  const [carId, setCarId] = React.useState<string>("");
-  const [year, setYear] = React.useState<number>(0);
-  const [options, setOptions] = React.useState<any>([]);
+  const [vin, setVin] = useState<string>("");
+  const [cost, setCost] = useState<number>(0);
+  const [carId, setCarId] = useState<string>("");
+  const [year, setYear] = useState<number>(0);
+  const [mileage, setMileage] = useState<number>(0);
+  const [options, setOptions] = useState<ISelectOptions[]>([]);
 
-  const cars = trpc.cars.getAll.useQuery();
+  const cars = trpc.cars.getAll.useQuery(
+    {},
+    {
+      onSuccess: (data) => {
+        setOptions([]);
+        data.forEach((car: Car) => {
+          setOptions((prevState: any) => {
+            if (prevState.some((group: any) => group.label === car.series)) {
+              return prevState.map((group: any) => {
+                if (group.label === car.series) {
+                  group.options.push({
+                    label: `${car.generation} ${car.model} ${car.body || ""}`,
+                    value: car.id,
+                  });
+                }
+                return group;
+              });
+            } else {
+              return [
+                ...prevState,
+                {
+                  label: car.series,
+                  options: [
+                    {
+                      label: `${car.generation} ${car.model} ${car.body || ""}`,
+                      value: car.id,
+                    },
+                  ],
+                },
+              ];
+            }
+          });
+        });
+      },
+    }
+  );
   const saveDonor = trpc.donors.createDonor.useMutation();
 
-  useMemo(() => {
-    setOptions([]);
-    cars.data?.forEach((car: ICar) => {
-      setOptions((prevState: any) => {
-        if (prevState.some((group: any) => group.label === car.series)) {
-          return prevState.map((group: any) => {
-            if (group.label === car.series) {
-              group.options.push({
-                label: `${car.generation} ${car.model}`,
-                value: car.id,
-              });
-            }
-            return group;
-          });
-        } else {
-          return [
-            ...prevState,
-            {
-              label: car.series,
-              options: [
-                { label: `${car.generation} ${car.model}`, value: car.id },
-              ],
-            },
-          ];
-        }
-      });
-    });
-  }, [cars.data]);
-
-  const onSave = async () => {
-    const result = await saveDonor.mutateAsync({
-      vin: vin,
-      cost: cost,
-      carId: carId,
-      year: year,
-    });
-    setVin("");
-    setCost(0);
-    setCarId("");
-    setYear(0);
+  const onSave = async (exit: boolean) => {
+    const result = await saveDonor.mutateAsync(
+      {
+        vin: vin,
+        cost: Math.round(cost * 100),
+        carId: carId,
+        year: year,
+        mileage: mileage,
+      },
+      {
+        onSuccess: () => {
+          setMileage(0);
+          setVin("");
+          setCost(0);
+          setCarId("");
+          setYear(0);
+          if (exit) {
+            setShowModal(false);
+          } else {
+          }
+        },
+        onError: () => {
+          console.log("error");
+        },
+      }
+    );
   };
 
   return (
@@ -77,7 +98,7 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
         showModal ? "" : "hidden"
       }`}
     >
-      <ModalBackDrop />
+      <ModalBackDrop setShowModal={setShowModal} />
       <div className="relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -153,15 +174,35 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal }) => {
               dark:focus:ring-blue-500`}
               />
             </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Mileage
+              </label>
+              <input
+                type="Number"
+                value={mileage || undefined}
+                onChange={(e) => setMileage(Number(e.target.value))}
+                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+              />
+            </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
-              onClick={onSave as any}
+              onClick={() => onSave(true)}
               data-modal-toggle="defaultModal"
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save donor
+              Save and Exit
+            </button>
+            <button
+              onClick={() => onSave(false)}
+              data-modal-toggle="defaultModal"
+              type="button"
+              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Save
             </button>
           </div>
         </div>

@@ -80,7 +80,7 @@ const Donors: NextPage = () => {
             model: donor.car.model,
             parts: `${donor.parts.length} Parts`,
             totalUnsoldParts: donor.parts
-              .reduce((acc, cur) => {
+              .reduce((acc, cur:any) => {
                 if (cur.listing.length === 0) return acc;
                 if (
                   !acc.some(
@@ -94,7 +94,7 @@ const Donors: NextPage = () => {
               .reduce((acc, part) => {
                 if (part.sold) return acc;
                 const listingsTotal = part?.listing?.reduce(
-                  (accum, listing) => {
+                  (accum:number, listing:any) => {
                     if (listing.active) return accum + listing.price;
                     return accum;
                   },
@@ -141,6 +141,7 @@ const Donors: NextPage = () => {
           rows={rows}
           title={"Donors"}
           rowId={"vin"}
+          setShowModal={setShowModal}
         />
       </main>
     </>
