@@ -9,12 +9,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import { TextField } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LoginIcon from "@mui/icons-material/Login";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -82,6 +84,15 @@ const Nav: React.FC = () => {
 
   return (
     <div className="flex h-20 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
+      <button
+        onClick={() => {
+          if (session) return
+          setShowLogin(!showLogin)
+        }}
+        className="absolute left-0 cursor-default text-white"
+      >
+        G
+      </button>
       <div className="flex items-center">
         <Link href="/">
           <img className="mr-8 inline h-8" src={logo.src} alt="" />
@@ -103,8 +114,18 @@ const Nav: React.FC = () => {
         <div className="cursor-pointer p-2">
           <ShoppingCartIcon />
         </div>
-        <div className="cursor-pointer p-2">
-          <PersonIcon />
+        <div
+          className={`relative cursor-pointer p-2 duration-150 ease-linear ${
+            !session ? "absolute translate-x-[5em]" : ""
+          } ${showLogin ? "" : "translate-x-[10rem]"}`}
+        >
+          {session ? (
+            <PersonIcon onClick={() => (window.location.href = "/admin")} />
+          ) : (
+            <LoginIcon
+              onClick={() => (window.location.href = "/api/auth/signin")}
+            />
+          )}
         </div>
         {/* {session ? (
           <NavLink href="/api/auth/signout" title="Logout" />
