@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.css-5xe99f-MuiLinearProgress-bar1 {
+    background-color: #96d219
+}
+
+.css-5xe99f-MuiLinearProgress-bar2 {
+    background-color: #98d219a3
+}

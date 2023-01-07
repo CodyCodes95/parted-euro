@@ -15,6 +15,7 @@ import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead from "./Head";
 import { useState } from "react";
 import { Button } from "@material-tailwind/react";
+import { LinearProgress } from "@mui/material";
 
 interface Data {
   make: string;
@@ -174,15 +175,40 @@ const SortedTable: React.FC<any> = ({ headCells, rows, title, rowId="id", setSho
                         />
                       </TableCell>
                       {headCells.map((headCell: any) => {
-                        return (
+                        if (row[headCell.id] || row[headCell.id] === 0)
+                          if (headCell.numeric) {
+                            return (
+                              <TableCell
+                                key={headCell.id}
+                                align={"left"}
+                                padding={
+                                  headCell.disablePadding ? "none" : "normal"
+                                }
+                              >
+                                {
+                                  <LinearProgress
+                                    value={
+                                      row[headCell.id]
+                                        ? (row[headCell.id] / row.cost) * 100
+                                        : 0
+                                    }
+                                    variant="determinate"
+                                    className="h-6 w-24 rounded-md bg-[#98d219a3]"
+                                  />
+                                }
+                                <p className="">${row[headCell.id]}</p>
+                              </TableCell>
+                            );
+                          }
+                        return ( 
                           <TableCell
-                            key={headCell.label}
-                            align={headCell.numeric ? "right" : "left"}
+                            key={headCell.id}
+                            align={"left"}
                             padding={
                               headCell.disablePadding ? "none" : "normal"
                             }
                           >
-                            {row[headCell.label]}
+                            {row[headCell.id]}
                           </TableCell>
                         );
                       })}

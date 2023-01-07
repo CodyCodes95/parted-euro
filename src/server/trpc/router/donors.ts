@@ -40,6 +40,8 @@ export const donorRouter = router({
         cost: true,
         parts: {
           select: {
+            sold: true,
+            soldPrice: true,
             listing: {
               select: {
                 price: true,

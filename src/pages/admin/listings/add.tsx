@@ -6,6 +6,7 @@ import { Input } from "@material-tailwind/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import Select from "react-select";
+import { Part } from "@prisma/client";
 
 interface Options {
   label: string;

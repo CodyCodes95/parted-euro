@@ -118,6 +118,9 @@ model Part {
   updatedAt     DateTime   @updatedAt
   donorVin      String
   donor         Donor      @relation(fields: [donorVin], references: [vin])
+  sold         Boolean    @default(false)
+  soldPrice    Int?
+  soldParentPrice Int?
 }
 
 model PartDetail {
@@ -128,6 +131,7 @@ model PartDetail {
   cars      Car[]
   parts     Part[]
 }
+
 
 model Image {
   id        String   @id @default(cuid())

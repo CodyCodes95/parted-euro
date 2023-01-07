@@ -23,7 +23,7 @@ export default function AdminMenu({open, setOpen}:any) {
   };
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpen((prevOpen:any) => !prevOpen);
   };
 
   const handleCloseLogout = (event: Event | React.SyntheticEvent) => {
