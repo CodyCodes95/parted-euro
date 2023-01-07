@@ -83,37 +83,49 @@ const Listing: NextPage = () => {
           </div>
           <div className="my-6">
             <h4 className="text-xl">OEM Part Numbers:</h4>
-            {listing.data?.parts.reduce((acc, cur) => {
-              if (!acc.some((part) => part.partDetails.partNo === cur.partDetails.partNo)) {
-                acc.push(cur);
-              }
-              return acc;
-            }, [] as any[]
-            ).map((part) => {
-              return <p key={part.partDetails.partNo}>{part.partDetails.partNo}</p>;
-            })}
+            {listing.data?.parts
+              .reduce((acc, cur) => {
+                if (
+                  !acc.some(
+                    (part) => part.partDetails.partNo === cur.partDetails.partNo
+                  )
+                ) {
+                  acc.push(cur);
+                }
+                return acc;
+              }, [] as any[])
+              .map((part) => {
+                return (
+                  <p key={part.partDetails.partNo}>{part.partDetails.partNo}</p>
+                );
+              })}
           </div>
           <div className="my-6">
             <h4 className="text-xl">Fitment:</h4>
             This part fits the following cars:
-            {listing.data?.parts.reduce((acc, cur) => {
-              if (!acc.some((part) => part.partDetails.partNo === cur.partDetails.partNo)) {
-                acc.push(cur);
-              }
-              return acc;
-            }, [] as any[])
-            .map((part) => {
-              return part.partDetails.cars.map((car: Car) => {
-                return (
-                  <p key={car.id}>
-                    {car.generation} {car.model}
-                  </p>
-                );
-              });
-            })}
+            {listing.data?.parts
+              .reduce((acc, cur) => {
+                if (
+                  !acc.some(
+                    (part) => part.partDetails.partNo === cur.partDetails.partNo
+                  )
+                ) {
+                  acc.push(cur);
+                }
+                return acc;
+              }, [] as any[])
+              .map((part) => {
+                return part.partDetails.cars.map((car: Car) => {
+                  return (
+                    <p key={car.id}>
+                      {car.generation} {car.model}
+                    </p>
+                  );
+                });
+              })}
             <p>
               Please confirm part numbers prior to purchase. May suit other
-              models that aren't listed.
+              models that aren&apos;t listed.
             </p>
             <p>
               It is the buyers responsibility to confirm part numbers and
@@ -126,19 +138,22 @@ const Listing: NextPage = () => {
           </div>
           <div className="my-6">
             <h4 className="text-xl">Donor Car:</h4>
-            {listing.data?.parts.reduce((acc, cur) => {
-              if (!acc.some((part) => part.donor.vin === cur.donor.vin)) {
-                acc.push(cur);
-              }
-              return acc;
-            }, [] as any[]).map((part) => {
-              return (
-                <p key={part.partDetails.partNo}>
-                  {part.donor.year} {part.donor.car.generation}
-                  {part.donor.car.model} // VIN: {part.donor.vin} // {part.donor.mileage}KM
-                </p>
-              );
-            })}
+            {listing.data?.parts
+              .reduce((acc, cur) => {
+                if (!acc.some((part) => part.donor.vin === cur.donor.vin)) {
+                  acc.push(cur);
+                }
+                return acc;
+              }, [] as any[])
+              .map((part) => {
+                return (
+                  <p key={part.partDetails.partNo}>
+                    {part.donor.year} {part.donor.car.generation}
+                    {part.donor.car.model} // VIN: {part.donor.vin} // Mileage:{" "}
+                    {part.donor.mileage}KM
+                  </p>
+                );
+              })}
           </div>
           <div className="my-6">
             <h4 className="text-xl">Shipping:</h4>
