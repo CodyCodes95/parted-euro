@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
-import Select, { MultiValue, SingleValue } from "react-select";
-import { Donor } from "@prisma/client";
+import Select from "react-select";
 import { Car } from "@prisma/client";
 
 interface AddPartProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  success: (message: string) => void;
+  error: (message: string) => void;
 }
-
 
 interface Options {
   label: string;
@@ -21,80 +21,61 @@ interface NestedOptions {
   options: Array<Options>;
 }
 
-const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
+const AddPartDetails: React.FC<AddPartProps> = ({ showModal, setShowModal, error, success }) => {
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
-  const [donorVin, setDonorVin] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<Array<string>>([]);
   const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
-  const [donorOptions, setDonorOptions] = React.useState<Array<Options>>([]);
 
-  const cars = trpc.cars.getAll.useQuery();
-  const donors = trpc.donors.getAllWithCars.useQuery();
+  const cars = trpc.cars.getAll.useQuery(undefined, {
+    onSuccess: (data) => {
+        setCarOptions([]);
+        data.forEach((car: Car) => {
+          setCarOptions((prevState: Array<NestedOptions>) => {
+            if (
+              prevState.some((group: NestedOptions) => group.label === car.series)
+            ) {
+              return prevState.map((group: NestedOptions) => {
+                if (group.label === car.series) {
+                  group.options.push({
+                    label: `${car.generation} ${car.model} ${car.body || ""}`,
+                    value: car.id,
+                  });
+                }
+                return group;
+              });
+            } else {
+              return [
+                ...prevState,
+                {
+                  label: car.series,
+                  options: [
+                    { label: `${car.generation} ${car.model} ${car.body || ""}`, value: car.id },
+                  ],
+                },
+              ];
+            }
+          });
+        });
+    }
+  });
   const savePartDetail = trpc.parts.createPartDetail.useMutation();
-
-  // useMemo(() => {
-  //   setCarOptions([]);
-  //   cars.data?.forEach((car: ICar) => {
-  //     setCarOptions((prevState: Array<NestedOptions>) => {
-  //       if (
-  //         prevState.some((group: NestedOptions) => group.label === car.series)
-  //       ) {
-  //         return prevState.map((group: NestedOptions) => {
-  //           if (group.label === car.series) {
-  //             group.options.push({
-  //               label: `${car.generation} ${car.model}`,
-  //               value: car.id,
-  //             });
-  //           }
-  //           return group;
-  //         });
-  //       } else {
-  //         return [
-  //           ...prevState,
-  //           {
-  //             label: car.series,
-  //             options: [
-  //               { label: `${car.generation} ${car.model}`, value: car.id },
-  //             ],
-  //           },
-  //         ];
-  //       }
-  //     });
-  //   });
-  // }, [cars.data]);
-
-  // useMemo(() => {
-  //   setDonorOptions([]);
-  //   donors.data?.forEach((donor: IDonor) => {
-  //     setDonorOptions((prevState: Array<Options>) => {
-  //       return [
-  //         ...prevState,
-  //         {
-  //           label: `${donor.vin} ${donor.year} ${donor.car.generation} ${donor.car.model}`,
-  //           value: donor.vin,
-  //         },
-  //       ];
-  //     });
-  //   });
-  // }, [donors.data]);
 
   const onSave = async () => {
     const result = await savePartDetail.mutateAsync({
       partNo: partNo,
       name: name,
+      cars: compatibleCars,
+    }, {
+      onSuccess: () => {
+        success(`Part ${result.partNo} successfully created`);
+      },
+      onError: (err) => {
+        error(err.message);
+      }
     });
-    const partId = result.partNo;
-    // const carRelations = compatibleCars.map((carId: any) => {
-    //   return {
-    //     partId: partId,
-    //     carId: carId,
-    //   };
-    // });
-    // await savePartCarRelation.mutateAsync(carRelations);
     setPartNo("");
     setName("");
-    setDonorVin("");
   };
 
   return (
@@ -156,19 +137,6 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Donor Car (Donor)
-              </label>
-              <Select
-                onChange={(e: SingleValue<Options>) =>
-                  setDonorVin(e?.value as string)
-                }
-                options={donorOptions}
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
-            </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Compatible Cars
               </label>
               <Select
@@ -198,4 +166,4 @@ const AddPart: React.FC<AddPartProps> = ({ showModal, setShowModal }) => {
   );
 };
 
-export default AddPart;
+export default AddPartDetails;
