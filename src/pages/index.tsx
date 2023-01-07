@@ -26,7 +26,7 @@ const Home: NextPage = () => {
   const [modelOptions, setModelOptions] = useState<Array<IOptions>>([]);
 
   const cars = trpc.cars.getAllSeries.useQuery(
-    {},
+    undefined,
     {
       onSuccess: (data) => {
         setSeriesOptions(data.series);
@@ -117,20 +117,20 @@ const Home: NextPage = () => {
                     className="mx-4 w-36"
                     placeholder="Series"
                     options={seriesOptions}
-                    onChange={(e) => setSeries(e.value)}
+                    onChange={(e) => setSeries(e?.value || "")}
                   />
                   <Select
                     className="mx-4 w-36"
                     placeholder="Generation"
                     options={generationOptions}
-                    onChange={(e) => setGeneration(e.value)}
+                    onChange={(e) => setGeneration(e?.value || "")}
                     isDisabled={generationOptions.length === 0}
                   />
                   <Select
                     className="mx-4 w-36"
                     placeholder="Model"
                     options={modelOptions}
-                    onChange={(e) => setModel(e.value)}
+                    onChange={(e) => setModel(e?.value || "")}
                     isDisabled={modelOptions.length === 0}
                   />
                   <Button
