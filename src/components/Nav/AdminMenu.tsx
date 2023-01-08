@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
@@ -7,20 +6,28 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
+import { useEffect, useRef } from "react";
 
-export default function AdminMenu({open, setOpen}:any) {
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
+interface AdminPopupProps {
+  open: boolean;
+  setOpen: any;
+}
 
-  const handleClose = (event: Event | React.SyntheticEvent) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
+const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen}) => {
 
-    setOpen(false);
-  };
+  const popUpRef = useRef<HTMLDivElement>(null);
+  
+ const closePopup = (e: any) => {
+   if (popUpRef.current && open && !popUpRef.current.contains(e.target)) {
+     setOpen(false);
+   }
+ };
+  
+  useEffect(() => {
+    document.addEventListener("mousedown", closePopup);
+  }, [])
+
+
 
   const handleToggle = () => {
     setOpen((prevOpen:any) => !prevOpen);
@@ -36,27 +43,10 @@ export default function AdminMenu({open, setOpen}:any) {
     setOpen(false);
   };
 
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current!.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
 
   return (
     <Stack
+      ref={popUpRef}
       className={`absolute top-[4rem] right-6 z-[100] ${
         open ? "visible" : "invisible"
       }`}
@@ -72,3 +62,5 @@ export default function AdminMenu({open, setOpen}:any) {
     </Stack>
   );
 }
+
+export default AdminPopup

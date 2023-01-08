@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 interface CartPopupProps {
   showCart: boolean;
+  setShowCart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface CartItem {
@@ -12,11 +13,27 @@ interface CartItem {
   quantity: number;
 }
 
-const CartPopup: React.FC<CartPopupProps> = ({ showCart }) => {
+
+
+const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
+
   const [cart, setCart] = useState<CartItem[]>([]);
+
+  const popUpRef = useRef<HTMLDivElement>(null);
+
+     const closeCart = (e:any) => {
+       if (
+         popUpRef.current &&
+         showCart &&
+         !popUpRef.current.contains(e.target)
+       ) {
+         setShowCart(false);
+       }
+     };
 
   useEffect(() => {
     if (showCart) {
+      document.addEventListener("mousedown", closeCart);
       const cart = localStorage.getItem("cart");
       if (cart) {
         setCart(JSON.parse(cart));
@@ -26,7 +43,8 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart }) => {
   }, [showCart]);
 
   return (
-      <div
+    <div
+      ref={popUpRef}
         className={`min-h-24 absolute right-8 top-20 w-72 translate-x-[20rem] duration-150 ease-linear ${
           showCart ? "translate-x-0" : ""
         }`}

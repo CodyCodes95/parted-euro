@@ -124,7 +124,7 @@ const Nav: React.FC = () => {
         >
           <ShoppingCartIcon />
         </div>
-        {<CartPopup showCart={showCart} />}
+        {<CartPopup setShowCart={setShowCart} showCart={showCart} />}
         <div
           className={`cursor-pointer p-2 ${
             !session && !showLogin ? "invisible" : ""
