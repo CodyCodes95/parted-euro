@@ -1,7 +1,6 @@
 import { adminProcedure } from './../trpc';
 import { z } from "zod";
-import { env } from "../../../env/server.mjs";
-import { router, publicProcedure } from "../trpc";
+import { router } from "../trpc";
 import cloudinary from "../../../utils/cloudinary.mjs";
 
 export const imagesRouter = router({
@@ -22,7 +21,7 @@ export const imagesRouter = router({
           return res;
         });
     }),
-  createImageRelation: adminProcedure
+  createImageRecord: adminProcedure
     .input(
       z.object({
         url: z.string().min(3),

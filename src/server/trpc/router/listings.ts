@@ -31,10 +31,27 @@ export const listingRouter = router({
         length: z.number(),
         width: z.number(),
         height: z.number(),
+        parts: z.array(z.string()),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.listing.create({ data: input });
+      return ctx.prisma.listing.create({
+        data: {
+          title: input.title,
+          description: input.description,
+          condition: input.condition,
+          price: input.price,
+          weight: input.weight,
+          length: input.length,
+          width: input.width,
+          height: input.height,
+          parts: {
+            connect: input.parts.map((part) => {
+              return { id: part };
+            }),
+          },
+        },
+      });
     }),
   getAllAvailable: publicProcedure
     .input(
@@ -119,7 +136,7 @@ export const listingRouter = router({
           images: true,
           parts: {
             select: {
-                 donor: {
+              donor: {
                 select: {
                   vin: true,
                   year: true,
@@ -134,15 +151,14 @@ export const listingRouter = router({
                     select: {
                       id: true,
                       generation: true,
-                      model: true
-                    }
-                  }
-                }
-              }
+                      model: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
-
       });
     }),
 });

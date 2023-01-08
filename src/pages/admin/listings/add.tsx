@@ -7,6 +7,9 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import Select from "react-select";
 import { Part } from "@prisma/client";
+import { Donor } from "@prisma/client";
+import { PartDetail } from "@prisma/client";
+
 
 interface Options {
   label: string;
@@ -18,33 +21,7 @@ interface NestedOptions {
   options: Array<Options>;
 }
 
-interface ICar {
-  id: string;
-  make: string;
-  series: string;
-  generation: string;
-  model: string;
-}
 
-interface IDonor {
-  vin: string;
-  car: ICar;
-  year: number;
-  cost: number;
-}
-
-interface IPart {
-  id: string;
-  partNo: string;
-  name: string;
-  donorVin: string;
-  listingId: string;
-  createdAt: string;
-  updatedAt: string;
-  cars: any;
-  donor: IDonor;
-  listing: any;
-}
 
 const AddListing: NextPage = () => {
   const [title, setTitle] = React.useState<string>("");
@@ -59,47 +36,28 @@ const AddListing: NextPage = () => {
   const [parts, setParts] = React.useState<Array<string>>([]);
   const [partOptions, setPartOptions] = React.useState<any>([]);
 
-  const cars = trpc.cars.getAll.useQuery();
-  const allParts = trpc.parts.getAll.useQuery();
-  const saveListing = trpc.listings.createListing.useMutation();
-  const uploadImage = trpc.listings.uploadListingImage.useMutation();
-  const saveImageRelation = trpc.images.createImageRelation.useMutation();
-
-  useMemo(() => {
-    setPartOptions([]);
-    allParts.data?.forEach((part: any) => {
-      setPartOptions((prevState: Array<NestedOptions>) => {
-        if (
-          prevState.some(
-            (group: NestedOptions) => group.label === part.donor.vin
-          )
-        ) {
-          return prevState.map((group: NestedOptions) => {
-            if (group.label === part.donor.vin) {
-              group.options.push({
-                label: part.partNo,
-                value: part.id,
-              });
+  const donors = trpc.donors.getAllWithParts.useQuery(undefined, {
+    onSuccess: (data) => {
+      console.log(data)
+      const options = data.map((donor: any) => {
+        return {
+          label: donor.vin,
+          options: donor.parts.map((part: any) => {
+            return {
+              label: `${part.partDetails.name} (${part.partDetails.partNo})`,
+              value: part.id,
+              tab: donor.vin
             }
-            return group;
-          });
-        } else {
-          return [
-            ...prevState,
-            {
-              label: part.donor.vin,
-              options: [
-                {
-                  label: part.partNo,
-                  value: part.id,
-                },
-              ],
-            },
-          ];
+          })
         }
       });
-    });
-  }, [allParts.data]);
+      setPartOptions(options);
+    }
+  })
+
+  const saveListing = trpc.listings.createListing.useMutation();
+  const uploadImage = trpc.listings.uploadListingImage.useMutation();
+  const createImageRecord = trpc.images.createImageRecord.useMutation();
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -124,23 +82,18 @@ const AddListing: NextPage = () => {
       length: length * 10,
       width: width * 10,
       height: height * 10,
+      parts: parts
     });
     const listingId = result.id;
     const imagePromises = images.map(async (image: string) => {
       const imageRes = await uploadImage.mutateAsync({
         image: image,
       });
-      return saveImageRelation.mutateAsync({
+      return createImageRecord.mutateAsync({
         listingId: listingId,
         url: imageRes.url,
       });
     });
-    // const partPromises = parts.map((partId: string) => {
-    //   return associateListingToPart.mutateAsync({
-    //     listingId: listingId,
-    //     partId: partId,
-    //   });
-    // });
     await Promise.all([...imagePromises]);
     console.log("finished");
     setTitle("");

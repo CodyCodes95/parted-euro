@@ -24,6 +24,19 @@ export const donorRouter = router({
   getAllWithCars: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({ include: { car: true } });
   }),
+  getAllWithParts: adminProcedure.query(({ ctx }) => {
+    return ctx.prisma.donor.findMany({
+      select: {
+        vin: true,
+        parts: {
+          select: {
+            id: true,
+            partDetails: true,
+          }
+        }
+      }
+    });
+  }),
   getAllDashboard: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       select: {
