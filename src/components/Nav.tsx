@@ -11,6 +11,7 @@ import { TextField } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import AdminMenu from "./Nav/AdminMenu";
+import CartPopup from "./Nav/CartPopup";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -18,7 +19,8 @@ const Nav: React.FC = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
-    const [openAdminMenu, setOpenAdminMenu] = useState(false);
+  const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
+  const [showCart, setShowCart] = useState<boolean>(false);
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -46,8 +48,11 @@ const Nav: React.FC = () => {
       <>
         {showMenu ? <NavBackdrop /> : null}
         <div className="fixed z-[100] flex h-20 w-full items-center justify-between bg-white">
-          <div className="cursor-pointer" onClick={() => setShowMenu(!showMenu)}>
-            <MenuIcon fontSize="large"/>
+          <div
+            className="cursor-pointer"
+            onClick={() => setShowMenu(!showMenu)}
+          >
+            <MenuIcon fontSize="large" />
           </div>
           <Link href="/">
             <img className="mr-8 inline h-8" src={logo.src} alt="" />
@@ -113,23 +118,29 @@ const Nav: React.FC = () => {
         >
           <SearchIcon />
         </div>
-        <div className="cursor-pointer p-2">
+        <div
+          onClick={() => setShowCart(!showCart)}
+          className="cursor-pointer p-2"
+        >
           <ShoppingCartIcon />
         </div>
+        <CartPopup showCart={showCart} />
         <div
           className={`cursor-pointer p-2 ${
             !session && !showLogin ? "invisible" : ""
           } ${showLogin && !session ? "visible" : ""}`}
         >
           {session ? (
-            <PersonIcon onClick={() => (setOpenAdminMenu(!openAdminMenu))} />
+            <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
           ) : (
             <LoginIcon
               onClick={() => (window.location.href = "/api/auth/signin")}
             />
           )}
         </div>
-        {openAdminMenu ? <AdminMenu open={openAdminMenu} setOpen={setOpenAdminMenu} /> : null}
+        {openAdminMenu ? (
+          <AdminMenu open={openAdminMenu} setOpen={setOpenAdminMenu} />
+        ) : null}
         {/* {session ? (
           <NavLink href="/api/auth/signout" title="Logout" />
         ) : (

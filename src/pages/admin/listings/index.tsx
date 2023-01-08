@@ -11,7 +11,9 @@ const Listings: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
 
     const success = (message: string) => toast.success(message);
-    const error = (message: string) => toast.error(message);
+  const error = (message: string) => toast.error(message);
+  
+  
 
   return (
     <>
