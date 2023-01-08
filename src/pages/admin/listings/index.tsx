@@ -1,11 +1,17 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React from "react";
+import { useState } from "react";
+import AddListing from "../../../components/listings/AddListing";
 import { trpc } from "../../../utils/trpc";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Listings: NextPage = () => {
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+    const success = (message: string) => toast.success(message);
+    const error = (message: string) => toast.error(message);
 
   return (
     <>
@@ -16,8 +22,16 @@ const Listings: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
         <div>
-          <Link href="./listings/add">Add Listing</Link>
+          {showModal ? (
+            <AddListing
+              success={success}
+              error={error}
+              showModal={showModal}
+              setShowModal={setShowModal}
+            />
+          ) : null}
         </div>
+        <button onClick={() => setShowModal(!showModal)}>Add Listing</button>
         <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
       </main>
     </>

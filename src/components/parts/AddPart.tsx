@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select, { MultiValue, SingleValue } from "react-select";
@@ -23,9 +23,9 @@ const AddPart: React.FC<AddPartProps> = ({
   error,
   donorVin,
 }) => {
-  const [name, setName] = React.useState<string>("");
-  const [partOptions, setPartOptions] = React.useState<Array<Options>>([]);
-  const [partDetailsIds, setPartDetailsIds] = React.useState<Array<string>>([]);
+  const [name, setName] = useState<string>("");
+  const [partOptions, setPartOptions] = useState<Array<Options>>([]);
+  const [partDetailsIds, setPartDetailsIds] = useState<Array<string>>([]);
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -41,8 +41,8 @@ const AddPart: React.FC<AddPartProps> = ({
           ];
         });
       });
-    }
-  })
+    },
+  });
   const savePart = trpc.parts.createPart.useMutation();
 
   const onSave = async () => {
@@ -50,16 +50,16 @@ const AddPart: React.FC<AddPartProps> = ({
       return error("Please select at least one part");
     }
     const savePartPromises = partDetailsIds.map((id) => {
-      return savePart.mutateAsync(
-        {
-          partDetailsId: id,
-          donorVin: donorVin,
-        },
-      )
-    })
-    await Promise.all(savePartPromises)
+      return savePart.mutateAsync({
+        partDetailsId: id,
+        donorVin: donorVin,
+      });
+    });
+    await Promise.all(savePartPromises);
     setShowModal(false);
-    success(`${savePartPromises.length} parts successfully added to donor ${donorVin}"`)
+    success(
+      `${savePartPromises.length} parts successfully added to donor ${donorVin}"`
+    );
   };
 
   return (
@@ -115,13 +115,15 @@ const AddPart: React.FC<AddPartProps> = ({
                 isMulti={true}
                 placeholder="Select one or more parts"
                 options={partOptions}
-                onChange={(e: any) => setPartDetailsIds(e.map((part:Options) => part.value))}
+                onChange={(e: any) =>
+                  setPartDetailsIds(e.map((part: Options) => part.value))
+                }
               />
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
-              onClick={ onSave}
+              onClick={onSave}
               data-modal-toggle="defaultModal"
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

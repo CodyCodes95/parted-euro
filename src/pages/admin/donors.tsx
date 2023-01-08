@@ -16,7 +16,6 @@ const Donors: NextPage = () => {
   const [donorVin, setDonorVin] = React.useState<string>("");
 
   const success = (message: string) => toast.success(message);
-  
   const error = (message: string) => toast.error(message)
 
   const donors = trpc.donors.getAllDashboard.useQuery(
