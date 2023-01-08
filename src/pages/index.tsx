@@ -1,13 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
 import { Button } from "@material-tailwind/react";
-import { useEffect, useMemo, useState } from "react";
+import {useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Select from "react-select";
+import { useRouter } from "next/router";
 
 interface IOptions {
   label: string;
@@ -24,6 +23,8 @@ const Home: NextPage = () => {
     []
   );
   const [modelOptions, setModelOptions] = useState<Array<IOptions>>([]);
+
+   const router = useRouter();
 
   const cars = trpc.cars.getAllSeries.useQuery(
     undefined,
@@ -114,6 +115,7 @@ const Home: NextPage = () => {
                     <ArrowBackIcon fontSize="large" className="text-white" />
                   </div>
                   <Select
+                    instanceId="seriesSelect"
                     className="mx-4 w-36"
                     placeholder="Series"
                     options={seriesOptions}
@@ -121,6 +123,7 @@ const Home: NextPage = () => {
                   />
                   <Select
                     className="mx-4 w-36"
+                    instanceId="generationSelect"
                     placeholder="Generation"
                     options={generationOptions}
                     onChange={(e) => setGeneration(e?.value || "")}
@@ -128,13 +131,14 @@ const Home: NextPage = () => {
                   />
                   <Select
                     className="mx-4 w-36"
+                    instanceId="modelSelect"
                     placeholder="Model"
                     options={modelOptions}
                     onChange={(e) => setModel(e?.value || "")}
                     isDisabled={modelOptions.length === 0}
                   />
                   <Button
-                    onClick={() => window.location.href = `/listings?series=${series}&generation=${generation}&model=${model}`}
+                    onClick={() => router.push(`/listings?series=${series}&generation=${generation}&model=${model}`)}
                     className="border-white text-sm text-white"
                     variant="outlined"
                   >
