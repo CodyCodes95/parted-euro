@@ -2,10 +2,9 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
-import placeholder from "../../../public/placeholder.png";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const Listings: NextPage = () => {
@@ -71,76 +70,3 @@ const Listings: NextPage = () => {
 };
 
 export default Listings;
-
-
-const test = [
-  {
-    id: "clcabjopw0008ehrrzopyowk2",
-    title: "Test listing with part",
-    description: "Testttt",
-    condition: "Used",
-    price: 1000000,
-    weight: 100000,
-    length: 1000,
-    width: 1000,
-    height: 1000,
-    createdAt: "2022-12-30T09:34:50.084Z",
-    updatedAt: "2022-12-30T09:34:50.084Z",
-    sold: false,
-    Images: [
-      {
-        id: "clcabjrjg000behrro4ooafot",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672392893/listings/dam8carpuikuapjndery.png",
-        listingId: "clcabjopw0008ehrrzopyowk2",
-        createdAt: "2022-12-30T09:34:53.741Z",
-        updatedAt: "2022-12-30T09:34:53.741Z",
-      },
-    ],
-  },
-  {
-    id: "clcgy2w5h0000eh5xut3yli3n",
-    title: "Test listing",
-    description: "this is a test",
-    condition: "Good",
-    price: 100000,
-    weight: 10000,
-    length: 100,
-    width: 100,
-    height: 50,
-    createdAt: "2023-01-04T00:52:14.789Z",
-    updatedAt: "2023-01-04T00:52:14.789Z",
-    sold: false,
-    Images: [
-      {
-        id: "clcgy2z7c0002eh5xfb29tbdg",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672793537/listings/oqtc1e02i3mqvkkyqsy3.png",
-        listingId: "clcgy2w5h0000eh5xut3yli3n",
-        createdAt: "2023-01-04T00:52:18.744Z",
-        updatedAt: "2023-01-04T00:52:18.744Z",
-      },
-    ],
-  },
-  {
-    id: "clcgybrm80003eh5xawn9xku4",
-    title: "Another test listing",
-    description: "!test!",
-    condition: "Great!",
-    price: 100000,
-    weight: 10000,
-    length: 100,
-    width: 100,
-    height: 0,
-    createdAt: "2023-01-04T00:59:08.817Z",
-    updatedAt: "2023-01-04T00:59:08.817Z",
-    sold: false,
-    Images: [
-      {
-        id: "clcgybukc0006eh5xqtkjfft1",
-        url: "http://res.cloudinary.com/codycodes/image/upload/v1672793951/listings/ckcvrvp1qyp7oggz3awr.png",
-        listingId: "clcgybrm80003eh5xawn9xku4",
-        createdAt: "2023-01-04T00:59:12.636Z",
-        updatedAt: "2023-01-04T00:59:12.636Z",
-      },
-    ],
-  },
-];

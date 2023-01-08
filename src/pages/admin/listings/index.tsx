@@ -1,7 +1,10 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import TextField from "@mui/material/TextField";
+import SearchIcon from "@mui/icons-material/Search";
 import AddListing from "../../../components/listings/AddListing";
 import { trpc } from "../../../utils/trpc";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,6 +15,27 @@ const Listings: NextPage = () => {
 
     const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
+
+  const router = useRouter();
+
+  const { series, generation, model } = router.query;
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "AUD",
+    minimumFractionDigits: 2,
+  });
+
+  const [search, setSearch] = useState<string>("");
+
+  // const debouncedSearch = useDebounce(search, 1000)
+
+  const listings = trpc.listings.getAllAvailable.useQuery({
+    series: series as string,
+    generation: generation as string,
+    model: model as string,
+    // search: debouncedSearch
+  });
   
   
 
@@ -23,6 +47,7 @@ const Listings: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
+        <ToastContainer />
         <div>
           {showModal ? (
             <AddListing
@@ -33,8 +58,53 @@ const Listings: NextPage = () => {
             />
           ) : null}
         </div>
-        <button onClick={() => setShowModal(!showModal)}>Add Listing</button>
-        <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
+
+        <div className="flex w-full flex-wrap items-center justify-center p-8">
+          <button
+            onClick={() => setShowModal(true)}
+            type="button"
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Add Listing
+          </button>
+        </div>
+        <div className="flex w-full items-center justify-center">
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-[33%]"
+            label="Search"
+            id="fullWidth"
+          />
+          <div className="relative">
+            <SearchIcon className="absolute top-[-9px] right-2" />
+          </div>
+        </div>
+        <div className="flex w-full flex-wrap items-center justify-center p-4">
+          {listings.data?.map((listing) => (
+            <Link
+              key={listing.id}
+              className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+              href={`/listings/listing?id=${listing.id}`}
+            >
+              <div className="max-h-[634px]">
+                <img
+                  src={listing.images[0]?.url}
+                  className="h-full duration-100 ease-linear group-hover:scale-105"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
+                  {listing.title}
+                </p>
+                <p className="text-lg">
+                  {formatter.format(listing.price / 100).split("A")[1]} AUD
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </main>
     </>
   );

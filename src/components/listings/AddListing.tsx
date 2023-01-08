@@ -75,6 +75,12 @@ const AddListing: React.FC<AddListingProps> = ({
   };
 
   const onSave = async () => {
+    // if (1 === 1) {
+    // Add some validation in here maybe???
+    //   error("AHH")
+    //   console.log("ERR")
+    //   return
+    // }
     setLoading(true)
     const result = await saveListing.mutateAsync({
       title: title,
