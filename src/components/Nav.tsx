@@ -7,11 +7,11 @@ import NavBackdrop from "./Nav/NavBackdrop";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
-import { TextField } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import AdminMenu from "./Nav/AdminMenu";
 import CartPopup from "./Nav/CartPopup";
+import SearchBar from "./Nav/Searchbar";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -148,19 +148,7 @@ const Nav: React.FC = () => {
         )}
         {session ? <NavLink href="/admin" title="Admin" /> : null} */}
       </div>
-      {showSearch ? (
-        <NavBackdrop showSearch={showSearch} setShowSearch={setShowSearch} />
-      ) : null}
-      <div
-        className={`absolute top-[-5rem] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
-          showSearch ? "translate-y-[5rem]" : ""
-        }`}
-      >
-        <TextField className="w-[33%]" label="Search" id="fullWidth" />
-        <div className="relative">
-          <SearchIcon className="absolute top-[-9px] right-2" />
-        </div>
-      </div>
+      <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
     </div>
   );
 };

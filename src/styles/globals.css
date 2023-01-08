@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+        overflow-x: hidden;
+}
+
 .css-5xe99f-MuiLinearProgress-bar1 {
     background-color: #96d219
 }

@@ -4,13 +4,15 @@ import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import {useState } from "react";
+import {useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const Listings: NextPage = () => {
   const router = useRouter();
 
-  const {series, generation, model} = router.query;
+  const { series, generation, model } = router.query;
+  
+  console.log(router.query.search)
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -18,19 +20,16 @@ const Listings: NextPage = () => {
     minimumFractionDigits: 2,
   });
 
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string | string[]>(router.query.search || "");
 
-  // const debouncedSearch = useDebounce(search, 1000)
+  const [debouncedSearch] = useDebounce(search, 500)
 
   const listings = trpc.listings.getAllAvailable.useQuery({
     series: series as string,
     generation: generation as string,
     model: model as string,
-    // search: debouncedSearch
+    search: debouncedSearch as string || undefined
   });
-
-
-  
     
   return (
     <div className="flex min-h-screen w-full flex-col p-24">

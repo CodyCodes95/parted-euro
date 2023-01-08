@@ -39,7 +39,6 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         setCart(JSON.parse(cart));
       }
     }
-    console.log(cart);
   }, [showCart]);
 
   return (
