@@ -26,7 +26,7 @@ const Listing: NextPage = () => {
     listingId: string;
     listingTitle: string;
     listingPrice: string;
-    listingImage: string | undefined
+    listingImage: string | undefined;
     quantity: number;
   }
 
@@ -144,7 +144,7 @@ const Listing: NextPage = () => {
                   if (
                     !acc.some(
                       (part) =>
-                        part.partDetails.partNo === cur.partDetails.partNo
+                        part.partDetails.cars[0].id === cur.partDetails.cars[0]?.id
                     )
                   ) {
                     acc.push(cur);
@@ -155,7 +155,7 @@ const Listing: NextPage = () => {
                   return part.partDetails.cars.map((car: Car) => {
                     return (
                       <p key={car.id}>
-                        {car.generation} {car.model}
+                        {car.generation} {car.model} {car.body}
                       </p>
                     );
                   });

@@ -63,6 +63,7 @@ export const listingRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
+      if (!input.generation || !input.model || !input.series) {
       const listings = await ctx.prisma.listing.findMany({
         include: {
           images: true,
@@ -76,20 +77,36 @@ export const listingRouter = router({
           // active: true,
         },
       });
-      if (!input.generation || !input.model || !input.series) {
         return listings;
       } else {
-        // const filteredListings = listings.filter((listing: typeof listings[0]) => {
-        //   return (
-        //     listing.parts.
-        //     // listing.car.generation === input.generation &&
-        //     // listing.car.model === input.model &&
-        //     // listing.car.series === input.series
-        //   );
-        // });
-        // return filteredListings;
-        console.log("err");
-        return [];
+        const listings = await ctx.prisma.listing.findMany({
+          // Only return listings where any cars attached to any of the parts attached to the listing
+          // match the generation, model, and series
+          include: {
+            images: true,
+            parts: true
+          },
+          where: {
+            title: {
+              contains: input.search || "",
+            },
+            active: true,
+            parts: {
+              some: {
+                partDetails: {
+                  cars: {
+                    some: {
+                      generation: input.generation,
+                      model: input.model,
+                      series: input.series,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        })
+        return listings
       }
     }),
   // This getallavailable is one that works. I am going to do some manual filtering after
