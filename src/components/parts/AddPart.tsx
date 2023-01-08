@@ -115,6 +115,7 @@ const AddPart: React.FC<AddPartProps> = ({
                 isMulti={true}
                 placeholder="Select one or more parts"
                 options={partOptions}
+                closeMenuOnSelect={false}
                 onChange={(e: any) =>
                   setPartDetailsIds(e.map((part: Options) => part.value))
                 }
