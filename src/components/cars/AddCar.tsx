@@ -7,9 +7,16 @@ import { Car } from "@prisma/client";
 interface AddCarProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  success: (message: string) => void;
+  error: (message: string) => void;
 }
 
-const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
+const AddCar: React.FC<AddCarProps> = ({
+  showModal,
+  setShowModal,
+  success,
+  error,
+}) => {
   const [make, setMake] = React.useState<string>("BMW");
   const [series, setSeries] = React.useState<string>("");
   const [generation, setGeneration] = React.useState<string>("");
@@ -20,21 +27,31 @@ const AddCar: React.FC<AddCarProps> = ({ showModal, setShowModal }) => {
   const cars = trpc.cars.getAll.useQuery();
   const saveCar = trpc.cars.createCar.useMutation();
 
-  const onSave = async (exit:boolean) => {
-    const result = await saveCar.mutateAsync({
-      make: make,
-      series: series,
-      generation: generation,
-      model: model,
-      body: body || null
-    });
-    if (exit) {
-      setShowModal(false);
-    }
-    setSeries("");
-    setGeneration("");
-    setModel("");
-    setBody("");
+  const onSave = async (exit: boolean) => {
+    const result = await saveCar.mutateAsync(
+      {
+        make: make,
+        series: series,
+        generation: generation,
+        model: model,
+        body: body || null,
+      },
+      {
+        onSuccess: (data) => {
+          success(`${generation} ${model} added successfully`);
+          if (exit) {
+            setShowModal(false);
+          }
+          setSeries("");
+          setGeneration("");
+          setModel("");
+          setBody("");
+        },
+        onError: (err) => {
+          error(err.message);
+        },
+      }
+    );
   };
 
   return (

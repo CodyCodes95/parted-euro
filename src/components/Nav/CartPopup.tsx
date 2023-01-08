@@ -49,8 +49,8 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart }) => {
               className="divide-y divide-gray-200 dark:divide-gray-700"
             >
               {cart.length > 0 ? (
-                cart.map((item) => (
-                  <li key={item.listingId} className="py-3 sm:py-4">
+                cart.map((item,i) => (
+                  <li key={i} className="py-3 sm:py-4">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <img

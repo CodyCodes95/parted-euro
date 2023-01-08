@@ -3,38 +3,41 @@ import Head from "next/head";
 import AddCar from "../../components/cars/AddCar";
 import { trpc } from "../../utils/trpc";
 import SortedTable from "../../components/tables/SortedTable";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Car } from "@prisma/client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Cars: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
   const [rows, setRows] = useState<Car[]>([]);
-  const cars = trpc.cars.getAll.useQuery(
-    undefined,
-    {
-      onSuccess: (data) => {
-        setHeadCells([]);
-        setRows([]);
-        setHeadCells((): any => {
-          const cells = Object.keys(data[0] as Car)
-            .filter((key) => key !== "id")
-            .map((key: any) => {
-              return {
-                disablePadding: false,
-                id: key,
-                numeric: false,
-                label: key,
-              };
-            });
-          return cells;
-        });
-        data?.forEach((car) => {
-          setRows((prev) => [...prev, car]);
-        });
-      },
-    }
-  );
+
+  const success = (message: string) => toast.success(message);
+  const error = (message: string) => toast.error(message);
+
+  const cars = trpc.cars.getAll.useQuery(undefined, {
+    onSuccess: (data) => {
+      setHeadCells([]);
+      setRows([]);
+      setHeadCells((): any => {
+        const cells = Object.keys(data[0] as Car)
+          .filter((key) => key !== "id")
+          .map((key: any) => {
+            return {
+              disablePadding: false,
+              id: key,
+              numeric: false,
+              label: key,
+            };
+          });
+        return cells;
+      });
+      data?.forEach((car) => {
+        setRows((prev) => [...prev, car]);
+      });
+    },
+  });
 
   return (
     <>
@@ -44,8 +47,9 @@ const Cars: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
+        <ToastContainer />
         {showModal ? (
-          <AddCar showModal={showModal} setShowModal={setShowModal} />
+          <AddCar showModal={showModal} setShowModal={setShowModal} success={success} error={error} />
         ) : null}
         <SortedTable
           headCells={headCells}
