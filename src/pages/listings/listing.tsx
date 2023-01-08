@@ -3,9 +3,11 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Car } from "@prisma/client";
 import Head from "next/head";
+import { Listing as ListingType } from "@prisma/client";
+import { Image } from "@prisma/client";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -16,15 +18,43 @@ const Listing: NextPage = () => {
     minimumFractionDigits: 2,
   });
 
-  const [mainImage, setMainImage] = useState<string>("");
+  interface IListing extends ListingType {
+    images: Image[];
+  }
 
-  const listing = trpc.listings.getListing.useQuery({
-    id: router.query.id as string,
-  }, {
-    onSuccess: (data) => {
-      setMainImage(data?.images[0]?.url || "");
+  interface CartItem {
+    listingId: string;
+    listingTitle: string;
+    listingPrice: string;
+    listingImage: string | undefined
+    quantity: number;
+  }
+
+  const [mainImage, setMainImage] = useState<string>("");
+  const [cart, setCart] = useState<any[]>([]);
+
+  const addToCart = (listing: IListing) => {
+    const cartItem = {
+      listingId: listing?.id,
+      listingTitle: listing?.title,
+      listingPrice: listing?.price,
+      listingImage: listing?.images[0]?.url,
+      quantity: 1,
+    };
+    setCart([...cart, cartItem]);
+    localStorage.setItem("cart", JSON.stringify([...cart, cartItem]));
+  };
+
+  const listing = trpc.listings.getListing.useQuery(
+    {
+      id: router.query.id as string,
+    },
+    {
+      onSuccess: (data) => {
+        setMainImage(data?.images[0]?.url || "");
+      },
     }
-  });
+  );
 
   return (
     <>
@@ -61,7 +91,7 @@ const Listing: NextPage = () => {
             </h4>
             <div className="flex flex-col">
               <LoadingButton
-                onClick={() => console.log("clicked")}
+                onClick={() => addToCart(listing.data as any)}
                 className="mb-4 h-12 w-96 bg-[#1976d2]"
                 loading={false}
                 variant="contained"
