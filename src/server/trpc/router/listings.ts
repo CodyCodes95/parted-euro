@@ -71,24 +71,27 @@ export const listingRouter = router({
           parts: true,
         },
         where: {
+          active: true,
           OR: [{
             description: {
               contains: input.search || "",
             },
           }, {
-            title: {
-              contains: input.search || "",
+              title: {
+                contains: input.search || "",
+              },
             },
+            {
+            parts: {
+                some: {
+                  partDetails: {
+                    partNo: {
+                      contains: input.search || "",
+                    }
+                  }
+                }
+            }
           }],
-          active: true,
-          // title: {
-          //   contains: input.search || "",
-          // },
-          // OR: {
-          //   description: {
-          //     contains: input.search || "",
-          //   },
-          // },
         },
       });
         return listings;
@@ -96,18 +99,22 @@ export const listingRouter = router({
         const listings = await ctx.prisma.listing.findMany({
           include: {
             images: true,
-            parts: true
+            parts: true,
           },
           where: {
             active: true,
-            title: {
-              contains: input.search || "",
-            },
-            OR: {
-              description: {
-                contains: input.search || "",
+            OR: [
+              {
+                description: {
+                  contains: input.search || "",
+                },
               },
-            },
+              {
+                title: {
+                  contains: input.search || "",
+                },
+              },
+            ],
             parts: {
               some: {
                 partDetails: {
@@ -122,7 +129,7 @@ export const listingRouter = router({
               },
             },
           },
-        })
+        });
         return listings
       }
     }),
