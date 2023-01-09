@@ -71,15 +71,24 @@ export const listingRouter = router({
           parts: true,
         },
         where: {
-          active: true,
-          description: {
-            contains: input.search || "",
-          },
-          OR: {
+          OR: [{
             description: {
               contains: input.search || "",
             },
-          },
+          }, {
+            title: {
+              contains: input.search || "",
+            },
+          }],
+          active: true,
+          // title: {
+          //   contains: input.search || "",
+          // },
+          // OR: {
+          //   description: {
+          //     contains: input.search || "",
+          //   },
+          // },
         },
       });
         return listings;
