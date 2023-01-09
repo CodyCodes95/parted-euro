@@ -34,8 +34,9 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={searchListings}
           className="w-[33%]"
-          label="Search"
+          // label="Search"
           id="fullWidth"
+          placeholder="Search by part number, part name, car, etc."
         />
         <div className="relative">
           <SearchIcon className="absolute top-[-9px] right-2" />

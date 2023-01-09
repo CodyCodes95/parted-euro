@@ -1,4 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+import SearchBar from "./SearchBar";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 interface CartPopupProps {
   showCart: boolean;
@@ -42,8 +44,14 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
   }, [showCart]);
 
   return (
-    <div
-      ref={popUpRef}
+    <div ref={popUpRef}>
+      <div
+        onClick={() => setShowCart(!showCart)}
+        className="cursor-pointer p-2"
+      >
+        <ShoppingCartIcon />
+      </div>
+      <div
         className={`min-h-24 absolute right-8 top-20 w-72 translate-x-[20rem] duration-150 ease-linear ${
           showCart ? "translate-x-0" : ""
         }`}
@@ -66,7 +74,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
               className="divide-y divide-gray-200 dark:divide-gray-700"
             >
               {cart.length > 0 ? (
-                cart.map((item,i) => (
+                cart.map((item, i) => (
                   <li key={i} className="py-3 sm:py-4">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
@@ -103,6 +111,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

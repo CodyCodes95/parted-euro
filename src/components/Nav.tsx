@@ -118,12 +118,6 @@ const Nav: React.FC = () => {
         >
           <SearchIcon />
         </div>
-        <div
-          onClick={() => setShowCart(!showCart)}
-          className="cursor-pointer p-2"
-        >
-          <ShoppingCartIcon />
-        </div>
         {<CartPopup setShowCart={setShowCart} showCart={showCart} />}
         <div
           className={`cursor-pointer p-2 ${
