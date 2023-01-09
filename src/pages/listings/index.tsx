@@ -11,8 +11,6 @@ const Listings: NextPage = () => {
   const router = useRouter();
 
   const { series, generation, model } = router.query;
-  
-  console.log(router.query.search)
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",

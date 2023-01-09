@@ -68,29 +68,37 @@ export const listingRouter = router({
         // return all listings of if input.search is not empty return all listings where the description or title contains the search string
         include: {
           images: true,
-          parts: true
+          parts: true,
         },
         where: {
+          active: true,
           description: {
             contains: input.search || "",
           },
-          active: true,
+          OR: {
+            description: {
+              contains: input.search || "",
+            },
+          },
         },
       });
         return listings;
       } else {
         const listings = await ctx.prisma.listing.findMany({
-          // Only return listings where any cars attached to any of the parts attached to the listing
-          // match the generation, model, and series
           include: {
             images: true,
             parts: true
           },
           where: {
+            active: true,
             title: {
               contains: input.search || "",
             },
-            active: true,
+            OR: {
+              description: {
+                contains: input.search || "",
+              },
+            },
             parts: {
               some: {
                 partDetails: {
