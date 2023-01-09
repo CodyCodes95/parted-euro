@@ -11,7 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import AdminMenu from "./Nav/AdminMenu";
 import CartPopup from "./Nav/CartPopup";
-import SearchBar from "./Nav/Searchbar";
+import SearchBar from "./Nav/SearchBar";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
