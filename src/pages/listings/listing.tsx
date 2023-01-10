@@ -33,7 +33,7 @@ const Listing: NextPage = () => {
 
   const [mainImage, setMainImage] = useState<string>("");
 
-const { cart, setCart } = useContext(CartContext);
+  const { cart, setCart } = useContext(CartContext);
 
   const addToCart = (listing: IListing) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -45,7 +45,7 @@ const { cart, setCart } = useContext(CartContext);
       setCart(updatedCart);
     } else {
       const cartItem: CartItem = {
-        listingId: listing.id,  
+        listingId: listing.id,
         listingTitle: listing.title,
         listingPrice: listing.price,
         listingImage: listing.images[0]?.url,
@@ -54,10 +54,6 @@ const { cart, setCart } = useContext(CartContext);
       setCart([...cart, cartItem]);
     }
   };
-
-  useEffect(() => {
-    console.log(cart)
-  }, [cart])
 
   const listing = trpc.listings.getListing.useQuery(
     {

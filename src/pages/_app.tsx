@@ -13,15 +13,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
+        <CartProvider>
     <SessionProvider session={session}>
       <ThemeProvider>
-        <CartProvider>
           <Nav />
           <Component {...pageProps} />
           <Footer />
-        </CartProvider>
       </ThemeProvider>
     </SessionProvider>
+        </CartProvider>
   );
 };
 

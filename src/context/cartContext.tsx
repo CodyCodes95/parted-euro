@@ -18,11 +18,6 @@ const CartProvider: React.FC<any> = ({ children }) => {
   // Initialize an empty cart
   const [cart, setCart] = useState([]);
 
-  //Add the cart data to localstorage
-  React.useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
   // Retrieve the cart data from local storage on load
   React.useEffect(() => {
     const cartInStorage = localStorage.getItem("cart");
@@ -30,6 +25,15 @@ const CartProvider: React.FC<any> = ({ children }) => {
       setCart(JSON.parse(cartInStorage));
     }
   }, []);
+
+  //Add the cart data to localstorage
+  React.useEffect(() => {
+      console.log(cart)
+      if (cart.length > 0) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
+  }, [cart]);
+
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>
