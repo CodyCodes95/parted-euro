@@ -70,6 +70,8 @@ const Home: NextPage = () => {
             src={carImg.src}
             alt="hero"
             className="max-h-screen w-full object-cover"
+            width={carImg.width}
+            height={carImg.height}
           />
           <div className="absolute w-[50%] text-center text-white">
             <div className="flex w-full flex-col items-center">

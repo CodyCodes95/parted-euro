@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Car } from "@prisma/client";
 import Head from "next/head";
 import { Listing as ListingType } from "@prisma/client";
@@ -22,28 +22,36 @@ const Listing: NextPage = () => {
     images: Image[];
   }
 
-  interface CartItem {
-    listingId: string;
-    listingTitle: string;
-    listingPrice: string;
-    listingImage: string | undefined;
-    quantity: number;
-  }
-
   const [mainImage, setMainImage] = useState<string>("");
   const [cart, setCart] = useState<any[]>([]);
 
   const addToCart = (listing: IListing) => {
-    const cartItem = {
-      listingId: listing?.id,
-      listingTitle: listing?.title,
-      listingPrice: listing?.price,
-      listingImage: listing?.images[0]?.url,
-      quantity: 1,
-    };
-    setCart([...cart, cartItem]);
-    localStorage.setItem("cart", JSON.stringify([...cart, cartItem]));
+    setCart((cartState) => {
+      const existingItem = cartState.find(
+        (existingItem) => existingItem.listingId === listing.id
+        );
+        if (existingItem) {
+        console.log("run")
+        existingItem.quantity += 1;
+        return cartState;
+      }
+      const cartItem = {
+        listingId: listing?.id,
+        listingTitle: listing?.title,
+        listingPrice: listing?.price,
+        listingImage: listing?.images[0]?.url,
+        quantity: 1,
+      };
+      return [...cartState, cartItem];
+    });
   };
+
+  useEffect(() => {
+    console.log(cart)
+    if (cart.length > 0) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const listing = trpc.listings.getListing.useQuery(
     {
@@ -52,6 +60,7 @@ const Listing: NextPage = () => {
     {
       onSuccess: (data) => {
         setMainImage(data?.images[0]?.url || "");
+        setCart(JSON.parse(localStorage.cart || "[]"));
       },
     }
   );
@@ -144,7 +153,8 @@ const Listing: NextPage = () => {
                   if (
                     !acc.some(
                       (part) =>
-                        part.partDetails.cars[0].id === cur.partDetails.cars[0]?.id
+                        part.partDetails.cars[0].id ===
+                        cur.partDetails.cars[0]?.id
                     )
                   ) {
                     acc.push(cur);
@@ -184,7 +194,7 @@ const Listing: NextPage = () => {
                 }, [] as any[])
                 .map((part) => {
                   return (
-                    <p key={part.partDetails.partNo}>
+                    <p key={part.donor.vin}>
                       {part.donor.year} {part.donor.car.generation}
                       {part.donor.car.model} {"//"} VIN: {part.donor.vin} {"//"}{" "}
                       Mileage:
