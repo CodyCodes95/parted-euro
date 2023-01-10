@@ -71,7 +71,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                   className="divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   {listings.data.slice(0, 5).map((listing) => (
-                    <li className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
+                    <li key={listing.id} className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
                           <img
@@ -95,7 +95,9 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                     }}
                     className="flex h-12 cursor-pointer items-center hover:bg-gray-300 "
                   >
-                    <p className="p-4 text-lg">Search for "{search}"</p>
+                    <p className="p-4 text-lg">
+                      Search for &quot;{search}&quot;
+                    </p>
                     <ArrowForwardIcon className="ml-auto mr-5" />
                   </li>
                 </ul>
