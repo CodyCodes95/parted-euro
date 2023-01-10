@@ -61,12 +61,6 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
             <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
               Cart
             </h5>
-            {/* <a
-              href="#"
-              className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-            >
-              View all
-            </a> */}
           </div>
           <div className="flow-root">
             <ul
