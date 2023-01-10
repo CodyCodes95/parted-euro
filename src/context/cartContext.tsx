@@ -1,6 +1,14 @@
 import { createContext } from "react";
 
-const CartContext = createContext({});
+interface CartContextType {
+    cart: any[]
+    setCart: any
+}
+
+const CartContext = createContext<CartContextType>({
+  cart: [],
+  setCart: () => {},
+});
 
 export default CartContext;
 

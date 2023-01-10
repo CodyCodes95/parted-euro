@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from "react";
-import SearchBar from "./SearchBar";
+import { useRef, useEffect, useContext } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import CartContext from "../../context/cartContext";
 
 interface CartPopupProps {
   showCart: boolean;
@@ -15,11 +15,13 @@ interface CartItem {
   quantity: number;
 }
 
-
-
 const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
 
-  const [cart, setCart] = useState<CartItem[]>([]);
+  // const { cart, setCart } = useContext(CartContext);
+  
+  // useEffect(() => {
+  //   console.log(cart)
+  // })
 
   const popUpRef = useRef<HTMLDivElement>(null);
 
@@ -36,10 +38,6 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
   useEffect(() => {
     if (showCart) {
       document.addEventListener("mousedown", closeCart);
-      const cart = localStorage.getItem("cart");
-      if (cart) {
-        setCart(JSON.parse(cart));
-      }
     }
   }, [showCart]);
 
@@ -50,7 +48,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         className="cursor-pointer p-2"
       >
         <ShoppingCartIcon />
-      </div>
+      {/* </div>
       <div
         className={`min-h-24 absolute right-8 top-20 w-72 translate-x-[20rem] duration-150 ease-linear ${
           showCart ? "translate-x-0" : ""
@@ -103,7 +101,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
               Checkout
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

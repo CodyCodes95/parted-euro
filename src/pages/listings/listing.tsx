@@ -3,11 +3,12 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Car } from "@prisma/client";
 import Head from "next/head";
 import { Listing as ListingType } from "@prisma/client";
 import { Image } from "@prisma/client";
+import CartContext from "../../context/cartContext";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -22,45 +23,50 @@ const Listing: NextPage = () => {
     images: Image[];
   }
 
+  interface CartItem {
+    listingId: string;
+    listingTitle: string;
+    listingPrice: number;
+    listingImage: string | undefined;
+    quantity: number;
+  }
+
   const [mainImage, setMainImage] = useState<string>("");
-  const [cart, setCart] = useState<any[]>([]);
+
+const { cart, setCart } = useContext(CartContext);
 
   const addToCart = (listing: IListing) => {
-    setCart((cartState) => {
-      const existingItem = cartState.find(
-        (existingItem) => existingItem.listingId === listing.id
-        );
-        if (existingItem) {
-        console.log("run")
-        existingItem.quantity += 1;
-        return cartState;
-      }
-      const cartItem = {
-        listingId: listing?.id,
-        listingTitle: listing?.title,
-        listingPrice: listing?.price,
-        listingImage: listing?.images[0]?.url,
+    const existingItem = cart.find((i) => i.listingId === listing.id);
+
+    if (existingItem) {
+      const updatedCart = cart.map((i) =>
+        i.listingId === listing.id ? { ...i, quantity: i.quantity + 1 } : i
+      );
+      setCart(updatedCart);
+    } else {
+      const cartItem: CartItem = {
+        listingId: listing.id,  
+        listingTitle: listing.title,
+        listingPrice: listing.price,
+        listingImage: listing.images[0]?.url,
         quantity: 1,
       };
-      return [...cartState, cartItem];
-    });
+      setCart([...cart, cartItem]);
+    }
   };
 
   useEffect(() => {
     console.log(cart)
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
+  }, [cart])
 
   const listing = trpc.listings.getListing.useQuery(
     {
       id: router.query.id as string,
     },
     {
+      enabled: !!router.query.id,
       onSuccess: (data) => {
         setMainImage(data?.images[0]?.url || "");
-        setCart(JSON.parse(localStorage.cart || "[]"));
       },
     }
   );

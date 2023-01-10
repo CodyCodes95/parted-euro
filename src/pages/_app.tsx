@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
+import { CartProvider } from "../context/cartContext";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,9 +15,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider>
-        <Nav />
-        <Component {...pageProps} />
-        <Footer />
+        <CartProvider>
+          <Nav />
+          <Component {...pageProps} />
+          <Footer />
+        </CartProvider>
       </ThemeProvider>
     </SessionProvider>
   );

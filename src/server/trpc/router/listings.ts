@@ -157,7 +157,7 @@ export const listingRouter = router({
   getListing: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.string()
       })
     )
     .query(({ ctx, input }) => {
@@ -166,6 +166,7 @@ export const listingRouter = router({
           id: input.id,
         },
         select: {
+          id: true,
           title: true,
           description: true,
           condition: true,
