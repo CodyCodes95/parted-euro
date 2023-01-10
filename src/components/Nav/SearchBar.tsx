@@ -34,7 +34,6 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
       enabled: debouncedSearch !== "",
     }
   );
-  
 
   return (
     <>
@@ -71,8 +70,8 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                   role="list"
                   className="divide-y divide-gray-200 dark:divide-gray-700"
                 >
-                  {listings.data.slice(0,5).map((listing) => (
-                    <li className="group cursor-pointer py-3 hover:bg-gray-300 sm:py-4 px-4">
+                  {listings.data.slice(0, 5).map((listing) => (
+                    <li className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
                           <img
@@ -102,53 +101,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                 </ul>
               </div>
             </div>
-          ) : //   <div className="absolute translate-y-[3.7rem]">
-          //     <div className="flex items-center justify-center">
-          //       <div className="w-[33%] rounded-lg border bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-          // <div className="flex items-center justify-between border-b-2">
-          //   <h5 className="p-4 text-xl font-bold leading-none text-gray-900 dark:text-white">
-          //     Products
-          //   </h5>
-          // </div>
-          // <div className="flow-root">
-          //   <ul
-          //     role="list"
-          //     className="divide-y divide-gray-200 dark:divide-gray-700"
-          //   >
-          //     {listings.data.map((listing) => (
-          //       <li className="cursor-pointer py-3 group hover:bg-gray-300 sm:py-4">
-          //         <div className="flex items-center space-x-4">
-          //           <div className="flex-shrink-0">
-          //             <img
-          //               className="h-20 w-20 rounded-md"
-          //               src={listing.images[0]?.url}
-          //               alt={`${listing.title} image`}
-          //             />
-          //           </div>
-          //           <div className="min-w-0 flex-1">
-          //             <p className="truncate text-base text-gray-900 dark:text-white group-hover:underline">
-          //               {listing.title}
-          //             </p>
-          //           </div>
-          //         </div>
-          //       </li>
-          //     ))}
-          //     <li
-          //       onClick={() => {
-          //         setShowSearch(false)
-          //         router.push(`/listings?search=${search}`);
-          //       }}
-          //       className="cursor-pointer hover:bg-gray-300 h-12 flex items-center "
-          //     >
-          //       <p className="text-lg p-4">Search for "{search}"</p>
-          //     </li>
-          //   </ul>
-          // </div>
-          //       </div>
-          //     </div>
-          //   </div>
-          // ) : null}
-          null}
+          ) : null}
         </div>
       </div>
     </>
