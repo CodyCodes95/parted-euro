@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 interface CartContextType {
     cart: any[]
-    setCart: (cart: never[]) => void
+    setCart: (cart: any[]) => void
 }
 
 const CartContext = createContext<CartContextType>({
@@ -35,7 +35,7 @@ const CartProvider: React.FC<any> = ({ children }) => {
 
 
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
+    <CartContext.Provider value={{ cart, setCart } as any}>
       {children}
     </CartContext.Provider>
   );
