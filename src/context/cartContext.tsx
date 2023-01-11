@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 interface CartContextType {
     cart: any[]
-    setCart: any
+    setCart: (cart: never[]) => void
 }
 
 const CartContext = createContext<CartContextType>({
