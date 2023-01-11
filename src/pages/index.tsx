@@ -96,6 +96,7 @@ const Home: NextPage = () => {
                   <Button
                     className="mr-28 border-white text-sm text-white"
                     variant="outlined"
+                    onClick={() => router.push("/listings")}
                   >
                     Browse ALl
                   </Button>
