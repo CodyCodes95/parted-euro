@@ -35,16 +35,21 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
   };
 
   const updateQuantity = (e: any, item: CartItem) => {
-    const updatedCart = cart.map((i) => {
-      return i.listingId === item.listingId
+    const updatedCart = cart.map((listing) => {
+      // handle updating qnt to 0, exceeding available qnt on listings etc
+      // if (listing.listingId === item.listingId) {
+      //     if (listing.quantity)
+      // } else {
+      //   return listing;
+      // }
+      return listing.listingId === item.listingId
         ? {
-            ...i,
+            ...listing,
             quantity:
               e.target.textContent === "+" ? item.quantity+=1 : item.quantity -=1,
           }
-        : i;
+        : listing;
     });
-    console.log(updatedCart);
     setCart(updatedCart);
   };
 

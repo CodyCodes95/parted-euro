@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 interface CartContextType {
     cart: any[]
-    setCart: (cart: any[]) => void
+    setCart: React.Dispatch<React.SetStateAction<any[]>>
 }
 
 const CartContext = createContext<CartContextType>({
