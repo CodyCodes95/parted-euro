@@ -64,36 +64,39 @@ export const listingRouter = router({
     )
     .query(async ({ ctx, input }) => {
       if (!input.generation || !input.model || !input.series) {
-      const listings = await ctx.prisma.listing.findMany({
-        // return all listings of if input.search is not empty return all listings where the description or title contains the search string
-        include: {
-          images: true,
-          parts: true,
-        },
-        where: {
-          active: true,
-          OR: [{
-            description: {
-              contains: input.search || "",
-            },
-          }, {
-              title: {
-                contains: input.search || "",
+        const listings = await ctx.prisma.listing.findMany({
+          // return all listings of if input.search is not empty return all listings where the description or title contains the search string
+          include: {
+            images: true,
+            parts: true,
+          },
+          where: {
+            active: true,
+            OR: [
+              {
+                description: {
+                  contains: input.search || "",
+                },
               },
-            },
-            {
-            parts: {
-                some: {
-                  partDetails: {
-                    partNo: {
-                      contains: input.search || "",
-                    }
-                  }
-                }
-            }
-          }],
-        },
-      });
+              {
+                title: {
+                  contains: input.search || "",
+                },
+              },
+              {
+                parts: {
+                  some: {
+                    partDetails: {
+                      partNo: {
+                        contains: input.search || "",
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        });
         return listings;
       } else {
         const listings = await ctx.prisma.listing.findMany({
@@ -130,34 +133,49 @@ export const listingRouter = router({
             },
           },
         });
-        return listings
+        return listings;
       }
     }),
-  // This getallavailable is one that works. I am going to do some manual filtering after
-  // prisma fetch to only return matching listings for generation, model, and series
-  // Ideally, this would all be done with one prisma query, but I am not sure how to do that
-  // getAllAvailable: publicProcedure
-  //   .input(
-  //     z.object({
-  //       generation: z.string().min(3).optional(),
-  //       model: z.string().min(3).optional(),
-  //       series: z.string().min(3).optional(),
-  //     })
-  //   )
-  //   .query(({ ctx }) => {
-  //     return ctx.prisma.listing.findMany({
-  //       include: {
-  //         Images: true,
-  //       },
-  //       where: {
-  //         sold: false,
-  //       },
-  //     });
-  //   }),
+  getRelatedListings: publicProcedure
+    .input(
+      z.object({
+        generation: z.string(),
+        model: z.string(),
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findMany({
+        take: 4,
+        include: {
+          images: true,
+          parts: true,
+        },
+        where: {
+          id: {
+            not: input.id,
+          },
+          active: true,
+          parts: {
+            some: {
+              partDetails: {
+                cars: {
+                  some: {
+                    generation: input.generation,
+                    model: input.model,
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      return listings;
+    }),
   getListing: publicProcedure
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
       })
     )
     .query(({ ctx, input }) => {

@@ -28,7 +28,6 @@ const CartProvider: React.FC<any> = ({ children }) => {
 
   //Add the cart data to localstorage
   React.useEffect(() => {
-      console.log(cart)
       if (cart.length > 0) {
         localStorage.setItem("cart", JSON.stringify(cart));
       }

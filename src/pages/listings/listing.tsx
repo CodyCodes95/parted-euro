@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Car } from "@prisma/client";
 import Head from "next/head";
 import { Listing as ListingType } from "@prisma/client";
@@ -67,6 +67,16 @@ const Listing: NextPage = () => {
     }
   );
 
+  const relatedListings = trpc.listings.getRelatedListings.useQuery(
+    {
+      generation: listing.data?.parts[0]?.partDetails.cars[0]?.generation as string,
+      model: listing.data?.parts[0]?.partDetails.cars[0]?.model as string,
+      id: listing.data?.id as string,
+    },
+    {
+      enabled: listing.data !== undefined,
+    }
+  );
   return (
     <>
       <Head>
