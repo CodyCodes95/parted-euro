@@ -76,6 +76,8 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
           !showCart ? "translate-x-[40rem]" : ""
         }`}
       >
+        {cart.length > 0 ? (
+          <>
         <div className="flow-root">
           <ul className="-my-8">
             {cart.map((item: CartItem) => (
@@ -213,6 +215,11 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
             </svg>
           </button>
         </div>
+        </>
+        ) : (
+            <p>No items</p>
+        )
+          }
       </div>
     </div>
   );

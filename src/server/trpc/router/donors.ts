@@ -32,9 +32,37 @@ export const donorRouter = router({
           select: {
             id: true,
             partDetails: true,
-          }
-        }
-      }
+          },
+        },
+      },
+    });
+  }),
+  getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
+    // return all donors that have any parts associated with an active listing
+    return ctx.prisma.donor.findMany({
+      where: {
+        parts: {
+          some: {
+            listing: {
+              some: {
+                active: true,
+              },
+            },
+          },
+        },
+      },
+      select: {
+        vin: true,
+        year: true,
+        mileage: true,
+        car: {
+          select: {
+            series: true,
+            generation: true,
+            model: true,
+          },
+        },
+      },
     });
   }),
   getAllDashboard: adminProcedure.query(({ ctx }) => {

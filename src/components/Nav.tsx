@@ -134,12 +134,6 @@ const Nav: React.FC = () => {
         {openAdminMenu ? (
           <AdminMenu open={openAdminMenu} setOpen={setOpenAdminMenu} />
         ) : null}
-        {/* {session ? (
-          <NavLink href="/api/auth/signout" title="Logout" />
-        ) : (
-          <NavLink href="/api/auth/signin" title="Login" />
-        )}
-        {session ? <NavLink href="/admin" title="Admin" /> : null} */}
       </div>
       <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
     </div>
