@@ -2,6 +2,7 @@ import { useRef, useEffect, useContext, useState } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CartContext from "../../context/cartContext";
 import { formatPrice } from "../../utils/formatPrice";
+import Badge from "@mui/material/Badge";
 
 interface CartPopupProps {
   showCart: boolean;
@@ -65,7 +66,9 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         onClick={() => setShowCart(!showCart)}
         className="cursor-pointer p-2"
       >
-        <ShoppingCartIcon />
+        <Badge badgeContent={cart.length} color="primary">
+          <ShoppingCartIcon />
+        </Badge>
       </div>
 
       <div
@@ -76,7 +79,10 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         <div className="flow-root">
           <ul className="-my-8">
             {cart.map((item: CartItem) => (
-              <li key={item.listingId} className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0">
+              <li
+                key={item.listingId}
+                className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
+              >
                 <div className="shrink-0">
                   <img
                     className="h-24 w-24 max-w-full rounded-lg object-cover"
@@ -98,9 +104,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
 
                     <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
                       <p className="w-20 shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                        {
-                          formatPrice((item.listingPrice/100) * item.quantity)
-                        }
+                        {formatPrice((item.listingPrice / 100) * item.quantity)}
                       </p>
 
                       <div className="sm:order-1">
@@ -115,8 +119,9 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                             {item.quantity}
                           </div>
                           <button
-                          onClick={(e) => updateQuantity(e, item)}
-                            className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">
+                            onClick={(e) => updateQuantity(e, item)}
+                            className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white"
+                          >
                             +
                           </button>
                         </div>
@@ -155,25 +160,34 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         <div className="mt-6 border-t border-b py-2">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-400">Subtotal</p>
-            <p className="text-lg font-semibold text-gray-900">{
-              formatPrice(
-              cart.reduce((acc:number, item:CartItem) => acc + (item.listingPrice * item.quantity), 0)
-              )
-            }</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {formatPrice(
+                cart.reduce(
+                  (acc: number, item: CartItem) =>
+                    acc + item.listingPrice * item.quantity,
+                  0
+                )
+              )}
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-400">Shipping</p>
-            <p className="text-lg font-semibold text-gray-900">{shipping || "Calculate me"}</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {shipping || "Calculate me"}
+            </p>
           </div>
         </div>
         <div className="mt-6 flex items-center justify-between">
           <p className="text-sm font-medium text-gray-900">Total</p>
           <p className="text-2xl font-semibold text-gray-900">
             <span className="text-xs font-normal text-gray-400">AUD</span>{" "}
-            {
-
-              formatPrice(cart?.reduce((acc: number, item: CartItem) => acc + (item.listingPrice * item.quantity), 0)
-             + shipping)}
+            {formatPrice(
+              cart?.reduce(
+                (acc: number, item: CartItem) =>
+                  acc + item.listingPrice * item.quantity,
+                0
+              ) + shipping
+            )}
           </p>
         </div>
 

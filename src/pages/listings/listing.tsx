@@ -44,6 +44,7 @@ const Listing: NextPage = () => {
       const updatedCart = cart.map((i) =>
         i.listingId === listing.id ? { ...i, quantity: i.quantity + 1 } : i
       );
+      toast.success("Quantity updated")
       setCart(updatedCart);
     } else {
       const cartItem: CartItem = {
@@ -53,6 +54,7 @@ const Listing: NextPage = () => {
         listingImage: listing.images[0]?.url,
         quantity: 1,
       };
+      toast.success("Added to cart")
       setCart([...cart, cartItem]);
     }
   };
