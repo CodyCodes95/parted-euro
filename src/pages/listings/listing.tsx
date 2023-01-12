@@ -9,6 +9,7 @@ import Head from "next/head";
 import { Listing as ListingType } from "@prisma/client";
 import { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
+import Link from "next/link";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -86,7 +87,7 @@ const Listing: NextPage = () => {
         <div className="flex">
           <div className="w-[50%]">
             <div className="flex flex-col">
-              <img src={mainImage} alt="" />
+              <img className="max-h-[70rem] object-contain" src={mainImage} alt="" />
               <div className="flex w-full">
                 {listing.data?.images.map((image) => {
                   return (
@@ -94,7 +95,7 @@ const Listing: NextPage = () => {
                       key={image.id}
                       onClick={() => setMainImage(image.url)}
                       src={image.url}
-                      className="m-2 h-[161px] w-[161px] border-2 hover:opacity-50"
+                      className="m-2 h-[161px] object-contain w-[161px] border-2 hover:opacity-50"
                       alt=""
                     />
                   );
@@ -233,11 +234,30 @@ const Listing: NextPage = () => {
         </div>
         <div>
           <h4 className="mt-12 text-4xl">You may also like</h4>
-          <div className="flex items-center justify-center text-center">
-            <div className="w-[25%]">related product</div>
-            <div className="w-[25%]">related product</div>
-            <div className="w-[25%]">related product</div>
-            <div className="w-[25%]">related product</div>
+          <div className="flex items-center  text-center">
+            {relatedListings.data?.map((listing) => (
+              <Link
+                key={listing.id}
+                className="group m-6 flex h-[740px] w-[25%] cursor-pointer flex-col justify-between"
+                href={`listings/listing?id=${listing.id}`}
+              >
+                <div className="max-h-[634px]">
+                  <img
+                    src={listing.images[0]?.url}
+                    className="h-full duration-100 ease-linear group-hover:scale-105"
+                    alt=""
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
+                    {listing.title}
+                  </p>
+                  <p className="text-lg">
+                    {formatter.format(listing.price / 100).split("A")[1]} AUD
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

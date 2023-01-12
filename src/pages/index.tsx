@@ -69,7 +69,7 @@ const Home: NextPage = () => {
           <Image
             src={carImg.src}
             alt="hero"
-            className="max-h-screen w-full object-cover"
+            className="h-[78rem] w-full object-cover"
             width={carImg.width}
             height={carImg.height}
             priority
