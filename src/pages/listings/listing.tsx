@@ -87,12 +87,12 @@ const Listing: NextPage = () => {
         <title>{listing.data?.title}</title>
       </Head>
       <ToastContainer />
-      <div className="flex min-h-screen w-full flex-col p-24">
-        <div className="flex">
+      <div className="flex min-h-screen w-full flex-col md:p-24">
+        <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="w-[50%]">
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center">
               <img
-                className="max-h-[calc(100vh-20rem)] object-contain"
+                className="max-w-[30rem] object-contain"
                 src={mainImage}
                 alt=""
               />
@@ -111,7 +111,7 @@ const Listing: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className="w-[50%] pl-[80px]">
+          <div className="flex w-full flex-col items-center md:w-[50%] md:place-items-start md:pl-[80px]">
             <h1 className="text-6xl">{listing.data?.title}</h1>
             <h4 className="my-6 text-xl">
               {listing.data?.price
@@ -119,7 +119,7 @@ const Listing: NextPage = () => {
                 : null}{" "}
               AUD
             </h4>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-full md:place-items-start">
               <LoadingButton
                 onClick={() => addToCart(listing.data as any)}
                 className="mb-4 h-12 w-[50%] bg-[#1976d2]"
@@ -144,8 +144,8 @@ const Listing: NextPage = () => {
               </p>
               <p>Usually ready in 4 hours</p>
             </div>
-            <div className="my-6">
-              <h4 className="text-xl">OEM Part Numbers:</h4>
+            <div className="my-6 text-[#4d4d4d]">
+              <h4 className="text-xl font-bold ">OEM Part Numbers:</h4>
               {listing.data?.parts
                 .reduce((acc, cur) => {
                   if (
@@ -166,8 +166,8 @@ const Listing: NextPage = () => {
                   );
                 })}
             </div>
-            <div className="my-6">
-              <h4 className="text-xl">Fitment:</h4>
+            <div className="my-6 text-[#4d4d4d]">
+              <h4 className="text-xl font-bold">Fitment:</h4>
               This part fits the following cars:
               {listing.data?.parts
                 .reduce((acc, cur) => {
@@ -200,8 +200,8 @@ const Listing: NextPage = () => {
                 fitment for their specific car.{" "}
               </p>
             </div>
-            <div className="my-6">
-              <h4 className="text-xl">Condition</h4>
+            <div className="my-6 text-[#4d4d4d]">
+              <h4 className="text-xl font-bold">Condition</h4>
               {listing.data?.condition}
             </div>
             <div className="my-6">
@@ -224,17 +224,16 @@ const Listing: NextPage = () => {
                   );
                 })}
             </div>
-            <div className="my-6">
-              <h4 className="text-xl">Shipping:</h4>
+            <div className="my-6 text-[#4d4d4d]">
+              <h4 className="text-xl font-bold">Shipping:</h4>
               <p>Shipping is available for this item.</p>
               <p>Available for pickup from our Knoxfield Warehouse. </p>
             </div>
             <div
               onClick={() => {
-                navigator.clipboard.writeText(window.location.href)
-                toast.info("Link copied")
-              }
-              }
+                navigator.clipboard.writeText(window.location.href);
+                toast.info("Link copied");
+              }}
               className="flex cursor-pointer items-center"
             >
               <IosShareIcon />
