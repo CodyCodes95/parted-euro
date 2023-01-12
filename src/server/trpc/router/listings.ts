@@ -136,6 +136,50 @@ export const listingRouter = router({
         return listings;
       }
     }),
+  getSearchBar: publicProcedure
+    .input(
+      z.object({
+        search: z.string(),
+      })
+  )
+    .query(async ({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findMany({
+        take: 5,
+        include: {
+          images: true,
+          parts: true,
+        },
+        where: {
+          active: true,
+            OR: [
+              {
+                description: {
+                  contains: input.search || "",
+                },
+              },
+              {
+                title: {
+                  contains: input.search || "",
+                },
+              },
+            ],
+            // parts: {
+            //   some: {
+            //     partDetails: {
+            //       cars: {
+            //         some: {
+            //           generation: input.generation,
+            //           model: input.model,
+            //           series: input.series,
+            //         },
+            //       },
+            //     },
+            //   },
+            // },
+          },
+        });
+        return listings;
+    }),
   getRelatedListings: publicProcedure
     .input(
       z.object({

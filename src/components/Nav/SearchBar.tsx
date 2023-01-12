@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBackdrop from "./NavBackdrop";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -26,14 +26,18 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
     }
   };
 
-  const listings = trpc.listings.getAllAvailable.useQuery(
+  const listings = trpc.listings.getSearchBar.useQuery(
     {
-      search: (debouncedSearch as string) || undefined,
+      search: (debouncedSearch as string) || "",
     },
     {
       enabled: debouncedSearch !== "",
     }
   );
+
+  useEffect(() => {
+    console.log(debouncedSearch !== "");
+  }, [])
 
   return (
     <>

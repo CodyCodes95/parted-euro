@@ -66,7 +66,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         onClick={() => setShowCart(!showCart)}
         className="cursor-pointer p-2"
       >
-        <Badge badgeContent={cart.length} color="primary">
+        <Badge badgeContent={cart.length} color="error">
           <ShoppingCartIcon />
         </Badge>
       </div>
