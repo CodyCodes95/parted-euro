@@ -1,6 +1,5 @@
-import { adminProcedure } from "../trpc";
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc";
 
 const currentYear: number = new Date().getFullYear();
 
@@ -38,7 +37,6 @@ export const donorRouter = router({
     });
   }),
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
-    // return all donors that have any parts associated with an active listing
     return ctx.prisma.donor.findMany({
       where: {
         parts: {
