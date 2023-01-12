@@ -9,7 +9,8 @@ import Head from "next/head";
 import { Listing as ListingType } from "@prisma/client";
 import { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
-import Link from "next/link";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -83,11 +84,16 @@ const Listing: NextPage = () => {
       <Head>
         <title>{listing.data?.title}</title>
       </Head>
+      <ToastContainer />
       <div className="flex min-h-screen w-full flex-col p-24">
         <div className="flex">
           <div className="w-[50%]">
             <div className="flex flex-col">
-              <img className="max-h-[calc(100vh-25rem)] object-contain" src={mainImage} alt="" />
+              <img
+                className="max-h-[calc(100vh-25rem)] object-contain"
+                src={mainImage}
+                alt=""
+              />
               <div className="flex w-full">
                 {listing.data?.images.map((image) => {
                   return (
@@ -95,7 +101,7 @@ const Listing: NextPage = () => {
                       key={image.id}
                       onClick={() => setMainImage(image.url)}
                       src={image.url}
-                      className="m-2 h-[161px] cursor-pointer object-contain w-[161px] border-2 hover:opacity-50"
+                      className="m-2 h-[161px] w-[161px] cursor-pointer border-2 object-contain hover:opacity-50"
                       alt=""
                     />
                   );
@@ -222,8 +228,10 @@ const Listing: NextPage = () => {
               <p>Available for pickup from our Knoxfield Warehouse. </p>
             </div>
             <div
-              onClick={() =>
+              onClick={() => {
                 navigator.clipboard.writeText(window.location.href)
+                toast.info("Link copied")
+              }
               }
               className="flex cursor-pointer items-center"
             >

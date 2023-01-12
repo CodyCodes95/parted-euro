@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import {useEffect, useState } from "react";
+import {useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const Listings: NextPage = () => {
