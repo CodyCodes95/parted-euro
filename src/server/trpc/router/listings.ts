@@ -141,7 +141,7 @@ export const listingRouter = router({
       z.object({
         search: z.string(),
       })
-  )
+    )
     .query(async ({ ctx, input }) => {
       const listings = await ctx.prisma.listing.findMany({
         take: 5,
@@ -151,34 +151,34 @@ export const listingRouter = router({
         },
         where: {
           active: true,
-            OR: [
-              {
-                description: {
-                  contains: input.search || "",
-                },
+          OR: [
+            {
+              description: {
+                contains: input.search || "",
               },
-              {
-                title: {
-                  contains: input.search || "",
-                },
+            },
+            {
+              title: {
+                contains: input.search || "",
               },
-            ],
-            // parts: {
-            //   some: {
-            //     partDetails: {
-            //       cars: {
-            //         some: {
-            //           generation: input.generation,
-            //           model: input.model,
-            //           series: input.series,
-            //         },
-            //       },
-            //     },
-            //   },
-            // },
-          },
-        });
-        return listings;
+            },
+          ],
+          // parts: {
+          //   some: {
+          //     partDetails: {
+          //       cars: {
+          //         some: {
+          //           generation: input.generation,
+          //           model: input.model,
+          //           series: input.series,
+          //         },
+          //       },
+          //     },
+          //   },
+          // },
+        },
+      });
+      return listings;
     }),
   getRelatedListings: publicProcedure
     .input(
@@ -214,7 +214,24 @@ export const listingRouter = router({
           },
         },
       });
-      return listings;
+      if (listings.length === 0) {
+        const listings = await ctx.prisma.listing.findMany({
+          take: 4,
+          include: {
+            images: true,
+            parts: true,
+          },
+          where: {
+            id: {
+              not: input.id,
+            },
+            active: true,
+          },
+        });
+        return listings;
+      } else {
+        return listings;
+      }
     }),
   getListing: publicProcedure
     .input(

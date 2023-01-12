@@ -92,7 +92,7 @@ const Listing: NextPage = () => {
           <div className="w-[50%]">
             <div className="flex flex-col">
               <img
-                className="max-h-[calc(100vh-25rem)] object-contain"
+                className="max-h-[calc(100vh-20rem)] object-contain"
                 src={mainImage}
                 alt=""
               />
@@ -122,7 +122,7 @@ const Listing: NextPage = () => {
             <div className="flex flex-col">
               <LoadingButton
                 onClick={() => addToCart(listing.data as any)}
-                className="mb-4 h-12 w-96 bg-[#1976d2]"
+                className="mb-4 h-12 w-[50%] bg-[#1976d2]"
                 loading={false}
                 variant="contained"
               >
@@ -130,7 +130,7 @@ const Listing: NextPage = () => {
               </LoadingButton>
               <LoadingButton
                 onClick={() => console.log("clicked")}
-                className="mb-4 h-12 w-96 bg-[#3c3844] text-white hover:bg-black"
+                className="mb-4 h-12 w-[50%] bg-[#3c3844] text-white hover:bg-black"
                 loading={false}
                 variant="text"
               >
