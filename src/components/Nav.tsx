@@ -102,9 +102,8 @@ const Nav: React.FC = () => {
       </button>
       <div className="flex items-center">
         <Link href="/">
-          <img className="mr-8 inline h-8" src={logo.src} alt="" />
+          <img className="mr-6 inline h-8" src={logo.src} alt="" />
         </Link>
-        <NavLink href=" " title="Home" />
         <NavLink href=" " expand={true} title="Shop By Generation" />
         {/* <NavLink href=" " title="Shop By Wheels" /> */}
         <NavLink href=" " title="Cars Wrecking Now" />

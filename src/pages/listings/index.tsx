@@ -37,7 +37,7 @@ const Listings: NextPage = () => {
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
       </div>
-      <div className="flex w-full flex-wrap items-center justify-center p-4">
+      <div className="flex w-full flex-wrap items-center p-4">
         {listings.data?.map((listing) => (
           <Link
             key={listing.id}

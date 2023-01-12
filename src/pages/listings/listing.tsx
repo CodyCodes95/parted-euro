@@ -87,7 +87,7 @@ const Listing: NextPage = () => {
         <div className="flex">
           <div className="w-[50%]">
             <div className="flex flex-col">
-              <img className="max-h-[70rem] object-contain" src={mainImage} alt="" />
+              <img className="max-h-[calc(100vh-25rem)] object-contain" src={mainImage} alt="" />
               <div className="flex w-full">
                 {listing.data?.images.map((image) => {
                   return (
@@ -95,7 +95,7 @@ const Listing: NextPage = () => {
                       key={image.id}
                       onClick={() => setMainImage(image.url)}
                       src={image.url}
-                      className="m-2 h-[161px] object-contain w-[161px] border-2 hover:opacity-50"
+                      className="m-2 h-[161px] cursor-pointer object-contain w-[161px] border-2 hover:opacity-50"
                       alt=""
                     />
                   );
@@ -236,10 +236,10 @@ const Listing: NextPage = () => {
           <h4 className="mt-12 text-4xl">You may also like</h4>
           <div className="flex items-center  text-center">
             {relatedListings.data?.map((listing) => (
-              <Link
+              <div
                 key={listing.id}
                 className="group m-6 flex h-[740px] w-[25%] cursor-pointer flex-col justify-between"
-                href={`listings/listing?id=${listing.id}`}
+                onClick={() => router.push(`listing?id=${listing.id}`)}
               >
                 <div className="max-h-[634px]">
                   <img
@@ -256,7 +256,7 @@ const Listing: NextPage = () => {
                     {formatter.format(listing.price / 100).split("A")[1]} AUD
                   </p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
