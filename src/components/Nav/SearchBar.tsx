@@ -35,10 +35,6 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
     }
   );
 
-  useEffect(() => {
-    console.log(debouncedSearch !== "");
-  }, [])
-
   return (
     <>
       {showSearch ? (
@@ -63,7 +59,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
             placeholder="Search by part number, part name, car, etc."
           />
           {showSearch && listings.data?.length ? (
-            <div className="absolute flex w-[33%] translate-y-[3.7rem] flex-col bg-white">
+            <div className="absolute flex w-[33%] translate-y-[3.7rem] flex-col bg-white shadow-lg">
               <div className="flex items-center justify-between border-b-2">
                 <h5 className="p-4 text-xl font-bold leading-none text-gray-900 dark:text-white">
                   Products
@@ -75,11 +71,14 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                   className="divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   {listings.data.slice(0, 5).map((listing) => (
-                    <li key={listing.id} className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
+                    <li onClick={() => {
+                      setShowSearch(false);
+                      router.push(`/listings/listing?id=${listing.id}`)
+                    }} key={listing.id} className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
                           <img
-                            className="h-20 w-20 rounded-md"
+                            className="h-20 w-20 rounded-md object-contain"
                             src={listing.images[0]?.url}
                             alt={`${listing.title} image`}
                           />
