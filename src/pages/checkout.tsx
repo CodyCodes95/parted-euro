@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useContext, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface CartItem {
   listingId: string;
@@ -17,6 +18,8 @@ const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
   const [shipping, setShipping] = useState<number>(0);
+
+  const [parent] = useAutoAnimate(/* optional config */);
 
   const removeItemFromCart = (id: string) => {
     const updatedCart = cart.filter((i) => i.listingId !== id);
@@ -54,7 +57,7 @@ const Checkout: NextPage = () => {
         <div className="flex w-[75%] flex-col justify-between p-14">
           {cart.length > 0 ? (
             <>
-              <ul className="my-8">
+              <ul ref={parent as any} className="my-8">
                 {cart.map((item: CartItem) => (
                   <li
                     key={item.listingId}
