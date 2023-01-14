@@ -3,6 +3,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CartContext from "../../context/cartContext";
 import { formatPrice } from "../../utils/formatPrice";
 import Badge from "@mui/material/Badge";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface CartPopupProps {
   showCart: boolean;
@@ -20,6 +22,8 @@ interface CartItem {
 const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
   const { cart, setCart } = useContext(CartContext);
 
+  const router = useRouter();
+
   const [shipping, setShipping] = useState<number>(0);
 
   const popUpRef = useRef<HTMLDivElement>(null);
@@ -34,6 +38,10 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
     const updatedCart = cart.filter((i) => i.listingId !== id);
     setCart(updatedCart);
   };
+  
+  router.events.on("routeChangeStart", () => {
+    setShowCart(false);
+  })
 
   const updateQuantity = (e: any, item: CartItem) => {
     const updatedCart = cart.map((listing) => {
@@ -106,7 +114,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
 
                     <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
                       <p className="w-20 shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                        {formatPrice((item.listingPrice / 100) * item.quantity)}
+                        {formatPrice((item.listingPrice) * item.quantity)}
                       </p>
 
                       <div className="sm:order-1">
@@ -175,7 +183,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-400">Shipping</p>
             <p className="text-lg font-semibold text-gray-900">
-              {shipping || "Calculate me"}
+              Calculated on checkout
             </p>
           </div>
         </div>
@@ -194,7 +202,8 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
         </div>
 
         <div className="mt-6 text-center">
-          <button
+              <Link
+                href="/checkout"
             type="button"
             className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
           >
@@ -213,7 +222,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                 d="M13 7l5 5m0 0l-5 5m5-5H6"
               />
             </svg>
-          </button>
+          </Link>
         </div>
         </>
         ) : (
