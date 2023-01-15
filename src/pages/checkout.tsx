@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface CartItem {
   listingId: string;
@@ -196,7 +197,7 @@ const Checkout: NextPage = () => {
               </svg>
             </Link>
             <Link
-              href="/checkout"
+              href="/listings"
               type="button"
               className="group mt-5 inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
             >
