@@ -16,8 +16,13 @@ async function CreateStripeSession(req: any, res: any) {
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
       : `https://${req.headers.host}`;
+  
+  const customer = await stripe.customers.create({
+    email: req.body.email,
+  })
 
   const session = await stripe.checkout.sessions.create({
+    customer: customer.id,
     payment_method_types: ["card"],
     line_items: items.map((item: any) => {
       return {
@@ -33,7 +38,7 @@ async function CreateStripeSession(req: any, res: any) {
       };
     }),
     mode: "payment",
-    success_url: `${redirectURL}?orderId=${orderId}/orderConfirmation&status=success`,
+    success_url: `${redirectURL}/orderConfirmation?orderId=${orderId}&status=success`,
     cancel_url: `${redirectURL}/checkout`,
     metadata: {
       images: items.image,

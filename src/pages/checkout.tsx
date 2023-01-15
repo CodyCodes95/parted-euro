@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import {  TextField } from "@mui/material";
 
 interface CartItem {
   listingId: string;
@@ -18,6 +19,7 @@ const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
   const [shipping, setShipping] = useState<number>(0);
+  const [email, setEmail] = useState<string>("");
 
   const [parent] = useAutoAnimate(/* optional config */);
 
@@ -47,6 +49,7 @@ const Checkout: NextPage = () => {
       method: "POST",
       body: JSON.stringify({
         items: cart,
+        email: email
       }),
     });
     const response = await res.json();
@@ -165,6 +168,9 @@ const Checkout: NextPage = () => {
               </p>
             </div>
           </div>
+          <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
+            <TextField id="filled-basic" label="Email" variant="filled" fullWidth />
+          </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
             <p className="text-xl font-bold text-gray-900">Total</p>
             <p className="text-2xl font-semibold text-gray-900">
@@ -178,7 +184,6 @@ const Checkout: NextPage = () => {
               )}
             </p>
           </div>
-
           <div className="mt-6 text-center">
             <button
               onClick={submitCheckout}
