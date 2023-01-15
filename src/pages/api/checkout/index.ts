@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
+  apiVersion: "2022-11-15",
+});
 
 
 async function CreateStripeSession(req: any, res: any) {
