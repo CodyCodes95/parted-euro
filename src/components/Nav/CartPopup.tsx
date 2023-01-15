@@ -45,6 +45,14 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
     });
   }, []);
 
+  useEffect(() => {
+    cart.forEach((item: CartItem) => {
+      if (item.quantity < 1) {
+        removeItemFromCart(item.listingId);
+      }
+    });
+  }, [cart])
+
   const updateQuantity = (e: any, item: CartItem) => {
     const updatedCart = cart.map((listing) => {
       // handle updating qnt to 0, exceeding available qnt on listings etc
@@ -157,9 +165,9 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                             stroke="currentColor"
                           >
                             <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
                               d="M6 18L18 6M6 6l12 12"
                               className=""
                             ></path>
@@ -218,11 +226,11 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  strokeWidth="2"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>

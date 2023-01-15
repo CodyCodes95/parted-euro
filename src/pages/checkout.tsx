@@ -5,7 +5,6 @@ import { useContext, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { loadStripe } from "@stripe/stripe-js";
 
 interface CartItem {
   listingId: string;
@@ -28,25 +27,31 @@ const Checkout: NextPage = () => {
   };
 
   const updateQuantity = (e: any, item: CartItem) => {
-    const updatedCart = cart.map((listing) => {
-      // handle updating qnt to 0, exceeding available qnt on listings etc
-      // if (listing.listingId === item.listingId) {
-      //     if (listing.quantity)
-      // } else {
-      //   return listing;
-      // }
-      return listing.listingId === item.listingId
+    const updatedCart = cart.map((cartItem:CartItem) => {
+      return cartItem.listingId === item.listingId
         ? {
-            ...listing,
+            ...cartItem,
             quantity:
               e.target.textContent === "+"
                 ? (item.quantity += 1)
                 : (item.quantity -= 1),
           }
-        : listing;
+        : cartItem;
     });
     setCart(updatedCart);
   };
+
+  const submitCheckout = async () => {
+
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: cart,
+      }),
+    });
+    const response = await res.json();
+    window.location = response.url;
+  }
 
   return (
     <>
@@ -120,9 +125,9 @@ const Checkout: NextPage = () => {
                               stroke="currentColor"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M6 18L18 6M6 6l12 12"
                                 className=""
                               ></path>
@@ -175,8 +180,8 @@ const Checkout: NextPage = () => {
           </div>
 
           <div className="mt-6 text-center">
-            <Link
-              href="/checkout"
+            <button
+              onClick={submitCheckout}
               type="button"
               className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
             >
@@ -187,15 +192,15 @@ const Checkout: NextPage = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </Link>
+            </button>
             <Link
               href="/listings"
               type="button"
@@ -208,11 +213,11 @@ const Checkout: NextPage = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
