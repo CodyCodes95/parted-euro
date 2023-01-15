@@ -27,6 +27,7 @@ export const serverSchema = z.object({
   STRIPE_PUBLIC: z.string(),
   STRIPE_SECRET: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
+  AUSPOST_API_KEY: z.string(),
 });
 
 /**

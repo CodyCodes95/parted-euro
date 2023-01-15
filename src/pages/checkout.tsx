@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import {  TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 
 interface CartItem {
   listingId: string;
@@ -29,7 +29,7 @@ const Checkout: NextPage = () => {
   };
 
   const updateQuantity = (e: any, item: CartItem) => {
-    const updatedCart = cart.map((cartItem:CartItem) => {
+    const updatedCart = cart.map((cartItem: CartItem) => {
       return cartItem.listingId === item.listingId
         ? {
             ...cartItem,
@@ -44,17 +44,16 @@ const Checkout: NextPage = () => {
   };
 
   const submitCheckout = async () => {
-
     const res = await fetch("/api/checkout", {
       method: "POST",
       body: JSON.stringify({
         items: cart,
-        email: email
+        email: email,
       }),
     });
     const response = await res.json();
     window.location = response.url;
-  }
+  };
 
   return (
     <>
@@ -162,14 +161,21 @@ const Checkout: NextPage = () => {
               </p>
             </div>
             <div className="flex items-center justify-between border-b-2 px-6 py-12">
-              <p className="text-xl text-gray-400">Shipping</p>
-              <p className="text-xl font-semibold text-gray-900">
-                Calculated on checkout
-              </p>
+              <TextField
+                id="address"
+                label="Shipping Address"
+                variant="filled"
+                fullWidth={true}
+              />
             </div>
           </div>
           <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
-            <TextField id="filled-basic" label="Email" variant="filled" fullWidth />
+            <TextField
+              id="filled-basic"
+              label="Email"
+              variant="filled"
+              fullWidth
+            />
           </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
             <p className="text-xl font-bold text-gray-900">Total</p>
