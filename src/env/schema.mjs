@@ -24,6 +24,9 @@ export const serverSchema = z.object({
   CLOUDINARY_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  STRIPE_PUBLIC: z.string(),
+  STRIPE_SECRET: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 /**

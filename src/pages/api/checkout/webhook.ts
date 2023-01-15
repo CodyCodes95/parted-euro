@@ -1,5 +1,10 @@
 import { buffer } from "micro";
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET);
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
+  apiVersion: "2022-11-15",
+});
 
 export const config = {
   api: {
@@ -18,10 +23,10 @@ export default async function stripeWebhook(req: any, res: any) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     let eventType;
-    let data;
+    let data:any
     let event;
     try {
-      event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
+      event = stripe.webhooks.constructEvent(buf, sig, webhookSecret as string);
       console.log("Webhook verified");
     } catch (err: any) {
       console.log(`Webhook failed ${err.message}`);
