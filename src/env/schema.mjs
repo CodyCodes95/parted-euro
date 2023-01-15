@@ -28,6 +28,7 @@ export const serverSchema = z.object({
   STRIPE_SECRET: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
   AUSPOST_API_KEY: z.string(),
+  NEXT_PUBLIC_GOOGLE_MAPS_KEY: z.string(),
 });
 
 /**

@@ -1,11 +1,13 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { TextField } from "@mui/material";
+import { useLoadScript } from "@react-google-maps/api";
+import ShippingAddressField from "../components/checkout/shippingAddressField";
 
 interface CartItem {
   listingId: string;
@@ -15,6 +17,17 @@ interface CartItem {
   quantity: number;
 }
 
+interface AusPostParams {
+  from: string;
+  to: string;
+  weight: number;
+  length: number;
+  width: number;
+  height: number;
+}
+
+const libraries = ["places"]
+
 const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
@@ -22,6 +35,11 @@ const Checkout: NextPage = () => {
   const [email, setEmail] = useState<string>("");
 
   const [parent] = useAutoAnimate(/* optional config */);
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
+    libraries: libraries as any,
+  });
 
   const removeItemFromCart = (id: string) => {
     const updatedCart = cart.filter((i) => i.listingId !== id);
@@ -160,14 +178,7 @@ const Checkout: NextPage = () => {
                 )}
               </p>
             </div>
-            <div className="flex items-center justify-between border-b-2 px-6 py-12">
-              <TextField
-                id="address"
-                label="Shipping Address"
-                variant="filled"
-                fullWidth={true}
-              />
-            </div>
+            {isLoaded && <ShippingAddressField />}
           </div>
           <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
             <TextField

@@ -21,8 +21,7 @@ export default async function stripeWebhook(req: any, res: any) {
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    let eventType;
-    let data:any
+
     let event;
     try {
       event = stripe.webhooks.constructEvent(buf, sig, webhookSecret as string);
@@ -32,8 +31,8 @@ export default async function stripeWebhook(req: any, res: any) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    data = event.data.object;
-    eventType = event.type;
+    const data = event.data.object as any
+    const eventType = event.type;
     if (eventType === "checkout.session.completed") {
       stripe.customers
         .retrieve(data.customer)
