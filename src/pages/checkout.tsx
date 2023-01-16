@@ -7,7 +7,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { TextField } from "@mui/material";
 import { useLoadScript } from "@react-google-maps/api";
-import ShippingAddressField from "../components/checkout/shippingAddressField";
+import ShippingAddressField from "../components/checkout/ShippingAddressField";
 
 interface CartItem {
   listingId: string;

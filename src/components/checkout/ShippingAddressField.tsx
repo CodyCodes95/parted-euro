@@ -25,33 +25,12 @@ const ShippingAddressField: React.FC = () => {
     //   const results = await getDetails({ placeId: id });
   };
 
-    useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <div className="flex items-center justify-between border-b-2 px-6 py-12">
-      <Select
-        className="w-full"
+      <input
+        type="text"
         value={value}
-        onInputChange={(e: any) => {
-          setValue(e);
-        }}
-        onChange={(e: any) => {
-          console.log(e.value);
-        }}
-        isDisabled={!ready}
-        isLoading={!ready}
-        options={
-          data.map((suggestion) => {
-            console.log(suggestion);
-            return {
-              value: suggestion.description,
-              label: suggestion.description,
-            };
-          }) as any
-        }
-        placeholder="Enter your address"
+        onChange={(e) => setValue(e.target.value)}
       />
       <button
         onClick={() => {
