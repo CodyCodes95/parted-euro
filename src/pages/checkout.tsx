@@ -8,6 +8,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { TextField } from "@mui/material";
 import { useLoadScript } from "@react-google-maps/api";
 import ShippingAddressField from "../components/checkout/ShippingAddressField";
+import ShippingOption from "../components/checkout/ShippingOption";
 
 interface CartItem {
   listingId: string;
@@ -26,13 +27,17 @@ interface AusPostParams {
   height: number;
 }
 
-const libraries = ["places"]
+const libraries = ["places"];
 
 const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
+  const [shippingAddress, setShippingAddress] = useState<string>("");
+  const [postCode, setPostCode] = useState<string>("");
   const [shipping, setShipping] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
+  const [expressCost, setExpressCost] = useState<number>(0);
+  const [regularCost, setRegularCost] = useState<number>(0);
 
   const [parent] = useAutoAnimate(/* optional config */);
 
@@ -60,6 +65,31 @@ const Checkout: NextPage = () => {
     });
     setCart(updatedCart);
   };
+
+  const calculateAuspostShipping = async () => {
+    const res = await fetch(`/api/checkout/shipping`, {
+      method: "POST",
+      body: JSON.stringify({
+        length: 10,
+        width: 10,
+        height: 10,
+        weight: 10,
+        from: "3152",
+        to: postCode,
+      }) as any,
+    });
+    const data = await res.json();
+    setExpressCost(data.express);
+    setRegularCost(data.regular);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    console.log(postCode)
+    if (postCode) {
+      calculateAuspostShipping();
+    }
+  }, [postCode]);
 
   const submitCheckout = async () => {
     const res = await fetch("/api/checkout", {
@@ -178,7 +208,11 @@ const Checkout: NextPage = () => {
                 )}
               </p>
             </div>
-            {isLoaded && <ShippingAddressField />}
+            {isLoaded && regularCost === 0 ? (
+              <ShippingAddressField setPostCode={setPostCode} />
+            ) : (
+                <ShippingOption express={expressCost} regular={regularCost} setShipping={setShipping} shipping={shipping} />
+            )}
           </div>
           <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
             <TextField
