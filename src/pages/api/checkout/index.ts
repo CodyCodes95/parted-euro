@@ -32,7 +32,7 @@ async function CreateStripeSession(req: any, res: any) {
             name: item.listingTitle,
             images: [item.listingImage],
           },
-          unit_amount: item.listingPrice,
+          unit_amount: item.listingPrice * 100,
         },
         quantity: item.quantity,
       };

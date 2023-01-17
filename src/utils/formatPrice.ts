@@ -5,4 +5,4 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 export const formatPrice = (price: number) =>
-  formatter.format(price / 100).split("A")[1];
+  formatter.format(price).split("A")[1];
