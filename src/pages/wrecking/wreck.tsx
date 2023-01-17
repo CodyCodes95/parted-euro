@@ -114,7 +114,7 @@ const Listing: NextPage = () => {
             {donor.data?.parts.map((part) => (
               part.listing.map(list => {
                 return (
-                  <Link href={`/listings/listing?id=${list.id}`}>{list.title}</Link>
+                  <Link key={list.id} href={`/listings/listing?id=${list.id}`}>{list.title}</Link>
                 )
               })
               ))}
