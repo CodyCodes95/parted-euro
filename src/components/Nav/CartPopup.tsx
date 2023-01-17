@@ -116,11 +116,11 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                     <div className="relative flex flex-1 flex-col justify-between">
                       <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
                         <div className="pr-8 sm:pr-5">
-                          <p className="text-base font-semibold text-gray-900">
+                          <p className="text-lg font-semibold text-gray-900">
                             {item.listingTitle}
                           </p>
                           <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">
-                            {/* {item.quantity} */}what looks good here?
+                            {/* {item.quantity} */}
                           </p>
                         </div>
 

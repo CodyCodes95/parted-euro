@@ -45,7 +45,7 @@ const Wrecking: NextPage = () => {
           <Link
             key={donor.vin}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-            href={`wrecking/wreck?vom=${donor.vin}`}
+            href={`wrecking/wreck?vin=${donor.vin}`}
           >
             <div className="max-h-[634px]">
               <img

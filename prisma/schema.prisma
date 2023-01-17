@@ -88,8 +88,8 @@ model Donor {
   carId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  parts      Part[]
-  imageUrl  String @default("https://res.cloudinary.com/codycodes/image/upload/v1673939701/ScreenShot2022-08-26at12.44.09pm_r1rzfv.webp")
+  parts     Part[]
+  imageUrl  String   @default("https://res.cloudinary.com/codycodes/image/upload/v1673939701/ScreenShot2022-08-26at12.44.09pm_r1rzfv.webp")
 }
 
 model Listing {
@@ -106,33 +106,32 @@ model Listing {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   images      Image[]
-  active        Boolean  @default(true)
+  active      Boolean  @default(true)
   // quantity will simply be the amount of non unique parts in the same listing
 }
 
 model Part {
-  id            String     @id @default(cuid())
-  partDetails   PartDetail @relation(fields: [partDetailsId], references: [partNo])
-  partDetailsId String
-  listing       Listing[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  donorVin      String
-  donor         Donor      @relation(fields: [donorVin], references: [vin])
-  sold         Boolean    @default(false)
-  soldPrice    Int?
+  id              String     @id @default(cuid())
+  partDetails     PartDetail @relation(fields: [partDetailsId], references: [partNo])
+  partDetailsId   String
+  listing         Listing[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  donorVin        String
+  donor           Donor      @relation(fields: [donorVin], references: [vin])
+  sold            Boolean    @default(false)
+  soldPrice       Int?
   soldParentPrice Int?
 }
 
 model PartDetail {
-  partNo    String @id @unique
+  partNo    String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cars      Car[]
   parts     Part[]
 }
-
 
 model Image {
   id        String   @id @default(cuid())

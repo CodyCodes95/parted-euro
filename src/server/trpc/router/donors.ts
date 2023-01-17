@@ -64,6 +64,48 @@ export const donorRouter = router({
       },
     });
   }),
+  getSingleWreck: publicProcedure
+    .input(
+      z.object({
+        vin: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.donor.findUnique({
+        where: {
+          vin: input.vin,
+        },
+        select: {
+          vin: true,
+          year: true,
+          mileage: true,
+          imageUrl: true,
+          car: {
+            select: {
+              series: true,
+              generation: true,
+              model: true,
+            },
+          },
+          parts: {
+            select: {
+              partDetails: {
+                select: {
+                  partNo: true,
+                },
+              },
+              listing: {
+                select: {
+                  id: true,
+                  title: true,
+                  price: true,
+                }
+              }
+            }
+          }
+        },
+      });
+    }),
   getAllDashboard: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       select: {
