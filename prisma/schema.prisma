@@ -81,7 +81,7 @@ model Car {
 
 model Donor {
   vin       String   @id @unique
-  cost      Int
+  cost      Float
   car       Car      @relation(fields: [carId], references: [id])
   year      Int
   mileage   Int
@@ -89,6 +89,7 @@ model Donor {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   parts      Part[]
+  imageUrl  String @default("https://res.cloudinary.com/codycodes/image/upload/v1673939701/ScreenShot2022-08-26at12.44.09pm_r1rzfv.webp")
 }
 
 model Listing {
@@ -96,11 +97,11 @@ model Listing {
   title       String
   description String
   condition   String
-  price       Int
-  weight      Int
-  length      Int
-  width       Int
-  height      Int
+  price       Float
+  weight      Float
+  length      Float
+  width       Float
+  height      Float
   parts       Part[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
