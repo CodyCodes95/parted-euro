@@ -86,11 +86,11 @@ const AddListing: React.FC<AddListingProps> = ({
       title: title,
       description: description,
       condition: condition,
-      price: price * 100,
-      weight: weight * 1000,
-      length: length * 10,
-      width: width * 10,
-      height: height * 10,
+      price: price,
+      weight: weight,
+      length: length,
+      width: width,
+      height: height,
       parts: parts
     }, {
       onSuccess: (listing) => {

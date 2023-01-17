@@ -56,7 +56,7 @@ const Listings: NextPage = () => {
                   {listing.title}
                 </p>
                 <p className="text-lg">
-                  {formatter.format(listing.price / 100).split("A")[1]} AUD
+                  {formatter.format(listing.price).split("A")[1]} AUD
                 </p>
               </div>
           </Link>

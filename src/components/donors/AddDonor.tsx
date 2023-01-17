@@ -66,7 +66,7 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, e
     const result = await saveDonor.mutateAsync(
       {
         vin: vin,
-        cost: Math.round(cost * 100),
+        cost: Math.round(cost),
         carId: carId,
         year: year,
         mileage: mileage,

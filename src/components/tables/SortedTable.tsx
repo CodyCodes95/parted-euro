@@ -216,7 +216,7 @@ const SortedTable: React.FC<any> = ({
                                 <p className="text-center">
                                   {
                                     formatter
-                                      .format(row[headCell.id] / 100)
+                                      .format(row[headCell.id])
                                       .split("A")[1]
                                   }
                                 </p>
@@ -253,7 +253,7 @@ const SortedTable: React.FC<any> = ({
                           >
                             {headCell.id === "cost"
                               ? formatter
-                                  .format(row[headCell.id] / 100)
+                                  .format(row[headCell.id])
                                   .split("A")[1]
                               : row[headCell.id]}
                           </TableCell>

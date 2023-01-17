@@ -41,29 +41,26 @@ const Wrecking: NextPage = () => {
         </div>
       </div>
       <div className="flex w-full flex-wrap items-center p-4">
-        {/* {listings.data?.map((listing) => (
+        {donors.data?.map((donor) => (
           <Link
-            key={listing.id}
+            key={donor.vin}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-            href={`listings/listing?id=${listing.id}`}
+            href={`wrecking/wreck?vom=${donor.vin}`}
           >
             <div className="max-h-[634px]">
               <img
-                src={listing.images[0]?.url}
+                src={donor.imageUrl}
                 className="h-full duration-100 ease-linear group-hover:scale-105"
                 alt=""
               />
             </div>
             <div className="flex flex-col">
               <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
-                {listing.title}
-              </p>
-              <p className="text-lg">
-                {formatter.format(listing.price / 100).split("A")[1]} AUD
+                {donor.year} {donor.car.generation} {donor.car.model}
               </p>
             </div>
           </Link>
-        ))} */}
+        ))}
       </div>
     </div>
   );

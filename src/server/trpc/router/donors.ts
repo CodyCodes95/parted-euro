@@ -53,6 +53,7 @@ export const donorRouter = router({
         vin: true,
         year: true,
         mileage: true,
+        imageUrl: true,
         car: {
           select: {
             series: true,

@@ -66,7 +66,7 @@ const Nav: React.FC = () => {
           <div className="mt-20 flex flex-col">
             <NavLink href=" " title="Shop By Generation" />
             {/* <NavLink href=" " title="Shop By Wheels" /> */}
-            <NavLink href=" " title="Cars Wrecking Now" />
+            <NavLink href="/wrecking" title="Cars Wrecking Now" />
             <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
             <NavLink href="/contact" title="Contact" />
           </div>
@@ -106,7 +106,7 @@ const Nav: React.FC = () => {
         </Link>
         <NavLink href=" " expand={true} title="Shop By Generation" />
         {/* <NavLink href=" " title="Shop By Wheels" /> */}
-        <NavLink href=" " title="Cars Wrecking Now" />
+        <NavLink href="/wrecking" title="Cars Wrecking Now" />
         <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
         <NavLink href="/contact" title="Contact" />
       </div>
