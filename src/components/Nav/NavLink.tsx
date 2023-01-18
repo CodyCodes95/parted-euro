@@ -15,6 +15,8 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
   
   const [expanded, setExpanded] = useState<boolean>(false);
 
+  const linkRef = React.useRef<HTMLDivElement>(null);
+
   const expandMenu = () => {
     if (expand) {
       setExpanded(!expanded);
@@ -22,7 +24,7 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
   }
 
   return (
-    <div onClick={() => (expand ? expandMenu() : null)} className="p-2 group">
+    <div ref={linkRef} onClick={() => (expand ? expandMenu() : null)} className="p-2 group">
       <Link
         className="border-gray-300 duration-100 ease-in-out group-hover:border-b-2"
         href={href}
@@ -37,7 +39,7 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
         />
       ) : null}
       {expand && expanded ? 
-        <GenerationMenu /> : null
+        <GenerationMenu setExpanded={setExpanded} linkRef={linkRef} /> : null
       }
     </div>
   );
