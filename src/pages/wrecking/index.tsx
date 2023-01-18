@@ -40,7 +40,7 @@ const Wrecking: NextPage = () => {
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
       </div>
-      <div className="flex w-full flex-wrap items-center p-4">
+      <div className="flex w-full items-center p-4">
         {donors.data?.map((donor) => (
           <Link
             key={donor.vin}
