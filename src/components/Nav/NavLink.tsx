@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import GenerationMenu from "./GenerationMenu";
 
 interface NavLinkProps {
     title: string;
@@ -35,6 +36,9 @@ const NavLink: React.FC<NavLinkProps> = ({ title, href, expand }) => {
           }`}
         />
       ) : null}
+      {expand && expanded ? 
+        <GenerationMenu /> : null
+      }
     </div>
   );
 };
