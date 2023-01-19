@@ -194,7 +194,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-400">Shipping</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-lg text-gray-900">
                   Calculated on checkout
                 </p>
               </div>

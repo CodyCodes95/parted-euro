@@ -38,6 +38,7 @@ const Checkout: NextPage = () => {
   const [email, setEmail] = useState<string>("");
   const [expressCost, setExpressCost] = useState<number>(0);
   const [regularCost, setRegularCost] = useState<number>(0);
+  const [validated, setValidated] = useState<boolean>(false);
 
   const [parent] = useAutoAnimate(/* optional config */);
 
@@ -81,11 +82,9 @@ const Checkout: NextPage = () => {
     const data = await res.json();
     setExpressCost(data.express);
     setRegularCost(data.regular);
-    console.log(data);
   };
 
   useEffect(() => {
-    console.log(postCode)
     if (postCode) {
       calculateAuspostShipping();
     }
@@ -102,6 +101,15 @@ const Checkout: NextPage = () => {
     const response = await res.json();
     window.location = response.url;
   };
+
+  useEffect(() => {
+    console.log( email, shipping)
+    if (email && shipping) {
+      setValidated(true);
+    } else {
+      setValidated(false);
+    }
+  }, [email, shipping])
 
   return (
     <>
@@ -195,7 +203,7 @@ const Checkout: NextPage = () => {
           )}
         </div>
         <div className="flex w-[33%] flex-col py-14">
-          <div className="mt-6 py-2">
+          <div className="py-2">
             <div className="flex items-center justify-between border-b-2 px-6 py-12">
               <p className="text-xl text-gray-400">Subtotal</p>
               <p className="text-xl font-semibold text-gray-900">
@@ -208,11 +216,17 @@ const Checkout: NextPage = () => {
                 )}
               </p>
             </div>
-            {isLoaded && regularCost === 0 ? (
+            {isLoaded ? (
               <ShippingAddressField setPostCode={setPostCode} />
-            ) : (
-                <ShippingOption express={expressCost} regular={regularCost} setShipping={setShipping} shipping={shipping} />
-            )}
+            ) : null}
+            {regularCost !== 0 ? (
+              <ShippingOption
+                express={expressCost}
+                regular={regularCost}
+                setShipping={setShipping}
+                shipping={shipping}
+              />
+            ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
             <TextField
@@ -220,6 +234,8 @@ const Checkout: NextPage = () => {
               label="Email"
               variant="filled"
               fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
@@ -239,7 +255,8 @@ const Checkout: NextPage = () => {
             <button
               onClick={submitCheckout}
               type="button"
-              className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
+              disabled={validated ? false : true}
+              className={`group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow`}
             >
               Checkout
               <svg
