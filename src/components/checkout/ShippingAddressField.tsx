@@ -63,7 +63,7 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({setPostCode}
 
   return (
     <div className="flex items-center justify-between border-b-2 px-6 py-12">
-      <p className="text-xl text-gray-400 mr-4">Shipping</p>
+      <p className="text-xl text-gray-400 mr-4">Shipping Address</p>
       <Autocomplete
         sx={{ width: 500 }}
         loading={data.length < 1 && value !== ""}
