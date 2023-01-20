@@ -103,7 +103,6 @@ const Checkout: NextPage = () => {
   };
 
   useEffect(() => {
-    console.log( email, shipping)
     if (email && shipping) {
       setValidated(true);
     } else {
@@ -245,9 +244,9 @@ const Checkout: NextPage = () => {
               {formatPrice(
                 cart?.reduce(
                   (acc: number, item: CartItem) =>
-                    acc + item.listingPrice * item.quantity,
+                    acc + (item.listingPrice * item.quantity),
                   0
-                ) + shipping
+                ) + Number(shipping)
               )}
             </p>
           </div>

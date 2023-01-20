@@ -179,28 +179,9 @@ const CartPopup: React.FC<CartPopupProps> = ({ showCart, setShowCart }) => {
                 ))}
               </ul>
             </div>
-            <div className="mt-6 border-t border-b py-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-400">Subtotal</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {formatPrice(
-                    cart.reduce(
-                      (acc: number, item: CartItem) =>
-                        acc + item.listingPrice * item.quantity,
-                      0
-                    )
-                  )}
-                </p>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-400">Shipping</p>
-                <p className="text-lg text-gray-900">
-                  Calculated on checkout
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 flex items-center justify-between">
-              <p className="text-sm font-medium text-gray-900">Total</p>
+       
+            <div className="mt-6 border-t-2 pt-2 flex items-center justify-between">
+              <p className="text-sm font-medium text-gray-900">Subtotal</p>
               <p className="text-2xl font-semibold text-gray-900">
                 <span className="text-xs font-normal text-gray-400">AUD</span>{" "}
                 {formatPrice(
