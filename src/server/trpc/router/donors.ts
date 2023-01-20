@@ -106,6 +106,23 @@ export const donorRouter = router({
         },
       });
     }),
+  getFourWrecks: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.donor.findMany({
+      take: 4,
+      select: {
+        vin: true,
+        year: true,
+           imageUrl: true,
+          car: {
+            select: {
+              series: true,
+              generation: true,
+              model: true,
+            },
+        },
+      },
+    });
+  }),
   getAllDashboard: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       select: {
