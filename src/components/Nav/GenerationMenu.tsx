@@ -25,7 +25,7 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
       ref={popUpRef}
       className="absolute left-0 z-[200] flex w-screen translate-y-7 border-b-2 bg-white"
     >
-      <div className="ml-20 mr-20 grid w-full grid-cols-6 gap-x-16 gap-y-8 p-8">
+      <div className="max-h-[calc(100vh-18rem)] ml-20 mr-20 grid w-full grid-cols-6  gap-x-16 gap-y-8 p-8">
         <div className="flex flex-col">
           <h4>F8X - M2/M3/M4</h4>
           <Link

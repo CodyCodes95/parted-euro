@@ -57,14 +57,14 @@ const Listing: NextPage = () => {
             <h2 className="my-6 text-xl">Mileage: {donor.data?.mileage}KM</h2>
             <h3 className="text-2xl">Parts For Sale</h3>
             <div className="p-2"></div>
-            {donor.data?.parts.reduce((acc, cur) => {
+            {donor.data?.parts.reduce((acc, cur:any) => {
               if (acc.find((part) => part.listing.id === cur.listing.id)) {
                 return acc;
               } else {
                 return [...acc, cur];
               }
             }, [] as any[]).map((part) =>
-              part.listing.map((list) => {
+              part.listing.map((list:any) => {
                 return (
                   <Link className="hover:underline" key={list.id} href={`/listings/listing?id=${list.id}`}>
                     {list.title}
