@@ -28,6 +28,11 @@ export const serverSchema = z.object({
   STRIPE_SECRET: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
   AUSPOST_API_KEY: z.string(),
+  XERO_CLIENT_ID: z.string(),
+  XERO_CLIENT_SECRET: z.string(),
+  XERO_REDIRECT_URI: z.string(),
+  XERO_SCOPES: z.string(),
+  
 });
 
 /**
