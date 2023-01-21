@@ -9,11 +9,12 @@ import AddListing from "../../../components/listings/AddListing";
 import { trpc } from "../../../utils/trpc";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ebay from "../../../../public/ebay.png";
 
 const Listings: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
 
-    const success = (message: string) => toast.success(message);
+  const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
   const router = useRouter();
@@ -36,8 +37,14 @@ const Listings: NextPage = () => {
     model: model as string,
     // search: debouncedSearch
   });
-  
-  
+  const ebayLogin = trpc.ebay.authenticate.useMutation();
+
+  const authenticateEbay = async () => {
+    const result = await ebayLogin.mutateAsync();
+    if (result) {
+      router.push(result.url);
+    }
+  }
 
   return (
     <>
@@ -104,6 +111,19 @@ const Listings: NextPage = () => {
               </div>
             </Link>
           ))}
+        <div className="flex w-[25%] items-center justify-around">
+          <img src={ebay.src} className="w-36" alt="Ebay logo" />
+          <div className="p-4"></div>
+          <div className="flex flex-col items-center">
+            <p className="text-xl">
+              {/* {daysTillExpiry.data?.daysTillExpiry} Days until Xero expiry. */}
+            </p>
+            <div className="p-2"></div>
+            <button className="hover:underline" onClick={authenticateEbay}>
+              Renew token
+            </button>
+          </div>
+        </div>
         </div>
       </main>
     </>

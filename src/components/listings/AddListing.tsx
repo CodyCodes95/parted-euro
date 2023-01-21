@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
@@ -25,7 +25,7 @@ const AddListing: React.FC<AddListingProps> = ({
   success,
   error,
 }) => {
-   const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [condition, setCondition] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
@@ -40,7 +40,7 @@ const AddListing: React.FC<AddListingProps> = ({
 
   const donors = trpc.donors.getAllWithParts.useQuery(undefined, {
     onSuccess: (data) => {
-      console.log(data)
+      console.log(data);
       const options = data.map((donor: any) => {
         return {
           label: donor.vin,
@@ -48,14 +48,14 @@ const AddListing: React.FC<AddListingProps> = ({
             return {
               label: `${part.partDetails.name} (${part.partDetails.partNo})`,
               value: part.id,
-              tab: donor.vin
-            }
-          })
-        }
+              tab: donor.vin,
+            };
+          }),
+        };
       });
       setPartOptions(options);
-    }
-  })
+    },
+  });
 
   const saveListing = trpc.listings.createListing.useMutation();
   const uploadImage = trpc.listings.uploadListingImage.useMutation();
@@ -81,25 +81,28 @@ const AddListing: React.FC<AddListingProps> = ({
     //   console.log("ERR")
     //   return
     // }
-    setLoading(true)
-    const result = await saveListing.mutateAsync({
-      title: title,
-      description: description,
-      condition: condition,
-      price: price,
-      weight: weight,
-      length: length,
-      width: width,
-      height: height,
-      parts: parts
-    }, {
-      onSuccess: (listing) => {
-        console.log(listing)
+    setLoading(true);
+    const result = await saveListing.mutateAsync(
+      {
+        title: title,
+        description: description,
+        condition: condition,
+        price: price,
+        weight: weight,
+        length: length,
+        width: width,
+        height: height,
+        parts: parts,
       },
-      onError: (err) => {
-        error(err.message)
+      {
+        onSuccess: (listing) => {
+          console.log(listing);
+        },
+        onError: (err) => {
+          error(err.message);
+        },
       }
-    });
+    );
     const listingId = result.id;
     const imagePromises = images.map(async (image: string) => {
       const imageRes = await uploadImage.mutateAsync({
@@ -111,7 +114,7 @@ const AddListing: React.FC<AddListingProps> = ({
       });
     });
     await Promise.all([...imagePromises]);
-    setLoading(false)
+    setLoading(false);
     setTitle("");
     setDescription("");
     setCondition("");
