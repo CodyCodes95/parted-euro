@@ -7,14 +7,15 @@ import { useEffect, useRef } from "react";
 interface AdminPopupProps {
   open: boolean;
   setOpen: any;
+  adminRef: any;
 }
 
-const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen}) => {
+const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen, adminRef}) => {
 
   const popUpRef = useRef<HTMLDivElement>(null);
   
  const closePopup = (e: any) => {
-   if (popUpRef.current && open && !popUpRef.current.contains(e.target)) {
+   if (popUpRef.current && open && !popUpRef.current.contains(e.target) && !adminRef.current.contains(e.target)) {
      setOpen(false);
    }
  };
@@ -43,7 +44,7 @@ const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen}) => {
   return (
     <Stack
       ref={popUpRef}
-      className={`absolute top-[4rem] right-6 z-[100] ${
+      className={`absolute top-[4rem] right-10 z-[100] ${
         open ? "visible" : "invisible"
       }`}
       direction="row"

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NavBackdrop from "./Nav/NavBackdrop";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,6 +21,8 @@ const Nav: React.FC = () => {
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
   const [showCart, setShowCart] = useState<boolean>(false);
+
+  const adminRef = useRef<HTMLDivElement>(null);
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -124,7 +126,9 @@ const Nav: React.FC = () => {
           } ${showLogin && !session ? "visible" : ""}`}
         >
           {session ? (
-            <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
+            <div ref={adminRef}>
+              <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
+            </div>
           ) : (
             <LoginIcon
               onClick={() => (window.location.href = "/api/auth/signin")}
@@ -132,7 +136,7 @@ const Nav: React.FC = () => {
           )}
         </div>
         {openAdminMenu ? (
-          <AdminMenu open={openAdminMenu} setOpen={setOpenAdminMenu} />
+          <AdminMenu adminRef={adminRef} open={openAdminMenu} setOpen={setOpenAdminMenu} />
         ) : null}
       </div>
       <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
