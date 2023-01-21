@@ -28,6 +28,7 @@
     "@trpc/react-query": "^10.0.0",
     "@trpc/server": "^10.0.0",
     "cloudinary": "^1.33.0",
+    "ebay-oauth-nodejs-client": "^1.2.2",
     "micro": "^10.0.1",
     "next": "13.0.2",
     "next-auth": "^4.18.3",
