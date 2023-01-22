@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useContext, useEffect, useState } from "react";
 import CartContext from "../../context/cartContext";
 
-const confirmation: NextPage = () => {
+const Confirmation: NextPage = () => {
     const { cart, setCart } = useContext(CartContext);
     const [tempCart, setTempCart] = useState<any[]>([]);
 
@@ -32,4 +32,4 @@ const confirmation: NextPage = () => {
   );
 };
 
-export default confirmation;
+export default Confirmation;
