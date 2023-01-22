@@ -31,5 +31,11 @@ export const ebayRouter = router({
           return {
             updatedCreds,
           };
+    }),
+    createListing: adminProcedure.input(z.object({
+        title: z.string(),
+    })).mutation(async ({ ctx, input }) => {
+        const refreshToken = await ctx.prisma.ebayCreds.findFirst();
+        const accessToken = await ebayAuthToken.getAccessToken('PRODUCTION', refreshToken, process.env.EBAY_SCOPES?.split(" "))
     })
 });
