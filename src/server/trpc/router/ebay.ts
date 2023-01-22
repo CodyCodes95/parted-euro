@@ -20,7 +20,7 @@ export const ebayRouter = router({
           input.code
         );
           const creds = await ctx.prisma.ebayCreds.findFirst();
-          const updatedCreds = await ctx.prisma.xeroCreds.update({
+          const updatedCreds = await ctx.prisma.ebayCreds.update({
             where: {
               id: creds?.id,
             },
@@ -37,5 +37,6 @@ export const ebayRouter = router({
     })).mutation(async ({ ctx, input }) => {
         const refreshToken = await ctx.prisma.ebayCreds.findFirst();
         const accessToken = await ebayAuthToken.getAccessToken('PRODUCTION', refreshToken, process.env.EBAY_SCOPES?.split(" "))
+        // create the listing::::
     })
 });
