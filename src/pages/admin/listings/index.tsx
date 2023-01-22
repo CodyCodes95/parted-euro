@@ -51,7 +51,9 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (code) {
-      getAccessToken.mutateAsync({ code: code as string });
+      const accessToken = getAccessToken.mutateAsync({ code: code as string });
+      router.replace("/admin/listings", undefined, { shallow: true });
+      console.log(accessToken)
     }
   }, [code]);
 
