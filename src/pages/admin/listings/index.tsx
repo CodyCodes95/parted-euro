@@ -52,6 +52,7 @@ const Listings: NextPage = () => {
   useEffect(() => {
     if (code) {
       const updateTokenRes = updateRefreshToken.mutateAsync({ code: code as string });
+      console.log(updateTokenRes)
       router.replace("/admin/listings", undefined, { shallow: true });
     }
   }, [code]);
