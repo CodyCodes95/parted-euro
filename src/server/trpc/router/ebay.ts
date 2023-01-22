@@ -12,16 +12,24 @@ export const ebayRouter = router({
             url: authUrl,
         }
     }),
-    getAccessToken: adminProcedure.input(z.object({
+    updateRefreshToken: adminProcedure.input(z.object({
         code: z.string(),
     })).mutation(async ({ ctx, input }) => {
-        const accessToken = await ebayAuthToken.exchangeCodeForAccessToken(
+        const tokenSet = await ebayAuthToken.exchangeCodeForAccessToken(
           "PRODUCTION",
           input.code
         );
-        console.log(accessToken);
-        return {
-            accessToken
-        }
+          const creds = await ctx.prisma.ebayCreds.findFirst();
+          const updatedCreds = await ctx.prisma.xeroCreds.update({
+            where: {
+              id: creds?.id,
+            },
+            data: {
+              refreshToken: tokenSet.refresh_token,
+            },
+          });
+          return {
+            updatedCreds,
+          };
     })
 });

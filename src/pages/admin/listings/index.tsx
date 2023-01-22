@@ -40,7 +40,7 @@ const Listings: NextPage = () => {
 
   const ebayLogin = trpc.ebay.authenticate.useMutation();
 
-  const getAccessToken = trpc.ebay.getAccessToken.useMutation();
+  const getAccessToken = trpc.ebay.updateRefreshToken.useMutation();
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();

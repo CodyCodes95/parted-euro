@@ -148,3 +148,10 @@ model XeroCreds {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model EbayCreds {
+  id           String   @id @default(cuid())
+  refreshToken String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

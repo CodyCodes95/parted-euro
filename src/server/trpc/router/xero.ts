@@ -97,7 +97,6 @@ export const xeroRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const tokenSet = await xero.apiCallback(input.code);
-      console.log(tokenSet);
       const creds = await ctx.prisma.xeroCreds.findFirst();
       const updatedCreds = await ctx.prisma.xeroCreds.update({
         where: {
