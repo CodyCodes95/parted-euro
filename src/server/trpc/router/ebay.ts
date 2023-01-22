@@ -19,18 +19,18 @@ export const ebayRouter = router({
           "PRODUCTION",
           input.code
         );
-        console.log(tokenSet.refresh_token as any)
           const creds = await ctx.prisma.ebayCreds.findFirst();
           const updatedCreds = await ctx.prisma.ebayCreds.update({
             where: {
               id: creds?.id,
             },
             data: {
-              refreshToken: tokenSet.refresh_token,
+              refreshToken: tokenSet.refresh_token as string
             },
           });
           return {
-            updatedCreds,
+              updatedCreds,
+              refresh: tokenSet.refresh_token
           };
     }),
     createListing: adminProcedure.input(z.object({
