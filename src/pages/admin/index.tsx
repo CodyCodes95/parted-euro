@@ -61,7 +61,7 @@ const Admin: NextPage = () => {
                 className="w-full cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <TimeToLeaveIcon className="text-7xl" />
+                  <TimeToLeaveIcon className="text-7xl h-20 w-20" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">Cars</h3>
               </Link>
@@ -70,7 +70,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <CarRepairIcon className="text-7xl" />
+                  <CarRepairIcon className="text-7xl h-20 w-20" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Donors
@@ -81,7 +81,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <BuildIcon className="text-7xl" />
+                  <BuildIcon className="text-7xl h-20 w-20" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">Parts</h3>
               </Link>
@@ -90,7 +90,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <SellIcon className="text-7xl" />
+                  <SellIcon className="text-7xl h-20 w-20" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Listings
