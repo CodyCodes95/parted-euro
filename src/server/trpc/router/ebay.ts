@@ -19,6 +19,7 @@ export const ebayRouter = router({
           "PRODUCTION",
           input.code
         );
+        console.log(tokenSet)
           const creds = await ctx.prisma.ebayCreds.findFirst();
           const updatedCreds = await ctx.prisma.ebayCreds.update({
             where: {
