@@ -30,7 +30,7 @@ export const ebayRouter = router({
           });
           return {
               updatedCreds,
-              refresh: tokenSet.refresh_token
+              refresh: tokenSet
           };
     }),
     createListing: adminProcedure.input(z.object({
