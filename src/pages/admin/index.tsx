@@ -9,8 +9,16 @@ import xero from "../../../public/xero.png"
 import { trpc } from "../../utils/trpc";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const Admin: NextPage = () => {
+
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = "/";
+    },
+  })
 
   const router = useRouter()
 
