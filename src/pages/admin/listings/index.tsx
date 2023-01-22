@@ -40,7 +40,7 @@ const Listings: NextPage = () => {
 
   const ebayLogin = trpc.ebay.authenticate.useMutation();
 
-  const getAccessToken = trpc.ebay.updateRefreshToken.useMutation();
+  const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
@@ -51,9 +51,8 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (code) {
-      const accessToken = getAccessToken.mutateAsync({ code: code as string });
+      const updateTokenRes = updateRefreshToken.mutateAsync({ code: code as string });
       router.replace("/admin/listings", undefined, { shallow: true });
-      console.log(accessToken)
     }
   }, [code]);
 
