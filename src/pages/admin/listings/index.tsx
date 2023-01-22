@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import AddListing from "../../../components/listings/AddListing";
@@ -19,7 +19,7 @@ const Listings: NextPage = () => {
 
   const router = useRouter();
 
-  const { series, generation, model } = router.query;
+  const { series, generation, model, code } = router.query;
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -37,14 +37,23 @@ const Listings: NextPage = () => {
     model: model as string,
     // search: debouncedSearch
   });
+
   const ebayLogin = trpc.ebay.authenticate.useMutation();
+
+  const getAccessToken = trpc.ebay.getAccessToken.useMutation();
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
     if (result) {
       router.push(result.url);
     }
-  }
+  };
+
+  useEffect(() => {
+    if (code) {
+      getAccessToken.mutateAsync({ code: code as string });
+    }
+  }, [code]);
 
   return (
     <>
@@ -111,19 +120,19 @@ const Listings: NextPage = () => {
               </div>
             </Link>
           ))}
-        <div className="flex w-[25%] items-center justify-around">
-          <img src={ebay.src} className="w-36" alt="Ebay logo" />
-          <div className="p-4"></div>
-          <div className="flex flex-col items-center">
-            <p className="text-xl">
-              {/* {daysTillExpiry.data?.daysTillExpiry} Days until Xero expiry. */}
-            </p>
-            <div className="p-2"></div>
-            <button className="hover:underline" onClick={authenticateEbay}>
-              Renew token
-            </button>
+          <div className="flex w-[25%] items-center justify-around">
+            <img src={ebay.src} className="w-36" alt="Ebay logo" />
+            <div className="p-4"></div>
+            <div className="flex flex-col items-center">
+              <p className="text-xl">
+                {/* {daysTillExpiry.data?.daysTillExpiry} Days until Xero expiry. */}
+              </p>
+              <div className="p-2"></div>
+              <button className="hover:underline" onClick={authenticateEbay}>
+                Renew token
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </main>
     </>

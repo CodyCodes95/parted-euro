@@ -11,5 +11,17 @@ export const ebayRouter = router({
         return {
             url: authUrl,
         }
+    }),
+    getAccessToken: adminProcedure.input(z.object({
+        code: z.string(),
+    })).mutation(async ({ ctx, input }) => {
+        const accessToken = await ebayAuthToken.exchangeCodeForAccessToken(
+          "PRODUCTION",
+          input.code
+        );
+        console.log(accessToken);
+        return {
+            accessToken
+        }
     })
 });
