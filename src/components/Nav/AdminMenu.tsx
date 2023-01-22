@@ -31,7 +31,7 @@ const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen, adminRef}) => {
   };
 
   const handleCloseLogout = (event: Event | React.SyntheticEvent) => {
-    window.location.href = "/api/auth/logout";
+    window.location.href = "/api/auth/signout";
     setOpen(false);
   };
 
