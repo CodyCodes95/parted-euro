@@ -42,6 +42,8 @@ const Listings: NextPage = () => {
 
   const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
 
+  const listingTest = trpc.ebay.createListing.useMutation();
+
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
     if (result) {
@@ -49,10 +51,17 @@ const Listings: NextPage = () => {
     }
   };
 
+  const createListing = async () => {
+    const res = await listingTest.mutateAsync({ title: "test" });
+    console.log(res);
+  };
+
   useEffect(() => {
     if (code) {
-      const updateTokenRes = updateRefreshToken.mutateAsync({ code: code as string });
-      console.log(updateTokenRes)
+      const updateTokenRes = updateRefreshToken.mutateAsync({
+        code: code as string,
+      });
+      console.log(updateTokenRes);
       router.replace("/admin/listings", undefined, { shallow: true });
     }
   }, [code]);
@@ -132,6 +141,9 @@ const Listings: NextPage = () => {
               <div className="p-2"></div>
               <button className="hover:underline" onClick={authenticateEbay}>
                 Renew token
+              </button>
+              <button className="hover:underline" onClick={createListing}>
+                Test listing
               </button>
             </div>
           </div>
