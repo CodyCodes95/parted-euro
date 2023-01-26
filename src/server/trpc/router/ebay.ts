@@ -1,10 +1,27 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 import eBayApi from "ebay-api";
+import { FulfillmentPolicyRequest } from "ebay-api/lib/types";
+import { CategoryType, MarketplaceId, RegionType, TimeDurationUnit } from "ebay-api/lib/enums";
+import { RegionSet } from "ebay-api/lib/types";
+import { Region } from "ebay-api/lib/types";
+
+const ebay = eBayApi.fromEnv();
+ebay.config.acceptLanguage = "en-US";
+
+const request: FulfillmentPolicyRequest = {
+  name: "Fulfilmnet Policy",
+  description: "Fulfilmnet Policy sdnifnsdfgnboidsfnvbodsfnvd",
+  marketplaceId: MarketplaceId.EBAY_AU,
+  handlingTime: {
+    unit: TimeDurationUnit.DAY,
+    value: 1,
+  },
+  categoryTypes: [{name: CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES}] ,
+};
 
 export const ebayRouter = router({
   authenticate: adminProcedure.mutation(async ({ ctx }) => {
-    const ebay = eBayApi.fromEnv();
     ebay.OAuth2.setScope(process.env.EBAY_SCOPES?.split(" ") as string[]);
     const url = ebay.OAuth2.generateAuthUrl();
     return {
@@ -18,7 +35,6 @@ export const ebayRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const ebay = eBayApi.fromEnv();
       const token = await ebay.OAuth2.getToken(input.code);
       const creds = await ctx.prisma.ebayCreds.findFirst();
       const updatedCreds = await ctx.prisma.ebayCreds.update({
@@ -26,7 +42,7 @@ export const ebayRouter = router({
           id: creds?.id,
         },
         data: {
-          refreshToken: JSON.stringify(token),
+          refreshToken: token,
         },
       });
       return {
@@ -41,10 +57,45 @@ export const ebayRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
-      const ebay = eBayApi.fromEnv();
-      ebay.OAuth2.setCredentials(JSON.parse(token?.refreshToken as any));
-      const orders = await ebay.sell.fulfillment.getOrders();
-      console.log(orders)
+      ebay.OAuth2.setCredentials(token?.refreshToken as any);
+      ebay.OAuth2.on("refreshAuthToken", async (token) => {
+        const creds = await ctx.prisma.ebayCreds.findFirst();
+        const updatedCreds = await ctx.prisma.ebayCreds.update({
+          where: {
+            id: creds?.id,
+          },
+          data: {
+            refreshToken: JSON.stringify(token),
+          },
+        });
+      });
+      // const fulfillmentPolicy = await ebay.sell.account.createFulfillmentPolicy(
+      //   {
+      //     name: "Fulfilmnet Policy",
+      //     description: "Fulfilmnet Policy",
+      //     marketplaceId: MarketplaceId.EBAY_AU,
+      //     handlingTime: {
+      //       unit: TimeDurationUnit.DAY,
+      //       value: 1,
+      //     },
+      //     categoryTypes: [CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES] as any[],
+      //     shipToLocations: {
+      //       regionIncluded: [RegionType.WORLDWIDE] as any[],
+      //       regionExcluded: [] as any[],
+      //     },
+      //   }
+      // );
+      try {
+        // const fulfillmentPolicy = await ebay.sell.account.getFulfillmentPolicies("EBAY_AU");
+        const fulfillmentPolicy = await ebay.sell.account.createFulfillmentPolicy(request);
+        return {
+          fulfillmentPolicy,
+        };
+      } catch (err) {
+        return {
+          err
+        }
+      }
       // const ebayCreds = await ctx.prisma.ebayCreds.findFirst();
       // const ebayTokenRes = await ebayAuthToken.getAccessToken(
       //   "PRODUCTION",

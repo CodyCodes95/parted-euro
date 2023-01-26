@@ -151,7 +151,7 @@ model XeroCreds {
 
 model EbayCreds {
   id           String   @id @default(cuid())
-  refreshToken String
+  refreshToken Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
