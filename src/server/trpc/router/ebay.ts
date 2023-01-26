@@ -24,7 +24,7 @@ export const ebayRouter = router({
       console.log(token)
       return {
         token
-      }
+      };
       // const tokenSet = await ebayAuthToken.exchangeCodeForAccessToken(
       //   "PRODUCTION",
       //   input.code
