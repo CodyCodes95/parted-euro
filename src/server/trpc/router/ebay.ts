@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
-import ebayAuthToken from "../../../utils/ebay.mjs";
 import eBayApi from "ebay-api";
 
 export const ebayRouter = router({
@@ -21,28 +20,18 @@ export const ebayRouter = router({
     .mutation(async ({ ctx, input }) => {
       const ebay = eBayApi.fromEnv();
       const token = await ebay.OAuth2.getToken(input.code);
-      console.log(token)
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: JSON.stringify(token),
+        },
+      });
       return {
-        token
+        updatedCreds,
       };
-      // const tokenSet = await ebayAuthToken.exchangeCodeForAccessToken(
-      //   "PRODUCTION",
-      //   input.code
-      // );
-      // const data = JSON.parse(tokenSet as any);
-      // const creds = await ctx.prisma.ebayCreds.findFirst();
-      // const updatedCreds = await ctx.prisma.ebayCreds.update({
-      //   where: {
-      //     id: creds?.id,
-      //   },
-      //   data: {
-      //     refreshToken: data.refresh_token,
-      //   },
-      // });
-      // return {
-      //   updatedCreds,
-      //   refresh: tokenSet,
-      // };
     }),
   createListing: adminProcedure
     .input(
@@ -51,6 +40,11 @@ export const ebayRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const token = await ctx.prisma.ebayCreds.findFirst();
+      const ebay = eBayApi.fromEnv();
+      ebay.OAuth2.setCredentials(JSON.parse(token?.refreshToken as any));
+      const orders = await ebay.sell.fulfillment.getOrders();
+      console.log(orders)
       // const ebayCreds = await ctx.prisma.ebayCreds.findFirst();
       // const ebayTokenRes = await ebayAuthToken.getAccessToken(
       //   "PRODUCTION",
