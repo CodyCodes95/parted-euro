@@ -1,13 +1,25 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 import eBayApi from "ebay-api";
-import { FulfillmentPolicyRequest } from "ebay-api/lib/types";
-import { CategoryType, MarketplaceId, RegionType, TimeDurationUnit } from "ebay-api/lib/enums";
+import {
+  FulfillmentPolicyRequest,
+  EbayOfferDetailsWithKeys,
+  InventoryLocationFull,
+} from "ebay-api/lib/types";
+import {
+  CategoryType,
+  MarketplaceId,
+  RegionType,
+  TimeDurationUnit,
+} from "ebay-api/lib/enums";
 import { RegionSet } from "ebay-api/lib/types";
 import { Region } from "ebay-api/lib/types";
+import { SellInventoryItem } from "ebay-api/lib/types";
 
 const ebay = eBayApi.fromEnv();
-ebay.config.acceptLanguage = "en-US";
+ebay.config.acceptLanguage = "en-AU";
+ebay.config.contentLanguage = "en-AU" as any;
+ebay.config.marketplaceId = "EBAY_AU" as any;
 
 const request: FulfillmentPolicyRequest = {
   name: "Fulfilmnet Policy",
@@ -17,7 +29,7 @@ const request: FulfillmentPolicyRequest = {
     unit: TimeDurationUnit.DAY,
     value: 1,
   },
-  categoryTypes: [{name: CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES}] ,
+  categoryTypes: [{ name: CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES }],
 };
 
 export const ebayRouter = router({
@@ -69,6 +81,29 @@ export const ebayRouter = router({
           },
         });
       });
+      const listing = {
+        model: "TEST",
+        sku: "124158001",
+        marketplaceId: "EBAY_AU",
+        format: "FIXED_PRICE",
+        availableQuantity: 1,
+        categoryId: "30093",
+        listingDescription: "Brand new red bikeeeeeeeee",
+        listingPolicies: {
+          fulfillmentPolicyId: "42821376015",
+          paymentPolicyId: "42821372015",
+          returnPolicyId: "205483749015",
+        },
+        merchantLocationKey: "parted-euro-knox",
+        pricingSummary: {
+          price: {
+            currency: "AUD",
+            value: "1005.00",
+          },
+        },
+        quantityLimitPerBuyer: 1,
+        includeCatalogProductDetails: true,
+      } as EbayOfferDetailsWithKeys;
       // const fulfillmentPolicy = await ebay.sell.account.createFulfillmentPolicy(
       //   {
       //     name: "Fulfilmnet Policy",
@@ -86,15 +121,85 @@ export const ebayRouter = router({
       //   }
       // );
       try {
-        // const fulfillmentPolicy = await ebay.sell.account.getFulfillmentPolicies("EBAY_AU");
-        const fulfillmentPolicy = await ebay.sell.account.createFulfillmentPolicy(request);
+        // const sellItem = await ebay.sell.inventory.createOffer(listing);
+        // const fulfillmentPolicy = await ebay.sell.fulfillment.getOrders();
+        // const sellItem = await ebay.sell.inventory.getInventoryItems()
+        // const inventoryLocation =
+        //   await ebay.sell.inventory.createInventoryLocation(
+        //     "parted-euro-knox",
+        //     {
+        //       location: {
+        //         address: {
+        //           addressLine1: "123 fake street",
+        //           addressLine2: "2",
+        //           city: "Knox",
+        //           country: "AU",
+        //           stateOrProvince: "VIC",
+        //           postalCode: "3152",
+        //         },
+        //       },
+        //       name: "Parted Euro",
+        //       locationWebUrl: "https://parted-euro.vercel.app/",
+        //       locationTypes: ["WAREHOUSE"],
+        //       locationInstructions: "Items ship from here",
+        //       merchantLocationStatus: "ENABLED",
+        //     } as InventoryLocationFull
+        //   );
+        // const inventoryLocation =
+        // await ebay.sell.inventory.getInventoryLocations();
+        // const sellItem = await ebay.sell.account.getPaymentPolicies("EBAY_AU")
+        // const categoryTreeId = await ebay.commerce.taxonomy.getDefaultCategoryTreeId("EBAY_AU") //logged 15, used in req below
+        // const sellItem = await ebay.commerce.taxonomy.getCategorySuggestions("15", "GoPro Hero4 Helmet Cam") logged {categoryId: '30093', categoryName: 'Tripods & Monopods'}. Wondering how often
+        // this changes? if not often, will just use a generic car parts category for all reqs. If they change, will have to grab on each fetch
+        // const sellItem = await ebay.sell.inventory.createOrReplaceInventoryItem(
+        //   "124158001",
+        //   {
+        //     availability: {
+        //       shipToLocationAvailability: {
+        //         quantity: 10,
+        //       },
+        //     },
+        //     condition: "NEW",
+        //     product: {
+        //       title: "GoPro Hero4 Helmet Cam",
+        //       description: "New GoPro Hero4 Helmet Cam. Unopened box.",
+        //       aspects: {
+        //         Brand: ["GoPro"],
+        //         Type: ["Helmet/Action"],
+        //         "Storage Type": ["Removable"],
+        //         "Recording Definition": ["High Definition"],
+        //         "Media Format": ["Flash Drive (SSD)"],
+        //         "Optical Zoom": ["10x"],
+        //         "Model": ["Hero4"],
+        //       },
+        //       brand: "GoPro",
+        //       mpn: "CHDHX-401",
+        //       imageUrls: [
+        //         "https://res.cloudinary.com/codycodes/image/upload/v1673508756/listings/Photo20-12-2022_60517pm_ozi5cs.webp",
+        //       ],
+        //     },
+        //   } as SellInventoryItem
+        // );
+        // const sellItem = await ebay.sell.inventory.getInventoryItems();
+        // const fulfillmentPolicy =
+        // await ebay.sell.account.createFulfillmentPolicy(request);
+        // const offers = await ebay.sell.inventory.getOffers({
+        //   sku: "12345543219922222",
+        //   marketplaceId: "EBAY_AU",
+        // });
+        const publishOffer = await ebay.sell.inventory.publishOffer(
+          "296734126016"
+        );
         return {
-          fulfillmentPolicy,
+          // sellItem,
+          // offers,
+          publishOffer,
+          // inventoryLocation,
         };
       } catch (err) {
         return {
-          err
-        }
+          err,
+        };
       }
       // const ebayCreds = await ctx.prisma.ebayCreds.findFirst();
       // const ebayTokenRes = await ebayAuthToken.getAccessToken(
