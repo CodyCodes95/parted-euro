@@ -2,12 +2,12 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select, { MultiValue, SingleValue } from "react-select";
-import { InventoryLocations } from "@prisma/client";
+import { Donor, InventoryLocations } from "@prisma/client";
 
 interface AddPartProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  donorVin: string;
+  donorVin?: string;
   success: (message: string) => void;
   error: (message: string) => void;
 }
@@ -28,6 +28,7 @@ const AddPart: React.FC<AddPartProps> = ({
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
   const [partDetailsIds, setPartDetailsIds] = useState<Array<string>>([]);
   const [inventoryLocation, setInventoryLocation] = useState<string>("");
+  const [donor, setDonor] = useState<string>(donorVin || "");
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -46,6 +47,8 @@ const AddPart: React.FC<AddPartProps> = ({
     },
   });
 
+  const donors = trpc.donors.getAll.useQuery();
+
   const inventoryLocations = trpc.inventoryLocations.getAll.useQuery()
 
   const savePart = trpc.parts.createPart.useMutation();
@@ -58,7 +61,7 @@ const AddPart: React.FC<AddPartProps> = ({
     const savePartPromises = partDetailsIds.map((id) => {
       return savePart.mutateAsync({
         partDetailsId: id,
-        donorVin: donorVin,
+        donorVin: donorVin || donor,
       });
     });
     await Promise.all(savePartPromises);
@@ -107,10 +110,16 @@ const AddPart: React.FC<AddPartProps> = ({
                 Donor Car (Donor)
               </label>
               <Select
-                placeholder={donorVin}
-                isDisabled={true}
+                placeholder={donorVin || "Select a donor"}
+                isDisabled={donorVin ? true : false}
                 className="basic-multi-select"
                 classNamePrefix="select"
+                options={donors.data?.map((donor: Donor) => {
+                  return {
+                    label: donor.vin,
+                    value: donor.vin,
+                  };
+                })}
               />
             </div>
             <div className="mb-6">

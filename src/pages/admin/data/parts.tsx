@@ -45,7 +45,7 @@ const Parts: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Parts</title>
+        <title>Part Data</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col bg-white">

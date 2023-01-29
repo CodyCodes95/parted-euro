@@ -39,7 +39,9 @@ const Admin: NextPage = () => {
   };
 
   const renewXero = async () => {
-    toast.loading("Renewing Xero token...")
+    toast.loading("Renewing Xero token...", {
+      autoClose: 5000,
+    });
     const renewXeroRes = await renewToken.mutateAsync({
       code: window.location.href,
     });

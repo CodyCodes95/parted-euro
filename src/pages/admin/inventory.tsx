@@ -1,28 +1,28 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import AddPartDetails from "../../components/parts/AddPartDetails";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
-import { PartDetail } from "@prisma/client";
+import { Part } from "@prisma/client";
 import SortedTable from "../../components/tables/SortedTable";
+import AddPart from "../../components/parts/AddPart";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [headCells, setHeadCells] = useState<readonly string[]>([]);
-  const [rows, setRows] = useState<PartDetail[]>([]);
+  const [rows, setRows] = useState<Part[]>([]);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
-  const partDetails = trpc.partDetails.getAll.useQuery(undefined, {
+  const parts = trpc.parts.getAll.useQuery(undefined, {
     onSuccess: (data) => {
       setHeadCells([]);
       setRows([]);
       const hideColumns = ["id", "createdAt", "updatedAt"];
       setHeadCells((): any => {
-        const cells = Object.keys(data[0] as PartDetail)
+        const cells = Object.keys(data[0] as Part)
           .filter((key) => {
             return !hideColumns.includes(key);
           })
@@ -51,7 +51,7 @@ const Inventory: NextPage = () => {
       <main className="flex min-h-screen flex-col bg-white">
         <ToastContainer />
         {showModal ? (
-          <AddPartDetails
+          <AddPart
             success={success}
             error={error}
             showModal={showModal}
@@ -63,7 +63,6 @@ const Inventory: NextPage = () => {
           rows={rows}
           title="Part Details"
           setShowModal={setShowModal}
-          rowId={"partNo"}
         />
         <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
       </main>

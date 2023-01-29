@@ -23,18 +23,26 @@ export const partRouter = router({
         },
       });
     }),
-  createPart: adminProcedure.input(
-    z.object({
-      partDetailsId: z.string(),
-      donorVin: z.string(),
-    })
-  ).mutation(({ ctx, input }) => {
-    return ctx.prisma.part.create({ data: input })
-  }),
+  createPart: adminProcedure
+    .input(
+      z.object({
+        partDetailsId: z.string(),
+        donorVin: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.part.create({ data: input });
+    }),
   getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.part.findMany({
       include: {
-        donor: true,
+        partDetails: true,
+        donor: {
+          include: {
+            car: true,
+          },
+        },
+        inventoryLocation: true,
       },
     });
   }),
