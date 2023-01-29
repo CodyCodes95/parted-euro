@@ -69,19 +69,19 @@ export const xeroRouter = router({
           ],
         }
       );
-    //   if (createInvoiceResponse?.body?.invoices) {
-    //     const invoiceId = createInvoiceResponse.body.invoices[0]?.invoiceID;
-    //     const requestEmpty: RequestEmpty = {};
-    //     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
-    //       activeTenantId,
-    //       invoiceId as string,
-    //       requestEmpty
-    //     );
-    //   }
-        // Unsure how above works, does Xero get the email from the invoice we created to send?
-        return {
-            createInvoiceResponse
-        }
+      //   if (createInvoiceResponse?.body?.invoices) {
+      //     const invoiceId = createInvoiceResponse.body.invoices[0]?.invoiceID;
+      //     const requestEmpty: RequestEmpty = {};
+      //     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
+      //       activeTenantId,
+      //       invoiceId as string,
+      //       requestEmpty
+      //     );
+      //   }
+      // Unsure how above works, does Xero get the email from the invoice we created to send?
+      return {
+        createInvoiceResponse,
+      };
     }),
   authenticate: adminProcedure.mutation(async ({ ctx }) => {
     const consentUrl = await xero.buildConsentUrl();
@@ -96,18 +96,24 @@ export const xeroRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const tokenSet = await xero.apiCallback(input.code);
-      const creds = await ctx.prisma.xeroCreds.findFirst();
-      const updatedCreds = await ctx.prisma.xeroCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: tokenSet.refresh_token,
-        },
-      });
-      return {
-        updatedCreds,
-      };
+      try {
+        const tokenSet = await xero.apiCallback(input.code);
+        const creds = await ctx.prisma.xeroCreds.findFirst();
+        const updatedCreds = await ctx.prisma.xeroCreds.update({
+          where: {
+            id: creds?.id,
+          },
+          data: {
+            refreshToken: tokenSet.refresh_token,
+          },
+        });
+        return {
+          updatedCreds,
+        };
+      } catch (err: any) {
+        return {
+          error: err.message,
+        };
+      }
     }),
 });
