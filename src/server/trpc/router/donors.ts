@@ -39,6 +39,9 @@ export const donorRouter = router({
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       where: {
+        imageUrl: {
+          not: undefined,
+        },
         parts: {
           some: {
             listing: {

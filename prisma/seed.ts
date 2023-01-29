@@ -89,6 +89,12 @@ async function main() {
         generation: "F83",
         model: "M4",
       },
+      {
+        make: "All",
+        series: "0 Series",
+        generation: "E00",
+        model: "E00",
+      },
     ],
   });
   const firstCar = await prisma.car.findFirst();
@@ -112,15 +118,21 @@ async function main() {
       generation: "F82",
     },
   });
+  const genericDonor = await prisma.car.findFirst({
+    where: {
+      generation: "E00",
+    },
+  });
 
-    const donors = await prisma.donor.createMany({
+
+  const donors = await prisma.donor.createMany({
     data: [
       {
         vin: "0000000000",
         year: 1990,
         cost: 0,
         mileage: 0,
-        carId: ""
+        carId: genericDonor?.id ||"",
       },
       {
         vin: "WBSBL92060JR08716",
@@ -134,26 +146,26 @@ async function main() {
         year: 1999,
         cost: 1500000,
         mileage: 220000,
-        carId: fiveSeries?.id || ""
+        carId: fiveSeries?.id || "",
       },
       {
         vin: "WBS3R922090K345058",
         year: 2016,
         cost: 3000000,
         mileage: 24000,
-        carId: m4?.id || ""
+        carId: m4?.id || "",
       },
       {
         vin: "WBS8M920105G47739",
         year: 2015,
         cost: 4000000,
         mileage: 21000,
-        carId: m3?.id || ""
+        carId: m3?.id || "",
       },
     ],
   });
 
- await prisma.partDetail.create({
+  await prisma.partDetail.create({
     data: {
       name: "E46 M3 Rear Seat Lateral Trim Panel Left",
       partNo: "52207903035",
@@ -163,9 +175,9 @@ async function main() {
         },
       },
     },
- });
-  
-   await prisma.partDetail.create({
+  });
+
+  await prisma.partDetail.create({
     data: {
       name: "E46 M3 Rear Seat Lateral Trim Panel Right",
       partNo: "52207903036",
@@ -175,18 +187,21 @@ async function main() {
         },
       },
     },
-   });
-  
+  });
+
   await prisma.partDetail.create({
     data: {
       name: "E46 M3 Door Cards Driver Front",
       partNo: "51417890952",
       cars: {
-        connect: [{
-          id: firstCar?.id || "",
-        }, {
-          id: vert?.id || ""
-        }],
+        connect: [
+          {
+            id: firstCar?.id || "",
+          },
+          {
+            id: vert?.id || "",
+          },
+        ],
       },
     },
   });
@@ -196,11 +211,14 @@ async function main() {
       name: "E46 M3 Door Cards Passenger Front",
       partNo: "51417890951",
       cars: {
-        connect: [{
-          id: firstCar?.id || "",
-        }, {
-          id: vert?.id || ""
-        }],
+        connect: [
+          {
+            id: firstCar?.id || "",
+          },
+          {
+            id: vert?.id || "",
+          },
+        ],
       },
     },
   });
@@ -210,15 +228,18 @@ async function main() {
       name: "E46 M3 Door Cards Passenger Driver Rear",
       partNo: "51437890784",
       cars: {
-        connect: [{
-          id: firstCar?.id || "",
-        }, {
-          id: vert?.id || ""
-        }],
+        connect: [
+          {
+            id: firstCar?.id || "",
+          },
+          {
+            id: vert?.id || "",
+          },
+        ],
       },
     },
   });
-  
+
   await prisma.partDetail.create({
     data: {
       name: "Cylinder Head Cover Right",
@@ -267,10 +288,10 @@ async function main() {
           {
             id: m4?.id || "",
           },
-        ]
-      }
-    }
-  })
+        ],
+      },
+    },
+  });
 
   const parts = await prisma.part.createMany({
     data: [
@@ -308,64 +329,63 @@ async function main() {
       },
       {
         partDetailsId: "64229346226",
-        donorVin: "WBS3R922090K345058"
+        donorVin: "WBS3R922090K345058",
       },
       {
         partDetailsId: "64229346226",
-        donorVin: "WBS8M920105G47739"
-      }
+        donorVin: "WBS8M920105G47739",
+      },
     ],
   });
-    
-  const partLeft = await prisma.part.findFirst({})
+
+  const partLeft = await prisma.part.findFirst({});
   const partRight = await prisma.part.findFirst({
     where: {
-      partDetailsId: "52207903036"
-    }
-  })
+      partDetailsId: "52207903036",
+    },
+  });
   const headCoverLeft = await prisma.part.findFirst({
     where: {
-      partDetailsId: "11121702856"
-    }
-  })
+      partDetailsId: "11121702856",
+    },
+  });
   const headCoverRight = await prisma.part.findFirst({
     where: {
-      partDetailsId: "11121702857"
-    } 
-  })
+      partDetailsId: "11121702857",
+    },
+  });
   const firstAirVent = await prisma.part.findFirst({
     where: {
       partDetailsId: "64229346226",
-      donorVin: "WBS3R922090K345058"
-    }
-  })
+      donorVin: "WBS3R922090K345058",
+    },
+  });
   const secondAirVent = await prisma.part.findFirst({
     where: {
       partDetailsId: "64229346226",
       donorVin: "WBS8M920105G47739",
     },
   });
-      
-    
-    const singleItemListing = await prisma.listing.create({
-        data: {
-            title: "E46 M3 Rear Seat Lateral Trim Panel Left",
-            description: "E46 M3 Rear Seat Lateral Trim Panel Set",
-            condition: "Good",
-            price: 5000,
-            weight: 10,
-            height: 10,
-            width: 10,
-            length: 10,
-            active: true,
-            parts: {
-                connect: {
-                    id: partLeft?.id || ""
-                }
-            }
-        }
-    })
-  
+
+  const singleItemListing = await prisma.listing.create({
+    data: {
+      title: "E46 M3 Rear Seat Lateral Trim Panel Left",
+      description: "E46 M3 Rear Seat Lateral Trim Panel Set",
+      condition: "Good",
+      price: 5000,
+      weight: 10,
+      height: 10,
+      width: 10,
+      length: 10,
+      active: true,
+      parts: {
+        connect: {
+          id: partLeft?.id || "",
+        },
+      },
+    },
+  });
+
   const setListing = await prisma.listing.create({
     data: {
       title: "E46 M3 Rear Seat Lateral Trim Panel Set",
@@ -384,8 +404,8 @@ async function main() {
           },
           {
             id: partRight?.id || "",
-          }
-        ]
+          },
+        ],
       },
     },
   });
@@ -408,8 +428,8 @@ async function main() {
           },
           {
             id: headCoverRight?.id || "",
-          }
-        ]
+          },
+        ],
       },
     },
   });
@@ -432,15 +452,14 @@ async function main() {
           },
           {
             id: secondAirVent?.id || "",
-          }
-        ]
+          },
+        ],
       },
     },
   });
-      
 
-  const listings = await prisma.listing.findMany({})
-  
+  const listings = await prisma.listing.findMany({});
+
   const imagePromises = listings.map((listing) => {
     return prisma.image.create({
       data: {
@@ -448,13 +467,19 @@ async function main() {
         listingId: listing?.id || "",
       },
     });
-  })
+  });
 
-  await Promise.all(imagePromises)
+  await Promise.all(imagePromises);
 
-  const images = await prisma.image.findMany({})
+  const images = await prisma.image.findMany({});
 
-  console.log(cars, donors, parts, {listings: listings.length}, {images: images.length});
+  console.log(
+    cars,
+    donors,
+    parts,
+    { listings: listings.length },
+    { images: images.length }
+  );
 }
 main()
   .then(async () => {
