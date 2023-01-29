@@ -122,9 +122,9 @@ export const ebayRouter = router({
           categoryId: "30093", //find car part id
           listingDescription: input.description,
           listingPolicies: {
-            fulfillmentPolicyId: "42821376015",
-            paymentPolicyId: "42821372015",
-            returnPolicyId: "205483749015",
+            fulfillmentPolicyId: process.env.EBAY_FULFILLMENT_ID as string,
+            paymentPolicyId: process.env.EBAY_PAYMENT_ID as string,
+            returnPolicyId: process.env.EBAY_RETURN_ID as string,
           },
           merchantLocationKey: "parted-euro-knox",
           pricingSummary: {
