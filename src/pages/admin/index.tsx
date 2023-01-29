@@ -39,20 +39,17 @@ const Admin: NextPage = () => {
   };
 
   const renewXero = async () => {
-    const xeroToast = toast.loading("Renewing Xero token...");
+    toast.loading("Renewing Xero token...")
     const renewXeroRes = await renewToken.mutateAsync({
       code: window.location.href,
     });
     if (renewXeroRes.error) {
-      toast.update(xeroToast, {
-        render: `Error renewing Xero token. Please try again. Error: ${renewXeroRes.error}`,
-        type: "error",
-      });
+      toast.error(
+        "Error renewing Xero token. Please try again. Error:",
+        renewXeroRes.error
+      );
     } else {
-      toast.update(xeroToast, {
-        render: "Xero token renewed successfully!",
-        type: "success",
-      });
+      toast.success("Xero token renewed");
     }
     router.replace("/admin", undefined, { shallow: true });
   };
