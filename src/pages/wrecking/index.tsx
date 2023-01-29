@@ -49,7 +49,7 @@ const Wrecking: NextPage = () => {
           >
             <div className="max-h-[634px]">
               <img
-                src={donor.imageUrl}
+                src={donor.imageUrl || ""}
                 className="h-full duration-100 ease-linear group-hover:scale-105"
                 alt=""
               />
