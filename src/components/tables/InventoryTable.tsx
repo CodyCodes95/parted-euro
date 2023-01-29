@@ -5,21 +5,20 @@ type InventoryTableProps = {
   data: any;
 };
 
-const InventoryTable: React.FC<InventoryTableProps> = ({data }) => {
-
-      const columns = useMemo<Array<Column<any>>>(
-        () => [
-          {
-            Header: "ID",
-            accessor: "id",
-          },
-          {
-            Header: "Series",
-            accessor: "donor.car.series",
-          },
-        ],
-        []
-      );
+const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
+  const columns = useMemo<Array<Column<any>>>(
+    () => [
+      {
+        Header: "ID",
+        accessor: "id",
+      },
+      {
+        Header: "Series",
+        accessor: "donor.car.series",
+      },
+    ],
+    []
+  );
 
   const {
     getTableProps,
@@ -46,7 +45,6 @@ const InventoryTable: React.FC<InventoryTableProps> = ({data }) => {
 
   return (
     <div>
-      {" "}
       <table
         className="w-full text-left text-sm text-gray-500 dark:text-gray-400"
         {...getTableProps()}
