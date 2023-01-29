@@ -18,27 +18,7 @@ const Inventory: NextPage = () => {
 
   const parts = trpc.parts.getAll.useQuery(undefined, {
     onSuccess: (data) => {
-      setHeadCells([]);
-      setRows([]);
-      const hideColumns = ["id", "createdAt", "updatedAt"];
-      setHeadCells((): any => {
-        const cells = Object.keys(data[0] as Part)
-          .filter((key) => {
-            return !hideColumns.includes(key);
-          })
-          .map((key: any) => {
-            return {
-              disablePadding: false,
-              id: key,
-              numeric: false,
-              label: key,
-            };
-          });
-        return cells;
-      });
-      data?.forEach((partDetail) => {
-        setRows((prev) => [...prev, partDetail]);
-      });
+   
     },
   });
 
@@ -58,13 +38,7 @@ const Inventory: NextPage = () => {
             setShowModal={setShowModal}
           />
         ) : null}
-        <SortedTable
-          headCells={headCells}
-          rows={rows}
-          title="Part Details"
-          setShowModal={setShowModal}
-        />
-        <div className="flex w-full flex-wrap items-center justify-center p-8"></div>
+    
       </main>
     </>
   );
