@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import { Part } from "@prisma/client";
 import AddPart from "../../components/parts/AddPart";
-import { useTable } from "react-table";
+import { usePagination, useTable } from "react-table";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -445,11 +445,28 @@ const Inventory: NextPage = () => {
   );
   // const tableData = useMemo(() => parts.data, [parts.data]);
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    nextPage,
+    previousPage,
+    setPageSize,
+    gotoPage,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
       columns,
       data,
-    });
+    },
+    usePagination
+  );
 
   return (
     <>
@@ -554,9 +571,9 @@ const Inventory: NextPage = () => {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 ></path>
               </svg>
             </div>
@@ -585,7 +602,7 @@ const Inventory: NextPage = () => {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
+              {page.map((row) => {
                 prepareRow(row);
                 return (
                   <tr
@@ -604,6 +621,90 @@ const Inventory: NextPage = () => {
               })}
             </tbody>
           </table>
+          <nav
+            className="flex items-center justify-between pt-4"
+            aria-label="Table navigation"
+          >
+            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+              Showing{" "}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                1-{pageSize}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {data.length}
+              </span>
+            </span>
+            <ul className="inline-flex items-center -space-x-px">
+              <li onClick={previousPage}>
+                <a
+                  href="#"
+                  className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  <span className="sr-only">Previous</span>
+                  <svg
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </a>
+              </li>
+              {[
+                pageIndex - 2,
+                pageIndex - 1,
+                pageIndex,
+                pageIndex + 1,
+                pageIndex + 2,
+              ]
+                .filter((pageNo) => pageNo > 0 && pageNo <= pageOptions.length)
+                .map((page) => {
+                  return (
+                    <li
+                      key={page}
+                      onClick={() => {
+                        gotoPage(page - 1);
+                      }}
+                    >
+                      <a
+                        href="#"
+                        className="border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      >
+                        {page}
+                      </a>
+                    </li>
+                  );
+                })}
+              <li onClick={nextPage}>
+                <a
+                  href="#"
+                  className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  <span className="sr-only">Next</span>
+                  <svg
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </main>
     </>
