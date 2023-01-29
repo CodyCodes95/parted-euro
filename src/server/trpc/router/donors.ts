@@ -112,6 +112,11 @@ export const donorRouter = router({
   getFourWrecks: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       take: 4,
+      where: {
+        imageUrl: {
+          not: undefined,
+        },
+      },
       select: {
         vin: true,
         year: true,
