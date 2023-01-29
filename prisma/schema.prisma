@@ -82,14 +82,14 @@ model Car {
 model Donor {
   vin       String   @id @unique
   cost      Float
-  car       Car      @relation(fields: [carId], references: [id])
+  car       Car?      @relation(fields: [carId], references: [id])
   year      Int
   mileage   Int
-  carId     String
+  carId     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   parts     Part[]
-  imageUrl  String   @default("https://res.cloudinary.com/codycodes/image/upload/v1673939701/ScreenShot2022-08-26at12.44.09pm_r1rzfv.webp")
+  imageUrl  String?
 }
 
 model Listing {

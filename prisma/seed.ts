@@ -116,6 +116,13 @@ async function main() {
     const donors = await prisma.donor.createMany({
     data: [
       {
+        vin: "0000000000",
+        year: 1990,
+        cost: 0,
+        mileage: 0,
+        carId: ""
+      },
+      {
         vin: "WBSBL92060JR08716",
         year: 2003,
         cost: 2300000,
