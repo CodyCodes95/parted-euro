@@ -1,12 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import AddPartDetails from "../../components/parts/AddPartDetails";
+import AddPartDetails from "../../../components/parts/AddPartDetails";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 import { PartDetail } from "@prisma/client";
-import SortedTable from "../../components/tables/SortedTable";
+import SortedTable from "../../../components/tables/SortedTable";
 
 const Parts: NextPage = () => {
   const [showModal, setShowModal] = useState(false);

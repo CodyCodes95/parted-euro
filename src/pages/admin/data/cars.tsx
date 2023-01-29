@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import AddCar from "../../components/cars/AddCar";
-import { trpc } from "../../utils/trpc";
-import SortedTable from "../../components/tables/SortedTable";
+import AddCar from "../../../components/cars/AddCar";
+import { trpc } from "../../../utils/trpc";
+import SortedTable from "../../../components/tables/SortedTable";
 import { useState } from "react";
 import { Car } from "@prisma/client";
 import { ToastContainer, toast } from "react-toastify";

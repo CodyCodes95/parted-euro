@@ -7,7 +7,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import SellIcon from "@mui/icons-material/Sell";
 import xero from "../../../public/xero.png"
 import { trpc } from "../../utils/trpc";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
@@ -57,13 +57,13 @@ const Admin: NextPage = () => {
           <div className="mx-auto w-[50%] px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-12 text-center sm:grid-cols-2 md:grid-cols-2 lg:gap-y-16">
               <Link
-                href="/admin/cars"
+                href="/admin/data"
                 className="w-full cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
                   <TimeToLeaveIcon fontSize="large"/>
                 </div>
-                <h3 className="mt-8 text-lg font-semibold text-black">Cars</h3>
+                <h3 className="mt-8 text-lg font-semibold text-black">Data</h3>
               </Link>
               <Link
                 href="/admin/donors"
@@ -83,7 +83,7 @@ const Admin: NextPage = () => {
                 <div className="relative mx-auto flex items-center justify-center">
                   <BuildIcon fontSize="large"/>
                 </div>
-                <h3 className="mt-8 text-lg font-semibold text-black">Parts</h3>
+                <h3 className="mt-8 text-lg font-semibold text-black">Inventory</h3>
               </Link>
               <Link
                 href="/admin/listings"
