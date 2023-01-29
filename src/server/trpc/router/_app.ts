@@ -9,6 +9,7 @@ import { imagesRouter } from "./images";
 import { partDetailsRouter } from "./partDetails";
 import { xeroRouter } from "./xero";
 import { ebayRouter } from "./ebay";
+import { inventoryLocationRouter } from "./inventoryLocations";
 
 export const appRouter = router({
   example: exampleRouter,
@@ -20,7 +21,8 @@ export const appRouter = router({
   auth: authRouter,
   partDetails: partDetailsRouter,
   xero: xeroRouter,
-  ebay: ebayRouter
+  ebay: ebayRouter,
+  inventoryLocations: inventoryLocationRouter
 });
 
 // export type definition of API

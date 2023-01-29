@@ -2,6 +2,7 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select, { MultiValue, SingleValue } from "react-select";
+import { InventoryLocations } from "@prisma/client";
 
 interface AddPartProps {
   showModal: boolean;
@@ -26,6 +27,7 @@ const AddPart: React.FC<AddPartProps> = ({
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
   const [partDetailsIds, setPartDetailsIds] = useState<Array<string>>([]);
+  const [inventoryLocation, setInventoryLocation] = useState<string>("");
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -43,7 +45,11 @@ const AddPart: React.FC<AddPartProps> = ({
       });
     },
   });
+
+  const inventoryLocations = trpc.inventoryLocations.getAll.useQuery()
+
   const savePart = trpc.parts.createPart.useMutation();
+  
 
   const onSave = async () => {
     if (partDetailsIds.length === 0) {
@@ -105,6 +111,22 @@ const AddPart: React.FC<AddPartProps> = ({
                 isDisabled={true}
                 className="basic-multi-select"
                 classNamePrefix="select"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Inventory Location
+              </label>
+              <Select
+                placeholder={inventoryLocation || "Select an inventory location"}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                options={inventoryLocations.data?.map((location: InventoryLocations) => {
+                  return {
+                    label: location.name,
+                    value: location.id,
+                  };
+                })}
               />
             </div>
             <div className="mb-6">

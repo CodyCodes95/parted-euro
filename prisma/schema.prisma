@@ -82,7 +82,7 @@ model Car {
 model Donor {
   vin       String   @id @unique
   cost      Float
-  car       Car?      @relation(fields: [carId], references: [id])
+  car       Car?     @relation(fields: [carId], references: [id])
   year      Int
   mileage   Int
   carId     String?
@@ -111,17 +111,19 @@ model Listing {
 }
 
 model Part {
-  id              String     @id @default(cuid())
-  partDetails     PartDetail @relation(fields: [partDetailsId], references: [partNo])
-  partDetailsId   String
-  listing         Listing[]
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  donorVin        String
-  donor           Donor      @relation(fields: [donorVin], references: [vin])
-  sold            Boolean    @default(false)
-  soldPrice       Int?
-  soldParentPrice Int?
+  id                   String              @id @default(cuid())
+  partDetails          PartDetail          @relation(fields: [partDetailsId], references: [partNo])
+  partDetailsId        String
+  inventoryLocation    InventoryLocations? @relation(fields: [inventoryLocationsId], references: [id])
+  listing              Listing[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  donorVin             String
+  donor                Donor               @relation(fields: [donorVin], references: [vin])
+  sold                 Boolean             @default(false)
+  soldPrice            Int?
+  soldParentPrice      Int?
+  inventoryLocationsId String?
 }
 
 model PartDetail {
@@ -154,4 +156,12 @@ model EbayCreds {
   refreshToken Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model InventoryLocations {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parts     Part[]
 }
