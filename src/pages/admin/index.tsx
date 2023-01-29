@@ -43,7 +43,10 @@ const Admin: NextPage = () => {
       code: window.location.href,
     });
     if (renewXeroRes.error) {
-      toast.error(renewXeroRes.error);
+      toast.error(
+        "Error renewing Xero token. Please try again. Error:",
+        renewXeroRes.error
+      );
     } else {
       toast.success("Xero token renewed");
     }
