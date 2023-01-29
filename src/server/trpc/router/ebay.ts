@@ -126,7 +126,7 @@ export const ebayRouter = router({
             paymentPolicyId: process.env.EBAY_PAYMENT_ID as string,
             returnPolicyId: process.env.EBAY_RETURN_ID as string,
           },
-          merchantLocationKey: "parted-euro-knox",
+          merchantLocationKey: process.env.EBAY_MERCHANT_KEY as string,
           pricingSummary: {
             price: {
               currency: "AUD" as CurrencyCode,

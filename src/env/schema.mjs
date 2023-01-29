@@ -32,10 +32,15 @@ export const serverSchema = z.object({
   XERO_CLIENT_SECRET: z.string(),
   XERO_REDIRECT_URI: z.string(),
   XERO_SCOPES: z.string(),
-  EBAY_CLIENT_ID: z.string(),
-  EBAY_CLIENT_SECRET: z.string(),
-  EBAY_REDIRECT_URI: z.string(),
+  EBAY_APP_ID: z.string(),
+  EBAY_CERT_ID: z.string(),
+  EBAY_RU_NAME: z.string(),
   EBAY_SCOPES: z.string(),
+  EBAY_SITE_ID: z.string(),
+  EBAY_FULFILLMENT_ID: z.string(),
+  EBAY_PAYMENT_ID: z.string(),
+  EBAY_RETURN_ID: z.string(),
+  EBAY_MERCHANT_KEY: z.string(),
 });
 
 /**

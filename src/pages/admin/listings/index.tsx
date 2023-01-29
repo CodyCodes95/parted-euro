@@ -52,8 +52,8 @@ const Listings: NextPage = () => {
   };
 
   const createListing = async () => {
-    const res = await listingTest.mutateAsync({ title: "test" });
-    console.log(res);
+    // const res = await listingTest.mutateAsync({ title: "test" });
+    // console.log(res);
   };
 
   useEffect(() => {
