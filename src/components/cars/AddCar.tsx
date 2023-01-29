@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import FormSection from "../FormSection";
 import ModalBackDrop from "../modals/ModalBackdrop";
@@ -17,12 +17,12 @@ const AddCar: React.FC<AddCarProps> = ({
   success,
   error,
 }) => {
-  const [make, setMake] = React.useState<string>("BMW");
-  const [series, setSeries] = React.useState<string>("");
-  const [generation, setGeneration] = React.useState<string>("");
-  const [model, setModel] = React.useState<string>("");
-  const [showBody, setShowBody] = React.useState<boolean>(false);
-  const [body, setBody] = React.useState<string>("");
+  const [make, setMake] = useState<string>("BMW");
+  const [series, setSeries] = useState<string>("");
+  const [generation, setGeneration] = useState<string>("");
+  const [model, setModel] = useState<string>("");
+  const [showBody, setShowBody] = useState<boolean>(false);
+  const [body, setBody] = useState<string>("");
 
   const cars = trpc.cars.getAll.useQuery();
   const saveCar = trpc.cars.createCar.useMutation();

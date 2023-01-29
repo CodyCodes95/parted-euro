@@ -4,10 +4,7 @@ import { useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
-import { Part } from "@prisma/client";
 import AddPart from "../../components/parts/AddPart";
-import { usePagination, useTable } from "react-table";
-import { Column } from "react-table";
 import InventoryTable from "../../components/tables/InventoryTable";
 
 const Inventory: NextPage = () => {

@@ -3,6 +3,8 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { Donor, InventoryLocations } from "@prisma/client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface AddPartProps {
   showModal: boolean;
@@ -29,6 +31,9 @@ const AddPart: React.FC<AddPartProps> = ({
   const [partDetailsIds, setPartDetailsIds] = useState<Array<string>>([]);
   const [inventoryLocation, setInventoryLocation] = useState<string>("");
   const [donor, setDonor] = useState<string>(donorVin || "");
+  const [addInventoryLocation, setAddInventoryLocation] =
+    useState<boolean>(false);
+  const [newInventoryLocation, setNewInventoryLocation] = useState<string>("");
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -49,10 +54,12 @@ const AddPart: React.FC<AddPartProps> = ({
 
   const donors = trpc.donors.getAll.useQuery();
 
-  const inventoryLocations = trpc.inventoryLocations.getAll.useQuery()
+  const inventoryLocations = trpc.inventoryLocations.getAll.useQuery();
 
   const savePart = trpc.parts.createPart.useMutation();
-  
+
+  const saveInventoryLocation =
+    trpc.inventoryLocations.createInventoryLocation.useMutation();
 
   const onSave = async () => {
     if (partDetailsIds.length === 0) {
@@ -71,6 +78,19 @@ const AddPart: React.FC<AddPartProps> = ({
     );
   };
 
+  const createInventoryLocation = async () => {
+    if (newInventoryLocation === "") {
+      toast.error("Please enter a name for the new inventory location");
+      return;
+    }
+    const res = await saveInventoryLocation.mutateAsync({
+      name: newInventoryLocation,
+    });
+    setInventoryLocation(res.id);
+    setNewInventoryLocation("");
+    setAddInventoryLocation(false);
+  };
+
   return (
     <div
       id="defaultModal"
@@ -79,6 +99,7 @@ const AddPart: React.FC<AddPartProps> = ({
         showModal ? "" : "hidden"
       }`}
     >
+      <ToastContainer />
       <ModalBackDrop setShowModal={setShowModal} />
       <div className="relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -114,6 +135,7 @@ const AddPart: React.FC<AddPartProps> = ({
                 isDisabled={donorVin ? true : false}
                 className="basic-multi-select"
                 classNamePrefix="select"
+                onChange={(e: any) => setDonor(e.value as string)}
                 options={donors.data?.map((donor: Donor) => {
                   return {
                     label: donor.vin,
@@ -126,17 +148,53 @@ const AddPart: React.FC<AddPartProps> = ({
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Inventory Location
               </label>
-              <Select
-                placeholder={inventoryLocation || "Select an inventory location"}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                options={inventoryLocations.data?.map((location: InventoryLocations) => {
-                  return {
-                    label: location.name,
-                    value: location.id,
-                  };
-                })}
-              />
+              <div className="flex w-full justify-between">
+                {addInventoryLocation ? (
+                  <>
+                    <input
+                      className="w-[90%] p-2"
+                      type="text"
+                      placeholder="Inventory Location"
+                      value={newInventoryLocation}
+                      onChange={(e) => setNewInventoryLocation(e.target.value)}
+                    />
+                    <div className="p-2"></div>
+                    <button
+                      onClick={createInventoryLocation}
+                      className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      Save
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Select
+                      placeholder={
+                        inventoryLocation || "Select an inventory location"
+                      }
+                      className="basic-multi-select w-[90%]"
+                      classNamePrefix="select"
+                      onChange={(e: any) =>
+                        setInventoryLocation(e.value as string)
+                      }
+                      options={inventoryLocations.data?.map(
+                        (location: InventoryLocations) => {
+                          return {
+                            label: location.name,
+                            value: location.id,
+                          };
+                        }
+                      )}
+                    />
+                    <button
+                      onClick={() => setAddInventoryLocation(true)}
+                      className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      +
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
