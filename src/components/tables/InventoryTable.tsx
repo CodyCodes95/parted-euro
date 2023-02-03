@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Column, usePagination, useTable } from "react-table";
+import { Column, usePagination, useSortBy, useTable } from "react-table";
 
 type InventoryTableProps = {
   data: any;
@@ -9,12 +9,16 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
   const columns = useMemo<Array<Column<any>>>(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "Part",
+        accessor: "partDetails.name",
       },
       {
-        Header: "Series",
-        accessor: "donor.car.series",
+        Header: "Partno",
+        accessor: "partDetails.partNo",
+      },
+      {
+        Header: "Location",
+        accessor: "inventoryLocation.name",
       },
     ],
     []
@@ -40,7 +44,8 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
       columns,
       data,
     },
-    usePagination
+    useSortBy,
+    usePagination,
   );
 
   return (
@@ -50,27 +55,39 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
         {...getTableProps()}
       >
         <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th className="px-6 py-3" {...column.getHeaderProps()}>
+          {headerGroups.map((headerGroup, i) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={i}>
+              {headerGroup.headers.map((column, i) => (
+                <th
+                  className="px-6 py-3"
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={i}
+                >
                   {column.render("Header")}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? " 🔽"
+                        : " 🔼"
+                      : ""}
+                  </span>
                 </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
+          {page.map((row, i) => {
             prepareRow(row);
             return (
               <tr
                 className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                 {...row.getRowProps()}
+                key={i}
               >
-                {row.cells.map((cell) => {
+                {row.cells.map((cell, i) => {
                   return (
-                    <td className="px-6 py-4" {...cell.getCellProps()}>
+                    <td className="px-6 py-4" {...cell.getCellProps()} key={i}>
                       {cell.render("Cell")}
                     </td>
                   );
