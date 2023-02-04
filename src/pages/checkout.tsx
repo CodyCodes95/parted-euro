@@ -143,7 +143,7 @@ const Checkout: NextPage = () => {
   };
 
   useEffect(() => {
-    if (regularCost) {
+    if (regularCost || shippingMethod.value === 0) {
       setValidated(true);
     } else {
       setValidated(false);
@@ -158,6 +158,8 @@ const Checkout: NextPage = () => {
         label: "Pickup",
         value: 0,
       });
+      setExpressCost(0);
+      setRegularCost(0);
     }
   }, [cart]);
 
