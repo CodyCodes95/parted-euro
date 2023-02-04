@@ -23,12 +23,11 @@ export const config = {
 const createInvoice = async (event: any, lineItems: any) => {
   await xero.initialize();
   const xeroCreds = await prisma.xeroCreds.findFirst();
-  const tokenSet = await xero.refreshWithRefreshToken(
+  await xero.refreshWithRefreshToken(
     process.env.XERO_CLIENT_ID,
     process.env.XERO_CLIENT_SECRET,
     xeroCreds?.refreshToken as string
   );
-  console.log(tokenSet)
   await xero.updateTenants();
   const activeTenantId = xero.tenants[0].tenantId;
 
@@ -66,6 +65,7 @@ const createInvoice = async (event: any, lineItems: any) => {
             name: event.customer_details.name,
           },
           date: new Date().toISOString().split("T")[0],
+          dueDate: new Date().toISOString().split("T")[0],
           reference: event.payment_intent,
           // status: Invoice.StatusEnum.PAID, //can this be done?
           status: Invoice.StatusEnum.AUTHORISED,
@@ -74,25 +74,25 @@ const createInvoice = async (event: any, lineItems: any) => {
       ],
     }
   );
-  // if (createInvoiceResponse?.body?.invoices) {
-  //   const paymentResponse = await xero.accountingApi.createPayments(
-  //     activeTenantId,
-  //     {
-  //       payments: [
-  //         {
-  //           invoice: {
-  //             invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
-  //           },
-  //           account: {
-  //             code: "200",
-  //           },
-  //           date: new Date().toISOString().split("T")[0],
-  //           amount: event.amount_total / 100,
-  //         },
-  //       ],
-  //     }
-  //   );
-  // }
+  if (createInvoiceResponse?.body?.invoices) {
+    const paymentResponse = await xero.accountingApi.createPayments(
+      activeTenantId,
+      {
+        payments: [
+          {
+            invoice: {
+              invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
+            },
+            account: {
+              code: "090",
+            },
+            date: new Date().toISOString().split("T")[0],
+            amount: event.amount_total / 100,
+          },
+        ],
+      }
+    );
+  }
   console.log(createInvoiceResponse);
   return createInvoiceResponse;
 
