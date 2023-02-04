@@ -1,7 +1,10 @@
 export default async function getShippingCost(req: any, res: any) {
   const { from, to, weight, length, width, height } = JSON.parse(req.body)
 
-  console.log(req.body)
+  if (weight >= 22) {
+    res.status(400).json({ error: "Weight is too heavy. Only local pickup will be available" });
+    return;
+  }
 
   const ausPostRes = await fetch(
     `https://digitalapi.auspost.com.au/postage/parcel/domestic/service.json?length=${length}&width=${width}&height=${height}&weight=${weight}&from_postcode=${from}&to_postcode=${to}`,

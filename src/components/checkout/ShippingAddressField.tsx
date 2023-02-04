@@ -5,11 +5,11 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
 type ShippingAddress = {
-  line1: string;
-  line2: string;
-  city: string;
-  state: string;
-  country: string;
+  // line1: string;
+  // line2: string;
+  // city: string;
+  // state: string;
+  // country: string;
   postCode: string;
 }
 
@@ -43,7 +43,7 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShipping
     clearSuggestions,
   } = usePlacesAutocomplete({
     requestOptions: {
-      types: ["address"],
+      types: ["(regions)"],
       componentRestrictions: {
         country: "AU",
       },
@@ -63,28 +63,28 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShipping
         fields: ["address_components"],
       });
        setShippingAddress({
-         line1: `${
-           results.address_components.find((x: any) =>
-             x.types.includes("street_number")
-           ).long_name
-         } ${
-           results.address_components.find((x: any) =>
-             x.types.includes("route")
-           ).long_name
-         }`,
-         line2:
-           results.address_components.find((x: any) =>
-             x.types.includes("subpremise")
-           )?.long_name || "",
-         city: results.address_components.find((x: any) =>
-           x.types.includes("locality")
-         ).long_name,
-         state: results.address_components.find((x: any) =>
-           x.types.includes("administrative_area_level_1")
-         ).long_name,
-         country: results.address_components.find((x: any) =>
-           x.types.includes("country")
-         ).long_name,
+        //  line1: `${
+        //    results.address_components.find((x: any) =>
+        //      x.types.includes("street_number")
+        //    ).long_name
+        //  } ${
+        //    results.address_components.find((x: any) =>
+        //      x.types.includes("route")
+        //    ).long_name
+        //  }`,
+        //  line2:
+        //    results.address_components.find((x: any) =>
+        //      x.types.includes("subpremise")
+        //    )?.long_name || "",
+        //  city: results.address_components.find((x: any) =>
+        //    x.types.includes("locality")
+        //  ).long_name,
+        //  state: results.address_components.find((x: any) =>
+        //    x.types.includes("administrative_area_level_1")
+        //  ).long_name,
+        //  country: results.address_components.find((x: any) =>
+        //    x.types.includes("country")
+        //  ).long_name,
          postCode: results.address_components.find((x: any) =>
            x.types.includes("postal_code")
          ).long_name,
@@ -98,7 +98,7 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShipping
 
   return (
     <div className="flex items-center justify-between border-b-2 px-6 py-12">
-      <p className="text-xl text-gray-400 mr-4">Shipping Address</p>
+      <p className="text-xl text-gray-400 mr-4">Ship to Suburb</p>
       <Autocomplete
         sx={{ width: 500 }}
         loading={data.length < 1 && value !== ""}
@@ -117,7 +117,7 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShipping
           setSelection(newValue as PlaceType);
         }}
         renderInput={(params) => (
-          <TextField {...params} label="Enter Your Address" fullWidth />
+          <TextField {...params} label="Enter Your Suburb" fullWidth />
         )}
       />
     </div>

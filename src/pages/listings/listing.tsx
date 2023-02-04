@@ -31,6 +31,10 @@ const Listing: NextPage = () => {
     listingPrice: number;
     listingImage: string | undefined;
     quantity: number;
+    length: number;
+    width: number;
+    height: number;
+    weight: number;
   }
 
   const [mainImage, setMainImage] = useState<string>("");
@@ -53,6 +57,10 @@ const Listing: NextPage = () => {
         listingPrice: listing.price,
         listingImage: listing.images[0]?.url,
         quantity: 1,
+        length: listing.length,
+        width: listing.width,
+        height: listing.height,
+        weight: listing.weight,
       };
       toast.success("Added to cart")
       setCart([...cart, cartItem]);
