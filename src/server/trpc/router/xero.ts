@@ -106,6 +106,7 @@ export const xeroRouter = router({
             id: creds?.id,
           },
           data: {
+            tokenSet: tokenSet,
             refreshToken: tokenSet.refresh_token,
           },
         });

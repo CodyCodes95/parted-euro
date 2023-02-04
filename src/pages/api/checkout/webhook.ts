@@ -29,11 +29,21 @@ export const config = {
 const createInvoice = async (event: any, lineItems: any) => {
   await xero.initialize();
   const xeroCreds = await prisma.xeroCreds.findFirst();
-  await xero.refreshWithRefreshToken(
-    process.env.XERO_CLIENT_ID,
-    process.env.XERO_CLIENT_SECRET,
-    xeroCreds?.refreshToken as string
-  );
+  await xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
+  const xeroTokenSet = await xero.readTokenSet();
+  if (xeroTokenSet.expired()) {
+    const validTokenSet = await xero.refreshToken() as any
+    const creds = await prisma.xeroCreds.findFirst();
+    const updatedCreds = await prisma.xeroCreds.update({
+      where: {
+        id: creds?.id,
+      },
+      data: {
+        tokenSet: validTokenSet,
+        refreshToken: validTokenSet.refresh_token,
+      },
+    });
+  }
   await xero.updateTenants();
   const activeTenantId = xero.tenants[0].tenantId;
 
