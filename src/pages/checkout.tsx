@@ -108,19 +108,21 @@ const Checkout: NextPage = () => {
     });
     const data = await res.json();
     if (!res.ok) return error(data.error);
-    let express = data.express;
-    let regular = data.regular;
-    for (let i = 0; i < cart.length - 1; i++) {
+    let express:number = Number(data.express);
+    let regular:number = Number(data.regular);
+    const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    for (let i = 0; i < cartItems - 1; i++) {
       express += express * 0.1;
       regular += regular * 0.1;
     }
-    setExpressCost(express);
-    setRegularCost(regular);
+    setExpressCost(Number(express.toFixed(2)));
+    setRegularCost(Number(regular.toFixed(2)))
   };
 
   useEffect(() => {
     if (shippingAddress?.postCode) {
       calculateAuspostShipping();
+      console.log(regularCost, expressCost);
     }
   }, [shippingAddress?.postCode, cart]);
 
@@ -149,7 +151,9 @@ const Checkout: NextPage = () => {
   }, [regularCost, expressCost]);
 
   useEffect(() => {
-    if (cart.reduce((acc, item) => acc + item.weight * item.quantity, 0) >= 22) {
+    if (
+      cart.reduce((acc, item) => acc + item.weight * item.quantity, 0) >= 22
+    ) {
       setShippingMethod({
         label: "Pickup",
         value: 0,
