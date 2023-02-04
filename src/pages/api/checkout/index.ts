@@ -8,7 +8,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
 
 async function CreateStripeSession(req: any, res: any) {
   
-  const { items } = JSON.parse(req.body)
+  const { items, regularShipping, expressShipping } = JSON.parse(req.body);
+
+  let inventoryLocations = {} as any
+
+  items.forEach((item:any) => {
+    // inventoryLocations[item.listingTitle] = item.inventoryLocations
+    inventoryLocations[item.listingTitle] = "test"
+
+  }
+)
+
 
   let orderId
 
@@ -16,14 +26,37 @@ async function CreateStripeSession(req: any, res: any) {
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
       : `https://${req.headers.host}`;
-  
-  const customer = await stripe.customers.create({
-    email: req.body.email,
-  })
+
 
   const session = await stripe.checkout.sessions.create({
-    customer: customer.id,
+    // customer: customer.id,
     payment_method_types: ["card"],
+    shipping_address_collection: {
+      allowed_countries: ["AU"],
+    },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: Number(regularShipping) * 100, currency: "aud" },
+          display_name: "AusPost Regular",
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: Number(expressShipping) * 100, currency: "aud" },
+          display_name: "AusPost Express",
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: 0, currency: "aud" },
+          display_name: "Pickup from Parted Euro",
+        },
+      },
+    ],
     line_items: items.map((item: any) => {
       return {
         price_data: {
@@ -31,6 +64,9 @@ async function CreateStripeSession(req: any, res: any) {
           product_data: {
             name: item.listingTitle,
             images: [item.listingImage],
+            metadata: {
+              inventoryLocations: "A44",
+            },
           },
           unit_amount: item.listingPrice * 100,
         },
@@ -42,6 +78,7 @@ async function CreateStripeSession(req: any, res: any) {
     cancel_url: `${redirectURL}/checkout`,
     metadata: {
       images: items.image,
+      inventoryLocations: JSON.stringify(inventoryLocations),
     },
   });
 

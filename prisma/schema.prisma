@@ -82,7 +82,7 @@ model Car {
 model Donor {
   vin       String   @id @unique
   cost      Float
-  car       Car     @relation(fields: [carId], references: [id])
+  car       Car      @relation(fields: [carId], references: [id])
   year      Int
   mileage   Int
   carId     String
@@ -124,6 +124,8 @@ model Part {
   soldPrice            Int?
   soldParentPrice      Int?
   inventoryLocationsId String?
+  Order                Order?              @relation(fields: [orderId], references: [id])
+  orderId              String?
 }
 
 model PartDetail {
@@ -147,6 +149,7 @@ model Image {
 model XeroCreds {
   id           String   @id @default(cuid())
   refreshToken String
+  tokenSet     Json?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -164,4 +167,17 @@ model InventoryLocations {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   parts     Part[]
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  items           Part[]
+  shipping        Float
+  shippingMethod  String
+  subtotal        Float
+  email           String
+  name            String
+  shippingAddress String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

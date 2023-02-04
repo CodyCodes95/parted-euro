@@ -5,10 +5,9 @@ import { useContext, useEffect, useState } from "react";
 import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { TextField } from "@mui/material";
 import { useLoadScript } from "@react-google-maps/api";
 import ShippingAddressField from "../components/checkout/ShippingAddressField";
-import ShippingOption from "../components/checkout/ShippingOption";
+import Spacer from "../components/Spacer";
 
 interface CartItem {
   listingId: string;
@@ -27,18 +26,28 @@ interface AusPostParams {
   height: number;
 }
 
+type ShippingAddress = {
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  country: string;
+  postCode: string;
+}
+
 const libraries = ["places"];
 
 const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
-  const [shippingAddress, setShippingAddress] = useState<string>("");
-  const [postCode, setPostCode] = useState<string>("");
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
   const [shipping, setShipping] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
   const [expressCost, setExpressCost] = useState<number>(0);
   const [regularCost, setRegularCost] = useState<number>(0);
   const [validated, setValidated] = useState<boolean>(false);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
 
   const [parent] = useAutoAnimate(/* optional config */);
 
@@ -76,7 +85,7 @@ const Checkout: NextPage = () => {
         height: 10,
         weight: 10,
         from: "3152",
-        to: postCode,
+        to: shippingAddress?.postCode,
       }) as any,
     });
     const data = await res.json();
@@ -85,17 +94,21 @@ const Checkout: NextPage = () => {
   };
 
   useEffect(() => {
-    if (postCode) {
+    if (shippingAddress?.postCode) {
       calculateAuspostShipping();
     }
-  }, [postCode]);
+  }, [shippingAddress]);
 
   const submitCheckout = async () => {
     const res = await fetch("/api/checkout", {
       method: "POST",
       body: JSON.stringify({
         items: cart,
-        email: email,
+        // email: email,
+        // address: shippingAddress,
+        // name: `${firstName} ${lastName}`,
+        regularShipping: regularCost,
+        expressShipping: expressCost,
       }),
     });
     const response = await res.json();
@@ -103,12 +116,12 @@ const Checkout: NextPage = () => {
   };
 
   useEffect(() => {
-    if (email && shipping) {
+    if (regularCost) {
       setValidated(true);
     } else {
       setValidated(false);
     }
-  }, [email, shipping])
+  }, [regularCost, expressCost]);
 
   return (
     <>
@@ -216,26 +229,8 @@ const Checkout: NextPage = () => {
               </p>
             </div>
             {isLoaded ? (
-              <ShippingAddressField setPostCode={setPostCode} />
+              <ShippingAddressField setShippingAddress={setShippingAddress} />
             ) : null}
-            {regularCost !== 0 ? (
-              <ShippingOption
-                express={expressCost}
-                regular={regularCost}
-                setShipping={setShipping}
-                shipping={shipping}
-              />
-            ) : null}
-          </div>
-          <div className="mt-6 flex items-center justify-between border-b-2 px-6 py-12">
-            <TextField
-              id="filled-basic"
-              label="Email"
-              variant="filled"
-              fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
           </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
             <p className="text-xl font-bold text-gray-900">Total</p>

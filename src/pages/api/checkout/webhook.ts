@@ -1,8 +1,18 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
+import { XeroClient, Invoice, RequestEmpty } from "xero-node";
+import { prisma } from "../../../server/db/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
+});
+
+const xero = new XeroClient({
+  clientId: process.env.XERO_CLIENT_ID as string,
+  clientSecret: process.env.XERO_CLIENT_SECRET as string,
+  redirectUris: [process.env.XERO_REDIRECT_URI as string],
+  scopes: process.env.XERO_SCOPES?.split(" "),
+
 });
 
 export const config = {
@@ -11,7 +21,56 @@ export const config = {
   },
 };
 
-// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const createInvoice = async (event: any, lineItems: any) => {
+//   await xero.initialize();
+//   const xeroCreds = await prisma.xeroCreds.findFirst();
+//   await xero.setTokenSet(xeroCreds.tokenSet);
+//   await xero.updateTenants();
+//   const activeTenantId = xero.tenants[0].tenantId;
+//   try {
+//     const createInvoiceResponse = await xero.accountingApi.createInvoices(
+//       activeTenantId,
+//       {
+//         invoices: [
+//           {
+//             type: Invoice.TypeEnum.ACCREC,
+//             contact: {
+//               emailAddress: event.customer_details.email,
+//               name: event.customer_details.name,
+//             },
+//             date: new Date().toISOString().split("T")[0],
+//             reference: event.payment_intent,
+//             status: Invoice.StatusEnum.PAID, //can this be done?
+//             lineItems: lineItems.map((item: any) => {
+//               return {
+//                 description: item.description,
+//                 quantity: item.quantity,
+//                 unitAmount: item.amount_total,
+//                 // accountCode: "200", not sure if this is needed, hope not because don't know what it is
+//                 // taxType: once again unsure what this is
+//                 lineAmount: item.amount_total * item.quantity,
+//               };
+//             }),
+//           },
+//         ],
+//       }
+//     );
+//     console.log(createInvoiceResponse);
+//   } catch (err: any) {
+//     return err.message;
+//   }
+
+//   // const res = await saveInvoice.mutateAsync({
+//   //   email: event.customer_details.email,
+//   //   name: event.customer_details.name,
+//   //   orderNo: event.payment_intent,
+//   //   items: lineItems.map((item: any) => {
+//   //     title: item.description,
+//   //       quantity: item.quantity,
+//   //       price: item.amount_total,
+//   //         inventoryLocation: JSON.parse(event.metadata.inventoryLocations)[item.description],
+//   // });
+// };
 
 export default async function stripeWebhook(req: any, res: any) {
   console.log("WE RUNNING =====================================");
@@ -21,8 +80,8 @@ export default async function stripeWebhook(req: any, res: any) {
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-
     let event;
+
     try {
       event = stripe.webhooks.constructEvent(buf, sig, webhookSecret as string);
       console.log("Webhook verified");
@@ -31,16 +90,13 @@ export default async function stripeWebhook(req: any, res: any) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    const data = event.data.object as any
+    const data = event.data.object as any;
     const eventType = event.type;
     if (eventType === "checkout.session.completed") {
-      stripe.customers
-        .retrieve(data.customer)
-        .then((customer: any) => {
-          console.log(customer);
-          // createOrder(customer)
-        })
-        .catch((err: any) => console.log(err.message));
+      const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
+      // const invoiceRes = await createInvoice(data, lineItems.data);
+      res.status(200).send(lineItems);
+      // createOrder(customer)
     }
     console.log(`Webhook received: ${event.type}`);
     res.status(200).send();

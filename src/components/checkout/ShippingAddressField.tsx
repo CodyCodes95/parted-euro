@@ -4,11 +4,20 @@ import { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-interface ShippingAddressFieldProps {
-  setPostCode: (postCode: string) => void;
+type ShippingAddress = {
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  country: string;
+  postCode: string;
 }
 
-const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({setPostCode}) => {
+interface ShippingAddressFieldProps {
+  setShippingAddress: (address: ShippingAddress) => void;
+}
+
+const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShippingAddress}) => {
   const [options, setOptions] = useState<readonly PlaceType[]>([]);
   const [selection, setSelection] = useState<any | null>(null);
 
@@ -45,6 +54,7 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({setPostCode}
   useEffect(() => {
     setOptions(data);
   }, [data]);
+  
 
   useEffect(() => {
     const getAddressDetails = async () => {
@@ -52,8 +62,33 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({setPostCode}
         placeId: selection?.place_id,
         fields: ["address_components"],
       });
-      const postCode = results.address_components.find((x:any) => x.types.includes("postal_code")).long_name;
-      setPostCode(postCode);
+       setShippingAddress({
+         line1: `${
+           results.address_components.find((x: any) =>
+             x.types.includes("street_number")
+           ).long_name
+         } ${
+           results.address_components.find((x: any) =>
+             x.types.includes("route")
+           ).long_name
+         }`,
+         line2:
+           results.address_components.find((x: any) =>
+             x.types.includes("subpremise")
+           )?.long_name || "",
+         city: results.address_components.find((x: any) =>
+           x.types.includes("locality")
+         ).long_name,
+         state: results.address_components.find((x: any) =>
+           x.types.includes("administrative_area_level_1")
+         ).long_name,
+         country: results.address_components.find((x: any) =>
+           x.types.includes("country")
+         ).long_name,
+         postCode: results.address_components.find((x: any) =>
+           x.types.includes("postal_code")
+         ).long_name,
+       });
     };
 
     if (selection) {

@@ -29,12 +29,13 @@ export const xeroRouter = router({
       z.object({
         email: z.string(),
         orderNo: z.string(),
-        cart: z.array(
+        name: z.string(),
+        items: z.array(
           z.object({
-            partId: z.string(),
             title: z.string(),
             quantity: z.number(),
             price: z.number(),
+            inventoryLocation: z.string(),
           })
         ),
       })
@@ -51,11 +52,12 @@ export const xeroRouter = router({
               type: Invoice.TypeEnum.ACCREC,
               contact: {
                 emailAddress: input.email,
+                name: input.name,
               },
               date: new Date().toISOString().split("T")[0],
               reference: input.orderNo,
               status: Invoice.StatusEnum.PAID, //can this be done?
-              lineItems: input.cart.map((item) => {
+              lineItems: input.items.map((item) => {
                 return {
                   description: item.title,
                   quantity: item.quantity,
@@ -97,7 +99,7 @@ export const xeroRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const tokenSet = await xero.apiCallback(input.code);
+        const tokenSet = await xero.apiCallback(input.code) as any
         const creds = await ctx.prisma.xeroCreds.findFirst();
         const updatedCreds = await ctx.prisma.xeroCreds.update({
           where: {
@@ -105,6 +107,7 @@ export const xeroRouter = router({
           },
           data: {
             refreshToken: tokenSet.refresh_token,
+            tokenSet: tokenSet,
           },
         });
         return {
