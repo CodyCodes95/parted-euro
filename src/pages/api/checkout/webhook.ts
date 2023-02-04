@@ -1,6 +1,12 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import { XeroClient, Invoice, RequestEmpty, TokenSet } from "xero-node";
+import {
+  XeroClient,
+  Invoice,
+  RequestEmpty,
+  TokenSet,
+  LineItem,
+} from "xero-node";
 import { prisma } from "../../../server/db/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
@@ -38,11 +44,11 @@ const createInvoice = async (event: any, lineItems: any) => {
       unitAmount: item.amount_total / 100,
       accountCode: "200",
       taxType: "NONE",
+      itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       // accountCode: "200", not sure if this is needed, hope not because don't know what it is
       // taxType: once again unsure what this is
-
       lineAmount: (item.amount_total / 100) * item.quantity,
-    };
+    } as LineItem;
   });
 
   lineItemsFormatted.push({
