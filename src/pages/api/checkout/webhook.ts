@@ -95,7 +95,7 @@ export default async function stripeWebhook(req: any, res: any) {
     if (eventType === "checkout.session.completed") {
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
       // const invoiceRes = await createInvoice(data, lineItems.data);
-      res.status(200).send(lineItems);
+      // res.status(200).send(invoiceRes);
       // createOrder(customer)
     }
     console.log(`Webhook received: ${event.type}`);
