@@ -10,7 +10,7 @@ async function CreateStripeSession(req: any, res: any) {
   
   const { items, regularShipping, expressShipping } = JSON.parse(req.body);
 
-  let inventoryLocations = {} as any
+  const inventoryLocations = {} as any
 
   items.forEach((item:any) => {
     // inventoryLocations[item.listingTitle] = item.inventoryLocations

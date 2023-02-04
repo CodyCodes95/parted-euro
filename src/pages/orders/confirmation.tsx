@@ -16,7 +16,7 @@ const Confirmation: NextPage = () => {
   }, [tempCart])
 
     const createOrder = async () => {
-
+console.log("TEST")
     }
 
 
