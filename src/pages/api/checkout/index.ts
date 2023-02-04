@@ -74,7 +74,7 @@ async function CreateStripeSession(req: any, res: any) {
       };
     }),
     mode: "payment",
-    success_url: `${redirectURL}/orderConfirmation?orderId=${orderId}&status=success`,
+    success_url: `${redirectURL}/orders/confirmation`,
     cancel_url: `${redirectURL}/checkout`,
     metadata: {
       images: items.image,

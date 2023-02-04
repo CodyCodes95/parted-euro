@@ -29,10 +29,10 @@ export const config = {
 const createInvoice = async (event: any, lineItems: any) => {
   await xero.initialize();
   const xeroCreds = await prisma.xeroCreds.findFirst();
-  await xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
-  const xeroTokenSet = await xero.readTokenSet();
+  xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
+  const xeroTokenSet = xero.readTokenSet();
   if (xeroTokenSet.expired()) {
-    const validTokenSet = await xero.refreshToken() as any
+    const validTokenSet = (await xero.refreshToken()) as any;
     const creds = await prisma.xeroCreds.findFirst();
     const updatedCreds = await prisma.xeroCreds.update({
       where: {
@@ -54,9 +54,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       unitAmount: item.amount_total / 100,
       accountCode: "200",
       taxType: "NONE",
-      itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
-      // accountCode: "200", not sure if this is needed, hope not because don't know what it is
-      // taxType: once again unsure what this is
+      // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
     } as LineItem;
   });
@@ -108,9 +106,15 @@ const createInvoice = async (event: any, lineItems: any) => {
         ],
       }
     );
+    const requestEmpty: RequestEmpty = {};
+    const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
+      activeTenantId,
+      createInvoiceResponse?.body?.invoices[0]?.invoiceID as string,
+      requestEmpty
+    );
+    return paymentResponse;
   }
-  console.log(createInvoiceResponse);
-  return createInvoiceResponse;
+  return { error: "no invoice created" };
 
   // const res = await saveInvoice.mutateAsync({
   //   email: event.customer_details.email,
@@ -148,7 +152,6 @@ export default async function stripeWebhook(req: any, res: any) {
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
       const invoiceRes = await createInvoice(data, lineItems.data);
       res.status(200).send(invoiceRes);
-      // createOrder(customer)
     }
     console.log(`Webhook received: ${event.type}`);
     res.status(200).send();
