@@ -149,7 +149,6 @@ model Image {
 model XeroCreds {
   id           String   @id @default(cuid())
   refreshToken String
-  tokenSet     Json?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

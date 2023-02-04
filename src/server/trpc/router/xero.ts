@@ -107,7 +107,6 @@ export const xeroRouter = router({
           },
           data: {
             refreshToken: tokenSet.refresh_token,
-            tokenSet: tokenSet,
           },
         });
         return {

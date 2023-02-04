@@ -1,6 +1,6 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import { XeroClient, Invoice, RequestEmpty } from "xero-node";
+import { XeroClient, Invoice, RequestEmpty, TokenSet } from "xero-node";
 import { prisma } from "../../../server/db/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
@@ -12,7 +12,6 @@ const xero = new XeroClient({
   clientSecret: process.env.XERO_CLIENT_SECRET as string,
   redirectUris: [process.env.XERO_REDIRECT_URI as string],
   scopes: process.env.XERO_SCOPES?.split(" "),
-
 });
 
 export const config = {
@@ -21,56 +20,93 @@ export const config = {
   },
 };
 
-// const createInvoice = async (event: any, lineItems: any) => {
-//   await xero.initialize();
-//   const xeroCreds = await prisma.xeroCreds.findFirst();
-//   await xero.setTokenSet(xeroCreds.tokenSet);
-//   await xero.updateTenants();
-//   const activeTenantId = xero.tenants[0].tenantId;
-//   try {
-//     const createInvoiceResponse = await xero.accountingApi.createInvoices(
-//       activeTenantId,
-//       {
-//         invoices: [
-//           {
-//             type: Invoice.TypeEnum.ACCREC,
-//             contact: {
-//               emailAddress: event.customer_details.email,
-//               name: event.customer_details.name,
-//             },
-//             date: new Date().toISOString().split("T")[0],
-//             reference: event.payment_intent,
-//             status: Invoice.StatusEnum.PAID, //can this be done?
-//             lineItems: lineItems.map((item: any) => {
-//               return {
-//                 description: item.description,
-//                 quantity: item.quantity,
-//                 unitAmount: item.amount_total,
-//                 // accountCode: "200", not sure if this is needed, hope not because don't know what it is
-//                 // taxType: once again unsure what this is
-//                 lineAmount: item.amount_total * item.quantity,
-//               };
-//             }),
-//           },
-//         ],
-//       }
-//     );
-//     console.log(createInvoiceResponse);
-//   } catch (err: any) {
-//     return err.message;
-//   }
+const createInvoice = async (event: any, lineItems: any) => {
+  await xero.initialize();
+  const xeroCreds = await prisma.xeroCreds.findFirst();
+  const tokenSet = await xero.refreshWithRefreshToken(
+    process.env.XERO_CLIENT_ID,
+    process.env.XERO_CLIENT_SECRET,
+    xeroCreds?.refreshToken as string
+  );
+  console.log(tokenSet)
+  await xero.updateTenants();
+  const activeTenantId = xero.tenants[0].tenantId;
 
-//   // const res = await saveInvoice.mutateAsync({
-//   //   email: event.customer_details.email,
-//   //   name: event.customer_details.name,
-//   //   orderNo: event.payment_intent,
-//   //   items: lineItems.map((item: any) => {
-//   //     title: item.description,
-//   //       quantity: item.quantity,
-//   //       price: item.amount_total,
-//   //         inventoryLocation: JSON.parse(event.metadata.inventoryLocations)[item.description],
-//   // });
-// };
+  const lineItemsFormatted = lineItems.map((item: any) => {
+    return {
+      description: item.description,
+      quantity: item.quantity,
+      unitAmount: item.amount_total / 100,
+      accountCode: "200",
+      taxType: "NONE",
+      // accountCode: "200", not sure if this is needed, hope not because don't know what it is
+      // taxType: once again unsure what this is
+
+      lineAmount: (item.amount_total / 100) * item.quantity,
+    };
+  });
+
+  lineItemsFormatted.push({
+    description: "Shipping",
+    quantity: 1,
+    unitAmount: event.shipping_cost.amount_total / 100,
+    accountCode: "200",
+    taxType: "NONE",
+    lineAmount: event.shipping_cost.amount_total / 100,
+  });
+
+  const createInvoiceResponse = await xero.accountingApi.createInvoices(
+    activeTenantId,
+    {
+      invoices: [
+        {
+          type: Invoice.TypeEnum.ACCREC,
+          contact: {
+            emailAddress: event.customer_details.email,
+            name: event.customer_details.name,
+          },
+          date: new Date().toISOString().split("T")[0],
+          reference: event.payment_intent,
+          // status: Invoice.StatusEnum.PAID, //can this be done?
+          status: Invoice.StatusEnum.AUTHORISED,
+          lineItems: lineItemsFormatted,
+        },
+      ],
+    }
+  );
+  // if (createInvoiceResponse?.body?.invoices) {
+  //   const paymentResponse = await xero.accountingApi.createPayments(
+  //     activeTenantId,
+  //     {
+  //       payments: [
+  //         {
+  //           invoice: {
+  //             invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
+  //           },
+  //           account: {
+  //             code: "200",
+  //           },
+  //           date: new Date().toISOString().split("T")[0],
+  //           amount: event.amount_total / 100,
+  //         },
+  //       ],
+  //     }
+  //   );
+  // }
+  console.log(createInvoiceResponse);
+  return createInvoiceResponse;
+
+  // const res = await saveInvoice.mutateAsync({
+  //   email: event.customer_details.email,
+  //   name: event.customer_details.name,
+  //   orderNo: event.payment_intent,
+  //   items: lineItems.map((item: any) => {
+  //     title: item.description,
+  //       quantity: item.quantity,
+  //       price: item.amount_total,
+  //         inventoryLocation: JSON.parse(event.metadata.inventoryLocations)[item.description],
+  // });
+};
 
 export default async function stripeWebhook(req: any, res: any) {
   console.log("WE RUNNING =====================================");
@@ -94,8 +130,8 @@ export default async function stripeWebhook(req: any, res: any) {
     const eventType = event.type;
     if (eventType === "checkout.session.completed") {
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
-      // const invoiceRes = await createInvoice(data, lineItems.data);
-      // res.status(200).send(invoiceRes);
+      const invoiceRes = await createInvoice(data, lineItems.data);
+      res.status(200).send(invoiceRes);
       // createOrder(customer)
     }
     console.log(`Webhook received: ${event.type}`);
