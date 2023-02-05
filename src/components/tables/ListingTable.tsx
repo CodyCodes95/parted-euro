@@ -1,29 +1,29 @@
 import { useMemo } from "react";
 import { Column, usePagination, useSortBy, useTable } from "react-table";
 
-type InventoryTableProps = {
+type ListingTable = {
   data: any;
 };
 
-const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
+const ListingTable: React.FC<ListingTable> = ({ data }) => {
   const columns = useMemo<Array<Column<any>>>(
     () => [
       {
-        Header: "Part",
-        accessor: "partDetails.name",
+        Header: "Title",
+        accessor: "title",
       },
       {
-        Header: "Partno",
-        accessor: "partDetails.partNo",
+        Header: "Price",
+        accessor: "price",
       },
       {
-        Header: "Location",
-        accessor: "inventoryLocation.name",
-      },
-      {
-        Header: "Variant",
-        accessor: "variant",
-      },
+          Header: "Listed On Ebay",
+          accessor: d => d.ebayListing ? "Yes" : "No",
+        },
+          {
+            Header: "Listed On",
+            accessor: d => d.createdAt.toLocaleString(),
+          },
     ],
     []
   );
@@ -49,7 +49,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
       data,
     },
     useSortBy,
-    usePagination,
+    usePagination
   );
 
   return (
@@ -189,4 +189,4 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
   );
 };
 
-export default InventoryTable;
+export default ListingTable;

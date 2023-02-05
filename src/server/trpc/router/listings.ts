@@ -52,6 +52,14 @@ export const listingRouter = router({
         },
       });
     }),
+  getAllAdmin: adminProcedure.query(async ({ ctx }) => {
+    const listings = await ctx.prisma.listing.findMany({
+      include: {
+        parts: true,
+      }
+    });
+    return listings;
+  }),
   getAllAvailable: publicProcedure
     .input(
       z.object({
