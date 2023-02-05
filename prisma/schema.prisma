@@ -132,14 +132,14 @@ model Part {
 }
 
 model PartDetail {
-  partNo      String    @id @unique
-  name        String
-  partType    PartTypes? @relation(fields: [partTypesId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  cars        Car[]
-  parts       Part[]
-  partTypesId String?
+  partNo     String   @id @unique
+  name       String
+  partType   PartType @relation(fields: [partTypeId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  cars       Car[]
+  parts      Part[]
+  partTypeId String
 }
 
 model Image {
@@ -189,7 +189,7 @@ model Order {
   updatedAt       DateTime @updatedAt
 }
 
-model PartTypes {
+model PartType {
   id        String       @id @default(cuid())
   name      String
   createdAt DateTime     @default(now())
