@@ -28,6 +28,8 @@ export const partRouter = router({
       z.object({
         partDetailsId: z.string(),
         donorVin: z.string(),
+        inventoryLocationId: z.string(),
+        variant: z.string().optional(),
       })
     )
     .mutation(({ ctx, input }) => {

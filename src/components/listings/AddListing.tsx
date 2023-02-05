@@ -89,7 +89,7 @@ const AddListing: React.FC<AddListingProps> = ({
         condition: condition,
         price: price,
         weight: weight,
-        length: length,
+        itemLength: length,
         width: width,
         height: height,
         parts: parts,

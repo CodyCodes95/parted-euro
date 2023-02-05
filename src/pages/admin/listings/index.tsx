@@ -44,6 +44,12 @@ const Listings: NextPage = () => {
 
   const listingTest = trpc.ebay.createListing.useMutation();
 
+  const ebayListings = trpc.ebay.getListings.useQuery(undefined, {
+    onSuccess(data) {
+      console.log(data);
+    },
+  });
+
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
     if (result) {
@@ -107,30 +113,32 @@ const Listings: NextPage = () => {
             <SearchIcon className="absolute top-[-9px] right-2" />
           </div>
         </div>
-        <div className="flex w-full flex-wrap items-center justify-center p-4">
-          {listings.data?.map((listing) => (
-            <Link
-              key={listing.id}
-              className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-              href={`/listings/listing?id=${listing.id}`}
-            >
-              <div className="max-h-[634px]">
-                <img
-                  src={listing.images[0]?.url}
-                  className="h-full duration-100 ease-linear group-hover:scale-105"
-                  alt=""
-                />
-              </div>
-              <div className="flex flex-col">
-                <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
-                  {listing.title}
-                </p>
-                <p className="text-lg">
-                  {formatter.format(listing.price).split("A")[1]} AUD
-                </p>
-              </div>
-            </Link>
-          ))}
+        <div className="flex w-full flex-col flex-wrap items-center justify-center p-4">
+          <div className="flex flex-col md:flex-row">
+            {listings.data?.map((listing) => (
+              <Link
+                key={listing.id}
+                className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+                href={`/listings/listing?id=${listing.id}`}
+              >
+                <div className="max-h-[634px]">
+                  <img
+                    src={listing.images[0]?.url}
+                    className="h-full duration-100 ease-linear group-hover:scale-105"
+                    alt=""
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
+                    {listing.title}
+                  </p>
+                  <p className="text-lg">
+                    {formatter.format(listing.price).split("A")[1]} AUD
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
           <div className="flex w-[25%] items-center justify-around">
             <img src={ebay.src} className="w-36" alt="Ebay logo" />
             <div className="p-4"></div>

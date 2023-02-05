@@ -108,25 +108,27 @@ model Listing {
   updatedAt   DateTime @updatedAt
   images      Image[]
   active      Boolean  @default(true)
+  listedOnEbay Boolean @default(false)
   // quantity will simply be the amount of non unique parts in the same listing
 }
 
 model Part {
-  id                   String              @id @default(cuid())
-  partDetails          PartDetail          @relation(fields: [partDetailsId], references: [partNo])
-  partDetailsId        String
-  inventoryLocation    InventoryLocations? @relation(fields: [inventoryLocationsId], references: [id])
-  listing              Listing[]
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-  donorVin             String
-  donor                Donor               @relation(fields: [donorVin], references: [vin])
-  sold                 Boolean             @default(false)
-  soldPrice            Int?
-  soldParentPrice      Int?
-  inventoryLocationsId String?
-  Order                Order?              @relation(fields: [orderId], references: [id])
-  orderId              String?
+  id                  String              @id @default(cuid())
+  partDetails         PartDetail          @relation(fields: [partDetailsId], references: [partNo])
+  partDetailsId       String
+  inventoryLocation   InventoryLocations? @relation(fields: [inventoryLocationId], references: [id])
+  listing             Listing[]
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  donorVin            String
+  donor               Donor               @relation(fields: [donorVin], references: [vin])
+  sold                Boolean             @default(false)
+  soldPrice           Int?
+  soldParentPrice     Int?
+  inventoryLocationId String?
+  Order               Order?              @relation(fields: [orderId], references: [id])
+  orderId             String?
+  variant             String?
 }
 
 model PartDetail {
@@ -142,7 +144,7 @@ model Image {
   id        String   @id @default(cuid())
   url       String
   listingId String?
-  listing   Listing?  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listing   Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Donor     Donor?   @relation(fields: [donorVin], references: [vin])

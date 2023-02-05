@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import {useState } from "react";
+import {useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const Listings: NextPage = () => {
@@ -19,6 +19,7 @@ const Listings: NextPage = () => {
   });
 
   const [search, setSearch] = useState<string | string[]>(router.query.search || "");
+  const [hoveredListing, setHoveredListing] = useState<string>("");
 
   const [debouncedSearch] = useDebounce(search, 500)
 
@@ -28,6 +29,10 @@ const Listings: NextPage = () => {
     model: model as string,
     search: debouncedSearch as string || undefined
   });
+
+  useEffect(() => {
+
+  }, [hoveredListing])
     
   return (
     <div className="flex min-h-screen w-full flex-col p-24">
@@ -40,13 +45,15 @@ const Listings: NextPage = () => {
       <div className="flex w-full items-center p-4">
         {listings.data?.map((listing) => (
           <Link
+            onMouseEnter={() => setHoveredListing(listing.id)}
+            onMouseLeave={() => setHoveredListing("")}
             key={listing.id}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
             href={`listings/listing?id=${listing.id}`}
           >
               <div className="max-h-[634px]">
                 <img
-                  src={listing.images[0]?.url}
+                  src={hoveredListing === listing.id && listing.images[1] ? listing.images[1]?.url : listing.images[0]?.url}
                   className="h-full duration-100 ease-linear group-hover:scale-105"
                   alt=""
                 />

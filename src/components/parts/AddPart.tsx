@@ -34,6 +34,7 @@ const AddPart: React.FC<AddPartProps> = ({
   const [addInventoryLocation, setAddInventoryLocation] =
     useState<boolean>(false);
   const [newInventoryLocation, setNewInventoryLocation] = useState<string>("");
+  const [variant, setVariant] = useState<string>("");
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -69,6 +70,8 @@ const AddPart: React.FC<AddPartProps> = ({
       return savePart.mutateAsync({
         partDetailsId: id,
         donorVin: donorVin || donor,
+        inventoryLocationId: inventoryLocation,
+        variant: variant || undefined,
       });
     });
     await Promise.all(savePartPromises);
@@ -142,6 +145,18 @@ const AddPart: React.FC<AddPartProps> = ({
                     value: donor.vin,
                   };
                 })}
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Variant (Optional)
+              </label>
+              <input
+                className="w-[90%] border-2 p-2"
+                type="text"
+                placeholder="Variant "
+                value={variant}
+                onChange={(e) => setVariant(e.target.value)}
               />
             </div>
             <div className="mb-6">

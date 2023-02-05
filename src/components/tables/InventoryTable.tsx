@@ -20,6 +20,10 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ data }) => {
         Header: "Location",
         accessor: "inventoryLocation.name",
       },
+      {
+        Header: "Variant",
+        accessor: "variant",
+      },
     ],
     []
   );

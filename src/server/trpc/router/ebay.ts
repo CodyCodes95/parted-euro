@@ -60,6 +60,23 @@ export const ebayRouter = router({
         updatedCreds,
       };
     }),
+  getListings: adminProcedure.query(async ({ ctx }) => {
+       const token = await ctx.prisma.ebayCreds.findFirst();
+      ebay.OAuth2.setCredentials(token?.refreshToken as any);
+      ebay.OAuth2.on("refreshAuthToken", async (token) => {
+        const creds = await ctx.prisma.ebayCreds.findFirst();
+        const updatedCreds = await ctx.prisma.ebayCreds.update({
+          where: {
+            id: creds?.id,
+          },
+          data: {
+            refreshToken: JSON.stringify(token),
+          },
+        });
+      });
+    const listings = await ebay.sell.inventory.getInventoryItems()
+    return listings
+  }),
   createListing: adminProcedure
     .input(
       z.object({
@@ -71,6 +88,7 @@ export const ebayRouter = router({
         conditionDescription: z.string(),
         images: z.array(z.string()),
         quantity: z.number().default(1),
+        listingId: z.string()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -89,7 +107,7 @@ export const ebayRouter = router({
       });
       try {
         const createInventoryItem =
-          await ebay.sell.inventory.createOrReplaceInventoryItem(input.partNo, {
+          await ebay.sell.inventory.createOrReplaceInventoryItem(input.listingId, {
             availability: {
               shipToLocationAvailability: {
                 quantity: input.quantity,
@@ -115,11 +133,11 @@ export const ebayRouter = router({
           });
         const createOffer = await ebay.sell.inventory.createOffer({
           // model: "TEST",
-          sku: input.partNo,
+          sku: input.listingId,
           marketplaceId: "EBAY_AU" as Marketplace,
           format: "FIXED_PRICE" as FormatType,
           availableQuantity: input.quantity,
-          categoryId: "30093", //find car part id
+          categoryId: "131090", //id of vehicle parts and accs
           listingDescription: input.description,
           listingPolicies: {
             fulfillmentPolicyId: process.env.EBAY_FULFILLMENT_ID as string,

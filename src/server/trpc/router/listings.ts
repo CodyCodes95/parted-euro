@@ -28,7 +28,7 @@ export const listingRouter = router({
         condition: z.string().min(3),
         price: z.number().min(100).max(100000000),
         weight: z.number(),
-        length: z.number(),
+        itemLength: z.number(),
         width: z.number(),
         height: z.number(),
         parts: z.array(z.string()),
@@ -42,7 +42,7 @@ export const listingRouter = router({
           condition: input.condition,
           price: input.price,
           weight: input.weight,
-          length: input.length,
+          length: input.itemLength,
           width: input.width,
           height: input.height,
           parts: {
