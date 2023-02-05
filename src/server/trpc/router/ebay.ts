@@ -68,7 +68,7 @@ export const ebayRouter = router({
           id: creds?.id,
         },
         data: {
-          refreshToken: JSON.stringify(token),
+          refreshToken: token,
         },
       });
     });
@@ -85,7 +85,7 @@ export const ebayRouter = router({
           id: creds?.id,
         },
         data: {
-          refreshToken: JSON.stringify(token),
+          refreshToken: token,
         },
       });
     });
@@ -111,15 +111,20 @@ export const ebayRouter = router({
             id: creds?.id,
           },
           data: {
-            refreshToken: JSON.stringify(token),
+            refreshToken: token,
           },
         });
       });
       const res =
         await ebay.commerce.taxonomy.getCategorySuggestions("15", input.title);
+      // return res.categorySuggestions
       const categoryChoices = res.categorySuggestions.map((category: any) => {
         return {
-          label: category.category.categoryName,
+          label: `${
+            category.category.categoryName
+          } // ${category.categoryTreeNodeAncestors.find(
+            (x:any) => x.categoryTreeNodeLevel === 1
+          ).categoryName}`,
           value: category.category.categoryId,
         };
       })
@@ -150,7 +155,7 @@ export const ebayRouter = router({
             id: creds?.id,
           },
           data: {
-            refreshToken: JSON.stringify(token),
+            refreshToken: token,
           },
         });
       });
@@ -221,7 +226,7 @@ export const ebayRouter = router({
           id: creds?.id,
         },
         data: {
-          refreshToken: JSON.stringify(token),
+          refreshToken: token,
         },
       });
     });
