@@ -106,7 +106,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       }`}
     >
       <ModalBackDrop setShowModal={setShowModal} />
-      <div className="relative h-full w-full max-w-2xl md:h-auto">
+      <div className="relative h-full w-full max-w-2xl md:h-auto top">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
