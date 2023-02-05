@@ -165,10 +165,21 @@ async function main() {
     ],
   });
 
+  const partType = await prisma.partTypes.create({
+    data: {
+      name: "Interior",
+    },
+  })
+
   await prisma.partDetail.create({
     data: {
       name: "E46 M3 Rear Seat Lateral Trim Panel Left",
       partNo: "52207903035",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: {
           id: firstCar?.id || "",
@@ -181,6 +192,11 @@ async function main() {
     data: {
       name: "E46 M3 Rear Seat Lateral Trim Panel Right",
       partNo: "52207903036",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: {
           id: firstCar?.id || "",
@@ -193,6 +209,11 @@ async function main() {
     data: {
       name: "E46 M3 Door Cards Driver Front",
       partNo: "51417890952",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: [
           {
@@ -210,6 +231,11 @@ async function main() {
     data: {
       name: "E46 M3 Door Cards Passenger Front",
       partNo: "51417890951",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: [
           {
@@ -227,6 +253,11 @@ async function main() {
     data: {
       name: "E46 M3 Door Cards Passenger Driver Rear",
       partNo: "51437890784",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: [
           {
@@ -244,6 +275,11 @@ async function main() {
     data: {
       name: "Cylinder Head Cover Right",
       partNo: "11121702856",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: {
           id: fiveSeries?.id || "",
@@ -256,6 +292,11 @@ async function main() {
     data: {
       name: "Cylinder Head Cover Left",
       partNo: "11121702857",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: {
           id: fiveSeries?.id || "",
@@ -268,6 +309,11 @@ async function main() {
     data: {
       name: "Master Window Lifter Driver Switch",
       partNo: "61319362126",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: {
           id: m4?.id || "",
@@ -280,6 +326,11 @@ async function main() {
     data: {
       name: "F8X M3 / M4 Passenger Air Vent",
       partNo: "64229346226",
+      partType: {
+        connect: {
+          id: partType.id || ""
+        }
+      },
       cars: {
         connect: [
           {
