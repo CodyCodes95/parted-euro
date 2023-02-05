@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
 async function CreateStripeSession(req: any, res: any) {
   const { items, regularShipping, expressShipping } = JSON.parse(req.body);
 
-  let shippingOptions = [];
+  const shippingOptions = [];
 
   if (regularShipping && expressShipping) {
     shippingOptions.push(

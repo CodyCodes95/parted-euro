@@ -108,8 +108,8 @@ const Checkout: NextPage = () => {
     });
     const data = await res.json();
     if (!res.ok) return error(data.error);
-    let express:number = Number(data.express);
-    let regular:number = Number(data.regular);
+    let express = Number(data.express);
+    let regular = Number(data.regular);
     const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     for (let i = 0; i < cartItems - 1; i++) {
       express += express * 0.1;
