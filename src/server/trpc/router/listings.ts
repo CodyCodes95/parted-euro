@@ -3,7 +3,6 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 // import eBayApi from "ebay-api";
 import cloudinary from "../../../utils/cloudinary.mjs";
-import { input } from "@material-tailwind/react";
 
 export const listingRouter = router({
   uploadListingImage: adminProcedure
