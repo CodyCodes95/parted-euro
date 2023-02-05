@@ -36,31 +36,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={"/listings?category=engine"}
+            href={"/listings?category=engine&generation=F8"}
           >
             F8X Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=F8"}
           >
             F8X Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=F8"}
           >
             F8X Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=F8"}
           >
             F8X Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=F8"}
           >
             F8X Electrical Modules & Controllers
           </Link>
@@ -75,31 +75,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e36"}
           >
             E36 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e36"}
           >
             E36 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e36"}
           >
             E36 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e36"}
           >
             E36 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e36"}
           >
             E36 Electrical Modules & Controllers
           </Link>
@@ -114,31 +114,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e46"}
           >
             E46 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e46"}
           >
             E46 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e46"}
           >
             E46 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e46"}
           >
             E46 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e46"}
           >
             E46 Electrical Modules & Controllers
           </Link>
@@ -153,31 +153,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e34"}
           >
             E34 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e34"}
           >
             E34 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e34"}
           >
             E34 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e34"}
           >
             E34 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e34"}
           >
             E34 Electrical Modules & Controllers
           </Link>
@@ -192,31 +192,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
-          >
+            href={"/listings?category=engine&generation=e39"}
+            >
             E39 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e39"}
           >
             E39 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e39"}
           >
             E39 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e39"}
           >
             E39 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e39"}
           >
             E39 Electrical Modules & Controllers
           </Link>
@@ -231,31 +231,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e38"}
           >
             E38 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e38"}
           >
             E38 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e38"}
           >
             E38 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e38"}
           >
             E38 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e38"}
           >
             E38 Electrical Modules & Controllers
           </Link>
@@ -270,31 +270,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e31"}
           >
             E31 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e31"}
           >
             E31 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e31"}
           >
             E31 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e31"}
           >
             E31 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e31"}
           >
             E31 Electrical Modules & Controllers
           </Link>
@@ -309,31 +309,31 @@ const GenerationMenu:React.FC<GenerationMenuProps> = ({setExpanded, linkRef}) =>
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=engine&generation=e53"}
           >
             E53 Engine/Driveline Parts & Accessories
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=suspension&generation=e53"}
           >
             E53 Suspension and & Brakes
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=interior&generation=e53"}
           >
             E53 Interior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=exterior&generation=e53"}
           >
             E53 Exterior
           </Link>
           <Link
             className="py-2 text-sm text-[#4d4d4d] hover:underline 2xl:py-3"
-            href={""}
+            href={"/listings?category=electrical&generation=e53"}
           >
             E53 Electrical Modules & Controllers
           </Link>

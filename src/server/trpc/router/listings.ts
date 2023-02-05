@@ -76,7 +76,7 @@ export const listingRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.generation && !input.model && !input.series) {
+      if (!input.generation && !input.model && !input.series && !input.category) {
         const listings = await ctx.prisma.listing.findMany({
           // return all listings of if input.search is not empty return all listings where the description or title contains the search string
           include: {
@@ -103,9 +103,6 @@ export const listingRouter = router({
                       partNo: {
                         contains: input.search || "",
                       },
-                      partType: {
-                        contains: input.category || "",
-                      }
                     },
                   },
                 },
@@ -137,6 +134,11 @@ export const listingRouter = router({
             parts: {
               some: {
                 partDetails: {
+                  partType: {
+                    name: {
+                      contains: input.category || "",
+                    }  
+                  },
                   cars: {
                     some: {
                       generation: {
