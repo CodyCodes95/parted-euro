@@ -1,5 +1,4 @@
 import usePlacesAutocomplete, { getDetails, getZipCode } from "use-places-autocomplete";
-import Select from "react-select";
 import { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -63,28 +62,6 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({ setShipping
         fields: ["address_components"],
       });
        setShippingAddress({
-        //  line1: `${
-        //    results.address_components.find((x: any) =>
-        //      x.types.includes("street_number")
-        //    ).long_name
-        //  } ${
-        //    results.address_components.find((x: any) =>
-        //      x.types.includes("route")
-        //    ).long_name
-        //  }`,
-        //  line2:
-        //    results.address_components.find((x: any) =>
-        //      x.types.includes("subpremise")
-        //    )?.long_name || "",
-        //  city: results.address_components.find((x: any) =>
-        //    x.types.includes("locality")
-        //  ).long_name,
-        //  state: results.address_components.find((x: any) =>
-        //    x.types.includes("administrative_area_level_1")
-        //  ).long_name,
-        //  country: results.address_components.find((x: any) =>
-        //    x.types.includes("country")
-        //  ).long_name,
          postCode: results.address_components.find((x: any) =>
            x.types.includes("postal_code")
          ).long_name,

@@ -114,7 +114,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
               >
                 {row.cells.map((cell, i) => {
                   return (
-                    <td className="px-6 py-4" {...cell.getCellProps()} key={i}>
+                    <td className="px-4 py-3" {...cell.getCellProps()} key={i}>
                       {cell.render("Cell")}
                     </td>
                   );

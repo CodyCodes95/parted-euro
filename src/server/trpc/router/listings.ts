@@ -72,10 +72,11 @@ export const listingRouter = router({
         model: z.string().optional(),
         series: z.string().optional(),
         search: z.string().optional(),
+        category: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.generation || !input.model || !input.series) {
+      if (!input.generation && !input.model && !input.series) {
         const listings = await ctx.prisma.listing.findMany({
           // return all listings of if input.search is not empty return all listings where the description or title contains the search string
           include: {
@@ -102,6 +103,9 @@ export const listingRouter = router({
                       partNo: {
                         contains: input.search || "",
                       },
+                      partType: {
+                        contains: input.category || "",
+                      }
                     },
                   },
                 },
@@ -135,7 +139,9 @@ export const listingRouter = router({
                 partDetails: {
                   cars: {
                     some: {
-                      generation: input.generation,
+                      generation: {
+                        contains: input.generation || "",
+                      },
                       model: input.model,
                       series: input.series,
                     },

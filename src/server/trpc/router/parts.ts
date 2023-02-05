@@ -29,6 +29,35 @@ export const partRouter = router({
         },
       });
     }),
+  updatePartDetail: adminProcedure
+    .input(
+      z.object({
+        partNo: z.string().min(3),
+        name: z.string().min(3),
+        cars: z.array(z.string()),
+        partTypeId: z.string(),
+      })
+  )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.partDetail.update({
+        where: {
+          partNo: input.partNo,
+        },
+        data: {
+          name: input.name,
+          partType: {
+            connect: {
+              id: input.partTypeId,
+            },
+          },
+          cars: {
+            connect: input.cars.map((id) => {
+              return { id };
+            }),
+          },
+        },
+      });
+    }),
   createPart: adminProcedure
     .input(
       z.object({

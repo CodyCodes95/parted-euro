@@ -24,15 +24,6 @@ interface CartItem {
   weight: number;
 }
 
-interface AusPostParams {
-  from: string;
-  to: string;
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-}
-
 type ShippingAddress = {
   // line1: string;
   // line2: string;
@@ -120,9 +111,8 @@ const Checkout: NextPage = () => {
   };
 
   useEffect(() => {
-    if (shippingAddress?.postCode) {
+    if (shippingAddress?.postCode.length === 4) {
       calculateAuspostShipping();
-      console.log(regularCost, expressCost);
     }
   }, [shippingAddress?.postCode, cart]);
 
@@ -148,7 +138,7 @@ const Checkout: NextPage = () => {
     } else {
       setValidated(false);
     }
-  }, [regularCost, expressCost]);
+  }, [regularCost, expressCost, shippingMethod.value]);
 
   useEffect(() => {
     if (
@@ -291,9 +281,20 @@ const Checkout: NextPage = () => {
                 </p>
               ) : null}
             </div>
-            {isLoaded && shippingMethod.value ? (
-              <ShippingAddressField setShippingAddress={setShippingAddress} />
+            {shippingMethod.value ? (
+              <div className="flex flex-col  justify-between border-b-2 px-6 py-12">
+                <p className="mr-4 text-xl text-gray-400">Shipping Postcode</p>
+                <input className="p-2 border-2" type="text" value={shippingAddress?.postCode} onChange={(e) => {
+                  setShippingAddress({
+                    ...shippingAddress,
+                    postCode: e.target.value
+                  })
+                }} />
+              </div>
             ) : null}
+            {/* {isLoaded && shippingMethod.value ? (
+              <ShippingAddressField setShippingAddress={setShippingAddress} />
+            ) : null} */}
           </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
             <p className="text-xl font-bold text-gray-900">Subtotal</p>

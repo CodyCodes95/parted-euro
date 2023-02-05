@@ -10,7 +10,7 @@ import { useDebounce } from "use-debounce";
 const Listings: NextPage = () => {
   const router = useRouter();
 
-  const { series, generation, model } = router.query;
+  const { series, generation, model, category } = router.query;
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -27,7 +27,8 @@ const Listings: NextPage = () => {
     series: series as string,
     generation: generation as string,
     model: model as string,
-    search: debouncedSearch as string || undefined
+    search: debouncedSearch as string || undefined,
+    category: category as string,
   });
     
   return (

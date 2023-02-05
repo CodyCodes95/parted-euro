@@ -9,12 +9,17 @@ import { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
+import { LinearProgress } from "@mui/material";
+import { formatPrice } from "../../utils/formatPrice";
+import AddPart from "../../components/parts/AddPart";
 
 const Donors: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showPartModal, setShowPartModal] = useState(false);
+  const [donorVin, setDonorVin] = useState("");
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -40,7 +45,7 @@ const Donors: NextPage = () => {
       },
       {
         Header: "Mileage",
-        accessor: "milage",
+        accessor: "mileage",
       },
       {
         Header: "Model",
@@ -56,13 +61,113 @@ const Donors: NextPage = () => {
       },
       {
         Header: "Cost",
-        accessor: (d => `$${d.cost}`),
+        accessor: (d) => `$${d.cost}`,
       },
       {
         Header: "Parts",
-        accessor: (d => `${d.parts.length} Parts`),
+        accessor: (d) => `${d.parts.length} Parts`,
       },
-      
+      {
+        Header: "Total Unsold Parts",
+        accessor: (d) => (
+          <>
+            <LinearProgress
+              value={
+                (d.parts
+                  .reduce((acc: any, cur: any) => {
+                    if (cur.listing.length === 0) return acc;
+                    if (
+                      !acc.some(
+                        (part: any) => part.listing.id === cur.listing.id
+                      )
+                    ) {
+                      acc.push(cur);
+                    }
+                    return acc;
+                  }, [] as any[])
+                  .reduce((acc: any, part: any) => {
+                    if (part.sold) return acc;
+                    const listingsTotal = part?.listing?.reduce(
+                      (accum: number, listing: any) => {
+                        if (listing.active) return accum + listing.price;
+                        return accum;
+                      },
+                      0
+                    );
+                    return listingsTotal + acc;
+                  }, 0) /
+                  d.cost) *
+                  100 || 0
+              }
+              variant="determinate"
+              className="h-6 rounded-md bg-[#98d219a3]"
+            />
+            <p>
+              {(formatPrice(d.parts
+                .reduce((acc: any, cur: any) => {
+                  if (cur.listing.length === 0) return acc;
+                  if (
+                    !acc.some((part: any) => part.listing.id === cur.listing.id)
+                  ) {
+                    acc.push(cur);
+                  }
+                  return acc;
+                }, [] as any[])
+                .reduce((acc: any, part: any) => {
+                  if (part.sold) return acc;
+                  const listingsTotal = part?.listing?.reduce(
+                    (accum: number, listing: any) => {
+                      if (listing.active) return accum + listing.price;
+                      return accum;
+                    },
+                    0
+                  );
+                  return listingsTotal + acc;
+                }, 0))) || 0}
+            </p>
+          </>
+        ),
+      },
+      {
+        Header: "Total Sold Parts",
+        accessor: (d) => (
+          <>
+            <LinearProgress
+              value={
+                d.parts.reduce((acc:any, part:any) => {
+                  if (part.soldPrice === null || !part.sold) return acc;
+                  return part.soldPrice + acc;
+                }, 0)
+              }
+              variant="determinate"
+              className="h-6 rounded-md bg-[#98d219a3]"
+            />
+            <p>
+              {formatPrice(d.parts.reduce((acc:any, part:any) => {
+                if (part.soldPrice === null || !part.sold) return acc;
+                return part.soldPrice + acc;
+              }, 0))}
+            </p>
+          </>
+        ),
+      },
+      {
+        Header: "Add Parts",
+        accessor: (d) => (
+          <button
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            onClick={() => {
+              setDonorVin(d.vin);
+              setShowPartModal(true);
+            }}
+          >
+            Add Parts
+          </button>
+        ),
+        disableSortBy: true,
+        minWidth: 100,
+
+      },
     ],
     []
   );
@@ -96,6 +201,15 @@ const Donors: NextPage = () => {
             setShowModal={setShowModal}
           />
         ) : null}
+        {showPartModal ? (
+          <AddPart
+            donorVin={donorVin}
+            success={success}
+            error={error}
+            showModal={showPartModal}
+            setShowModal={setShowPartModal}
+          />
+        ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
             <button
@@ -126,7 +240,7 @@ const Donors: NextPage = () => {
               className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               onClick={() => setShowModal(true)}
             >
-              Add Part
+              Add Donor
             </button>
             <div
               className={`z-10 ${

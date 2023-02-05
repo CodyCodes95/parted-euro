@@ -8,19 +8,22 @@ import AddPartDetails from "../../../components/parts/AddPartDetails";
 import { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
+import EditPartDetails from "../../../components/parts/EditPartDetails";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selection, setSelection] = useState<any>(null);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
   const parts = trpc.partDetails.getAll.useQuery();
   const deletePart = trpc.partDetails.deletePartDetail.useMutation({
-    onError: (err:any) => {
+    onError: (err: any) => {
       error(err.message);
     },
   });
@@ -41,6 +44,21 @@ const Inventory: NextPage = () => {
         Header: "Type",
         accessor: "partType.name",
       },
+      {
+        Header: "Edit",
+        accessor: (d) => (
+          <button
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              setSelection(d)
+              setShowEditModal(true)
+            }
+            }
+          >
+            Edit
+          </button>
+        ),
+      },
     ],
     []
   );
@@ -60,16 +78,28 @@ const Inventory: NextPage = () => {
       </Head>
       <ToastContainer />
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        { showConfirmDelete ? 
-          <ConfirmDelete showModal={showConfirmDelete} setShowModal={setShowConfirmDelete} deleteFunction={deleteSelections} />
-          : null
-        }
+        {showConfirmDelete ? (
+          <ConfirmDelete
+            showModal={showConfirmDelete}
+            setShowModal={setShowConfirmDelete}
+            deleteFunction={deleteSelections}
+          />
+        ) : null}
         {showModal ? (
           <AddPartDetails
             success={success}
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+          />
+        ) : null}
+        {showEditModal ? (
+          <EditPartDetails
+            success={success}
+            error={error}
+            showModal={showEditModal}
+            setShowModal={setShowEditModal}
+            selection={selection}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
