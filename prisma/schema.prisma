@@ -94,21 +94,21 @@ model Donor {
 }
 
 model Listing {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  condition   String
-  price       Float
-  weight      Float
-  length      Float
-  width       Float
-  height      Float
-  parts       Part[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  images      Image[]
-  active      Boolean  @default(true)
-  listedOnEbay Boolean @default(false)
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  condition    String
+  price        Float
+  weight       Float
+  length       Float
+  width        Float
+  height       Float
+  parts        Part[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  images       Image[]
+  active       Boolean  @default(true)
+  listedOnEbay Boolean  @default(false)
   // quantity will simply be the amount of non unique parts in the same listing
 }
 
@@ -132,12 +132,14 @@ model Part {
 }
 
 model PartDetail {
-  partNo    String   @id @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cars      Car[]
-  parts     Part[]
+  partNo      String    @id @unique
+  name        String
+  partType    PartTypes? @relation(fields: [partTypesId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  cars        Car[]
+  parts       Part[]
+  partTypesId String?
 }
 
 model Image {
@@ -185,4 +187,12 @@ model Order {
   shippingAddress String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model PartTypes {
+  id        String       @id @default(cuid())
+  name      String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  parts     PartDetail[]
 }

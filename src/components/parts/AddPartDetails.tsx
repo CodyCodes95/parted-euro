@@ -27,11 +27,13 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   error,
   success,
 }) => {
-  
   const [partNo, setPartNo] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
   const [compatibleCars, setCompatibleCars] = React.useState<Array<string>>([]);
   const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
+  const [partType, setPartType] = React.useState<string>("");
+
+  const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -76,6 +78,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
+        partTypeId: partType,
       },
       {
         onSuccess: () => {
@@ -153,6 +156,24 @@ const AddPartDetails: React.FC<AddPartProps> = ({
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Part Category
+              </label>
+              <Select
+                onChange={(e: any) => {
+                  setPartType(e.value);
+                }}
+                options={partTypes.data?.map((partType) => {
+                  return {
+                    label: partType.name,
+                    value: partType.id,
+                  };
+                })}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Compatible Cars
               </label>
               <Select
@@ -160,6 +181,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                   setCompatibleCars(e.map((car: Options) => car.value));
                 }}
                 isMulti
+                closeMenuOnSelect={false}
                 options={carOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"

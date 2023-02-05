@@ -8,6 +8,7 @@ export const partRouter = router({
         name: z.string().min(3),
         partNo: z.string().min(3),
         cars: z.array(z.string()),
+        partTypeId: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -15,6 +16,11 @@ export const partRouter = router({
         data: {
           name: input.name,
           partNo: input.partNo,
+          partType: {
+            connect: {
+              id: input.partTypeId,
+            },
+          },
           cars: {
             connect: input.cars.map((id) => {
               return { id };
