@@ -29,10 +29,6 @@ const Listings: NextPage = () => {
     model: model as string,
     search: debouncedSearch as string || undefined
   });
-
-  useEffect(() => {
-
-  }, [hoveredListing])
     
   return (
     <div className="flex min-h-screen w-full flex-col p-24">

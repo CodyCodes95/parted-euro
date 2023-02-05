@@ -55,7 +55,12 @@ export const listingRouter = router({
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     const listings = await ctx.prisma.listing.findMany({
       include: {
-        parts: true,
+        parts: {
+          include: {
+            partDetails: true,
+          }
+        },
+        images: true,
       }
     });
     return listings;

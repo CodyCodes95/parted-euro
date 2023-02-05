@@ -1,15 +1,19 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
-import AddPart from "../../../components/parts/AddPart";
-import InventoryTable from "../../../components/tables/InventoryTable";
 import ListingTable from "../../../components/tables/ListingTable";
 import AddListing from "../../../components/listings/AddListing";
+import { useRouter } from "next/router";
 
 const Listings: NextPage = () => {
+
+  const router = useRouter();
+
+  const {code} = router.query
+
   const [showModal, setShowModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
 
@@ -17,8 +21,34 @@ const Listings: NextPage = () => {
   const error = (message: string) => toast.error(message);
 
   const listings = trpc.listings.getAllAdmin.useQuery();
+  const ebayLogin = trpc.ebay.authenticate.useMutation();
+  const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
+  const items = trpc.ebay.getInventroyItems.useQuery();
+  // const offers = trpc.ebay.getOffers.useQuery();
+  const test = trpc.ebay.test.useMutation();
 
   const tableData = useMemo(() => listings.data, [listings.data]);
+
+  const authenticateEbay = async () => {
+    const result = await ebayLogin.mutateAsync();
+    if (result) {
+      router.push(result.url);
+    }
+  };
+
+    useEffect(() => {
+      if (code) {
+        const updateTokenRes = updateRefreshToken.mutateAsync({
+          code: code as string,
+        });
+        console.log(updateTokenRes);
+        router.replace("/admin/listings", undefined, { shallow: true });
+      }
+    }, [code]);
+  
+  const runTest = () => {
+    const res = test.mutateAsync();
+  }
 
   return (
     <>
@@ -142,6 +172,15 @@ const Listings: NextPage = () => {
         ) : (
           <ListingTable data={listings.data} />
         )}
+        <div>
+          <button
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={authenticateEbay}
+          >
+            Renew Ebay
+          </button>
+          <button onClick={runTest}>Test ebay</button>
+        </div>
       </main>
     </>
   );

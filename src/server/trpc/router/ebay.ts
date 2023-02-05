@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 import eBayApi from "ebay-api";
-import {
-  FulfillmentPolicyRequest,
-} from "ebay-api/lib/types";
+import { FulfillmentPolicyRequest } from "ebay-api/lib/types";
 import {
   CategoryType,
   Condition,
@@ -60,8 +58,51 @@ export const ebayRouter = router({
         updatedCreds,
       };
     }),
-  getListings: adminProcedure.query(async ({ ctx }) => {
-       const token = await ctx.prisma.ebayCreds.findFirst();
+  getInventroyItems: adminProcedure.query(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: JSON.stringify(token),
+        },
+      });
+    });
+    const listings = await ebay.sell.inventory.getInventoryItems();
+    return listings;
+  }),
+  getOffers: adminProcedure.query(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: JSON.stringify(token),
+        },
+      });
+    });
+    const offers = await ebay.sell.inventory.getOffers({
+      sku: "clclircgv000qeh05zxzk1wqa",
+      marketplaceId: MarketplaceId.EBAY_AU,
+    });
+    return offers;
+  }),
+  getCategoryIds: adminProcedure
+    .input(
+      z.object({
+        title: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const token = await ctx.prisma.ebayCreds.findFirst();
       ebay.OAuth2.setCredentials(token?.refreshToken as any);
       ebay.OAuth2.on("refreshAuthToken", async (token) => {
         const creds = await ctx.prisma.ebayCreds.findFirst();
@@ -74,9 +115,16 @@ export const ebayRouter = router({
           },
         });
       });
-    const listings = await ebay.sell.inventory.getInventoryItems()
-    return listings
-  }),
+      const res =
+        await ebay.commerce.taxonomy.getCategorySuggestions("15", input.title);
+      const categoryChoices = res.categorySuggestions.map((category: any) => {
+        return {
+          label: category.category.categoryName,
+          value: category.category.categoryId,
+        };
+      })
+      return categoryChoices;
+    }),
   createListing: adminProcedure
     .input(
       z.object({
@@ -88,7 +136,8 @@ export const ebayRouter = router({
         conditionDescription: z.string(),
         images: z.array(z.string()),
         quantity: z.number().default(1),
-        listingId: z.string()
+        listingId: z.string(),
+        categoryId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -107,37 +156,34 @@ export const ebayRouter = router({
       });
       try {
         const createInventoryItem =
-          await ebay.sell.inventory.createOrReplaceInventoryItem(input.listingId, {
-            availability: {
-              shipToLocationAvailability: {
-                quantity: input.quantity,
+          await ebay.sell.inventory.createOrReplaceInventoryItem(
+            input.listingId,
+            {
+              availability: {
+                shipToLocationAvailability: {
+                  quantity: input.quantity,
+                },
               },
-            },
-            condition: input.condition as Condition,
-            product: {
-              title: input.title,
-              description: input.description,
-              aspects: {
-                // Brand: ["BMW"],
-                // Type: ["Helmet/Action"],
-                // "Storage Type": ["Removable"],
-                // "Recording Definition": ["High Definition"],
-                // "Media Format": ["Flash Drive (SSD)"],
-                // "Optical Zoom": ["10x"],
-                // "Model": ["Hero4"],
+              condition: input.condition as Condition,
+              product: {
+                title: input.title,
+                description: `${input.description}, ${input.conditionDescription}`,
+                aspects: {
+                  Brand: ["BMW"],
+                },
+                mpn: input.partNo,
+                brand: "BMW",
+                imageUrls: input.images,
               },
-              // brand: "GoPro",
-              mpn: input.partNo,
-              imageUrls: input.images,
-            },
-          });
+            }
+          );
         const createOffer = await ebay.sell.inventory.createOffer({
           // model: "TEST",
           sku: input.listingId,
           marketplaceId: "EBAY_AU" as Marketplace,
           format: "FIXED_PRICE" as FormatType,
           availableQuantity: input.quantity,
-          categoryId: "131090", //id of vehicle parts and accs
+          categoryId: input.categoryId, //id of vehicle parts and accs
           listingDescription: input.description,
           listingPolicies: {
             fulfillmentPolicyId: process.env.EBAY_FULFILLMENT_ID as string,
@@ -151,38 +197,11 @@ export const ebayRouter = router({
               value: input.price.toString(),
             },
           },
-          // quantityLimitPerBuyer: 1,
         });
         const publishOffer = await ebay.sell.inventory.publishOffer(
           createOffer.offerId
         );
-        // const inventoryLocation =
-        //   await ebay.sell.inventory.createInventoryLocation(
-        //     "parted-euro-knox",
-        //     {
-        //       location: {
-        //         address: {
-        //           addressLine1: "123 fake street",
-        //           addressLine2: "2",
-        //           city: "Knox",
-        //           country: "AU",
-        //           stateOrProvince: "VIC",
-        //           postalCode: "3152",
-        //         },
-        //       },
-        //       name: "Parted Euro",
-        //       locationWebUrl: "https://parted-euro.vercel.app/",
-        //       locationTypes: ["WAREHOUSE"],
-        //       locationInstructions: "Items ship from here",
-        //       merchantLocationStatus: "ENABLED",
-        //     } as InventoryLocationFull
-        //   );
-        // const inventoryLocation =
-        // await ebay.sell.inventory.getInventoryLocations();
-        // const policies = await ebay.sell.account.getPaymentPolicies("EBAY_AU")
-        // const categoryTreeId = await ebay.commerce.taxonomy.getDefaultCategoryTreeId("EBAY_AU") //logged 15, used in req below
-        // const sellItem = await ebay.commerce.taxonomy.getCategorySuggestions("15", "GoPro Hero4 Helmet Cam") logged {categoryId: '30093', categoryName: 'Tripods & Monopods'}. Wondering how often
-        // this changes? if not often, will just use a generic car parts category for all reqs. If they change, will have to grab on each fetch
+
         return {
           publishOffer,
         };
@@ -192,4 +211,25 @@ export const ebayRouter = router({
         };
       }
     }),
+  test: adminProcedure.mutation(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: JSON.stringify(token),
+        },
+      });
+    });
+
+    const sellItem = await ebay.commerce.taxonomy.getCategorySuggestions(
+      "15",
+      "E39 cylinder head cover set"
+    );
+    return sellItem;
+  }),
 });

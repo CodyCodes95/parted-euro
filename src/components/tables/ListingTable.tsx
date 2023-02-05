@@ -1,5 +1,11 @@
-import { useMemo } from "react";
+import { Image, Listing, Part, PartDetail } from "@prisma/client";
+import { useMemo, useState } from "react";
 import { Column, usePagination, useSortBy, useTable } from "react-table";
+import { trpc } from "../../utils/trpc";
+import EbayModal from "../listings/EbayModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { success, error } from "../../utils/toast";
 
 type ListingTable = {
   data: any;
@@ -17,13 +23,28 @@ const ListingTable: React.FC<ListingTable> = ({ data }) => {
         accessor: "price",
       },
       {
-          Header: "Listed On Ebay",
-          accessor: d => d.ebayListing ? "Yes" : "No",
-        },
-          {
-            Header: "Listed On",
-            accessor: d => d.createdAt.toLocaleString(),
-          },
+        Header: "Listed On Ebay",
+        accessor: (d) =>
+          d.ebayListing ? (
+            <button className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+              View Ebay Listing
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setShowModal(true);
+                setCurrentListing(d);
+              }}
+              className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+            >
+              List on eBay
+            </button>
+          ),
+      },
+      {
+        Header: "Listed On",
+        accessor: (d) => d.createdAt.toLocaleString(),
+      },
     ],
     []
   );
@@ -52,8 +73,21 @@ const ListingTable: React.FC<ListingTable> = ({ data }) => {
     usePagination
   );
 
+  const [showModal, setShowModal] = useState(false);
+  const [currentListing, setCurrentListing] = useState<Listing | null>(null);
+
   return (
     <div>
+      {showModal && currentListing ? (
+        <EbayModal
+          success={success}
+          error={error}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          listing={currentListing as typeof data[0]}
+        />
+      ) : null}
+      <ToastContainer />
       <table
         className="w-full text-left text-sm text-gray-500 dark:text-gray-400"
         {...getTableProps()}
