@@ -16,6 +16,6 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/utils/cloudinary.mjs", "src/testtt.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/utils/cloudinary.mjs", "src/testtt.mjs", "old.jsx"],
   "exclude": ["node_modules"]
 }
