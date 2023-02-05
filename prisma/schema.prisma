@@ -90,6 +90,7 @@ model Donor {
   updatedAt DateTime @updatedAt
   parts     Part[]
   imageUrl  String?
+  images    Image[]
 }
 
 model Listing {
@@ -140,10 +141,12 @@ model PartDetail {
 model Image {
   id        String   @id @default(cuid())
   url       String
-  listingId String
-  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String?
+  listing   Listing?  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Donor     Donor?   @relation(fields: [donorVin], references: [vin])
+  donorVin  String?
 }
 
 model XeroCreds {

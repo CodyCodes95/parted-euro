@@ -31,4 +31,14 @@ export const imagesRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.image.create({ data: input });
     }),
+  createImageDonorRecord: adminProcedure
+    .input(
+      z.object({
+        url: z.string().min(3),
+        donorVin: z.string().min(3),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.image.create({ data: input });
+    }),
 });

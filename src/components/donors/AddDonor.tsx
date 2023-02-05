@@ -3,6 +3,8 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import { Car } from "@prisma/client";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import IconButton from "@mui/material/IconButton";
 
 interface AddDonorProps {
   showModal: boolean;
@@ -16,51 +18,56 @@ interface ISelectOptions {
   value: string;
 }
 
-const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, error }) => {
+const AddDonor: React.FC<AddDonorProps> = ({
+  showModal,
+  setShowModal,
+  success,
+  error,
+}) => {
   const [vin, setVin] = useState<string>("");
   const [cost, setCost] = useState<number>(0);
   const [carId, setCarId] = useState<string>("");
   const [year, setYear] = useState<number>(0);
   const [mileage, setMileage] = useState<number>(0);
   const [options, setOptions] = useState<ISelectOptions[]>([]);
+  const [images, setImages] = useState<Array<string>>([]);
 
-  const cars = trpc.cars.getAll.useQuery(
-    undefined,
-    {
-      onSuccess: (data) => {
-        setOptions([]);
-        data.forEach((car: Car) => {
-          setOptions((prevState: any) => {
-            if (prevState.some((group: any) => group.label === car.series)) {
-              return prevState.map((group: any) => {
-                if (group.label === car.series) {
-                  group.options.push({
+  const cars = trpc.cars.getAll.useQuery(undefined, {
+    onSuccess: (data) => {
+      setOptions([]);
+      data.forEach((car: Car) => {
+        setOptions((prevState: any) => {
+          if (prevState.some((group: any) => group.label === car.series)) {
+            return prevState.map((group: any) => {
+              if (group.label === car.series) {
+                group.options.push({
+                  label: `${car.generation} ${car.model} ${car.body || ""}`,
+                  value: car.id,
+                });
+              }
+              return group;
+            });
+          } else {
+            return [
+              ...prevState,
+              {
+                label: car.series,
+                options: [
+                  {
                     label: `${car.generation} ${car.model} ${car.body || ""}`,
                     value: car.id,
-                  });
-                }
-                return group;
-              });
-            } else {
-              return [
-                ...prevState,
-                {
-                  label: car.series,
-                  options: [
-                    {
-                      label: `${car.generation} ${car.model} ${car.body || ""}`,
-                      value: car.id,
-                    },
-                  ],
-                },
-              ];
-            }
-          });
+                  },
+                ],
+              },
+            ];
+          }
         });
-      },
-    }
-  );
+      });
+    },
+  });
   const saveDonor = trpc.donors.createDonor.useMutation();
+  const uploadImage = trpc.listings.uploadListingImage.useMutation();
+  const createImageRecord = trpc.images.createImageDonorRecord.useMutation();
 
   const onSave = async (exit: boolean) => {
     const result = await saveDonor.mutateAsync(
@@ -70,25 +77,44 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, e
         carId: carId,
         year: year,
         mileage: mileage,
-      },
-      {
-        onSuccess: () => {
-          success(`Donor ${vin} successfully created`);
-          setMileage(0);
-          setVin("");
-          setCost(0);
-          setCarId("");
-          setYear(0);
-          if (exit) {
-            setShowModal(false);
-          } else {
-          }
-        },
-        onError: (err) => {
-          error(err.message)
-        },
       }
     );
+    const donorVin = result.vin;
+    const imagePromises = images.map(async (image: string) => {
+      const imageRes = await uploadImage.mutateAsync({
+        image: image,
+      });
+      return createImageRecord.mutateAsync({
+        donorVin: donorVin,
+        url: imageRes.url,
+      });
+    });
+    await Promise.all(imagePromises);
+    success(`Donor ${vin} successfully created`);
+    setMileage(0);
+    setVin("");
+    setCost(0);
+    setCarId("");
+    setYear(0);
+    setImages([]);
+    if (exit) {
+      setShowModal(false);
+    }
+  };
+
+  const handleImageAttach = () => {
+    const handleImageAttach = (e: any) => {
+      Array.from(e.target.files).forEach((file: any) => {
+        const reader = new FileReader();
+        reader.onload = (onLoadEvent: any) => {
+          setImages((imageState: any) => [
+            ...imageState,
+            onLoadEvent.target.result,
+          ]);
+        };
+        reader.readAsDataURL(file);
+      });
+    };
   };
 
   return (
@@ -186,6 +212,23 @@ const AddDonor: React.FC<AddDonorProps> = ({ showModal, setShowModal, success, e
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
+            </div>
+            <div className="flex items-center justify-between">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  multiple={true}
+                  onChange={handleImageAttach}
+                />
+                <PhotoCamera />
+              </IconButton>
+              <p>{images.length} Photos attached</p>
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
