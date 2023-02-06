@@ -22,10 +22,6 @@ const Confirmation: NextPage = () => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    console.log(tempCart);
-  }, [tempCart]);
-
   return (
     <div className="py-14 px-4 md:px-6 2xl:container 2xl:mx-auto 2xl:px-20">
       <div className="item-start flex flex-col justify-start space-y-2 ">
@@ -40,7 +36,7 @@ const Confirmation: NextPage = () => {
       <div className="w-fill flex items-center justify-center">
         <p>Please check your email for your invoice.</p>
       </div>
-      <div className="jusitfy-center mt-10 flex w-full flex-col items-stretch  space-y-4 md:space-y-6 xl:flex-row xl:space-x-8 xl:space-y-0">
+      {/* <div className="jusitfy-center mt-10 flex w-full flex-col items-stretch  space-y-4 md:space-y-6 xl:flex-row xl:space-x-8 xl:space-y-0">
         <div className="flex w-full flex-col items-start justify-start space-y-4 md:space-y-6 xl:space-y-8">
           <div className="flex w-full flex-col items-start justify-start bg-gray-50 px-4 py-4 md:p-6 md:py-6 xl:p-8">
             <p className="text-lg font-semibold leading-6 text-gray-800 md:text-xl xl:leading-5">
@@ -82,8 +78,8 @@ const Confirmation: NextPage = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 };
