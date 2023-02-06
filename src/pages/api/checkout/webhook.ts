@@ -98,7 +98,7 @@ const createInvoice = async (event: any, lineItems: any) => {
               invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
             },
             account: {
-              code: "090",
+              code: process.env.XERO_BANK_ACCOUNT,
             },
             date: new Date().toISOString().split("T")[0],
             amount: event.amount_total / 100,
