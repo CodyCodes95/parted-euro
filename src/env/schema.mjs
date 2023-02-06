@@ -31,15 +31,15 @@ export const serverSchema = z.object({
   XERO_CLIENT_SECRET: z.string(),
   XERO_REDIRECT_URI: z.string(),
   XERO_SCOPES: z.string(),
-  EBAY_APP_ID: z.string(),
-  EBAY_CERT_ID: z.string(),
-  EBAY_RU_NAME: z.string(),
-  EBAY_SCOPES: z.string(),
-  EBAY_SITE_ID: z.string(),
-  EBAY_FULFILLMENT_ID: z.string(),
-  EBAY_PAYMENT_ID: z.string(),
-  EBAY_RETURN_ID: z.string(),
-  EBAY_MERCHANT_KEY: z.string(),
+//   EBAY_APP_ID: z.string(),
+//   EBAY_CERT_ID: z.string(),
+//   EBAY_RU_NAME: z.string(),
+//   EBAY_SCOPES: z.string(),
+//   EBAY_SITE_ID: z.string(),
+//   EBAY_FULFILLMENT_ID: z.string(),
+//   EBAY_PAYMENT_ID: z.string(),
+//   EBAY_RETURN_ID: z.string(),
+//   EBAY_MERCHANT_KEY: z.string(),
 });
 
 /**
@@ -49,7 +49,6 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
-  NEXT_PUBLIC_GOOGLE_MAPS_KEY: z.string(),
 });
 
 /**
@@ -60,5 +59,4 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-  NEXT_PUBLIC_GOOGLE_MAPS_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY,
 };
