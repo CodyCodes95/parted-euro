@@ -35,6 +35,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [ebayCondition, setEbayCondition] = useState<any>("");
   const [validated, setValidated] = useState<boolean>(false);
   const [categoryId, setCategoryId] = useState<string>("");
+  const [domesticShipping, setDomesticShipping] = useState<number>(0);
+  const [internationalShipping, setInternationalShipping] = useState<number>(0);
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
   const categoryIds = trpc.ebay.getCategoryIds.useQuery(
@@ -70,6 +72,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
       quantity: 1,
       partNo: listing.parts[0]?.partDetails.partNo as string,
       categoryId: categoryId,
+      domesticShipping: domesticShipping,
+      internationalShipping: internationalShipping,
     });
     setLoading(false);
   };
@@ -157,6 +161,20 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 type="number"
                 label="Price"
                 onChange={(e) => setPrice(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex">
+              <Input
+                value={domesticShipping}
+                label="Domestic shipping"
+                onChange={(e) => setDomesticShipping(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex">
+              <Input
+                value={internationalShipping}
+                label="International shipping"
+                onChange={(e) => setInternationalShipping(Number(e.target.value))}
               />
             </div>
             <LoadingButton onClick={onSubmit} loading={loading} text="List" />

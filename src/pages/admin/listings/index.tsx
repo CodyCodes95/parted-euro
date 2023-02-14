@@ -7,6 +7,7 @@ import { trpc } from "../../../utils/trpc";
 import ListingTable from "../../../components/tables/ListingTable";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Listings: NextPage = () => {
 
@@ -179,7 +180,7 @@ const Listings: NextPage = () => {
           >
             Renew Ebay
           </button>
-          <button onClick={runTest}>Test ebay</button>
+          <Link href="/admin/ebay">Ebay Dashboard</Link>
         </div>
       </main>
     </>

@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 import eBayApi from "ebay-api";
-import { FulfillmentPolicyRequest } from "ebay-api/lib/types";
+import {
+  FulfillmentPolicyRequest,
+  InventoryLocationFull,
+} from "ebay-api/lib/types";
 import {
   CategoryType,
   Condition,
@@ -115,19 +118,21 @@ export const ebayRouter = router({
           },
         });
       });
-      const res =
-        await ebay.commerce.taxonomy.getCategorySuggestions("15", input.title);
+      const res = await ebay.commerce.taxonomy.getCategorySuggestions(
+        "15",
+        input.title
+      );
       // return res.categorySuggestions
       const categoryChoices = res.categorySuggestions.map((category: any) => {
         return {
-          label: `${
-            category.category.categoryName
-          } // ${category.categoryTreeNodeAncestors.find(
-            (x:any) => x.categoryTreeNodeLevel === 1
-          ).categoryName}`,
+          label: `${category.category.categoryName} // ${
+            category.categoryTreeNodeAncestors.find(
+              (x: any) => x.categoryTreeNodeLevel === 1
+            ).categoryName
+          }`,
           value: category.category.categoryId,
         };
-      })
+      });
       return categoryChoices;
     }),
   createListing: adminProcedure
@@ -143,6 +148,8 @@ export const ebayRouter = router({
         quantity: z.number().default(1),
         listingId: z.string(),
         categoryId: z.string(),
+        domesticShipping: z.number(),
+        internationalShipping: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -160,6 +167,45 @@ export const ebayRouter = router({
         });
       });
       try {
+        const createFulfillmentPolicy =
+          await ebay.sell.account.createFulfillmentPolicy({
+            name: `Shipping for ${input.title}`,
+            fulfillmentPolicyType: "SHIPPING",
+            marketplaceId: "EBAY_AU" as MarketplaceId,
+            localPickup: true,
+            handlingTime: {
+              unit: "DAY",
+              value: 3,
+            },
+            categoryTypes: [{ name: "ALL_EXCLUDING_MOTORS_VEHICLES" }],
+            shippingOptions: [
+              {
+                costType: "FLAT_RATE",
+                optionType: "DOMESTIC",
+                shippingServices: [
+                  {
+                    shippingCost: {
+                      currency: "AUD",
+                      value: input.domesticShipping.toString(),
+                    },
+                  },
+                ],
+              },
+              {
+                costType: "FLAT_RATE",
+                optionType: "INTERNATIONAL",
+                shippingServices: [
+                  {
+                    shippingCost: {
+                      currency: "AUD",
+                      value: input.internationalShipping.toString(),
+                    },
+                  },
+                ],
+              },
+            ],
+          } as FulfillmentPolicyRequest);
+        return createFulfillmentPolicy;
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
             input.listingId,
@@ -236,5 +282,82 @@ export const ebayRouter = router({
       "E39 cylinder head cover set"
     );
     return sellItem;
+  }),
+  getPaymentPolicy: adminProcedure.mutation(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: token,
+        },
+      });
+    });
+    const paymentPolicies = await ebay.sell.account.getPaymentPolicies(
+      "EBAY_AU"
+    );
+    return paymentPolicies.paymentPolicies[0].paymentPolicyId;
+  }),
+  getReturnPolicy: adminProcedure.mutation(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: token,
+        },
+      });
+    });
+    const returnPolicies = await ebay.sell.account.getReturnPolicies("EBAY_AU");
+    return returnPolicies.returnPolicies[0].returnPolicyId;
+  }),
+  createInventoryLocation: adminProcedure.mutation(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: token,
+        },
+      });
+    });
+    const inventoryLocation = await ebay.sell.inventory.getInventoryLocations();
+    if (inventoryLocation.total > 0) {
+      return inventoryLocation.locations[0].merchantLocationKey;
+    }
+    const res = await ebay.sell.inventory.createInventoryLocation(
+      "parted-euro",
+      {
+        location: {
+          address: {
+            addressLine1: "26 Rushdale Street",
+            addressLine2: "2",
+            city: "Knoxfield",
+            country: "AU",
+            stateOrProvince: "VIC",
+            postalCode: "3180",
+          },
+        },
+        name: "Parted Euro",
+        locationWebUrl: "https://www.partedeuro.com.au/",
+        locationTypes: ["WAREHOUSE"],
+        locationInstructions: "Items ship from here",
+        merchantLocationStatus: "ENABLED",
+      } as InventoryLocationFull
+    );
+    const createdLocation = await ebay.sell.inventory.getInventoryLocations();
+    return inventoryLocation.locations[0].merchantLocationKey;
   }),
 });
