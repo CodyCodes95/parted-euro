@@ -169,21 +169,23 @@ export const ebayRouter = router({
       try {
         const createFulfillmentPolicy =
           await ebay.sell.account.createFulfillmentPolicy({
-            name: `Shipping for ${input.title}`,
-            fulfillmentPolicyType: "SHIPPING",
+            name: input.listingId,
             marketplaceId: "EBAY_AU" as MarketplaceId,
-            localPickup: true,
+            categoryTypes: [
+              { name: "ALL_EXCLUDING_MOTORS_VEHICLES", default: true },
+            ],
             handlingTime: {
               unit: "DAY",
               value: 3,
             },
-            categoryTypes: [{ name: "ALL_EXCLUDING_MOTORS_VEHICLES" }],
+            localPickup: true,
             shippingOptions: [
               {
                 costType: "FLAT_RATE",
                 optionType: "DOMESTIC",
                 shippingServices: [
                   {
+                    shippingServiceCode: "AU_StandardDelivery",
                     shippingCost: {
                       currency: "AUD",
                       value: input.domesticShipping.toString(),
@@ -196,6 +198,11 @@ export const ebayRouter = router({
                 optionType: "INTERNATIONAL",
                 shippingServices: [
                   {
+                    shipToLocations: {
+                      regionIncluded: [{regionName: "Worldwide"}],
+                    },
+                    shippingCarrierCode: "AustraliaPost",
+                    shippingServiceCode: "AU_StandardInternational",
                     shippingCost: {
                       currency: "AUD",
                       value: input.internationalShipping.toString(),
