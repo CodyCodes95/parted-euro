@@ -178,7 +178,7 @@ export const ebayRouter = router({
               unit: "DAY",
               value: 3,
             },
-            localPickup: true,
+            // localPickup: true,
             shippingOptions: [
               {
                 costType: "FLAT_RATE",
@@ -212,7 +212,8 @@ export const ebayRouter = router({
               },
             ],
           } as FulfillmentPolicyRequest);
-        return createFulfillmentPolicy;
+        const fulfillmentPolicy =
+          createFulfillmentPolicy.result.result.data.fulfillmentPolicyId;
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
             input.listingId,
@@ -244,7 +245,7 @@ export const ebayRouter = router({
           categoryId: input.categoryId, //id of vehicle parts and accs
           listingDescription: input.description,
           listingPolicies: {
-            fulfillmentPolicyId: process.env.EBAY_FULFILLMENT_ID as string,
+            fulfillmentPolicyId: fulfillmentPolicy,
             paymentPolicyId: process.env.EBAY_PAYMENT_ID as string,
             returnPolicyId: process.env.EBAY_RETURN_ID as string,
           },
@@ -340,6 +341,9 @@ export const ebayRouter = router({
         },
       });
     });
+    // const getInv = await ebay.sell.inventory.getInventoryLocations(
+    // );
+    // return getInv;
     const inventoryLocation = await ebay.sell.inventory.getInventoryLocations();
     if (inventoryLocation.total > 0) {
       return inventoryLocation.locations[0].merchantLocationKey;
@@ -365,6 +369,6 @@ export const ebayRouter = router({
       } as InventoryLocationFull
     );
     const createdLocation = await ebay.sell.inventory.getInventoryLocations();
-    return inventoryLocation.locations[0].merchantLocationKey;
+    return createdLocation.locations[0].merchantLocationKey;
   }),
 });
