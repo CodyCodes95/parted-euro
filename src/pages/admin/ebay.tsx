@@ -24,8 +24,6 @@ const Ebay: NextPage = () => {
 
     const getMerchantName = async () => {
         const res = await getMerchant.mutateAsync()
-        console.log(res) 
-        return
         navigator.clipboard.writeText(res)
         toast.info("Copied to clipboard")
     }

@@ -3,6 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import { useEffect, useRef } from "react";
+import { signOut } from "next-auth/react";
 
 interface AdminPopupProps {
   open: boolean;
@@ -10,28 +11,30 @@ interface AdminPopupProps {
   adminRef: any;
 }
 
-const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen, adminRef}) => {
-
+const AdminPopup: React.FC<AdminPopupProps> = ({ open, setOpen, adminRef }) => {
   const popUpRef = useRef<HTMLDivElement>(null);
-  
- const closePopup = (e: any) => {
-   if (popUpRef.current && open && !popUpRef.current.contains(e.target) && !adminRef.current.contains(e.target)) {
-     setOpen(false);
-   }
- };
-  
+
+  const closePopup = (e: any) => {
+    if (
+      popUpRef.current &&
+      open &&
+      !popUpRef.current.contains(e.target) &&
+      !adminRef.current.contains(e.target)
+    ) {
+      setOpen(false);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", closePopup);
-  }, [])
-
-
+  }, []);
 
   const handleToggle = () => {
-    setOpen((prevOpen:any) => !prevOpen);
+    setOpen((prevOpen: any) => !prevOpen);
   };
 
   const handleCloseLogout = (event: Event | React.SyntheticEvent) => {
-    window.location.href = "/api/auth/signout";
+    signOut();
     setOpen(false);
   };
 
@@ -39,7 +42,6 @@ const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen, adminRef}) => {
     window.location.href = "/admin";
     setOpen(false);
   };
-
 
   return (
     <Stack
@@ -58,6 +60,6 @@ const AdminPopup: React.FC<AdminPopupProps> = ({open, setOpen, adminRef}) => {
       </Paper>
     </Stack>
   );
-}
+};
 
-export default AdminPopup
+export default AdminPopup;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
 import { useEffect, useRef, useState } from "react";
@@ -131,7 +131,7 @@ const Nav: React.FC = () => {
             </div>
           ) : (
             <LoginIcon
-              onClick={() => (window.location.href = "/api/auth/signin")}
+              onClick={() => signIn("google")}
             />
           )}
         </div>
