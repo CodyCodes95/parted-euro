@@ -237,7 +237,6 @@ export const ebayRouter = router({
             }
           );
         const createOffer = await ebay.sell.inventory.createOffer({
-          // model: "TEST",
           sku: input.listingId,
           marketplaceId: "EBAY_AU" as Marketplace,
           format: "FIXED_PRICE" as FormatType,
@@ -341,9 +340,6 @@ export const ebayRouter = router({
         },
       });
     });
-    // const getInv = await ebay.sell.inventory.getInventoryLocations(
-    // );
-    // return getInv;
     const inventoryLocation = await ebay.sell.inventory.getInventoryLocations();
     if (inventoryLocation.total > 0) {
       return inventoryLocation.locations[0].merchantLocationKey;

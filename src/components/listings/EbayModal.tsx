@@ -150,7 +150,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
             <div className="">
               <Select
                 placeholder="Ebay Category"
-                value={categoryId}
+                value={categoryIds.data?.find((c:any) => c.value === categoryId)}
                 options={categoryIds.data}
                 onChange={(e: any) => setCategoryId(e.value)}
               />
