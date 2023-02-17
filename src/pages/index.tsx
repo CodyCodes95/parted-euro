@@ -92,7 +92,7 @@ const Home: NextPage = () => {
             <div className="flex w-full flex-col items-center">
               <div
                 className={`absolute w-full duration-150 ease-linear ${
-                  carSelectOpen ? "translate-x-[-100rem]" : ""
+                  carSelectOpen ? "translate-x-[-300rem]" : ""
                 }`}
               >
                 <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
@@ -118,8 +118,8 @@ const Home: NextPage = () => {
                 </div>
               </div>
               <div
-                className={` absolute translate-x-[100rem] duration-150 ease-linear ${
-                  carSelectOpen ? "translate-x-[0rem]" : ""
+                className={` absolute translate-x-[300rem] duration-150 ease-linear ${
+                  carSelectOpen ? "translate-x-[-0rem]" : ""
                 }`}
               >
                 <div className="mt-4 flex items-center justify-center text-black">

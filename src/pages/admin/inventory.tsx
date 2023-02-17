@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import AddPart from "../../components/parts/AddPart";
 import InventoryTable from "../../components/tables/InventoryTable";
+import loader from "../../../public/loader.svg";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +18,14 @@ const Inventory: NextPage = () => {
   const parts = trpc.parts.getAll.useQuery();
 
   const tableData = useMemo(() => parts.data, [parts.data]);
+
+  if (parts.isLoading) {
+    return (
+      <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
+        <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -124,7 +124,6 @@ async function main() {
     },
   });
 
-
   const donors = await prisma.donor.createMany({
     data: [
       {
@@ -132,7 +131,7 @@ async function main() {
         year: 1990,
         cost: 0,
         mileage: 0,
-        carId: genericDonor?.id ||"",
+        carId: genericDonor?.id || "",
       },
       {
         vin: "WBSBL92060JR08716",
@@ -169,7 +168,7 @@ async function main() {
     data: {
       name: "Interior",
     },
-  })
+  });
 
   await prisma.partDetail.create({
     data: {
@@ -177,8 +176,8 @@ async function main() {
       partNo: "52207903035",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: {
@@ -194,8 +193,8 @@ async function main() {
       partNo: "52207903036",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: {
@@ -211,8 +210,8 @@ async function main() {
       partNo: "51417890952",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: [
@@ -233,8 +232,8 @@ async function main() {
       partNo: "51417890951",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: [
@@ -255,8 +254,8 @@ async function main() {
       partNo: "51437890784",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: [
@@ -277,8 +276,8 @@ async function main() {
       partNo: "11121702856",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: {
@@ -294,8 +293,8 @@ async function main() {
       partNo: "11121702857",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: {
@@ -311,8 +310,8 @@ async function main() {
       partNo: "61319362126",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: {
@@ -328,8 +327,8 @@ async function main() {
       partNo: "64229346226",
       partType: {
         connect: {
-          id: partType.id || ""
-        }
+          id: partType.id || "",
+        },
       },
       cars: {
         connect: [

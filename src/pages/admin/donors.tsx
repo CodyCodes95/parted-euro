@@ -5,13 +5,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import AddPartDetails from "../../components/parts/AddPartDetails";
-import { Column } from "react-table";
+import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
 import { LinearProgress } from "@mui/material";
 import { formatPrice } from "../../utils/formatPrice";
 import AddPart from "../../components/parts/AddPart";
+import loader from "../../../public/loader.svg";
 
 const Donors: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -103,27 +104,31 @@ const Donors: NextPage = () => {
               className="h-6 rounded-md bg-[#98d219a3]"
             />
             <p>
-              {(formatPrice(d.parts
-                .reduce((acc: any, cur: any) => {
-                  if (cur.listing.length === 0) return acc;
-                  if (
-                    !acc.some((part: any) => part.listing.id === cur.listing.id)
-                  ) {
-                    acc.push(cur);
-                  }
-                  return acc;
-                }, [] as any[])
-                .reduce((acc: any, part: any) => {
-                  if (part.sold) return acc;
-                  const listingsTotal = part?.listing?.reduce(
-                    (accum: number, listing: any) => {
-                      if (listing.active) return accum + listing.price;
-                      return accum;
-                    },
-                    0
-                  );
-                  return listingsTotal + acc;
-                }, 0))) || 0}
+              {formatPrice(
+                d.parts
+                  .reduce((acc: any, cur: any) => {
+                    if (cur.listing.length === 0) return acc;
+                    if (
+                      !acc.some(
+                        (part: any) => part.listing.id === cur.listing.id
+                      )
+                    ) {
+                      acc.push(cur);
+                    }
+                    return acc;
+                  }, [] as any[])
+                  .reduce((acc: any, part: any) => {
+                    if (part.sold) return acc;
+                    const listingsTotal = part?.listing?.reduce(
+                      (accum: number, listing: any) => {
+                        if (listing.active) return accum + listing.price;
+                        return accum;
+                      },
+                      0
+                    );
+                    return listingsTotal + acc;
+                  }, 0)
+              ) || 0}
             </p>
           </>
         ),
@@ -133,20 +138,20 @@ const Donors: NextPage = () => {
         accessor: (d) => (
           <>
             <LinearProgress
-              value={
-                d.parts.reduce((acc:any, part:any) => {
-                  if (part.soldPrice === null || !part.sold) return acc;
-                  return part.soldPrice + acc;
-                }, 0)
-              }
+              value={d.parts.reduce((acc: any, part: any) => {
+                if (part.soldPrice === null || !part.sold) return acc;
+                return part.soldPrice + acc;
+              }, 0)}
               variant="determinate"
               className="h-6 rounded-md bg-[#98d219a3]"
             />
             <p>
-              {formatPrice(d.parts.reduce((acc:any, part:any) => {
-                if (part.soldPrice === null || !part.sold) return acc;
-                return part.soldPrice + acc;
-              }, 0))}
+              {formatPrice(
+                d.parts.reduce((acc: any, part: any) => {
+                  if (part.soldPrice === null || !part.sold) return acc;
+                  return part.soldPrice + acc;
+                }, 0)
+              )}
             </p>
           </>
         ),
@@ -155,7 +160,7 @@ const Donors: NextPage = () => {
         Header: "Add Parts",
         accessor: (d) => (
           <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             onClick={() => {
               setDonorVin(d.vin);
               setShowPartModal(true);
@@ -166,7 +171,6 @@ const Donors: NextPage = () => {
         ),
         disableSortBy: true,
         minWidth: 100,
-
       },
     ],
     []
@@ -178,6 +182,14 @@ const Donors: NextPage = () => {
     );
     await Promise.all(deletePromises);
   };
+
+  if (donors.isLoading) {
+    return (
+      <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
+        <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
+      </div>
+    );
+  }
 
   return (
     <>
