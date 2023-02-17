@@ -88,4 +88,17 @@ export const carRouter = router({
         models: uniqueModels,
       };
     }),
+  deleteCar: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.car.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });

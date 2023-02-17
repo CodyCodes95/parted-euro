@@ -20,9 +20,13 @@ const Cars: NextPage = () => {
   const error = (message: string) => toast.error(message);
 
   const cars = trpc.cars.getAll.useQuery();
+  const deleteCar = trpc.cars.deleteCar.useMutation();
 
-  const deleteCar = () => {
-    console.log("delete car");
+  const deleteCarFunction = async () => {
+    if (selectedCar) {
+      await deleteCar.mutateAsync({ id: selectedCar.id });
+      setShowDeleteModal(false);
+    }
   };
 
   const tableData = useMemo(() => cars.data, [cars.data]);
@@ -85,7 +89,7 @@ const Cars: NextPage = () => {
       </Head>
       <ToastContainer />
       <ConfirmDelete
-        deleteFunction={deleteCar}
+        deleteFunction={deleteCarFunction}
         setShowModal={setShowDeleteModal}
         showModal={showDeleteModal}
       />
