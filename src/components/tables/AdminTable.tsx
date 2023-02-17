@@ -10,14 +10,12 @@ import {
 type AdminTableProps = {
   data: any;
   columns: Array<Column<any>>;
-  setSelectedRows: (selectedRows: any) => void;
   id: string;
 };
 
 const AdminTable: React.FC<AdminTableProps> = ({
   data,
   columns,
-  setSelectedRows,
   id,
 }) => {
   const {
@@ -34,46 +32,17 @@ const AdminTable: React.FC<AdminTableProps> = ({
     previousPage,
     setPageSize,
     gotoPage,
-    selectedFlatRows,
-    state: { pageIndex, pageSize, selectedRowIds },
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
+      initialState: {pageSize: 15}
     },
     useSortBy,
     usePagination,
     useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          Cell: ({ row }) => (
-            <div>
-              <input type="checkbox" {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    }
   );
-
-  useEffect(() => {
-    if (selectedFlatRows) {
-      setSelectedRows((prev:any) => {
-        const newSelectedRows = selectedFlatRows.map(
-          (row: any) => row.original[id]
-        );
-        return newSelectedRows;
-      });
-    }
-  }, [selectedFlatRows]);
 
   return (
     <div>
@@ -131,7 +100,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            1-{page.length}
+            {1 + (pageIndex * pageSize)}-{page.length + (pageIndex * pageSize)}
           </span>{" "}
           of{" "}
           <span className="font-semibold text-gray-900 dark:text-white">

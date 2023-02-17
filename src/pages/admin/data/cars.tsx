@@ -4,22 +4,26 @@ import { useEffect, useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
-import AddPart from "../../../components/parts/AddPart";
-import InventoryTable from "../../../components/tables/InventoryTable";
-import AddPartDetails from "../../../components/parts/AddPartDetails";
-import { Column } from "react-table";
+import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import AddCar from "../../../components/cars/AddCar";
+import loader from "../../../../public/loader.svg";
+import ConfirmDelete from "../../../components/modals/ConfirmDelete";
+import type { Car } from "@prisma/client";
 
 const Cars: NextPage = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([])
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
   const cars = trpc.cars.getAll.useQuery();
+
+  const deleteCar = () => {
+    console.log("delete car");
+  };
 
   const tableData = useMemo(() => cars.data, [cars.data]);
 
@@ -41,13 +45,37 @@ const Cars: NextPage = () => {
         Header: "Body",
         accessor: "body",
       },
+      {
+        Header: "Edit Car",
+        accessor: (d: Car) => (
+          <button
+            onClick={() => {
+              setSelectedCar(d);
+              setShowModal(true);
+            }}
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit Car
+          </button>
+        ),
+      },
+      {
+        Header: "Delete Car",
+        accessor: (d: Car) => (
+          <button
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => {
+              setSelectedCar(d);
+              setShowDeleteModal(true);
+            }}
+          >
+            Delete Car
+          </button>
+        ),
+      },
     ],
     []
   );
-
-  useEffect(() => {
-    console.log(selectedRows)
-  }, [selectedRows])
 
   return (
     <>
@@ -56,9 +84,15 @@ const Cars: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ToastContainer />
+      <ConfirmDelete
+        deleteFunction={deleteCar}
+        setShowModal={setShowDeleteModal}
+        showModal={showDeleteModal}
+      />
       <main className="m-20 flex min-h-screen flex-col bg-white">
         {showModal ? (
           <AddCar
+            car={selectedCar}
             success={success}
             error={error}
             showModal={showModal}
@@ -67,79 +101,15 @@ const Cars: NextPage = () => {
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
-            {/* <button
-              onClick={() => setShowActionMenu(!showActionMenu)}
-              data-dropdown-toggle="dropdownAction"
-              className="m-2 inline-flex items-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-              type="button"
-            >
-              <span className="sr-only">Action button</span>
-              Action
-              <svg
-                className="ml-2 h-3 w-3"
-                aria-hidden="true"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button> */}
             <button
               className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setSelectedCar(null);
+                setShowModal(true);
+              }}
             >
-              Add Part
+              Add Car
             </button>
-            <div
-              className={`z-10 ${
-                showActionMenu ? "" : "hidden"
-              } absolute w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700`}
-            >
-              <ul
-                className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownActionButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Reward
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Promote
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Activate account
-                  </a>
-                </li>
-              </ul>
-              <div className="py-1">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Delete User
-                </a>
-              </div>
-            </div>
           </div>
           <label className="sr-only">Search</label>
           <div className="relative">
@@ -167,9 +137,11 @@ const Cars: NextPage = () => {
           </div>
         </div>
         {cars.isLoading ? (
-          <p>Loading</p>
+          <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
+            <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
+          </div>
         ) : (
-          <AdminTable setSelectedRows={setSelectedRows} id={"id"} columns={columns} data={cars.data} />
+          <AdminTable id={"id"} columns={columns} data={cars.data} />
         )}
       </main>
     </>

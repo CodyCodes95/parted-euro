@@ -2,13 +2,14 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import FormSection from "../FormSection";
 import ModalBackDrop from "../modals/ModalBackdrop";
-import { Car } from "@prisma/client";
+import type { Car } from "@prisma/client";
 
 interface AddCarProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
+  car?: Car | null;
 }
 
 const AddCar: React.FC<AddCarProps> = ({
@@ -16,13 +17,14 @@ const AddCar: React.FC<AddCarProps> = ({
   setShowModal,
   success,
   error,
+  car,
 }) => {
-  const [make, setMake] = useState<string>("BMW");
-  const [series, setSeries] = useState<string>("");
-  const [generation, setGeneration] = useState<string>("");
-  const [model, setModel] = useState<string>("");
+  const [make, setMake] = useState<string>(car?.make || "BMW");
+  const [series, setSeries] = useState<string>(car?.series || "");
+  const [generation, setGeneration] = useState<string>(car?.generation || "");
+  const [model, setModel] = useState<string>(car?.model || "");
   const [showBody, setShowBody] = useState<boolean>(false);
-  const [body, setBody] = useState<string>("");
+  const [body, setBody] = useState<string>(car?.body || "");
 
   const cars = trpc.cars.getAll.useQuery();
   const saveCar = trpc.cars.createCar.useMutation();

@@ -1,4 +1,4 @@
-import { Image, Listing, Part, PartDetail } from "@prisma/client";
+import { Listing} from "@prisma/client";
 import { useMemo, useState } from "react";
 import { Column, usePagination, useSortBy, useTable } from "react-table";
 import { trpc } from "../../utils/trpc";
