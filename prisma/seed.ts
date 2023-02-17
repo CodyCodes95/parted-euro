@@ -1,57 +1,57 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-  const cars = [
-    {
-      make: "BMW",
-      series: "1 Series",
-      generation: "E87",
-      models: ["116i", "118i", "120i", "130i", "M135i"],
-    },
-    {
-      make: "BMW",
-      series: "1 Series",
-      generation: "F20/F21",
-      models: ["116i", "118i", "120i", "125i", "M135i", "M140i"],
-    },
-    {
-      make: "BMW",
-      series: "2 Series",
-      generation: "F22/F23",
-      models: ["218i", "220i", "228i", "M235i", "M240i"],
-    },
-    {
-      make: "BMW",
-      series: "2 Series",
-      generation: "F87",
-      models: ["M2"],
-    },
-    {
-      make: "BMW",
-      series: "2 Series",
-      generation: "F44",
-      models: ["218i", "220i", "M235i"],
-    },
-    {
-      make: "BMW",
-      series: "2 Series",
-      generation: "G42",
-      models: ["220i", "M240i"],
-    },
-  ];
+  // const cars = [
+  //   {
+  //     make: "BMW",
+  //     series: "1 Series",
+  //     generation: "E87",
+  //     models: ["116i", "118i", "120i", "130i", "M135i"],
+  //   },
+  //   {
+  //     make: "BMW",
+  //     series: "1 Series",
+  //     generation: "F20/F21",
+  //     models: ["116i", "118i", "120i", "125i", "M135i", "M140i"],
+  //   },
+  //   {
+  //     make: "BMW",
+  //     series: "2 Series",
+  //     generation: "F22/F23",
+  //     models: ["218i", "220i", "228i", "M235i", "M240i"],
+  //   },
+  //   {
+  //     make: "BMW",
+  //     series: "2 Series",
+  //     generation: "F87",
+  //     models: ["M2"],
+  //   },
+  //   {
+  //     make: "BMW",
+  //     series: "2 Series",
+  //     generation: "F44",
+  //     models: ["218i", "220i", "M235i"],
+  //   },
+  //   {
+  //     make: "BMW",
+  //     series: "2 Series",
+  //     generation: "G42",
+  //     models: ["220i", "M240i"],
+  //   },
+  // ];
 
-  cars.map(async (car: any) => {
-    return car.models.map(async (model: any) => {
-      return await prisma.car.create({
-        data: {
-          make: car.make,
-          series: car.series,
-          generation: car.generation,
-          model: model,
-        },
-      });
-    });
-  });
+  // cars.map(async (car: any) => {
+  //   return car.models.map(async (model: any) => {
+  //     return await prisma.car.create({
+  //       data: {
+  //         make: car.make,
+  //         series: car.series,
+  //         generation: car.generation,
+  //         model: model,
+  //       },
+  //     });
+  //   });
+  // });
 
   // const cars = await prisma.car.createMany({
   //   data: [

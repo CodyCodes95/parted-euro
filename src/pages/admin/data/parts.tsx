@@ -5,15 +5,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
 import AddPartDetails from "../../../components/parts/AddPartDetails";
-import { Column } from "react-table";
+import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/parts/EditPartDetails";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selection, setSelection] = useState<any>(null);
@@ -50,10 +48,23 @@ const Inventory: NextPage = () => {
           <button
             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
             onClick={() => {
-              setSelection(d)
-              setShowEditModal(true)
-            }
-            }
+              setSelection(d);
+              setShowEditModal(true);
+            }}
+          >
+            Edit
+          </button>
+        ),
+      },
+      {
+        Header: "Delete",
+        accessor: (d) => (
+          <button
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              setSelection(d);
+              setShowConfirmDelete(true);
+            }}
           >
             Edit
           </button>
@@ -64,10 +75,7 @@ const Inventory: NextPage = () => {
   );
 
   const deleteSelections = async () => {
-    const deletePromises = selectedRows.map((row) =>
-      deletePart.mutateAsync({ partNo: row })
-    );
-    await Promise.all(deletePromises);
+    console.log("FIX THIS");
   };
 
   return (
@@ -104,7 +112,6 @@ const Inventory: NextPage = () => {
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
-           
             <button
               className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               onClick={() => setShowModal(true)}
@@ -140,12 +147,7 @@ const Inventory: NextPage = () => {
         {parts.isLoading ? (
           <p>Loading</p>
         ) : (
-          <AdminTable
-            id={"partNo"}
-            columns={columns}
-            setSelectedRows={setSelectedRows}
-            data={parts.data}
-          />
+          <AdminTable id={"partNo"} columns={columns} data={parts.data} />
         )}
       </main>
     </>
