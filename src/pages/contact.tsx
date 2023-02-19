@@ -34,14 +34,13 @@ const contact: NextPage = () => {
           <Paragraph>Open via Appointment only.</Paragraph>
           <Paragraph>Monday to Friday</Paragraph>
           <Paragraph>8:30am - 5:30pm</Paragraph>
-          <Paragraph>Saturday</Paragraph>
           <BoldPara>Address:</BoldPara>
           <Paragraph>Rushdale Park</Paragraph>
           <Paragraph>Unit 2/26 Rushdale Street,</Paragraph>
           <Paragraph>Knoxfield, 3180</Paragraph>
           <Paragraph>Victoria, Australia</Paragraph>
           <Paragraph>
-            (Unit 2 is located in the first left of the business park)
+            (Unit 2 is located on the first left of the business park)
           </Paragraph>
         </div>
       </div>
