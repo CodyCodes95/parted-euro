@@ -83,6 +83,11 @@ export const partRouter = router({
       },
     });
   }),
+  deletePart: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.part.delete({ where: { id: input.id } });
+    }),
   // getAllWithCars: publicProcedure.query(async({ ctx }) => {
   //   const parts = await ctx.prisma.part.findMany();
   //   let promises = parts.map((part:any) => {

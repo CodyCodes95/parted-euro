@@ -7,17 +7,80 @@ import { trpc } from "../../utils/trpc";
 import AddPart from "../../components/parts/AddPart";
 import InventoryTable from "../../components/tables/InventoryTable";
 import loader from "../../../public/loader.svg";
+import type { Column } from "react-table";
+import AdminTable from "../../components/tables/AdminTable";
+import type { Part } from "@prisma/client";
+import ConfirmDelete from "../../components/modals/ConfirmDelete";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
+  const [selected, setSelected] = useState<Part | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
   const parts = trpc.parts.getAll.useQuery();
+  const deletePart = trpc.parts.deletePart.useMutation();
 
-  const tableData = useMemo(() => parts.data, [parts.data]);
+  const columns = useMemo<Array<Column<any>>>(
+    () => [
+      {
+        Header: "Part",
+        accessor: "partDetails.name",
+      },
+      {
+        Header: "Partno",
+        accessor: "partDetails.partNo",
+      },
+      {
+        Header: "Location",
+        accessor: "inventoryLocation.name",
+      },
+      {
+        Header: "Variant",
+        accessor: "variant",
+      },
+      // {
+      //   Header: "Edit",
+      //   accessor: (d: Part) => (
+      //     <button
+      //       onClick={() => {
+      //         setSelected(d);
+      //         setShowModal(true);
+      //       }}
+      //       className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      //     >
+      //       Edit Car
+      //     </button>
+      //   ),
+      // },
+      {
+        Header: "Delete",
+        accessor: (d: Part) => (
+          <button
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => {
+              setSelected(d);
+              setShowDeleteModal(true);
+            }}
+          >
+            Delete Part
+          </button>
+        ),
+      },
+    ],
+    []
+  );
+
+  const deletePartFunc = async () => {
+    if (!selected) return;
+    await deletePart.mutateAsync({ id: selected.id });
+    success("Part deleted successfully");
+    setShowDeleteModal(false);
+    setSelected(null);
+  };
 
   if (parts.isLoading) {
     return (
@@ -41,8 +104,14 @@ const Inventory: NextPage = () => {
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+            part={selected}
           />
         ) : null}
+        <ConfirmDelete
+          deleteFunction={deletePartFunc}
+          setShowModal={setShowDeleteModal}
+          showModal={showDeleteModal}
+        />
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
             <button
@@ -80,7 +149,7 @@ const Inventory: NextPage = () => {
         {parts.isLoading ? (
           <p>Loading</p>
         ) : (
-          <InventoryTable data={parts.data} />
+          <AdminTable columns={columns} id={"partNo"} data={parts.data} />
         )}
       </main>
     </>

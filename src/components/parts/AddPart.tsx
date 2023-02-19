@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
-import Select, { MultiValue, SingleValue } from "react-select";
-import type { Car, Donor, InventoryLocations } from "@prisma/client";
+import Select from "react-select";
+import type { Car, Donor, InventoryLocations, Part } from "@prisma/client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +12,7 @@ interface AddPartProps {
   donorVin?: string;
   success: (message: string) => void;
   error: (message: string) => void;
+  part: Part | null;
 }
 
 interface Options {
@@ -30,16 +31,17 @@ const AddPart: React.FC<AddPartProps> = ({
   success,
   error,
   donorVin,
+  part
 }) => {
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
   const [partDetailsId, setPartDetailsId] = useState<string>("");
-  const [inventoryLocation, setInventoryLocation] = useState<string>("");
-  const [donor, setDonor] = useState<string>(donorVin || "");
+  const [inventoryLocation, setInventoryLocation] = useState<string>(part?.inventoryLocationId || "");
+  const [donor, setDonor] = useState<string>(part?.donorVin || donorVin || "");
   const [addInventoryLocation, setAddInventoryLocation] =
     useState<boolean>(false);
   const [newInventoryLocation, setNewInventoryLocation] = useState<string>("");
-  const [variant, setVariant] = useState<string>("");
+  const [variant, setVariant] = useState<string>(part?.variant || "");
   const [addParts, setAddParts] = useState<boolean>(false);
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
@@ -119,15 +121,13 @@ const AddPart: React.FC<AddPartProps> = ({
       return error("Please select at least one part");
     }
     const savePartFunc = await savePart.mutateAsync({
-        partDetailsId,
-        donorVin: donorVin || donor,
-        inventoryLocationId: inventoryLocation,
-        variant: variant || undefined,
-      });
+      partDetailsId,
+      donorVin: donorVin || donor,
+      inventoryLocationId: inventoryLocation,
+      variant: variant || undefined,
+    });
     setShowModal(false);
-    success(
-      `${partNo} successfully added to donor ${donorVin}"`
-    );
+    success(`${partNo} successfully added part to donor ${donorVin || donor}"`);
   };
 
   const savePartDetails = async () => {
