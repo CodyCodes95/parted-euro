@@ -12,7 +12,7 @@ interface AddPartProps {
   donorVin?: string;
   success: (message: string) => void;
   error: (message: string) => void;
-  part: Part | null;
+  part?: Part | null;
 }
 
 interface Options {

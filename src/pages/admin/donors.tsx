@@ -251,6 +251,7 @@ const Donors: NextPage = () => {
             error={error}
             showModal={showPartModal}
             setShowModal={setShowPartModal}
+            
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
