@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import AddPart from "../../components/parts/AddPart";
-import InventoryTable from "../../components/tables/InventoryTable";
 import loader from "../../../public/loader.svg";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";

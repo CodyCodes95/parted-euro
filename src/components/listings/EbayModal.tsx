@@ -11,13 +11,14 @@ interface EbayModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
-  listing: Listing & {
-    parts: Part &
-      {
-        partDetails: PartDetail;
-      }[];
-    images: Image[];
-  };
+  // listing: Listing & {
+  //   parts: Part &
+  //     {
+  //       partDetails: PartDetail;
+  //     }[];
+  //   images: Image[];
+  // };
+  listing: any
 }
 
 const EbayModal: React.FC<EbayModalProps> = ({

@@ -12,6 +12,7 @@ import loader from "../../../../public/loader.svg";
 import AdminTable from "../../../components/tables/AdminTable";
 import { Column } from "react-table";
 import { Listing } from "@prisma/client";
+import EbayModal from "../../../components/listings/EbayModal";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const Listings: NextPage = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState<Listing | null>(null);
+  const [showEbayModal, setShowEbayModal] = useState(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -48,7 +50,7 @@ const Listings: NextPage = () => {
            ) : (
              <button
                onClick={() => {
-                 setShowModal(true);
+                 setShowEbayModal(true);
                  setSelected(d);
                }}
                className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
@@ -96,6 +98,15 @@ const Listings: NextPage = () => {
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+          />
+        ) : null}
+        {showEbayModal ? (
+          <EbayModal
+            success={success}
+            error={error}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            listing={selected}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

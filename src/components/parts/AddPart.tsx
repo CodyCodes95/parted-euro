@@ -351,14 +351,13 @@ const AddPart: React.FC<AddPartProps> = ({
                 ) : (
                   <>
                     <Select
-                      placeholder="Select one or more parts"
+                      placeholder="Select a part"
                       options={partOptions}
                       defaultValue={
                         partDetailsId
                           ? { value: partDetailsId, label: name }
                           : ""
                       }
-                      closeMenuOnSelect={false}
                       className="w-[90%]"
                       onChange={(e: any) => setPartDetailsId(e.value)}
                     />
