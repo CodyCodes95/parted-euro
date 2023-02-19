@@ -67,7 +67,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       title: title,
       price: price,
       description: description,
-      images: listing.images.map((image) => image.url),
+      images: listing.images.map((image:any) => image.url),
       condition: condition,
       conditionDescription: ebayCondition.value,
       quantity: 1,
