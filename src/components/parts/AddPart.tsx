@@ -2,7 +2,7 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select, { MultiValue, SingleValue } from "react-select";
-import { Donor, InventoryLocations } from "@prisma/client";
+import type { Car, Donor, InventoryLocations } from "@prisma/client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +19,11 @@ interface Options {
   value: string;
 }
 
+interface NestedOptions {
+  label: string;
+  options: Array<Options>;
+}
+
 const AddPart: React.FC<AddPartProps> = ({
   showModal,
   setShowModal,
@@ -28,13 +33,18 @@ const AddPart: React.FC<AddPartProps> = ({
 }) => {
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
-  const [partDetailsIds, setPartDetailsIds] = useState<Array<string>>([]);
+  const [partDetailsId, setPartDetailsId] = useState<string>("");
   const [inventoryLocation, setInventoryLocation] = useState<string>("");
   const [donor, setDonor] = useState<string>(donorVin || "");
   const [addInventoryLocation, setAddInventoryLocation] =
     useState<boolean>(false);
   const [newInventoryLocation, setNewInventoryLocation] = useState<string>("");
   const [variant, setVariant] = useState<string>("");
+  const [addParts, setAddParts] = useState<boolean>(false);
+  const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
+  const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
+  const [partType, setPartType] = useState<string>("");
+  const [partNo, setPartNo] = useState<string>("");
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -53,31 +63,90 @@ const AddPart: React.FC<AddPartProps> = ({
     },
   });
 
+  const cars = trpc.cars.getAll.useQuery(undefined, {
+    onSuccess: (data) => {
+      setCarOptions([]);
+      data.forEach((car: Car) => {
+        setCarOptions((prevState: Array<NestedOptions>) => {
+          if (
+            prevState.some((group: NestedOptions) => group.label === car.series)
+          ) {
+            return prevState.map((group: NestedOptions) => {
+              if (group.label === car.series) {
+                group.options.push({
+                  label: `${car.generation} ${car.model} ${car.body || ""}`,
+                  value: car.id,
+                });
+              }
+              return group;
+            });
+          } else {
+            return [
+              ...prevState,
+              {
+                label: car.series,
+                options: [
+                  {
+                    label: `${car.generation} ${car.model} ${car.body || ""}`,
+                    value: car.id,
+                  },
+                ],
+              },
+            ];
+          }
+        });
+      });
+    },
+  });
+
   const donors = trpc.donors.getAll.useQuery();
 
   const inventoryLocations = trpc.inventoryLocations.getAll.useQuery();
 
   const savePart = trpc.parts.createPart.useMutation();
 
+  const savePartDetail = trpc.parts.createPartDetail.useMutation();
+
   const saveInventoryLocation =
     trpc.inventoryLocations.createInventoryLocation.useMutation();
 
+  const partTypes = trpc.partDetails.getAllPartTypes.useQuery(undefined, {
+    enabled: addParts,
+  });
+
   const onSave = async () => {
-    if (partDetailsIds.length === 0) {
+    if (partDetailsId.length === 0) {
       return error("Please select at least one part");
     }
-    const savePartPromises = partDetailsIds.map((id) => {
-      return savePart.mutateAsync({
-        partDetailsId: id,
+    const savePartFunc = await savePart.mutateAsync({
+        partDetailsId,
         donorVin: donorVin || donor,
         inventoryLocationId: inventoryLocation,
         variant: variant || undefined,
       });
-    });
-    await Promise.all(savePartPromises);
     setShowModal(false);
     success(
-      `${savePartPromises.length} parts successfully added to donor ${donorVin}"`
+      `${partNo} successfully added to donor ${donorVin}"`
+    );
+  };
+
+  const savePartDetails = async () => {
+    const result = await savePartDetail.mutateAsync(
+      {
+        partNo: partNo,
+        name: name,
+        cars: compatibleCars,
+        partTypeId: partType,
+      },
+      {
+        onSuccess: (data) => {
+          setAddParts(false);
+          setPartDetailsId(data.partNo);
+        },
+        onError: (err) => {
+          error(err.message);
+        },
+      }
     );
   };
 
@@ -90,7 +159,6 @@ const AddPart: React.FC<AddPartProps> = ({
       name: newInventoryLocation,
     });
     setInventoryLocation(res.id);
-    setNewInventoryLocation("");
     setAddInventoryLocation(false);
   };
 
@@ -184,8 +252,13 @@ const AddPart: React.FC<AddPartProps> = ({
                 ) : (
                   <>
                     <Select
-                      placeholder={
-                        inventoryLocation || "Select an inventory location"
+                      defaultValue={
+                        inventoryLocation
+                          ? {
+                              label: newInventoryLocation,
+                              value: inventoryLocation,
+                            }
+                          : "Select an inventory location"
                       }
                       className="basic-multi-select w-[90%]"
                       classNamePrefix="select"
@@ -215,26 +288,111 @@ const AddPart: React.FC<AddPartProps> = ({
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Parts
               </label>
-              <Select
-                isMulti={true}
-                placeholder="Select one or more parts"
-                options={partOptions}
-                closeMenuOnSelect={false}
-                onChange={(e: any) =>
-                  setPartDetailsIds(e.map((part: Options) => part.value))
-                }
-              />
+              <div className="flex w-full justify-between">
+                {addParts ? (
+                  <div className="w-full">
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Part No.
+                      </label>
+                      <input
+                        value={partNo}
+                        onChange={(e) => setPartNo(e.target.value)}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Part Category
+                      </label>
+                      <Select
+                        onChange={(e: any) => {
+                          setPartType(e.value);
+                        }}
+                        options={partTypes.data?.map((partType) => {
+                          return {
+                            label: partType.name,
+                            value: partType.id,
+                          };
+                        })}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Compatible Cars
+                      </label>
+                      <Select
+                        onChange={(e: any) => {
+                          setCompatibleCars(e.map((car: Options) => car.value));
+                        }}
+                        isMulti
+                        closeMenuOnSelect={false}
+                        options={carOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Select
+                      placeholder="Select one or more parts"
+                      options={partOptions}
+                      defaultValue={
+                        partDetailsId
+                          ? { value: partDetailsId, label: name }
+                          : ""
+                      }
+                      closeMenuOnSelect={false}
+                      className="w-[90%]"
+                      onChange={(e: any) => setPartDetailsId(e.value)}
+                    />
+                    <button
+                      onClick={() => setAddParts(true)}
+                      className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      +
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-            <button
-              onClick={onSave}
-              data-modal-toggle="defaultModal"
-              type="button"
-              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Save
-            </button>
+            {addParts ? (
+              <button
+                onClick={savePartDetails}
+                data-modal-toggle="defaultModal"
+                type="button"
+                className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Save Part Details
+              </button>
+            ) : (
+              <button
+                onClick={onSave}
+                data-modal-toggle="defaultModal"
+                type="button"
+                className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Save
+              </button>
+            )}
           </div>
         </div>
       </div>

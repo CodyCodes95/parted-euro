@@ -10,12 +10,13 @@ import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/parts/EditPartDetails";
 import loader from "../../../../public/loader.svg";
+import type { PartDetail } from "@prisma/client";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selection, setSelection] = useState<any>(null);
+  const [selectedPart, setSelectedPart] = useState<PartDetail | null>(null);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -49,7 +50,7 @@ const Inventory: NextPage = () => {
           <button
             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
             onClick={() => {
-              setSelection(d);
+              setSelectedPart(d);
               setShowEditModal(true);
             }}
           >
@@ -63,11 +64,11 @@ const Inventory: NextPage = () => {
           <button
             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
             onClick={() => {
-              setSelection(d);
+              setSelectedPart(d);
               setShowConfirmDelete(true);
             }}
           >
-            Edit
+            Delete
           </button>
         ),
       },
@@ -75,8 +76,11 @@ const Inventory: NextPage = () => {
     []
   );
 
-  const deleteSelections = async () => {
-    console.log("FIX THIS");
+  const deletePartDetailFunc = async () => {
+    if (selectedPart) {
+      await deletePart.mutateAsync({ partNo: selectedPart.partNo });
+      setShowConfirmDelete(false);
+    }
   };
 
   return (
@@ -91,7 +95,7 @@ const Inventory: NextPage = () => {
           <ConfirmDelete
             showModal={showConfirmDelete}
             setShowModal={setShowConfirmDelete}
-            deleteFunction={deleteSelections}
+            deleteFunction={deletePartDetailFunc}
           />
         ) : null}
         {showModal ? (
@@ -108,7 +112,7 @@ const Inventory: NextPage = () => {
             error={error}
             showModal={showEditModal}
             setShowModal={setShowEditModal}
-            selection={selection}
+            selection={selectedPart}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

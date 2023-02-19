@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Car } from "@prisma/client";
+import type { Car } from "@prisma/client";
 
 interface AddPartProps {
   showModal: boolean;
@@ -27,11 +27,11 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   error,
   success,
 }) => {
-  const [partNo, setPartNo] = React.useState<string>("");
-  const [name, setName] = React.useState<string>("");
-  const [compatibleCars, setCompatibleCars] = React.useState<Array<string>>([]);
-  const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
-  const [partType, setPartType] = React.useState<string>("");
+  const [partNo, setPartNo] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
+  const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
+  const [partType, setPartType] = useState<string>("");
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
@@ -106,7 +106,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       }`}
     >
       <ModalBackDrop setShowModal={setShowModal} />
-      <div className="relative h-full w-full max-w-2xl md:h-auto top">
+      <div className="top relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">

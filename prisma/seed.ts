@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
+  // const deletePart = await prisma.part.deleteMany();
   // const cars = [
   //   {
   //     make: "BMW",
