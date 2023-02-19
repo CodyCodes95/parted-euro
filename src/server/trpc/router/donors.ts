@@ -142,6 +142,7 @@ export const donorRouter = router({
             series: true,
             generation: true,
             model: true,
+            id: true
           },
         },
         cost: true,
@@ -175,4 +176,28 @@ export const donorRouter = router({
         },
       });
     }),
+  updateDonor: adminProcedure
+    .input(
+      z.object({
+        vin: z.string(),
+        cost: z.number().min(0).max(100000000),
+        carId: z.string().min(3),
+        year: z.number().min(1930).max(currentYear),
+        mileage: z.number().min(0).max(100000000),
+      })
+  )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.donor.update({
+        where: {
+          vin: input.vin,
+        },
+        data: {
+          cost: input.cost,
+          carId: input.carId,
+          year: input.year,
+          mileage: input.mileage,
+        },
+      });
+    }
+  ),
 });

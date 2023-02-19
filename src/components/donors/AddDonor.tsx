@@ -2,7 +2,8 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Car, Donor } from "@prisma/client";
+import type { Car } from "@prisma/client";
+import { Donor } from "@prisma/client";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 
@@ -11,7 +12,7 @@ interface AddDonorProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
-  donor: Donor | null;
+  donor: any | null;
 }
 
 interface ISelectOptions {
@@ -24,11 +25,11 @@ const AddDonor: React.FC<AddDonorProps> = ({
   setShowModal,
   success,
   error,
-  donor
+  donor,
 }) => {
   const [vin, setVin] = useState<string>(donor?.vin || "");
   const [cost, setCost] = useState<number>(donor?.cost || 0);
-  const [carId, setCarId] = useState<string>(donor?.carId || "");
+  const [carId, setCarId] = useState<string>(donor?.car.id || "");
   const [year, setYear] = useState<number>(donor?.year || 0);
   const [mileage, setMileage] = useState<number>(donor?.mileage || 0);
   const [options, setOptions] = useState<ISelectOptions[]>([]);
@@ -68,13 +69,41 @@ const AddDonor: React.FC<AddDonorProps> = ({
     },
     onError: (err: any) => {
       error(err.message);
-    }
+    },
   });
   const saveDonor = trpc.donors.createDonor.useMutation();
+  const updateDonor = trpc.donors.updateDonor.useMutation();
   const uploadImage = trpc.listings.uploadListingImage.useMutation();
   const createImageRecord = trpc.images.createImageDonorRecord.useMutation();
 
-  const onSave = async (exit: boolean) => {
+  const onSave = async () => {
+    if (donor) {
+      console.log(donor)
+      const result = await updateDonor.mutateAsync(
+        {
+          vin: vin,
+          cost: Math.round(cost),
+          carId: carId,
+          year: year,
+          mileage: mileage,
+        },
+        {
+          onError: (err: any) => {
+            error(err.message);
+          },
+        }
+      );
+      success(`Donor ${vin} successfully updated`);
+      setMileage(0);
+      setVin("");
+      setCost(0);
+      setCarId("");
+      setYear(0);
+      setImages([]);
+      setShowModal(false);
+      return;
+    }
+
     const result = await saveDonor.mutateAsync(
       {
         vin: vin,
@@ -86,7 +115,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       {
         onError: (err: any) => {
           error(err.message);
-        }
+        },
       }
     );
     const donorVin = result.vin;
@@ -107,9 +136,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
     setCarId("");
     setYear(0);
     setImages([]);
-    if (exit) {
-      setShowModal(false);
-    }
+    setShowModal(false);
   };
 
   const handleImageAttach = () => {
@@ -167,6 +194,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
               </label>
               <Select
                 onChange={(e: any) => setCarId(e.value)}
+                isDisabled={carId ? true : false}
                 options={options}
                 className="basic-multi-select"
                 classNamePrefix="select"
@@ -177,6 +205,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
                 VIN
               </label>
               <input
+                disabled={donor ? true : false}
                 type="text"
                 value={vin}
                 onChange={(e) => setVin(e.target.value)}
@@ -224,36 +253,28 @@ const AddDonor: React.FC<AddDonorProps> = ({
               />
             </div>
             {donor ? null : (
-            <div className="flex items-center justify-between">
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <input
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  multiple={true}
-                  onChange={handleImageAttach}
-                />
-                <PhotoCamera />
-              </IconButton>
-              <p>{images.length} Photos attached</p>
-            </div>
+              <div className="flex items-center justify-between">
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
+                >
+                  <input
+                    hidden
+                    accept="image/*"
+                    type="file"
+                    multiple={true}
+                    onChange={handleImageAttach}
+                  />
+                  <PhotoCamera />
+                </IconButton>
+                <p>{images.length} Photos attached</p>
+              </div>
             )}
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
-              onClick={() => onSave(true)}
-              data-modal-toggle="defaultModal"
-              type="button"
-              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Save and Exit
-            </button>
-            <button
-              onClick={() => onSave(false)}
+              onClick={() => onSave()}
               data-modal-toggle="defaultModal"
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

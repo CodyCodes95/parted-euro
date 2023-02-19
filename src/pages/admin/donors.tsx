@@ -202,14 +202,12 @@ const Donors: NextPage = () => {
       await deleteDonor.mutateAsync(
         { vin: selectedDonor.vin },
         {
-          onSuccess: () => {
-            success("Donor deleted successfully");
-          },
           onError: (err) => {
             error(err.message);
           },
         }
       );
+      success("Donor deleted successfully");
     }
   };
 
@@ -251,7 +249,6 @@ const Donors: NextPage = () => {
             error={error}
             showModal={showPartModal}
             setShowModal={setShowPartModal}
-            
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
@@ -291,11 +288,7 @@ const Donors: NextPage = () => {
             />
           </div>
         </div>
-        {donors.isLoading ? (
-          <p>Loading</p>
-        ) : (
-          <AdminTable id={"id"} columns={columns} data={donors.data} />
-        )}
+        <AdminTable id={"id"} columns={columns} data={donors.data} />
       </main>
     </>
   );

@@ -9,6 +9,9 @@ import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import loader from "../../../../public/loader.svg";
+import AdminTable from "../../../components/tables/AdminTable";
+import { Column } from "react-table";
+import { Listing } from "@prisma/client";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -16,7 +19,7 @@ const Listings: NextPage = () => {
   const { code } = router.query;
 
   const [showModal, setShowModal] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
+  const [selected, setSelected] = useState<Listing | null>(null);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -24,9 +27,43 @@ const Listings: NextPage = () => {
   const listings = trpc.listings.getAllAdmin.useQuery();
   const ebayLogin = trpc.ebay.authenticate.useMutation();
   const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
-  // const offers = trpc.ebay.getOffers.useQuery();
 
-  const tableData = useMemo(() => listings.data, [listings.data]);
+   const columns = useMemo<Array<Column<any>>>(
+     () => [
+       {
+         Header: "Title",
+         accessor: "title",
+       },
+       {
+         Header: "Price",
+         accessor: "price",
+       },
+       {
+         Header: "Listed On Ebay",
+         accessor: (d) =>
+           d.ebayListing ? (
+             <button className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+               View Ebay Listing
+             </button>
+           ) : (
+             <button
+               onClick={() => {
+                 setShowModal(true);
+                 setSelected(d);
+               }}
+               className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+             >
+               List on eBay
+             </button>
+           ),
+       },
+       {
+         Header: "Listed On",
+         accessor: (d) => d.createdAt.toLocaleString(),
+       },
+     ],
+     []
+   );
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
@@ -100,7 +137,7 @@ const Listings: NextPage = () => {
             <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <ListingTable data={listings.data} />
+          <AdminTable id="id" columns={columns} data={listings.data} />
         )}
         <div>
           <button

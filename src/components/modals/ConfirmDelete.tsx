@@ -61,14 +61,6 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({
           </p>
           <div className="flex items-center justify-center space-x-4">
             <button
-              onClick={() => setShowModal(false)}
-              data-modal-toggle="deleteModal"
-              type="button"
-              className="focus:ring-primary-300 rounded-lg border border-gray-200 bg-white py-2 px-3 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
-            >
-              No, cancel
-            </button>
-            <button
               onClick={() => {
                 deleteFunction();
                 setShowModal(false);
@@ -77,6 +69,14 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({
               className="rounded-lg bg-red-600 py-2 px-3 text-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
             >
               Yes, Im sure
+            </button>
+            <button
+              onClick={() => setShowModal(false)}
+              data-modal-toggle="deleteModal"
+              type="button"
+              className="focus:ring-primary-300 rounded-lg border border-gray-200 bg-white py-2 px-3 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+            >
+              No, cancel
             </button>
           </div>
         </div>
