@@ -8,7 +8,7 @@ export const donorRouter = router({
     .input(
       z.object({
         vin: z.string().min(5),
-        cost: z.number().min(100).max(100000000),
+        cost: z.number().min(0).max(100000000),
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
@@ -102,10 +102,10 @@ export const donorRouter = router({
                   id: true,
                   title: true,
                   price: true,
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         },
       });
     }),
@@ -120,13 +120,13 @@ export const donorRouter = router({
       select: {
         vin: true,
         year: true,
-           imageUrl: true,
-          car: {
-            select: {
-              series: true,
-              generation: true,
-              model: true,
-            },
+        imageUrl: true,
+        car: {
+          select: {
+            series: true,
+            generation: true,
+            model: true,
+          },
         },
       },
     });
@@ -162,4 +162,17 @@ export const donorRouter = router({
       },
     });
   }),
+  deleteDonor: adminProcedure
+    .input(
+      z.object({
+        vin: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.donor.delete({
+        where: {
+          vin: input.vin,
+        },
+      });
+    }),
 });

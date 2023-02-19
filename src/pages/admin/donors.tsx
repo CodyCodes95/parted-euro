@@ -1,10 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
-import AddPartDetails from "../../components/parts/AddPartDetails";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
@@ -13,26 +12,20 @@ import { LinearProgress } from "@mui/material";
 import { formatPrice } from "../../utils/formatPrice";
 import AddPart from "../../components/parts/AddPart";
 import loader from "../../../public/loader.svg";
+import type { Donor } from "@prisma/client";
 
 const Donors: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showPartModal, setShowPartModal] = useState(false);
   const [donorVin, setDonorVin] = useState("");
+  const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
   const donors = trpc.donors.getAllDashboard.useQuery();
-  const deletePart = trpc.partDetails.deletePartDetail.useMutation({
-    onError: (err: any) => {
-      error(err.message);
-    },
-  });
-
-  const tableData = useMemo(() => donors.data, [donors.data]);
+  const deleteDonor = trpc.donors.deleteDonor.useMutation();
 
   const columns = useMemo<Array<Column<any>>>(
     () => [
@@ -172,15 +165,52 @@ const Donors: NextPage = () => {
         disableSortBy: true,
         minWidth: 100,
       },
+      {
+        Header: "Edit",
+        accessor: (d) => (
+          <button
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => {
+              setSelectedDonor(d);
+              setShowModal(true);
+            }}
+          >
+            Edit Donor
+          </button>
+        ),
+      },
+      {
+        Header: "Delete",
+        accessor: (d) => (
+          <button
+            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => {
+              setSelectedDonor(d);
+              setShowDeleteModal(true);
+            }}
+          >
+            Delete Donor
+          </button>
+        ),
+      },
     ],
     []
   );
 
-  const deleteSelections = async () => {
-    const deletePromises = selectedRows.map((row) =>
-      deletePart.mutateAsync({ partNo: row })
-    );
-    await Promise.all(deletePromises);
+  const deleteDonorFunc = async () => {
+    if (selectedDonor) {
+      await deleteDonor.mutateAsync(
+        { vin: selectedDonor.vin },
+        {
+          onSuccess: () => {
+            success("Donor deleted successfully");
+          },
+          onError: (err) => {
+            error(err.message);
+          },
+        }
+      );
+    }
   };
 
   if (donors.isLoading) {
@@ -198,11 +228,11 @@ const Donors: NextPage = () => {
       </Head>
       <ToastContainer />
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        {showConfirmDelete ? (
+        {showDeleteModal ? (
           <ConfirmDelete
-            showModal={showConfirmDelete}
-            setShowModal={setShowConfirmDelete}
-            deleteFunction={deleteSelections}
+            showModal={showDeleteModal}
+            setShowModal={setShowDeleteModal}
+            deleteFunction={deleteDonorFunc}
           />
         ) : null}
         {showModal ? (
@@ -211,6 +241,7 @@ const Donors: NextPage = () => {
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+            donor={selectedDonor}
           />
         ) : null}
         {showPartModal ? (
@@ -225,58 +256,14 @@ const Donors: NextPage = () => {
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
             <button
-              onClick={() => setShowActionMenu(!showActionMenu)}
-              data-dropdown-toggle="dropdownAction"
-              className="m-2 inline-flex items-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-              type="button"
-            >
-              <span className="sr-only">Action button</span>
-              Action
-              <svg
-                className="ml-2 h-3 w-3"
-                aria-hidden="true"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <button
               className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setSelectedDonor(null);
+                setShowModal(true);
+              }}
             >
               Add Donor
             </button>
-            <div
-              className={`z-10 ${
-                showActionMenu ? "" : "hidden"
-              } absolute w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700`}
-            >
-              <ul
-                className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownActionButton"
-              >
-                <li
-                  onClick={() => setShowModal(true)}
-                  className="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Edit Part
-                </li>
-                <li
-                  onClick={() => setShowConfirmDelete(true)}
-                  className="block cursor-pointer px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Delete Parts
-                </li>
-              </ul>
-            </div>
           </div>
           <label className="sr-only">Search</label>
           <div className="relative">
@@ -306,12 +293,7 @@ const Donors: NextPage = () => {
         {donors.isLoading ? (
           <p>Loading</p>
         ) : (
-          <AdminTable
-            id={"id"}
-            columns={columns}
-            setSelectedRows={setSelectedRows}
-            data={donors.data}
-          />
+          <AdminTable id={"id"} columns={columns} data={donors.data} />
         )}
       </main>
     </>

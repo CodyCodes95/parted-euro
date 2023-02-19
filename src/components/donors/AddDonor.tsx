@@ -2,7 +2,7 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Car } from "@prisma/client";
+import { Car, Donor } from "@prisma/client";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 
@@ -11,6 +11,7 @@ interface AddDonorProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
+  donor: Donor | null;
 }
 
 interface ISelectOptions {
@@ -23,12 +24,13 @@ const AddDonor: React.FC<AddDonorProps> = ({
   setShowModal,
   success,
   error,
+  donor
 }) => {
-  const [vin, setVin] = useState<string>("");
-  const [cost, setCost] = useState<number>(0);
-  const [carId, setCarId] = useState<string>("");
-  const [year, setYear] = useState<number>(0);
-  const [mileage, setMileage] = useState<number>(0);
+  const [vin, setVin] = useState<string>(donor?.vin || "");
+  const [cost, setCost] = useState<number>(donor?.cost || 0);
+  const [carId, setCarId] = useState<string>(donor?.carId || "");
+  const [year, setYear] = useState<number>(donor?.year || 0);
+  const [mileage, setMileage] = useState<number>(donor?.mileage || 0);
   const [options, setOptions] = useState<ISelectOptions[]>([]);
   const [images, setImages] = useState<Array<string>>([]);
 
@@ -64,6 +66,9 @@ const AddDonor: React.FC<AddDonorProps> = ({
         });
       });
     },
+    onError: (err: any) => {
+      error(err.message);
+    }
   });
   const saveDonor = trpc.donors.createDonor.useMutation();
   const uploadImage = trpc.listings.uploadListingImage.useMutation();
@@ -77,6 +82,11 @@ const AddDonor: React.FC<AddDonorProps> = ({
         carId: carId,
         year: year,
         mileage: mileage,
+      },
+      {
+        onError: (err: any) => {
+          error(err.message);
+        }
       }
     );
     const donorVin = result.vin;
@@ -182,7 +192,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
                 {/* <span className="absolute top-[100px]">$</span> */}
                 <input
                   type="number"
-                  value={cost || undefined}
+                  value={cost ?? undefined}
                   onChange={(e) => setCost(Number(e.target.value))}
                   className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
@@ -207,12 +217,13 @@ const AddDonor: React.FC<AddDonorProps> = ({
               </label>
               <input
                 type="Number"
-                value={mileage || undefined}
+                value={mileage ?? undefined}
                 onChange={(e) => setMileage(Number(e.target.value))}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
             </div>
+            {donor ? null : (
             <div className="flex items-center justify-between">
               <IconButton
                 color="primary"
@@ -230,6 +241,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
               </IconButton>
               <p>{images.length} Photos attached</p>
             </div>
+            )}
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button

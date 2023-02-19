@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
@@ -9,6 +9,7 @@ import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/parts/EditPartDetails";
+import loader from "../../../../public/loader.svg";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -145,7 +146,9 @@ const Inventory: NextPage = () => {
           </div>
         </div>
         {parts.isLoading ? (
-          <p>Loading</p>
+          <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
+            <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
+          </div>
         ) : (
           <AdminTable id={"partNo"} columns={columns} data={parts.data} />
         )}
