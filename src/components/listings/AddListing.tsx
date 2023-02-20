@@ -72,7 +72,7 @@ const AddListing: React.FC<AddListingProps> = ({
         ]);
       };
       new Compressor(file, {
-        quality: 0.5,
+        quality: 0.6,
         success(result) {
           reader.readAsDataURL(result);
         },
@@ -109,14 +109,9 @@ const AddListing: React.FC<AddListingProps> = ({
         },
       }
     );
-    const listingId = result.id;
     const imagePromises = images.map(async (image: string) => {
-      const imageRes = await uploadImage.mutateAsync({
+      return await uploadImage.mutateAsync({
         image: image,
-      });
-      return createImageRecord.mutateAsync({
-        listingId: listingId,
-        url: imageRes.url,
       });
     });
     await Promise.all([...imagePromises]);

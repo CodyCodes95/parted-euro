@@ -150,7 +150,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           ]);
         };
         new Compressor(file, {
-          quality: 0.5,
+          quality: 0.6,
           success(result) {
             reader.readAsDataURL(result);
           },

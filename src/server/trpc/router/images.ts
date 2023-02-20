@@ -8,6 +8,7 @@ export const imagesRouter = router({
     .input(
       z.object({
         image: z.string(),
+        listingId: z.string()
       })
     )
     .mutation(({ ctx, input }) => {
@@ -18,7 +19,12 @@ export const imagesRouter = router({
           // crop: "scale",
         })
         .then((res) => {
-          return res;
+          return ctx.prisma.image.create({
+            data: {
+              url: res.url,
+              listingId: input.listingId,
+            },
+          });
         });
     }),
   createImageRecord: adminProcedure
