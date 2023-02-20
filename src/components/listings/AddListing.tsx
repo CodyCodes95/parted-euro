@@ -127,6 +127,7 @@ const AddListing: React.FC<AddListingProps> = ({
     setWidth(0);
     setHeight(0);
     setImages([]);
+    
   };
 
   return (
