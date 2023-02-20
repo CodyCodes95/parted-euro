@@ -78,8 +78,8 @@ const AddListing: React.FC<AddListingProps> = ({
       };
       new Compressor(file, {
         quality: 0.6,
-        maxHeight: 711,
-        maxWidth: 400,
+        maxHeight: 1066,
+        maxWidth: 600,
         success(result) {
           reader.readAsDataURL(result);
         },
