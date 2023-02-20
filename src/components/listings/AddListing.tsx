@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
@@ -6,6 +6,7 @@ import { Input } from "@material-tailwind/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "../LoadingButton";
+import Compressor from "compressorjs";
 
 interface AddListingProps {
   showModal: boolean;
@@ -70,9 +71,18 @@ const AddListing: React.FC<AddListingProps> = ({
           onLoadEvent.target.result,
         ]);
       };
-      reader.readAsDataURL(file);
+      new Compressor(file, {
+        quality: 0.7,
+        success(result) {
+          reader.readAsDataURL(result);
+        },
+      });
     });
   };
+
+  useEffect(() => {
+    console.log(images);
+  }, [images])
 
   const onSave = async () => {
     // if (1 === 1) {
