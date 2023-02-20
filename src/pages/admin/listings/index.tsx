@@ -65,11 +65,25 @@ const Listings: NextPage = () => {
         accessor: (d) => d.createdAt.toLocaleString(),
       },
       {
+        Header: "Edit",
+        accessor: (d) => (
+          <button
+            onClick={() => {
+              setSelected(d);
+              setShowModal(true);
+            }}
+            className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          >
+            Edit
+          </button>
+        ),
+      },
+      {
         Header: "Delete",
         accessor: (d) => (
           <button
             onClick={() => {
-              const res = deleteListing.mutateAsync({id: d.id });
+              const res = deleteListing.mutateAsync({ id: d.id });
               success("Listing deleted");
             }}
             className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
@@ -124,6 +138,7 @@ const Listings: NextPage = () => {
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+            listing={selected}
           />
         ) : null}
         {showEbayModal ? (
@@ -139,7 +154,10 @@ const Listings: NextPage = () => {
           <div>
             <button
               className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setSelected(null);
+                setShowModal(true);
+              }}
             >
               Add Listing
             </button>

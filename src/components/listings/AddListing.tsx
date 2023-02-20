@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
@@ -7,12 +7,14 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "../LoadingButton";
 import Compressor from "compressorjs";
+import type { Listing } from "@prisma/client";
 
 interface AddListingProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
+  listing: Listing | null;
 }
 
 interface Options {
@@ -25,15 +27,18 @@ const AddListing: React.FC<AddListingProps> = ({
   setShowModal,
   success,
   error,
+  listing,
 }) => {
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [condition, setCondition] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  const [weight, setWeight] = useState<number>(0);
-  const [length, setLength] = useState<number>(0);
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [title, setTitle] = useState<string>(listing?.title || "");
+  const [description, setDescription] = useState<string>(
+    listing?.description || ""
+  );
+  const [condition, setCondition] = useState<string>(listing?.condition || "");
+  const [price, setPrice] = useState<number>(listing?.price || 0);
+  const [weight, setWeight] = useState<number>(listing?.weight || 0);
+  const [length, setLength] = useState<number>(listing?.length || 0);
+  const [width, setWidth] = useState<number>(listing?.width || 0);
+  const [height, setHeight] = useState<number>(listing?.height || 0);
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>([]);
   const [partOptions, setPartOptions] = useState<any>([]);
@@ -59,8 +64,8 @@ const AddListing: React.FC<AddListingProps> = ({
   });
 
   const saveListing = trpc.listings.createListing.useMutation();
-  const uploadImage = trpc.listings.uploadListingImage.useMutation();
-  const createImageRecord = trpc.images.createImageRecord.useMutation();
+  const updateListing = trpc.listings.updateListing.useMutation();
+  const uploadImage = trpc.images.uploadListingImage.useMutation();
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -81,13 +86,51 @@ const AddListing: React.FC<AddListingProps> = ({
   };
 
   const onSave = async () => {
-    // if (1 === 1) {
-    // Add some validation in here maybe???
-    //   error("AHH")
-    //   console.log("ERR")
-    //   return
-    // }
     setLoading(true);
+    if (listing) {
+      const result = await updateListing.mutateAsync(
+        {
+          id: listing.id,
+          title: title,
+          description: description,
+          condition: condition,
+          price: price,
+          weight: weight,
+          itemLength: length,
+          width: width,
+          height: height,
+        },
+        {
+          onSuccess: (listing) => {
+            console.log(listing);
+          },
+          onError: (err) => {
+            error(err.message);
+          },
+        }
+      );
+      const imagePromises = images.map(async (image: string) => {
+        return await uploadImage.mutateAsync({
+          listingId: result.id,
+          image: image,
+        });
+      });
+      await Promise.all([...imagePromises]);
+      console.log(imagePromises);
+      success("Listing updated successfully");
+      setShowModal(false);
+      setLoading(false);
+      setTitle("");
+      setDescription("");
+      setCondition("");
+      setPrice(0);
+      setWeight(0);
+      setLength(0);
+      setWidth(0);
+      setHeight(0);
+      setImages([]);
+      return;
+    }
     const result = await saveListing.mutateAsync(
       {
         title: title,
@@ -127,7 +170,6 @@ const AddListing: React.FC<AddListingProps> = ({
     setWidth(0);
     setHeight(0);
     setImages([]);
-    
   };
 
   return (
@@ -225,21 +267,23 @@ const AddListing: React.FC<AddListingProps> = ({
                 onChange={(e) => setHeight(Number(e.target.value))}
               />
             </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Parts
-              </label>
-              <Select
-                onChange={(e: any) => {
-                  setParts(e.map((part: Options) => part.value));
-                }}
-                isMulti
-                options={partOptions}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                closeMenuOnSelect={false}
-              />
-            </div>
+            {listing ? null : (
+              <div className="mb-6">
+                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                  Parts
+                </label>
+                <Select
+                  onChange={(e: any) => {
+                    setParts(e.map((part: Options) => part.value));
+                  }}
+                  isMulti
+                  options={partOptions}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  closeMenuOnSelect={false}
+                />
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <IconButton
                 color="primary"

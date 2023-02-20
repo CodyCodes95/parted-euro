@@ -73,8 +73,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   });
   const saveDonor = trpc.donors.createDonor.useMutation();
   const updateDonor = trpc.donors.updateDonor.useMutation();
-  const uploadImage = trpc.listings.uploadListingImage.useMutation();
-  const createImageRecord = trpc.images.createImageDonorRecord.useMutation();
+  const uploadImage = trpc.images.uploadDonorImage.useMutation();
 
   const onSave = async () => {
     if (donor) {
@@ -120,12 +119,9 @@ const AddDonor: React.FC<AddDonorProps> = ({
     );
     const donorVin = result.vin;
     const imagePromises = images.map(async (image: string) => {
-      const imageRes = await uploadImage.mutateAsync({
+      return await uploadImage.mutateAsync({
         image: image,
-      });
-      return createImageRecord.mutateAsync({
         donorVin: donorVin,
-        url: imageRes.url,
       });
     });
     await Promise.all(imagePromises);

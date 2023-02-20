@@ -52,6 +52,38 @@ export const listingRouter = router({
         },
       });
     }),
+  updateListing: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(3),
+        description: z.string().min(5),
+        condition: z.string().min(3),
+        price: z.number().min(100).max(100000000),
+        weight: z.number(),
+        itemLength: z.number(),
+        width: z.number(),
+        height: z.number(),
+      })
+  )
+    .mutation(async ({ ctx, input }) => {
+      const listing = await ctx.prisma.listing.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.title,
+          description: input.description,
+          condition: input.condition,
+          price: input.price,
+          weight: input.weight,
+          length: input.itemLength,
+          width: input.width,
+          height: input.height,
+        },
+      });
+      return listing;
+    }),
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     const listings = await ctx.prisma.listing.findMany({
       include: {
