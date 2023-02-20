@@ -155,6 +155,7 @@ const AddListing: React.FC<AddListingProps> = ({
     const imagePromises = images.map(async (image: string) => {
       return await uploadImage.mutateAsync({
         image: image,
+        listingId: result.id,
       });
     });
     await Promise.all([...imagePromises]);
