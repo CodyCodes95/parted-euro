@@ -36,7 +36,7 @@ const Listings: NextPage = () => {
       {
         Header: "Title",
         accessor: d => (
-          <Link href={`/listings/${d.id}`}>
+          <Link href={`/listings/listing?id=${d.id}`}>
             <a className="text-blue-500 hover:text-blue-600">{d.title}</a>
           </Link>
           
