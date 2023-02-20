@@ -10,6 +10,8 @@ import AddCar from "../../../components/cars/AddCar";
 import loader from "../../../../public/loader.svg";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import type { Car } from "@prisma/client";
+import Spacer from "../../../components/Spacer";
+import Link from "next/link";
 
 const Cars: NextPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -94,6 +96,17 @@ const Cars: NextPage = () => {
         showModal={showDeleteModal}
       />
       <main className="m-20 flex min-h-screen flex-col bg-white">
+        <div className="flex items-center">
+          <Link
+            href="/admin/data"
+            className="mr-2 mb-2 w-fit rounded-lg border border-gray-800 px-5 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-800"
+          >
+            {"<"}
+          </Link>
+          <Spacer amount="2" />
+          <p className="text-xl">admin/data/cars</p>
+        </div>
+        <Spacer amount="2" />
         {showModal ? (
           <AddCar
             car={selectedCar}

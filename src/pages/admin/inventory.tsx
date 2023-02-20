@@ -10,6 +10,8 @@ import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import type { Part } from "@prisma/client";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
+import Link from "next/link";
+import Spacer from "../../components/Spacer";
 
 const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -97,6 +99,16 @@ const Inventory: NextPage = () => {
       </Head>
       <ToastContainer />
       <main className="m-20 flex min-h-screen flex-col bg-white">
+        <div className="flex items-center">
+          <Link
+            href="/admin"
+            className="mr-2 mb-2 w-fit rounded-lg border border-gray-800 px-5 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-800"
+          >
+            {"<"}
+          </Link>
+          <Spacer amount="2" />
+          <p className="text-xl">admin/inventory</p>
+        </div>
         {showModal ? (
           <AddPart
             success={success}

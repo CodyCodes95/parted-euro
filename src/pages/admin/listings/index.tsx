@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
-import ListingTable from "../../../components/tables/ListingTable";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -13,6 +12,7 @@ import AdminTable from "../../../components/tables/AdminTable";
 import { Column } from "react-table";
 import { Listing } from "@prisma/client";
 import EbayModal from "../../../components/listings/EbayModal";
+import Spacer from "../../../components/Spacer";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -92,6 +92,17 @@ const Listings: NextPage = () => {
       </Head>
       <ToastContainer />
       <main className="m-20 flex min-h-screen flex-col bg-white">
+        <div className="flex items-center">
+          <Link
+            href="/admin"
+            className="mr-2 mb-2 w-fit rounded-lg border border-gray-800 px-5 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-800"
+          >
+            {"<"}
+          </Link>
+          <Spacer amount="2" />
+          <p className="text-xl">admin/listings</p>
+        </div>
+        <Spacer amount="2" />
         {showModal ? (
           <AddListing
             success={success}
