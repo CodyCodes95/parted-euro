@@ -302,4 +302,18 @@ export const listingRouter = router({
         },
       });
     }),
+  deleteListing: adminProcedure
+    .input(
+      z.object({
+        id: z.string(), 
+      })
+  )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.listing.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }
+  ),
 });
