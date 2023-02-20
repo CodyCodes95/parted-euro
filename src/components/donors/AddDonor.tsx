@@ -78,7 +78,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
 
   const onSave = async () => {
     if (donor) {
-      console.log(donor)
+      console.log(donor);
       const result = await updateDonor.mutateAsync(
         {
           vin: vin,
@@ -149,7 +149,12 @@ const AddDonor: React.FC<AddDonorProps> = ({
             onLoadEvent.target.result,
           ]);
         };
-        reader.readAsDataURL(file);
+        new Compressor(file, {
+          quality: 0.7,
+          success(result) {
+            reader.readAsDataURL(result);
+          },
+        });
       });
     };
   };

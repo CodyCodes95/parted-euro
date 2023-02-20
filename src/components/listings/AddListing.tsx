@@ -80,10 +80,6 @@ const AddListing: React.FC<AddListingProps> = ({
     });
   };
 
-  useEffect(() => {
-    console.log(images);
-  }, [images])
-
   const onSave = async () => {
     // if (1 === 1) {
     // Add some validation in here maybe???
