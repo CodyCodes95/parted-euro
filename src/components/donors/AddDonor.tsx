@@ -147,8 +147,8 @@ const AddDonor: React.FC<AddDonorProps> = ({
         };
         new Compressor(file, {
           quality: 0.6,
-          maxHeight: 1066,
-          maxWidth: 600,
+          maxHeight: 1422,
+          maxWidth: 800,
           success(result) {
             reader.readAsDataURL(result);
           },
