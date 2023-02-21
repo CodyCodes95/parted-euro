@@ -2,8 +2,15 @@ import { NextPage } from "next";
 import { trpc } from "../../utils/trpc";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSession } from "next-auth/react";
 
 const Ebay: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
 
     const getPayment = trpc.ebay.getPaymentPolicy.useMutation()
     const getReturn = trpc.ebay.getReturnPolicy.useMutation()

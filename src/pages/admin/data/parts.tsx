@@ -13,8 +13,15 @@ import loader from "../../../../public/loader.svg";
 import type { PartDetail } from "@prisma/client";
 import Link from "next/link";
 import Spacer from "../../../components/Spacer";
+import { useSession } from "next-auth/react";
 
 const Inventory: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
   const [showModal, setShowModal] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

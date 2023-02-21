@@ -14,6 +14,12 @@ import Spacer from "../../../components/Spacer";
 import Link from "next/link";
 
 const Cars: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);

@@ -12,8 +12,15 @@ import type { Part } from "@prisma/client";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import Link from "next/link";
 import Spacer from "../../components/Spacer";
+import { useSession } from "next-auth/react";
 
 const Inventory: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
   const [showModal, setShowModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [selected, setSelected] = useState<Part | null>(null);

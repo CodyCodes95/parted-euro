@@ -13,8 +13,15 @@ import type { Column } from "react-table";
 import type { Listing } from "@prisma/client";
 import EbayModal from "../../../components/listings/EbayModal";
 import Spacer from "../../../components/Spacer";
+import { useSession } from "next-auth/react";
 
 const Listings: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
   const router = useRouter();
 
   const { code } = router.query;

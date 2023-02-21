@@ -15,8 +15,15 @@ import loader from "../../../public/loader.svg";
 import type { Donor } from "@prisma/client";
 import Spacer from "../../components/Spacer";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const Donors: NextPage = () => {
+    const { status } = useSession({
+      required: true,
+      onUnauthenticated() {
+        window.location.href = "/";
+      },
+    });
   const [showModal, setShowModal] = useState(false);
   const [showPartModal, setShowPartModal] = useState(false);
   const [donorVin, setDonorVin] = useState("");
