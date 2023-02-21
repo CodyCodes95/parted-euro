@@ -12,6 +12,7 @@ import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import type { Car } from "@prisma/client";
 import Spacer from "../../../components/Spacer";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const Cars: NextPage = () => {
     const { status } = useSession({
