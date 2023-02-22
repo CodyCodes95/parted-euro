@@ -1,16 +1,18 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { useContext, useState } from "react";
-import { Car } from "@prisma/client";
+import type { Car } from "@prisma/client";
 import Head from "next/head";
-import { Listing as ListingType } from "@prisma/client";
-import { Image } from "@prisma/client";
+import type { Listing as ListingType } from "@prisma/client";
+import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -48,7 +50,7 @@ const Listing: NextPage = () => {
       const updatedCart = cart.map((i) =>
         i.listingId === listing.id ? { ...i, quantity: i.quantity + 1 } : i
       );
-      toast.success("Quantity updated")
+      toast.success("Quantity updated");
       setCart(updatedCart);
     } else {
       const cartItem: CartItem = {
@@ -62,7 +64,7 @@ const Listing: NextPage = () => {
         height: listing.height,
         weight: listing.weight,
       };
-      toast.success("Added to cart")
+      toast.success("Added to cart");
       setCart([...cart, cartItem]);
     }
   };
@@ -81,7 +83,8 @@ const Listing: NextPage = () => {
 
   const relatedListings = trpc.listings.getRelatedListings.useQuery(
     {
-      generation: listing.data?.parts[0]?.partDetails.cars[0]?.generation as string,
+      generation: listing.data?.parts[0]?.partDetails.cars[0]
+        ?.generation as string,
       model: listing.data?.parts[0]?.partDetails.cars[0]?.model as string,
       id: listing.data?.id as string,
     },
@@ -99,24 +102,15 @@ const Listing: NextPage = () => {
         <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="w-[50%]">
             <div className="flex flex-col items-center">
-              <img
-                className="max-w-[30rem] object-contain"
-                src={mainImage}
-                alt=""
-              />
-              <div className="flex w-full">
+              <Carousel showArrows>
                 {listing.data?.images.map((image) => {
                   return (
-                    <img
-                      key={image.id}
-                      onClick={() => setMainImage(image.url)}
-                      src={image.url}
-                      className="m-2 h-[161px] w-[161px] cursor-pointer border-2 object-contain hover:opacity-50"
-                      alt=""
-                    />
+                    <div key={image.id}>
+                      <img className="max-w-lg" src={image.url} />
+                    </div>
                   );
                 })}
-              </div>
+              </Carousel>
             </div>
           </div>
           <div className="flex w-full flex-col items-center md:w-[50%] md:place-items-start md:pl-[80px]">
@@ -127,7 +121,7 @@ const Listing: NextPage = () => {
                 : null}{" "}
               AUD
             </h4>
-            <div className="flex flex-col items-center w-full md:place-items-start">
+            <div className="flex w-full flex-col items-center md:place-items-start">
               <LoadingButton
                 onClick={() => addToCart(listing.data as any)}
                 className="mb-4 h-12 w-[50%] bg-[#1976d2]"
