@@ -42,7 +42,7 @@ const Listing: NextPage = () => {
 
   const { cart, setCart } = useContext(CartContext);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   const addToCart = (listing: IListing) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -92,10 +92,11 @@ const Listing: NextPage = () => {
   );
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 1300);
     window.addEventListener("resize", () => {
       setIsMobile(window.innerWidth < 1300);
     })
-  }, [window.innerWidth])
+  }, [])
 
   return (
     <>

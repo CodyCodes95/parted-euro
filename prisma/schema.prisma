@@ -151,6 +151,7 @@ model Image {
   updatedAt DateTime @updatedAt
   Donor     Donor?   @relation(fields: [donorVin], references: [vin])
   donorVin  String?
+  order     Int?
 }
 
 model XeroCreds {
