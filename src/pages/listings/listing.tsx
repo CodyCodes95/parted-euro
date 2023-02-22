@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Listing as ListingType } from "@prisma/client";
@@ -39,9 +39,10 @@ const Listing: NextPage = () => {
     weight: number;
   }
 
-  const [mainImage, setMainImage] = useState<string>("");
 
   const { cart, setCart } = useContext(CartContext);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   const addToCart = (listing: IListing) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -75,9 +76,6 @@ const Listing: NextPage = () => {
     },
     {
       enabled: !!router.query.id,
-      onSuccess: (data) => {
-        setMainImage(data?.images[0]?.url || "");
-      },
     }
   );
 
@@ -92,6 +90,13 @@ const Listing: NextPage = () => {
       enabled: listing.data !== undefined,
     }
   );
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setIsMobile(window.innerWidth < 1300);
+    })
+  }, [window.innerWidth])
+
   return (
     <>
       <Head>
@@ -102,12 +107,14 @@ const Listing: NextPage = () => {
         <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="w-[50%]">
             <div className="flex flex-col items-center">
-              <Carousel showArrows>
+              <Carousel thumbWidth={60} showThumbs={isMobile ? false : true} showArrows={isMobile ? false : true}>
                 {listing.data?.images.map((image) => {
                   return (
-                    <div key={image.id}>
-                      <img className="max-w-lg" src={image.url} />
-                    </div>
+                      <img
+                        key={image.id}
+                        className="max-w-lg"
+                        src={image.url}
+                      />
                   );
                 })}
               </Carousel>
