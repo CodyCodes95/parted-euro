@@ -325,6 +325,7 @@ export const listingRouter = router({
                       id: true,
                       generation: true,
                       model: true,
+                      body:true
                     },
                   },
                 },

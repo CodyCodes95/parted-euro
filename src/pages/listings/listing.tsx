@@ -193,13 +193,26 @@ const Listing: NextPage = () => {
                   return acc;
                 }, [] as any[])
                 .map((part) => {
-                  return part.partDetails.cars.map((car: Car) => {
-                    return (
-                      <p key={car.id}>
-                        {car.generation} {car.model} {car.body}
-                      </p>
-                    );
-                  });
+                  return part.partDetails.cars
+                    .reduce((acc:any, car:Car) => {
+                      const { id, generation, model, body } = car;
+                      const existingCar = acc.find(
+                        (c:any) => c.generation === generation && c.model === model
+                      );
+                      if (existingCar) {
+                        existingCar.body = `${existingCar.body}, ${body}`;
+                      } else {
+                        acc.push({ id, generation, model, body });
+                      }
+                      return acc;
+                    }, [])
+                    .map((car: Car) => {
+                      return (
+                        <p key={car.id}>
+                          {car.generation} {car.model} {car.body}
+                        </p>
+                      );
+                    });
                 })}
               <p>
                 Please confirm part numbers prior to purchase. May suit other
