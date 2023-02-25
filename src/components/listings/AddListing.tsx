@@ -262,7 +262,7 @@ const AddListing: React.FC<AddListingProps> = ({
                 runUpdateImageOrder();
               }}
             >
-              Back to Listing
+              Save Order
             </button>
           </div>
         </div>
