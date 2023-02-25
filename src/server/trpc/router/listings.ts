@@ -92,7 +92,12 @@ export const listingRouter = router({
             partDetails: true,
           }
         },
-        images: true,
+        images: {
+          orderBy: {
+            order: "asc",
+          },
+          
+        }
       }
     });
     return listings;
@@ -306,7 +311,11 @@ export const listingRouter = router({
           length: true,
           width: true,
           height: true,
-          images: true,
+          images: {
+            orderBy: {
+              order: "asc",
+            }
+          },
           parts: {
             select: {
               donor: {

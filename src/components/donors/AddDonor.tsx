@@ -3,7 +3,6 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { Car } from "@prisma/client";
-import { Donor } from "@prisma/client";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 
@@ -118,10 +117,11 @@ const AddDonor: React.FC<AddDonorProps> = ({
       }
     );
     const donorVin = result.vin;
-    const imagePromises = images.map(async (image: string) => {
+    const imagePromises = images.map(async (image: string, i:number) => {
       return await uploadImage.mutateAsync({
         image: image,
         donorVin: donorVin,
+        order: i,
       });
     });
     await Promise.all(imagePromises);

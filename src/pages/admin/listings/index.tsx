@@ -27,7 +27,7 @@ const Listings: NextPage = () => {
   const { code } = router.query;
 
   const [showModal, setShowModal] = useState(false);
-  const [selected, setSelected] = useState<Listing | null>(null);
+  const [selected, setSelected] = useState<any>(null);
   const [showEbayModal, setShowEbayModal] = useState(false);
 
   const success = (message: string) => toast.success(message);

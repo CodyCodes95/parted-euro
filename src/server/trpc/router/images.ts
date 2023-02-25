@@ -9,6 +9,7 @@ export const imagesRouter = router({
       z.object({
         image: z.string(),
         listingId: z.string(),
+        order: z.number()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -21,6 +22,7 @@ export const imagesRouter = router({
         data: {
           url: uploadedImage.url,
           listingId: input.listingId,
+          order: input.order
         },
       });
     }),
@@ -29,6 +31,7 @@ export const imagesRouter = router({
       z.object({
         image: z.string(),
         donorVin: z.string(),
+        order: z.number()
       })
     )
     .mutation(({ ctx, input }) => {
@@ -41,8 +44,27 @@ export const imagesRouter = router({
             data: {
               url: res.url,
               listingId: input.donorVin,
+              order: input.order
             },
           });
         });
     }),
+  updateImageOrder: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        order: z.number()
+      })
+  )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.image.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          order: input.order
+        }
+      })
+    }
+  )
 });
