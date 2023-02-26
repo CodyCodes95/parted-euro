@@ -168,7 +168,7 @@ const Cars: NextPage = () => {
             <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable id={"id"} columns={columns} data={cars.data}  filter={filter} setFilter={setFilter}/>
+          <AdminTable columns={columns} data={cars.data}  filter={filter} setFilter={setFilter}/>
         )}
       </main>
     </>
