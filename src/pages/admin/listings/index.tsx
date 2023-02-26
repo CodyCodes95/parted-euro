@@ -158,8 +158,8 @@ const Listings: NextPage = () => {
           <EbayModal
             success={success}
             error={error}
-            showModal={showModal}
-            setShowModal={setShowModal}
+            showModal={showEbayModal}
+            setShowModal={setShowEbayModal}
             listing={selected}
           />
         ) : null}
