@@ -21,10 +21,11 @@ const Inventory: NextPage = () => {
         window.location.href = "/";
       },
     });
-  const [showModal, setShowModal] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const [selected, setSelected] = useState<Part | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -160,14 +161,16 @@ const Inventory: NextPage = () => {
               type="text"
               id="table-search-users"
               className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Search for parts"
+              placeholder="Search for inventory"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </div>
         </div>
         {parts.isLoading ? (
           <p>Loading</p>
         ) : (
-          <AdminTable columns={columns} id={"partNo"} data={parts.data} />
+          <AdminTable columns={columns} filter={filter} setFilter={setFilter} data={parts.data} />
         )}
       </main>
     </>

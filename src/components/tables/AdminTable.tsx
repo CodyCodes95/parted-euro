@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, } from "react";
 import {
   Column,
+  useGlobalFilter,
   usePagination,
   useRowSelect,
   useSortBy,
@@ -10,19 +11,21 @@ import {
 type AdminTableProps = {
   data: any;
   columns: Array<Column<any>>;
-  id: string;
+  filter: string;
+  setFilter: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const AdminTable: React.FC<AdminTableProps> = ({
   data,
   columns,
-  id,
+  filter,
 }) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    setGlobalFilter,
     page,
     canPreviousPage,
     canNextPage,
@@ -32,17 +35,22 @@ const AdminTable: React.FC<AdminTableProps> = ({
     previousPage,
     setPageSize,
     gotoPage,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
   } = useTable(
     {
       columns,
       data,
       initialState: {pageSize: 15}
     },
+    useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect,
   );
+
+  useEffect(() => {
+    setGlobalFilter(filter);
+  }, [filter]);
 
   return (
     <div>

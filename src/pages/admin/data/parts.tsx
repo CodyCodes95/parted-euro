@@ -22,10 +22,11 @@ const Inventory: NextPage = () => {
         window.location.href = "/";
       },
     });
-  const [showModal, setShowModal] = useState(false);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedPart, setSelectedPart] = useState<PartDetail | null>(null);
+  const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -165,6 +166,8 @@ const Inventory: NextPage = () => {
               id="table-search-users"
               className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               placeholder="Search for parts"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </div>
         </div>
@@ -173,7 +176,7 @@ const Inventory: NextPage = () => {
             <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable id={"partNo"} columns={columns} data={parts.data} />
+          <AdminTable filter={filter} setFilter={setFilter} columns={columns} data={parts.data} />
         )}
       </main>
     </>

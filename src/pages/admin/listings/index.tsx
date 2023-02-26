@@ -26,9 +26,10 @@ const Listings: NextPage = () => {
 
   const { code } = router.query;
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [selected, setSelected] = useState<any>(null);
-  const [showEbayModal, setShowEbayModal] = useState(false);
+  const [showEbayModal, setShowEbayModal] = useState<boolean>(false);
+  const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -196,6 +197,8 @@ const Listings: NextPage = () => {
               id="table-search-users"
               className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               placeholder="Search for listings"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </div>
         </div>
@@ -204,7 +207,7 @@ const Listings: NextPage = () => {
             <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable id="id" columns={columns} data={listings.data} />
+          <AdminTable filter={filter} setFilter={setFilter} columns={columns} data={listings.data} />
         )}
         <div>
           <button

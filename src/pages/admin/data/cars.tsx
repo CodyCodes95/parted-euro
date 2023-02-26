@@ -24,6 +24,7 @@ const Cars: NextPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -157,6 +158,8 @@ const Cars: NextPage = () => {
               id="table-search-users"
               className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               placeholder="Search for cars"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </div>
         </div>
@@ -165,7 +168,7 @@ const Cars: NextPage = () => {
             <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable id={"id"} columns={columns} data={cars.data} />
+          <AdminTable id={"id"} columns={columns} data={cars.data}  filter={filter} setFilter={setFilter}/>
         )}
       </main>
     </>
