@@ -10,18 +10,17 @@ import Link from "next/link";
 import loader from "../../../../public/loader.svg";
 import AdminTable from "../../../components/tables/AdminTable";
 import type { Column } from "react-table";
-import type { Listing } from "@prisma/client";
 import EbayModal from "../../../components/listings/EbayModal";
 import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
 
 const Listings: NextPage = () => {
-    const { status } = useSession({
-      required: true,
-      onUnauthenticated() {
-        window.location.href = "/";
-      },
-    });
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = "/";
+    },
+  });
   const router = useRouter();
 
   const { code } = router.query;
@@ -43,11 +42,10 @@ const Listings: NextPage = () => {
     () => [
       {
         Header: "Title",
-        accessor: d => (
+        accessor: (d) => (
           <Link href={`/listings/listing?id=${d.id}`}>
             <p className="text-blue-500 hover:text-blue-600">{d.title}</p>
           </Link>
-          
         ),
       },
       {
@@ -203,11 +201,16 @@ const Listings: NextPage = () => {
           </div>
         </div>
         {listings.isLoading ? (
-          <div className="flex min-h-screen w-full items-center justify-center">
-            <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
+          <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
+            <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable filter={filter} setFilter={setFilter} columns={columns} data={listings.data} />
+          <AdminTable
+            filter={filter}
+            setFilter={setFilter}
+            columns={columns}
+            data={listings.data}
+          />
         )}
         <div>
           <button
