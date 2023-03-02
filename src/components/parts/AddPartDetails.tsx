@@ -31,7 +31,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [name, setName] = useState<string>("");
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
-  const [partType, setPartType] = useState<string>("");
+  const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
@@ -78,7 +78,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
-        partTypeId: partType,
+        partTypes: partTypeIds as string[],
       },
       {
         onSuccess: () => {
@@ -160,8 +160,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
               </label>
               <Select
                 onChange={(e: any) => {
-                  setPartType(e.value);
+                  setPartTypeIds(e.map((partType: Options) => partType.value));
                 }}
+                isMulti={true}
                 options={partTypes.data?.map((partType) => {
                   return {
                     label: partType.name,

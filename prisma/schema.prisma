@@ -132,13 +132,13 @@ model Part {
 }
 
 model PartDetail {
-  partNo    String     @id @unique
+  partNo    String      @id @unique
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   cars      Car[]
   parts     Part[]
-  partType  PartType[]
+  partTypes PartTypes[]
 }
 
 model Image {
@@ -189,7 +189,7 @@ model Order {
   updatedAt       DateTime @updatedAt
 }
 
-model PartType {
+model PartTypes {
   id             String                  @id @default(cuid())
   name           String
   createdAt      DateTime                @default(now())
@@ -200,9 +200,9 @@ model PartType {
 }
 
 model PartTypeParentCategory {
-  id        String     @id @default(cuid())
+  id        String      @id @default(cuid())
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  partsType PartType[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  partsType PartTypes[]
 }

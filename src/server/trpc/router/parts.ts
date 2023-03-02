@@ -8,7 +8,7 @@ export const partRouter = router({
         name: z.string().min(3),
         partNo: z.string().min(3),
         cars: z.array(z.string()),
-        partTypeId: z.string(),
+        partTypes: z.array(z.string()),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -16,10 +16,10 @@ export const partRouter = router({
         data: {
           name: input.name,
           partNo: input.partNo,
-          partType: {
-            connect: {
-              id: input.partTypeId,
-            },
+          partTypes: {
+            connect: input.partTypes.map((id) => {
+              return { id };
+            }),
           },
           cars: {
             connect: input.cars.map((id) => {
@@ -35,9 +35,9 @@ export const partRouter = router({
         partNo: z.string().min(3),
         name: z.string().min(3),
         cars: z.array(z.string()),
-        partTypeId: z.string(),
+        partTypes: z.array(z.string()),
       })
-  )
+    )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.partDetail.update({
         where: {
@@ -45,10 +45,10 @@ export const partRouter = router({
         },
         data: {
           name: input.name,
-          partType: {
-            connect: {
-              id: input.partTypeId,
-            },
+          partTypes: {
+            connect: input.partTypes.map((id) => {
+              return { id };
+            }),
           },
           cars: {
             connect: input.cars.map((id) => {

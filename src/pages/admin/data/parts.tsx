@@ -10,7 +10,7 @@ import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/parts/EditPartDetails";
 import loader from "../../../../public/loader.svg";
-import type { PartDetail } from "@prisma/client";
+import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
 import Link from "next/link";
 import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
@@ -25,7 +25,14 @@ const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const [selectedPart, setSelectedPart] = useState<PartDetail | null>(null);
+  const [selectedPart, setSelectedPart] = useState<
+    | (PartDetail & {
+        partTypes: PartTypes[];
+        parts: Part[];
+        cars: Car[];
+      })
+    | null
+  >(null);
   const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
@@ -40,7 +47,17 @@ const Inventory: NextPage = () => {
 
   const tableData = useMemo(() => parts.data, [parts.data]);
 
-  const columns = useMemo<Array<Column<any>>>(
+  const columns = useMemo<
+    Array<
+      Column<
+        PartDetail & {
+          partTypes: PartTypes[];
+          parts: Part[];
+          cars: Car[];
+        }
+      >
+    >
+  >(
     () => [
       {
         Header: "Part",
@@ -52,7 +69,7 @@ const Inventory: NextPage = () => {
       },
       {
         Header: "Type",
-        accessor: "partType.name",
+        accessor: (d) => d.partTypes.map((type) => type.name).join(", "),
       },
       {
         Header: "Edit",
@@ -126,7 +143,7 @@ const Inventory: NextPage = () => {
             setShowModal={setShowModal}
           />
         ) : null}
-        {showEditModal ? (
+        {showEditModal && selectedPart ? (
           <EditPartDetails
             success={success}
             error={error}

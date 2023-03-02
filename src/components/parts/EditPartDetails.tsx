@@ -2,14 +2,18 @@ import React, { useEffect, useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Car } from "@prisma/client";
+import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
 
 interface EditPartProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
-  selection: any;
+  selection: PartDetail & {
+    partTypes: PartTypes[];
+    parts: Part[];
+    cars: Car[];
+  };
 }
 
 interface Options {
@@ -35,10 +39,10 @@ const EditPartDetails: React.FC<EditPartProps> = ({
     selection.cars.map((car: any) => car.id)
   );
   const [carOptions, setCarOptions] = React.useState<Array<NestedOptions>>([]);
-  const [partType, setPartType] = React.useState<any>({
-    label: selection.partType?.name || "",
-    value: selection.partType?.id || "",
-  });
+  const [partTypeIds, setPartTypeIds] = React.useState<Array<string>>(
+    selection.partTypes.map((category) => category.id)
+  );
+
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
@@ -85,7 +89,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
-        partTypeId: partType.value,
+        partTypes: partTypeIds,
       },
       {
         onSuccess: () => {
@@ -170,10 +174,17 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 Part Category
               </label>
               <Select
+                isMulti={true}
                 onChange={(e: any) => {
-                  setPartType(e);
+                  setPartTypeIds(e.map((partType: Options) => partType.value));
                 }}
-                value={partType || ""}
+                value={selection.partTypes.map((partType) => {
+                  return {
+                    label: partType.name,
+                    value: partType.id,
+                  };
+                })
+                }
                 options={partTypes.data?.map((partType) => {
                   return {
                     label: partType.name,
