@@ -1,24 +1,9 @@
 import { adminProcedure } from "./../trpc";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
-// import eBayApi from "ebay-api";
-import cloudinary from "../../../utils/cloudinary.mjs";
 
 export const listingRouter = router({
-  uploadListingImage: adminProcedure
-    .input(
-      z.object({
-        image: z.string(),
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      const uploadedImage = cloudinary.uploader.upload(input.image, {
-        folder: "listings",
-        // width: 300,
-        // crop: "scale",
-      });
-      return uploadedImage;
-    }),
+
   createListing: adminProcedure
     .input(
       z.object({
@@ -117,7 +102,11 @@ export const listingRouter = router({
         const listings = await ctx.prisma.listing.findMany({
           // return all listings of if input.search is not empty return all listings where the description or title contains the search string
           include: {
-            images: true,
+            images: {
+              orderBy: {
+                order: "asc",
+              }
+            },
             parts: true,
           },
           where: {
@@ -151,7 +140,11 @@ export const listingRouter = router({
       } else {
         const listings = await ctx.prisma.listing.findMany({
           include: {
-            images: true,
+            images: {
+              orderBy: {
+                order: "asc",
+              }
+            },
             parts: true,
           },
           where: {
@@ -203,7 +196,11 @@ export const listingRouter = router({
       const listings = await ctx.prisma.listing.findMany({
         take: 5,
         include: {
-          images: true,
+          images: {
+            orderBy: {
+              order: "asc",
+            }
+          },
           parts: true,
         },
         where: {
@@ -249,7 +246,11 @@ export const listingRouter = router({
       const listings = await ctx.prisma.listing.findMany({
         take: 4,
         include: {
-          images: true,
+          images: {
+            orderBy: {
+              order: "asc",
+            },
+          },
           parts: true,
         },
         where: {
