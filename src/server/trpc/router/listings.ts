@@ -164,11 +164,11 @@ export const listingRouter = router({
             parts: {
               some: {
                 partDetails: {
-                  partType: {
-                    name: {
-                      contains: input.category || "",
-                    }  
-                  },
+                  // partType: {
+                  //   name: {
+                  //     contains: input.category || "",
+                  //   }  
+                  // },
                   cars: {
                     some: {
                       generation: {

@@ -583,6 +583,8 @@ async function main() {
   //   { listings: listings.length },
   //   { images: images.length }
   // );
+  // delete all part types
+  // await prisma.partTypes.deleteMany({});
 }
 main()
   .then(async () => {
