@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
@@ -107,10 +107,6 @@ const EditPartDetails: React.FC<EditPartProps> = ({
       }
     );
   };
-
-  useEffect(() => {
-    console.log(compatibleCars);
-  }, [carOptions]);
 
   return (
     <div

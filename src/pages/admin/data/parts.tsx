@@ -10,29 +10,23 @@ import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/parts/EditPartDetails";
 import loader from "../../../../public/loader.svg";
-import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
 import Link from "next/link";
 import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
+import type { PartDetailWithRelations } from "../../../types/prisma-query-types";
 
 const Inventory: NextPage = () => {
-    const { status } = useSession({
-      required: true,
-      onUnauthenticated() {
-        window.location.href = "/";
-      },
-    });
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = "/";
+    },
+  });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const [selectedPart, setSelectedPart] = useState<
-    | (PartDetail & {
-        partTypes: PartTypes[];
-        parts: Part[];
-        cars: Car[];
-      })
-    | null
-  >(null);
+  const [selectedPart, setSelectedPart] =
+    useState<PartDetailWithRelations | null>(null);
   const [filter, setFilter] = useState<string>("");
 
   const success = (message: string) => toast.success(message);
@@ -47,17 +41,7 @@ const Inventory: NextPage = () => {
 
   const tableData = useMemo(() => parts.data, [parts.data]);
 
-  const columns = useMemo<
-    Array<
-      Column<
-        PartDetail & {
-          partTypes: PartTypes[];
-          parts: Part[];
-          cars: Car[];
-        }
-      >
-    >
-  >(
+  const columns = useMemo<Array<Column<PartDetailWithRelations>>>(
     () => [
       {
         Header: "Part",
@@ -193,7 +177,12 @@ const Inventory: NextPage = () => {
             <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
           </div>
         ) : (
-          <AdminTable filter={filter} setFilter={setFilter} columns={columns} data={parts.data} />
+          <AdminTable
+            filter={filter}
+            setFilter={setFilter}
+            columns={columns}
+            data={parts.data}
+          />
         )}
       </main>
     </>
