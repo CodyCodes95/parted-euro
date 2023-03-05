@@ -264,6 +264,7 @@ const Donors: NextPage = () => {
         ) : null}
         {showPartModal ? (
           <AddPart
+            refetch={donors.refetch}
             donorVin={donorVin}
             success={success}
             error={error}
