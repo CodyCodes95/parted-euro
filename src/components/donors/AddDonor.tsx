@@ -12,6 +12,7 @@ interface AddDonorProps {
   success: (message: string) => void;
   error: (message: string) => void;
   donor: any | null;
+  refetch: () => void;
 }
 
 interface ISelectOptions {
@@ -25,6 +26,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   success,
   error,
   donor,
+  refetch
 }) => {
   const [vin, setVin] = useState<string>(donor?.vin || "");
   const [cost, setCost] = useState<number>(donor?.cost || 0);
@@ -98,6 +100,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       setCarId("");
       setYear(0);
       setImages([]);
+      refetch()
       setShowModal(false);
       return;
     }

@@ -260,6 +260,7 @@ const Donors: NextPage = () => {
             showModal={showModal}
             setShowModal={setShowModal}
             donor={selectedDonor}
+            refetch={donors.refetch}
           />
         ) : null}
         {showPartModal ? (
@@ -311,7 +312,12 @@ const Donors: NextPage = () => {
             />
           </div>
         </div>
-        <AdminTable  columns={columns} data={donors.data} filter={filter} setFilter={setFilter} />
+        <AdminTable
+          columns={columns}
+          data={donors.data}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </main>
     </>
   );
