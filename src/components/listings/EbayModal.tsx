@@ -18,7 +18,8 @@ interface EbayModalProps {
   //     }[];
   //   images: Image[];
   // };
-  listing: any
+  listing: any,
+  refetch: () => void;
 }
 
 const EbayModal: React.FC<EbayModalProps> = ({
@@ -27,6 +28,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
   success,
   error,
   listing,
+  refetch
 }) => {
   const [title, setTitle] = useState<string>(listing.title);
   const [description, setDescription] = useState<string>(listing.description);
@@ -76,6 +78,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
     });
+    refetch()
     setLoading(false);
   };
 

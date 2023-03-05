@@ -87,6 +87,7 @@ const Inventory: NextPage = () => {
     if (!selected) return;
     await deletePart.mutateAsync({ id: selected.id });
     success("Part deleted successfully");
+    parts.refetch();
     setShowDeleteModal(false);
     setSelected(null);
   };
@@ -124,6 +125,7 @@ const Inventory: NextPage = () => {
             showModal={showModal}
             setShowModal={setShowModal}
             part={selected}
+            refetch={parts.refetch}
           />
         ) : null}
         <ConfirmDelete

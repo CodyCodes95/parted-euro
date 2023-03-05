@@ -13,6 +13,7 @@ interface AddPartProps {
   success: (message: string) => void;
   error: (message: string) => void;
   part?: Part | null;
+  refetch: () => void;
 }
 
 interface Options {
@@ -31,7 +32,8 @@ const AddPart: React.FC<AddPartProps> = ({
   success,
   error,
   donorVin,
-  part
+  part,
+  refetch,
 }) => {
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
@@ -126,8 +128,9 @@ const AddPart: React.FC<AddPartProps> = ({
       inventoryLocationId: inventoryLocation,
       variant: variant || undefined,
     });
-    setShowModal(false);
+    refetch();
     success(`${partNo} successfully added part to donor ${donorVin || donor}"`);
+    setShowModal(false);
   };
 
   const savePartDetails = async () => {

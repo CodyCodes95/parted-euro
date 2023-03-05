@@ -90,6 +90,7 @@ const Inventory: NextPage = () => {
   const deletePartDetailFunc = async () => {
     if (selectedPart) {
       await deletePart.mutateAsync({ partNo: selectedPart.partNo });
+      parts.refetch()
       setShowConfirmDelete(false);
     }
   };
@@ -125,6 +126,7 @@ const Inventory: NextPage = () => {
             error={error}
             showModal={showModal}
             setShowModal={setShowModal}
+            refetch={parts.refetch}
           />
         ) : null}
         {showEditModal && selectedPart ? (
@@ -134,6 +136,7 @@ const Inventory: NextPage = () => {
             showModal={showEditModal}
             setShowModal={setShowEditModal}
             selection={selectedPart}
+            refetch={parts.refetch}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

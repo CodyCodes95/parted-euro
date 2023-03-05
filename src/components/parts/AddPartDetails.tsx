@@ -9,6 +9,7 @@ interface AddPartProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
+  refetch: () => void;
 }
 
 interface Options {
@@ -26,6 +27,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   setShowModal,
   error,
   success,
+  refetch
 }) => {
   const [partNo, setPartNo] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -86,6 +88,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           setPartNo("");
           setName("");
           setCompatibleCars([]);
+          refetch()
           if (exit) {
             setShowModal(false);
           }

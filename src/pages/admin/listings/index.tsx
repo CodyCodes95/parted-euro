@@ -150,6 +150,7 @@ const Listings: NextPage = () => {
             showModal={showModal}
             setShowModal={setShowModal}
             listing={selected}
+            refetch={listings.refetch}
           />
         ) : null}
         {showEbayModal ? (
@@ -159,6 +160,7 @@ const Listings: NextPage = () => {
             showModal={showEbayModal}
             setShowModal={setShowEbayModal}
             listing={selected}
+            refetch={listings.refetch}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

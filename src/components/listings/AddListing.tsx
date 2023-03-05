@@ -15,6 +15,7 @@ interface AddListingProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
+  refetch: () => void;
   listing:
     | (Listing & {
         images: Image[];
@@ -36,6 +37,7 @@ const AddListing: React.FC<AddListingProps> = ({
   success,
   error,
   listing,
+  refetch
 }) => {
   const [title, setTitle] = useState<string>(listing?.title || "");
   const [description, setDescription] = useState<string>(
@@ -155,6 +157,7 @@ const AddListing: React.FC<AddListingProps> = ({
       });
       await Promise.all([...imagePromises]);
       success("Listing updated successfully");
+      refetch()
       setShowModal(false);
       setLoading(false);
       setTitle("");

@@ -10,6 +10,7 @@ interface AddCarProps {
   success: (message: string) => void;
   error: (message: string) => void;
   car?: Car | null;
+  refetch: () => void;
 }
 
 const AddCar: React.FC<AddCarProps> = ({
@@ -18,6 +19,7 @@ const AddCar: React.FC<AddCarProps> = ({
   success,
   error,
   car,
+  refetch
 }) => {
   const [make, setMake] = useState<string>(car?.make || "BMW");
   const [series, setSeries] = useState<string>(car?.series || "");
@@ -41,6 +43,7 @@ const AddCar: React.FC<AddCarProps> = ({
       {
         onSuccess: (data) => {
           success(`${generation} ${model} added successfully`);
+          refetch();
           if (exit) {
             setShowModal(false);
           }
