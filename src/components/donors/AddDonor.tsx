@@ -138,27 +138,25 @@ const AddDonor: React.FC<AddDonorProps> = ({
     setShowModal(false);
   };
 
-  const handleImageAttach = () => {
-    const handleImageAttach = (e: any) => {
-      Array.from(e.target.files).forEach((file: any) => {
-        const reader = new FileReader();
-        reader.onload = (onLoadEvent: any) => {
-          setImages((imageState: any) => [
-            ...imageState,
-            onLoadEvent.target.result,
-          ]);
-        };
-        new Compressor(file, {
-          quality: 0.6,
-          maxHeight: 1422,
-          maxWidth: 800,
-          success(result) {
-            reader.readAsDataURL(result);
-          },
-        });
-      });
-    };
-  };
+ const handleImageAttach = (e: any) => {
+   Array.from(e.target.files).forEach((file: any) => {
+     const reader = new FileReader();
+     reader.onload = (onLoadEvent: any) => {
+       setImages((imageState: any) => [
+         ...imageState,
+         onLoadEvent.target.result,
+       ]);
+     };
+     new Compressor(file, {
+       quality: 0.6,
+       maxHeight: 1422,
+       maxWidth: 800,
+       success(result) {
+         reader.readAsDataURL(result);
+       },
+     });
+   });
+ };
 
   return (
     <div

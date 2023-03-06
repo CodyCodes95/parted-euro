@@ -1,590 +1,1193 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-  // const deletePart = await prisma.part.deleteMany();
-  // const cars = [
-  //   {
-  //     make: "BMW",
-  //     series: "1 Series",
-  //     generation: "E87",
-  //     models: ["116i", "118i", "120i", "130i", "M135i"],
-  //   },
-  //   {
-  //     make: "BMW",
-  //     series: "1 Series",
-  //     generation: "F20/F21",
-  //     models: ["116i", "118i", "120i", "125i", "M135i", "M140i"],
-  //   },
-  //   {
-  //     make: "BMW",
-  //     series: "2 Series",
-  //     generation: "F22/F23",
-  //     models: ["218i", "220i", "228i", "M235i", "M240i"],
-  //   },
-  //   {
-  //     make: "BMW",
-  //     series: "2 Series",
-  //     generation: "F87",
-  //     models: ["M2"],
-  //   },
-  //   {
-  //     make: "BMW",
-  //     series: "2 Series",
-  //     generation: "F44",
-  //     models: ["218i", "220i", "M235i"],
-  //   },
-  //   {
-  //     make: "BMW",
-  //     series: "2 Series",
-  //     generation: "G42",
-  //     models: ["220i", "M240i"],
-  //   },
-  // ];
-
-  // cars.map(async (car: any) => {
-  //   return car.models.map(async (model: any) => {
-  //     return await prisma.car.create({
-  //       data: {
-  //         make: car.make,
-  //         series: car.series,
-  //         generation: car.generation,
-  //         model: model,
-  //       },
-  //     });
-  //   });
-  // });
-
-  // const cars = await prisma.car.createMany({
-  //   data: [
-  //     {
-  //       make: "BMW",
-  //       series: "3 Series",
-  //       generation: "E46",
-  //       model: "M3",
-  //       body: "Coupe",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "3 Series",
-  //       generation: "E46",
-  //       model: "M3",
-  //       body: "Convertible",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "3 Series",
-  //       generation: "E36",
-  //       model: "M3",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "5 Series",
-  //       generation: "E39",
-  //       model: "M5",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "5 Series",
-  //       generation: "E39",
-  //       model: "535i",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "5 Series",
-  //       generation: "E60",
-  //       model: "M5",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "7 Series",
-  //       generation: "E38",
-  //       model: "728i",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "8 Series",
-  //       generation: "E31",
-  //       model: "840Ci",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "5 Series",
-  //       generation: "E34",
-  //       model: "525i",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "X Series",
-  //       generation: "E53",
-  //       model: "X5",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "F Series",
-  //       generation: "F30",
-  //       model: "328i",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "F Series",
-  //       generation: "F80",
-  //       model: "M3",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "F Series",
-  //       generation: "F82",
-  //       model: "M4",
-  //     },
-  //     {
-  //       make: "BMW",
-  //       series: "F Series",
-  //       generation: "F83",
-  //       model: "M4",
-  //     },
-  //     {
-  //       make: "All",
-  //       series: "0 Series",
-  //       generation: "E00",
-  //       model: "E00",
-  //     },
-  //   ],
-  // });
-  // const firstCar = await prisma.car.findFirst();
-  // const vert = await prisma.car.findFirst({
-  //   where: {
-  //     body: "Convertible",
-  //   },
-  // });
-  // const fiveSeries = await prisma.car.findFirst({
-  //   where: {
-  //     model: "535i",
-  //   },
-  // });
-  // const m3 = await prisma.car.findFirst({
-  //   where: {
-  //     generation: "F80",
-  //   },
-  // });
-  // const m4 = await prisma.car.findFirst({
-  //   where: {
-  //     generation: "F82",
-  //   },
-  // });
-  // const genericDonor = await prisma.car.findFirst({
-  //   where: {
-  //     generation: "E00",
-  //   },
-  // });
-
-  // const donors = await prisma.donor.createMany({
-  //   data: [
-  //     {
-  //       vin: "0000000000",
-  //       year: 1990,
-  //       cost: 0,
-  //       mileage: 0,
-  //       carId: genericDonor?.id || "",
-  //     },
-  //     {
-  //       vin: "WBSBL92060JR08716",
-  //       year: 2003,
-  //       cost: 2300000,
-  //       mileage: 141000,
-  //       carId: firstCar?.id || "",
-  //     },
-  //     {
-  //       vin: "WBADN22000GE68930",
-  //       year: 1999,
-  //       cost: 1500000,
-  //       mileage: 220000,
-  //       carId: fiveSeries?.id || "",
-  //     },
-  //     {
-  //       vin: "WBS3R922090K345058",
-  //       year: 2016,
-  //       cost: 3000000,
-  //       mileage: 24000,
-  //       carId: m4?.id || "",
-  //     },
-  //     {
-  //       vin: "WBS8M920105G47739",
-  //       year: 2015,
-  //       cost: 4000000,
-  //       mileage: 21000,
-  //       carId: m3?.id || "",
-  //     },
-  //   ],
-  // });
-
-  // const partType = await prisma.partTypes.create({
-  //   data: {
-  //     name: "Interior",
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "E46 M3 Rear Seat Lateral Trim Panel Left",
-  //     partNo: "52207903035",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: {
-  //         id: firstCar?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "E46 M3 Rear Seat Lateral Trim Panel Right",
-  //     partNo: "52207903036",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: {
-  //         id: firstCar?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "E46 M3 Door Cards Driver Front",
-  //     partNo: "51417890952",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: [
-  //         {
-  //           id: firstCar?.id || "",
-  //         },
-  //         {
-  //           id: vert?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "E46 M3 Door Cards Passenger Front",
-  //     partNo: "51417890951",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: [
-  //         {
-  //           id: firstCar?.id || "",
-  //         },
-  //         {
-  //           id: vert?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "E46 M3 Door Cards Passenger Driver Rear",
-  //     partNo: "51437890784",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: [
-  //         {
-  //           id: firstCar?.id || "",
-  //         },
-  //         {
-  //           id: vert?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "Cylinder Head Cover Right",
-  //     partNo: "11121702856",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: {
-  //         id: fiveSeries?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "Cylinder Head Cover Left",
-  //     partNo: "11121702857",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: {
-  //         id: fiveSeries?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "Master Window Lifter Driver Switch",
-  //     partNo: "61319362126",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: {
-  //         id: m4?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // await prisma.partDetail.create({
-  //   data: {
-  //     name: "F8X M3 / M4 Passenger Air Vent",
-  //     partNo: "64229346226",
-  //     partType: {
-  //       connect: {
-  //         id: partType.id || "",
-  //       },
-  //     },
-  //     cars: {
-  //       connect: [
-  //         {
-  //           id: m3?.id || "",
-  //         },
-  //         {
-  //           id: m4?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // const parts = await prisma.part.createMany({
-  //   data: [
-  //     {
-  //       partDetailsId: "52207903035",
-  //       donorVin: "WBSBL92060JR08716",
-  //     },
-  //     {
-  //       partDetailsId: "52207903036",
-  //       donorVin: "WBSBL92060JR08716",
-  //     },
-  //     {
-  //       partDetailsId: "51417890952",
-  //       donorVin: "WBSBL92060JR08716",
-  //     },
-  //     {
-  //       partDetailsId: "51417890951",
-  //       donorVin: "WBSBL92060JR08716",
-  //     },
-  //     {
-  //       partDetailsId: "51437890784",
-  //       donorVin: "WBSBL92060JR08716",
-  //     },
-  //     {
-  //       partDetailsId: "11121702856",
-  //       donorVin: "WBADN22000GE68930",
-  //     },
-  //     {
-  //       partDetailsId: "11121702857",
-  //       donorVin: "WBADN22000GE68930",
-  //     },
-  //     {
-  //       partDetailsId: "11121702857",
-  //       donorVin: "WBS3R922090K345058",
-  //     },
-  //     {
-  //       partDetailsId: "64229346226",
-  //       donorVin: "WBS3R922090K345058",
-  //     },
-  //     {
-  //       partDetailsId: "64229346226",
-  //       donorVin: "WBS8M920105G47739",
-  //     },
-  //   ],
-  // });
-
-  // const partLeft = await prisma.part.findFirst({});
-  // const partRight = await prisma.part.findFirst({
-  //   where: {
-  //     partDetailsId: "52207903036",
-  //   },
-  // });
-  // const headCoverLeft = await prisma.part.findFirst({
-  //   where: {
-  //     partDetailsId: "11121702856",
-  //   },
-  // });
-  // const headCoverRight = await prisma.part.findFirst({
-  //   where: {
-  //     partDetailsId: "11121702857",
-  //   },
-  // });
-  // const firstAirVent = await prisma.part.findFirst({
-  //   where: {
-  //     partDetailsId: "64229346226",
-  //     donorVin: "WBS3R922090K345058",
-  //   },
-  // });
-  // const secondAirVent = await prisma.part.findFirst({
-  //   where: {
-  //     partDetailsId: "64229346226",
-  //     donorVin: "WBS8M920105G47739",
-  //   },
-  // });
-
-  // const singleItemListing = await prisma.listing.create({
-  //   data: {
-  //     title: "E46 M3 Rear Seat Lateral Trim Panel Left",
-  //     description: "E46 M3 Rear Seat Lateral Trim Panel Set",
-  //     condition: "Good",
-  //     price: 5000,
-  //     weight: 10,
-  //     height: 10,
-  //     width: 10,
-  //     length: 10,
-  //     active: true,
-  //     parts: {
-  //       connect: {
-  //         id: partLeft?.id || "",
-  //       },
-  //     },
-  //   },
-  // });
-
-  // const setListing = await prisma.listing.create({
-  //   data: {
-  //     title: "E46 M3 Rear Seat Lateral Trim Panel Set",
-  //     description: "E46 M3 Rear Seat Lateral Trim Panel Set",
-  //     condition: "Whole set is immaculate",
-  //     price: 10000,
-  //     weight: 20,
-  //     height: 10,
-  //     width: 10,
-  //     length: 10,
-  //     active: true,
-  //     parts: {
-  //       connect: [
-  //         {
-  //           id: partLeft?.id || "",
-  //         },
-  //         {
-  //           id: partRight?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // const headCoverListing = await prisma.listing.create({
-  //   data: {
-  //     title: "E39 Cylinder Head Cover Set",
-  //     description: "E39 Cylinder Head Cover Set",
-  //     condition: "Good",
-  //     price: 4500,
-  //     weight: 20,
-  //     height: 10,
-  //     width: 10,
-  //     length: 10,
-  //     active: true,
-  //     parts: {
-  //       connect: [
-  //         {
-  //           id: headCoverLeft?.id || "",
-  //         },
-  //         {
-  //           id: headCoverRight?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // const airVentListing = await prisma.listing.create({
-  //   data: {
-  //     title: "F8X M3 / M4 Air Vent Set",
-  //     description: "F8X M3 / M4 Air Vent Set",
-  //     condition: "Good",
-  //     price: 4000,
-  //     weight: 20,
-  //     height: 10,
-  //     width: 10,
-  //     length: 10,
-  //     active: true,
-  //     parts: {
-  //       connect: [
-  //         {
-  //           id: firstAirVent?.id || "",
-  //         },
-  //         {
-  //           id: secondAirVent?.id || "",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-
-  // const listings = await prisma.listing.findMany({});
-
-  // const imagePromises = listings.map((listing) => {
-  //   return prisma.image.create({
-  //     data: {
-  //       url: "https://res.cloudinary.com/codycodes/image/upload/v1672892980/listings/imzoxml30hu9npbwgtq0.png",
-  //       listingId: listing?.id || "",
-  //     },
-  //   });
-  // });
-
-  // await Promise.all(imagePromises);
-
-  // const images = await prisma.image.findMany({});
-
-  // console.log(
-  //   cars,
-  //   donors,
-  //   parts,
-  //   { listings: listings.length },
-  //   { images: images.length }
-  // );
-  // delete all part types
-  // await prisma.partTypes.deleteMany({});
+  const cars = [
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E82 (2006 - 2011)",
+      models: ["123d", "125i", "135i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E82 LCI (2011 - 2013)",
+      models: ["120i", "123d", "125i", "135i", "1M Coupe"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E87 (2003 - 2007)",
+      models: ["116i", "118d", "118i", "120d", "120i", "130i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E87 LCI (2006 - 2011)",
+      models: ["116i", "118d", "118i", "120d", "120i", "123d", "130i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E88 (2006 - 2011)",
+      models: ["118d", "120i", "123d", "125i", "135i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "E88 LCI (2011 - 2013)",
+      models: ["118d", "120i", "123d", "125i", "135i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "F20 (2010 - 2015)",
+      models: ["116i", "118d", "118i", "125i", "M135i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "F20 (2014 - 2019)",
+      models: ["118d", "118i", "120i", "125i", "M135i", "M140i"],
+    },
+    {
+      make: "BMW",
+      series: "1 Series",
+      generation: "F40 (2011 - 2013)",
+      models: ["118i", "128ti", "M135i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F22 (2012 - 2017)",
+      models: ["220d", "220i", "228i", "230i", "M235i", "M240i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F22 LCI (2016 - 2019)",
+      models: ["220i", "230i", "M240i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F23 (2014 - 2017)",
+      models: ["220i", "228i", "230i", "M240i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F23 LCI (2016 - 2019)",
+      models: ["220i", "230i", "M240i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F44 (2018 - 2019)",
+      models: ["218i", "220i", "M235i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F45 (2013 - 2018)",
+      models: ["218i", "218d", "220i", "225i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F45 LCI (2017 - 2019)",
+      models: ["220i"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F87 (2014 - 2017)",
+      models: ["M2", "M2 Competition"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "F87 LCI (2016 - 2019)",
+      models: ["M2", "M2 Competition"],
+    },
+    {
+      make: "BMW",
+      series: "2 Series",
+      generation: "G42 (2021 - Present)",
+      models: ["220i", "230i", "M240i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E30 (1981 - 1991)",
+      models: [
+        "318i",
+        "318i",
+        "318i",
+        "318is",
+        "320i",
+        "320i",
+        "320i",
+        "323i",
+        "323i",
+        "323i",
+        "325e",
+        "325e",
+        "325i",
+        "325i",
+        "325i",
+        "325is",
+        "328i",
+        "328i",
+        "M3",
+        "M3",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E36 (1990 - 1999)",
+      models: [
+        "316i",
+        "316i",
+        "316i",
+        "318i",
+        "318i",
+        "318is",
+        "318ti",
+        "320i",
+        "320i",
+        "320i",
+        "323i",
+        "323i",
+        "323i",
+        "325i",
+        "325i",
+        "325i",
+        "325is",
+        "328i",
+        "328i",
+        "328i",
+        "M3",
+        "M3",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E46 (1997 - 2006)",
+      models: [
+        "316ti",
+        "318ti",
+        "325ti",
+        "318i",
+        "320i",
+        "320i",
+        "323i",
+        "325i",
+        "328i",
+        "330i",
+        "320Ci",
+        "320Ci",
+        "323Ci",
+        "323Ci",
+        "325Ci",
+        "325Ci",
+        "328Ci",
+        "330Ci",
+        "330Ci",
+        "M3",
+        "M3",
+        "M3 CSL",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E90 (2004 - 2008)",
+      models: ["320d", "320i", "323i", "325i", "330d", "330i", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E90 LCI (2008 - 2013)",
+      models: ["320d", "320i", "323i", "325i", "330d", "330i", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E91 (2004 - 2008)",
+      models: ["320d", "320i", "323i", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E91 LCI (2007 - 2012)",
+      models: ["320d", "320i", "323i", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E92 (2005 - 2010)",
+      models: ["320d", "323i", "325i", "330d", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E92 LCI (2008 - 2013)",
+      models: ["320d", "323i", "325i", "330d", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E93 (2005 - 2010)",
+      models: ["320d", "325i", "330d", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "E93 LCI (2008 - 2013)",
+      models: ["320d", "325i", "330d", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F30 (2011 - 2016)",
+      models: ["316i", "318d", "320d", "320i", "328i", "335i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F30 LCI (2014 - 2019)",
+      models: ["318i", "320d", "320i", "330e", "330i", "340i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F80 (2012 - 2016)",
+      models: ["M3"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F80 LCI (2016 - 2018)",
+      models: ["M3"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F31 (2011 - 2015)",
+      models: ["318d", "320i", "328i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F31 LCI (2014 - 2019)",
+      models: ["320i", "330i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F34 (2012 - 2016)",
+      models: ["320d", "320i", "328i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "F34 LCI (2015 - 2020)",
+      models: ["320d", "328i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "G20 (2018 - 2020)",
+      models: ["320d", "320i", "330e", "330i", "M340i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "G20 LCI (2020 - Present)",
+      models: ["320i", "330e", "330i", "M340i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "G21 (2018 - Present)",
+      models: ["330i"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "G80 (2021 - Present)",
+      models: ["M3"],
+    },
+    {
+      make: "BMW",
+      series: "3 Series",
+      generation: "G81 (2022 - Present)",
+      models: ["M3"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F32 (2012 - 2018)",
+      models: ["420d", "420i", "428i", "430i", "435i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F32 LCI (2016 - 2019)",
+      models: ["420i", "430i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F33 (2013 - 2017)",
+      models: ["420d", "420i", "428i", "430i", "435i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F33 LCI (2016 - 2019)",
+      models: ["420i", "430i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F36 (2013 - 2017)",
+      models: ["420d", "420i", "428i", "430i", "435i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F36 LCI (2016 - 2019)",
+      models: ["420i", "430i", "440i"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F82 (2013 - 2016)",
+      models: ["M4", "M4 GTS"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F82 LCI (2016 - 2019)",
+      models: ["M4", "M4 CS"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F83 (2013 - 2016)",
+      models: ["M4"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "F83 LCI (2016 - 2019)",
+      models: ["M4"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "G82 (2021 - Present)",
+      models: ["M4"],
+    },
+    {
+      make: "BMW",
+      series: "4 Series",
+      generation: "G83 (2021 - Present)",
+      models: ["M4"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "E34 (1990 - 1996)",
+      models: ["525i", "525i", "530i", "535i", "535is", "540i", "M5"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "E39 (1995 - 2003)",
+      models: [
+        "523i",
+        "525i",
+        "528i",
+        "528i",
+        "530i",
+        "530i",
+        "530d",
+        "535i",
+        "540i",
+        "540i",
+        "M5",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "E60 (2002 - 2007)",
+      models: [
+        "520d",
+        "523i",
+        "525i",
+        "530d",
+        "530i",
+        "540i",
+        "545i",
+        "550i",
+        "M5",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "E60 LCI (2006 - 2010)",
+      models: [
+        "520d",
+        "523i",
+        "525i",
+        "530d",
+        "530i",
+        "540i",
+        "545i",
+        "550i",
+        "M5",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "E61 (2003 - 2007)",
+      models: ["530i"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F07 (2008 - 2013)",
+      models: ["520d", "530d", "535i", "550i"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F07 LCI (2012 - 2017)",
+      models: ["520d", "530d", "535i"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F10 (2009 - 2013)",
+      models: [
+        "520d",
+        "520i",
+        "528i",
+        "535d",
+        "535i",
+        "550i",
+        "ActiveHybrid 5",
+        "M5",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F10 LCI (2012 - 2016)",
+      models: [
+        "520d",
+        "520i",
+        "528i",
+        "535d",
+        "535i",
+        "550i",
+        "ActiveHybrid 5",
+        "M5",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F11 (2009 - 2013)",
+      models: ["520d", "535i"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F11 LCI (2012 - 2017)",
+      models: ["520d", "535i"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "F90 (2016 - 2019)",
+      models: ["M5"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "G30 (2015 - 2020)",
+      models: ["520d", "520i", "530d", "530e", "530i", "540i", "M550i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "G30 LCI (2020 - Present)",
+      models: ["520i", "530d", "530e", "530i", "M550i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "5 Series",
+      generation: "G31 (2017 - 2020)",
+      models: ["520d", "530i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "E24 (1976 - 1989)",
+      models: ["633CSi", "635CSi", "M635CSi"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "E63 (2004 - 2007)",
+      models: ["645Ci", "650i", "M6"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "E63 LCI (2006 - 2010)",
+      models: ["645Ci", "650i", "M6"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "E64 (2004 - 2010)",
+      models: ["645Ci", "650i", "M6"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "E64 LCI (2006 - 2010)",
+      models: ["645Ci", "650i", "M6"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F06 (2011 - 2015)",
+      models: ["640d", "640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F06 LCI (2014 - 2018)",
+      models: ["640d", "640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F12 (2009 - 2015)",
+      models: ["640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F12 LCI (2014 - 2018)",
+      models: ["640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F13 (2010 - 2015)",
+      models: ["640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "F13 LCI (2014 - 2017)",
+      models: ["640i", "650i"],
+    },
+    {
+      make: "BMW",
+      series: "6 Series",
+      generation: "G32 (2014 - 2017)",
+      models: ["620d", "630i", "640i xDrive"],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "E32 (1986 - 1994)",
+        models: [
+            "730i",
+            "730iL",
+            "735i",
+            "735iL",
+            "740iL",
+            "750iL",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "E38 (1994 - 2001)",
+        models: [
+            "730iL",
+            "735i",
+            "735iL",
+            "740iL",
+            "750iL",
+            "L7"
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "E65 (2001 - 2008)",
+        models: [
+            "735i",
+            "740i",
+            "745i",
+            "750i"
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "E66 (2001 - 2008)",
+        models: [
+            "735Li",
+            "740Li",
+            "745Li",
+            "750Li",
+            "760Li"
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "F01 (2007 - 2012)",
+        models: [
+            "730d",
+            "740i",
+            "750i",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "F01 LCI (2011 - 2015)",
+        models: [
+            "730d",
+            "740i",
+            "750i",
+            "ActiveHybrid 7",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "F01 (2007 - 2012)",
+        models: [
+            "740Li",
+            "750Li",
+            "760Li",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "F01 LCI (2011 - 2015)",
+        models: [
+            "740Li",
+            "750Li",
+            "760Li",
+            "ActiveHybrid 7",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "G11 (2014 - 2019)",
+        models: [
+            "730d",
+            "740e",
+            "740i",
+            "750i",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "G11 LCI (2018 - 2020)",
+        models: [
+            "730d",
+            "740i",
+            "745e",
+            "750i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "G12 (2014 - 2019)",
+        models: [
+            "740Li",
+            "750Li",
+            "M760Li xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "7 Series",
+      generation: "G12 LCI (2018 - 2020)",
+        models: [
+            "740Li",
+            "M760Li xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "E31 (1989 - 1999)",
+        models: [
+            "840Ci",
+            "850Ci",
+            "850CSi",
+            "850i",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G14 (2018 - 2020)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G14 LCI (2020 - Present)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G15 (2018 - 2020)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G15 LCI (2020 - Present)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G16 (2018 - 2020)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "8 Series",
+      generation: "G16 LCI (2020 - Present)",
+        models: [
+            "840i",
+            "M850i xDrive",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "Z3",
+      generation: "E36/7 (1995 - 2002)",
+        models: [
+            "1.9i",
+            "2.0i",
+            "2.2",
+            "2.8",
+            "3.0",
+            "M Roadster",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "Z3",
+      generation: "E36/8 (1995 - 2002)",
+        models: [
+            "M Coupe",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "Z4",
+      generation: "E85 (2002 - 2008)",
+        models: [
+            "2.5i",
+            "3.0i",
+            "M Roadster",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "Z4",
+      generation: "E66 (2002 - 2008)",
+        models: [
+            "3.0i",
+            "M Coupe",
+      ],
+    },
+    {
+      make: "BMW",
+      series: "Z4",
+      generation: "E89 (2009 - 2013)",
+        models: [
+            "sDrive20i",
+            "sDrive23i",
+            "sDrive28i",
+            "sDrive30i",
+            "sDrive35i",
+            "sDrive35is",
+        ],
+    },
+    {
+        make: "BMW",
+        series: "Z4",
+        generation: "E89 LCI (2013 - 2016)",
+        models: [
+            "sDrive20i",
+            "sDrive28i",
+            "sDrive35is",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "Z4",
+        generation: "G29 (2017 - 2020)",
+        models: [
+            "sDrive20i",
+            "sDrive30i",
+            "M40i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X1",
+        generation: "E84 (2009 - 2013)",
+        models: [
+            "sDrive18d",
+            "sDrive18i",
+            "sDrive20d",
+            "sDrive20i",
+            "xDrive20d",
+            "xDrive23d",
+            "xDrive25i",
+            "xDrive28i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X1",
+        generation: "E84 LCI (2013 - 2016)",
+        models: [
+            "sDrive18d",
+            "sDrive20i",
+            "xDrive20d",
+            "xDrive28i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X1",
+        generation: "F48 (2014 - 2019)",
+        models: [
+            "sDrive18d",
+            "sDrive18i",
+            "sDrive20i",
+            "xDrive20d",
+            "xDrive25i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X1",
+        generation: "F48 LCI (2018 - Present)",
+        models: [
+            "sDrive18d",
+            "sDrive18i",
+            "sDrive20i",
+            "xDrive25i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X2",
+        generation: "F39 (2017 - 2020)",
+        models: [
+            "sDrive18i",
+            "sDrive20i",
+            "xDrive20d",
+            "M35i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X3",
+        generation: "E83 (2003 - 2010)",
+        models: [
+            "xDrive20d",
+            "xDrive25i",
+            "xDrive30d",
+            "xDrive30i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X3",
+        generation: "F25 (2010 - 2017)",
+        models: [
+            "xDrive20d",
+            "xDrive20i",
+            "xDrive28i",
+            "xDrive30d",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X3",
+        generation: "F97 (2019 - Present)",
+        models: [
+            "X3 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X3",
+        generation: "G01 (2017 - Present)",
+        models: [
+            "xDrive20d",
+            "xDrive20i",
+            "xDrive30d",
+            "xDrive30i",
+            "M40i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X4",
+        generation: "F26 (2013 - 2018)",
+        models: [
+            "xDrive20d",
+            "xDrive20i",
+            "xDrive30d",
+            "xDrive35d",
+            "xDrive35i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X4",
+        generation: "F98 (2019 - Current)",
+        models: [
+            "X4 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X4",
+        generation: "G02 (2017 - Current)",
+        models: [
+            "xDrive20d",
+            "xDrive20i",
+            "xDrive30i",
+            "M40i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "E53 (1999 - 2006)",
+        models: [
+            "3.0d",
+            "3.0i",
+            "4.4i (N62)",
+            "4.4i (M62)",
+            "4.6is",
+            "4.8is",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "E70 (2006 - 2010)",
+        models: [
+            "3.0d",
+            "3.0sd",
+            "3.0si",
+            "3.5d",
+            "4.8i",
+            "X5 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "E70 LCI (2009 - 2013)",
+        models: [
+            "xDrive30d",
+            "xDrive35d",
+            "xDrive35i",
+            "xDrive40d",
+            "xDrive40i",
+            "xDrive50i",
+            "M50d",
+            "X5 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "F15 (2013 - 2018)",
+        models: [
+            "sDrive25d",
+            "xDrive25d",
+            "xDrive30d",
+            "xDrive35i",
+            "xDrive40d",
+            "xDrive40e",
+            "xDrive50i",
+            "M50d",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "F85 (2013 - 2018)",
+        models: [
+            "X5 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "F95 (2019 - Present)",
+        models: [
+            "X5 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X5",
+        generation: "G05 (2017 - 2020)",
+        models: [
+            "xDrive25d",
+            "xDrive30d",
+            "xDrive40i",
+            "xDrive45e",
+            "M50d",
+            "M50i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "E71 (2007 - 2011)",
+        models: [
+            "xDrive30d",
+            "xDrive35d",
+            "xDrive35i",
+            "xDrive40d",
+            "xDrive50i",
+            "X6 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "E71 LCI (2011 - 2014)",
+        models: [
+            "xDrive30d",
+            "xDrive35i",
+            "xDrive40d",
+            "xDrive50i",
+            "M50d",
+            "X6 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "F16 (2013 - 2019)",
+        models: [
+            "xDrive30d",
+            "xDrive35i",
+            "xDrive40d",
+            "xDrive50i",
+            "M50d",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "F86 (2013 - 2019)",
+        models: [
+            "X6 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "F96 (2019 - Present)",
+        models: [
+            "X6 M",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X6",
+        generation: "G06 (2018 - Present)",
+        models: [
+            "xDrive30d",
+            "xDrive40i",
+            "M50i",
+      ],
+    },
+    {
+        make: "BMW",
+        series: "X7",
+        generation: "G07 (2018 - Present)",
+        models: [
+            "xDrive30d",
+            "xDrive40d",
+            "M50i",
+            "M50d",
+            "M60i",
+      ],
+    },
+  ];
+  cars.map(async (car: any) => {
+    return car.models.map(async (model: any) => {
+      return await prisma.car.create({
+        data: {
+          make: car.make,
+          series: car.series,
+          generation: car.generation,
+          model: model,
+        },
+      });
+    });
+  });
 }
 main()
   .then(async () => {
