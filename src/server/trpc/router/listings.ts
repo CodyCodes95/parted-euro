@@ -10,7 +10,7 @@ export const listingRouter = router({
         title: z.string().min(3),
         description: z.string().min(5),
         condition: z.string().min(3),
-        price: z.number().min(100).max(100000000),
+        price: z.number().min(1).max(1000000),
         weight: z.number(),
         itemLength: z.number(),
         width: z.number(),
