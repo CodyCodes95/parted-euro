@@ -1,17 +1,19 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 import eBayApi from "ebay-api";
-import {
+import type {
   FulfillmentPolicyRequest,
   InventoryLocationFull,
 } from "ebay-api/lib/types";
-import {
-  CategoryType,
+import type {
   Condition,
   ContentLanguage,
   CurrencyCode,
   FormatType,
   Marketplace,
+} from "ebay-api/lib/enums";
+import {
+  CategoryType,
   MarketplaceId,
   TimeDurationUnit,
 } from "ebay-api/lib/enums";
@@ -199,7 +201,7 @@ export const ebayRouter = router({
                 shippingServices: [
                   {
                     shipToLocations: {
-                      regionIncluded: [{regionName: "Worldwide"}],
+                      regionIncluded: [{ regionName: "Worldwide" }],
                     },
                     shippingCarrierCode: "AustraliaPost",
                     shippingServiceCode: "AU_StandardInternational",
@@ -212,8 +214,7 @@ export const ebayRouter = router({
               },
             ],
           } as FulfillmentPolicyRequest);
-        const fulfillmentPolicy =
-          createFulfillmentPolicy.result.result.data.fulfillmentPolicyId;
+        const fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
             input.listingId,
@@ -223,7 +224,7 @@ export const ebayRouter = router({
                   quantity: input.quantity,
                 },
               },
-              condition: input.condition as Condition,
+              condition: input.conditionDescription as Condition,
               product: {
                 title: input.title,
                 description: `${input.description}, ${input.conditionDescription}`,
