@@ -7,8 +7,8 @@ import { signOut } from "next-auth/react";
 
 interface AdminPopupProps {
   open: boolean;
-  setOpen: any;
-  adminRef: any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  adminRef: React.RefObject<HTMLDivElement>;
 }
 
 const AdminPopup: React.FC<AdminPopupProps> = ({ open, setOpen, adminRef }) => {
@@ -19,7 +19,7 @@ const AdminPopup: React.FC<AdminPopupProps> = ({ open, setOpen, adminRef }) => {
       popUpRef.current &&
       open &&
       !popUpRef.current.contains(e.target) &&
-      !adminRef.current.contains(e.target)
+      !adminRef.current?.contains(e.target)
     ) {
       setOpen(false);
     }

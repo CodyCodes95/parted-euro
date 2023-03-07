@@ -41,42 +41,6 @@ const AddPartDetails: React.FC<AddPartProps> = ({
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
-  // const cars = trpc.cars.getAll.useQuery(undefined, {
-    // onSuccess: (data) => {
-    //   setCarOptions([]);
-    //   data.forEach((car: Car) => {
-    //     setCarOptions((prevState: Array<NestedOptions>) => {
-    //       if (
-    //         prevState.some((group: NestedOptions) => group.label === car.series)
-    //       ) {
-    //         return prevState.map((group: NestedOptions) => {
-    //           if (group.label === car.series) {
-    //             group.options.push({
-    //               label: `${car.generation} ${car.model} ${car.body || ""}`,
-    //               value: car.id,
-    //             });
-    //           }
-    //           return group;
-    //         });
-    //       } else {
-    //         return [
-    //           ...prevState,
-    //           {
-    //             label: car.series,
-    //             options: [
-    //               {
-    //                 label: `${car.generation} ${car.model} ${car.body || ""}`,
-    //                 value: car.id,
-    //               },
-    //             ],
-    //           },
-    //         ];
-    //       }
-    //     });
-    //   });
-    // },
-  // });
-
   const cars = trpc.cars.getAllSearch.useQuery(
     { search: debouncedSearch },
     {
