@@ -201,6 +201,7 @@ const AddListing: React.FC<AddListingProps> = ({
     });
     await Promise.all([...imagePromises]);
     success("Listing created successfully");
+    refetch();
     setShowModal(false);
     setLoading(false);
     setTitle("");
