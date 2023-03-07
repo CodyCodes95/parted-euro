@@ -2,7 +2,9 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import type { Car } from "@prisma/client";
+import { useDebounce } from "use-debounce";
+import { Car } from "@prisma/client";
+
 
 interface AddPartProps {
   showModal: boolean;
@@ -34,44 +36,87 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
+  const [carSearchInput, setCarSearchInput] = useState<string>("");
+  const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
-  const cars = trpc.cars.getAll.useQuery(undefined, {
-    onSuccess: (data) => {
-      setCarOptions([]);
-      data.forEach((car: Car) => {
-        setCarOptions((prevState: Array<NestedOptions>) => {
-          if (
-            prevState.some((group: NestedOptions) => group.label === car.series)
-          ) {
-            return prevState.map((group: NestedOptions) => {
-              if (group.label === car.series) {
-                group.options.push({
-                  label: `${car.generation} ${car.model} ${car.body || ""}`,
-                  value: car.id,
-                });
-              }
-              return group;
-            });
-          } else {
-            return [
-              ...prevState,
-              {
-                label: car.series,
-                options: [
-                  {
+  // const cars = trpc.cars.getAll.useQuery(undefined, {
+    // onSuccess: (data) => {
+    //   setCarOptions([]);
+    //   data.forEach((car: Car) => {
+    //     setCarOptions((prevState: Array<NestedOptions>) => {
+    //       if (
+    //         prevState.some((group: NestedOptions) => group.label === car.series)
+    //       ) {
+    //         return prevState.map((group: NestedOptions) => {
+    //           if (group.label === car.series) {
+    //             group.options.push({
+    //               label: `${car.generation} ${car.model} ${car.body || ""}`,
+    //               value: car.id,
+    //             });
+    //           }
+    //           return group;
+    //         });
+    //       } else {
+    //         return [
+    //           ...prevState,
+    //           {
+    //             label: car.series,
+    //             options: [
+    //               {
+    //                 label: `${car.generation} ${car.model} ${car.body || ""}`,
+    //                 value: car.id,
+    //               },
+    //             ],
+    //           },
+    //         ];
+    //       }
+    //     });
+    //   });
+    // },
+  // });
+
+  const cars = trpc.cars.getAllSearch.useQuery(
+    { search: debouncedSearch },
+    {
+      enabled: !!debouncedSearch,
+      onSuccess: (data) => {
+        setCarOptions([]);
+        data.forEach((car: Car) => {
+          setCarOptions((prevState: Array<NestedOptions>) => {
+            if (
+              prevState.some((group: NestedOptions) => group.label === car.series)
+            ) {
+              return prevState.map((group: NestedOptions) => {
+                if (group.label === car.series) {
+                  group.options.push({
                     label: `${car.generation} ${car.model} ${car.body || ""}`,
                     value: car.id,
-                  },
-                ],
-              },
-            ];
-          }
+                  });
+                }
+                return group;
+              });
+            } else {
+              return [
+                ...prevState,
+                {
+                  label: car.series,
+                  options: [
+                    {
+                      label: `${car.generation} ${car.model} ${car.body || ""}`,
+                      value: car.id,
+                    },
+                  ],
+                },
+              ];
+            }
+          });
         });
-      });
-    },
-  });
+      },
+    }
+  )
+
   const savePartDetail = trpc.parts.createPartDetail.useMutation();
 
   const onSave = async (exit: boolean) => {
@@ -185,11 +230,17 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                   setCompatibleCars(e.map((car: Options) => car.value));
                 }}
                 isMulti
+                onInputChange={(e) => {
+                  if (e.length > 1) {
+                    setCarSearchInput(e);
+                  }
+                }}
                 closeMenuOnSelect={false}
                 options={carOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
+
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
