@@ -8,6 +8,10 @@ export const partRouter = router({
         name: z.string().min(3),
         partNo: z.string().min(3),
         cars: z.array(z.string()),
+        partLength: z.number(),
+        width: z.number(),
+        height: z.number(),
+        weight: z.number(),
         partTypes: z.array(z.string()),
       })
     )
@@ -16,6 +20,10 @@ export const partRouter = router({
         data: {
           name: input.name,
           partNo: input.partNo,
+          length: input.partLength,
+          width: input.width,
+          height: input.height,
+          weight: input.weight,
           partTypes: {
             connect: input.partTypes.map((id) => {
               return { id };
@@ -34,6 +42,10 @@ export const partRouter = router({
       z.object({
         partNo: z.string().min(3),
         name: z.string().min(3),
+        itemLength: z.number(),
+        width: z.number(),
+        height: z.number(),
+        weight: z.number(),
         cars: z.array(z.string()),
         partTypes: z.array(z.string()),
       })
@@ -45,6 +57,10 @@ export const partRouter = router({
         },
         data: {
           name: input.name,
+          length: input.itemLength,
+          width: input.width,
+          height: input.height,
+          weight: input.weight,
           partTypes: {
             connect: input.partTypes.map((id) => {
               return { id };

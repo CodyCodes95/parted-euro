@@ -11,10 +11,6 @@ export const listingRouter = router({
         description: z.string().min(5),
         condition: z.string().min(3),
         price: z.number().min(1).max(1000000),
-        weight: z.number(),
-        itemLength: z.number(),
-        width: z.number(),
-        height: z.number(),
         parts: z.array(z.string()),
       })
     )
@@ -25,10 +21,6 @@ export const listingRouter = router({
           description: input.description,
           condition: input.condition,
           price: input.price,
-          weight: input.weight,
-          length: input.itemLength,
-          width: input.width,
-          height: input.height,
           parts: {
             connect: input.parts.map((part) => {
               return { id: part };
@@ -45,10 +37,6 @@ export const listingRouter = router({
         description: z.string().min(5),
         condition: z.string().min(3),
         price: z.number().min(100).max(100000000),
-        weight: z.number(),
-        itemLength: z.number(),
-        width: z.number(),
-        height: z.number(),
       })
   )
     .mutation(async ({ ctx, input }) => {
@@ -61,10 +49,6 @@ export const listingRouter = router({
           description: input.description,
           condition: input.condition,
           price: input.price,
-          weight: input.weight,
-          length: input.itemLength,
-          width: input.width,
-          height: input.height,
         },
       });
       return listing;
@@ -308,10 +292,6 @@ export const listingRouter = router({
           description: true,
           condition: true,
           price: true,
-          weight: true,
-          length: true,
-          width: true,
-          height: true,
           images: {
             orderBy: {
               order: "asc",
