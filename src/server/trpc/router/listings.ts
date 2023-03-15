@@ -309,6 +309,10 @@ export const listingRouter = router({
               },
               partDetails: {
                 select: {
+                  length: true,
+                  width: true,
+                  height: true,
+                  weight: true,
                   partNo: true,
                   cars: {
                     select: {

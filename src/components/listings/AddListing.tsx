@@ -45,10 +45,6 @@ const AddListing: React.FC<AddListingProps> = ({
   );
   const [condition, setCondition] = useState<string>(listing?.condition || "");
   const [price, setPrice] = useState<number>(listing?.price || 0);
-  const [weight, setWeight] = useState<number>(listing?.weight || 0);
-  const [length, setLength] = useState<number>(listing?.length || 0);
-  const [width, setWidth] = useState<number>(listing?.width || 0);
-  const [height, setHeight] = useState<number>(listing?.height || 0);
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>([]);
   const [partOptions, setPartOptions] = useState<any>([]);
@@ -134,10 +130,6 @@ const AddListing: React.FC<AddListingProps> = ({
           description: description,
           condition: condition,
           price: price,
-          weight: weight,
-          itemLength: length,
-          width: width,
-          height: height,
         },
         {
           onSuccess: (listing) => {
@@ -164,10 +156,6 @@ const AddListing: React.FC<AddListingProps> = ({
       setDescription("");
       setCondition("");
       setPrice(0);
-      setWeight(0);
-      setLength(0);
-      setWidth(0);
-      setHeight(0);
       setImages([]);
       return;
     }
@@ -177,10 +165,6 @@ const AddListing: React.FC<AddListingProps> = ({
         description: description,
         condition: condition,
         price: price,
-        weight: weight,
-        itemLength: length,
-        width: width,
-        height: height,
         parts: parts,
       },
       {
@@ -208,10 +192,6 @@ const AddListing: React.FC<AddListingProps> = ({
     setDescription("");
     setCondition("");
     setPrice(0);
-    setWeight(0);
-    setLength(0);
-    setWidth(0);
-    setHeight(0);
     setImages([]);
   };
 
@@ -335,38 +315,6 @@ const AddListing: React.FC<AddListingProps> = ({
                 type="number"
                 label="Price"
                 onChange={(e) => setPrice(Number(e.target.value))}
-              />
-            </div>
-            <div className="">
-              <Input
-                value={weight || undefined}
-                type="number"
-                label="Weight"
-                onChange={(e) => setWeight(Number(e.target.value))}
-              />
-            </div>
-            <div className="">
-              <Input
-                value={length || undefined}
-                type="number"
-                label="Length"
-                onChange={(e) => setLength(Number(e.target.value))}
-              />
-            </div>
-            <div className="">
-              <Input
-                value={width || undefined}
-                type="number"
-                label="Width"
-                onChange={(e) => setWidth(Number(e.target.value))}
-              />
-            </div>
-            <div className="">
-              <Input
-                value={height || undefined}
-                type="number"
-                label="Height"
-                onChange={(e) => setHeight(Number(e.target.value))}
               />
             </div>
             {listing ? null : (

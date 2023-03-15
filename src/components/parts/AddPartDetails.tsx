@@ -3,8 +3,7 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import { useDebounce } from "use-debounce";
-import { Car } from "@prisma/client";
-
+import type { Car } from "@prisma/client";
 
 interface AddPartProps {
   showModal: boolean;
@@ -29,7 +28,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   setShowModal,
   error,
   success,
-  refetch
+  refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -37,6 +36,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
   const [carSearchInput, setCarSearchInput] = useState<string>("");
+  const [weight, setWeight] = useState<number>(0);
+  const [length, setLength] = useState<number>(0);
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
@@ -50,7 +53,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         data.forEach((car: Car) => {
           setCarOptions((prevState: Array<NestedOptions>) => {
             if (
-              prevState.some((group: NestedOptions) => group.label === car.series)
+              prevState.some(
+                (group: NestedOptions) => group.label === car.series
+              )
             ) {
               return prevState.map((group: NestedOptions) => {
                 if (group.label === car.series) {
@@ -79,7 +84,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         });
       },
     }
-  )
+  );
 
   const savePartDetail = trpc.parts.createPartDetail.useMutation();
 
@@ -89,6 +94,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
+        weight: weight,
+        partLength: length,
+        width: width,
+        height: height,
         partTypes: partTypeIds as string[],
       },
       {
@@ -97,7 +106,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           setPartNo("");
           setName("");
           setCompatibleCars([]);
-          refetch()
+          refetch();
           if (exit) {
             setShowModal(false);
           }
@@ -168,6 +177,50 @@ const AddPartDetails: React.FC<AddPartProps> = ({
             </div>
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Weight
+              </label>
+              <input
+                value={weight || undefined}
+                onChange={(e) => setWeight(Number(e.target.value))}
+                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Length
+              </label>
+              <input
+                value={length || undefined}
+                onChange={(e) => setLength(Number(e.target.value))}
+                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Width
+              </label>
+              <input
+                value={width || undefined}
+                onChange={(e) => setWidth(Number(e.target.value))}
+                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Height
+              </label>
+              <input
+                value={height || undefined}
+                onChange={(e) => setHeight(Number(e.target.value))}
+                className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Part Category
               </label>
               <Select
@@ -204,7 +257,6 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
-
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">

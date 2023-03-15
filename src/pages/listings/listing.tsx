@@ -6,7 +6,6 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import { useContext, useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
-import type { Listing as ListingType } from "@prisma/client";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,9 +22,33 @@ const Listing: NextPage = () => {
     minimumFractionDigits: 2,
   });
 
-  interface IListing extends ListingType {
+  type ListingType = {
+    id: string;
+    title: string;
+    price: number;
     images: Image[];
-  }
+    parts: {
+      donor: {
+        car: Car;
+        vin: string;
+        year: number;
+        mileage: number;
+      };
+      partDetails: {
+        cars: {
+          id: string;
+          generation: string;
+          model: string;
+          body: string | null;
+        }[];
+        partNo: string;
+        weight: number;
+        length: number;
+        width: number;
+        height: number;
+      };
+    }[];
+  };
 
   interface CartItem {
     listingId: string;
@@ -39,12 +62,11 @@ const Listing: NextPage = () => {
     weight: number;
   }
 
-
   const { cart, setCart } = useContext(CartContext);
 
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
-  const addToCart = (listing: IListing) => {
+  const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
 
     if (existingItem) {
@@ -60,10 +82,18 @@ const Listing: NextPage = () => {
         listingPrice: listing.price,
         listingImage: listing.images[0]?.url,
         quantity: 1,
-        length: listing.length,
-        width: listing.width,
-        height: listing.height,
-        weight: listing.weight,
+        length: listing.parts
+          .map((part) => part.partDetails.length)
+          .reduce((a, b) => a + b, 0),
+        width: listing.parts
+          .map((part) => part.partDetails.width)
+          .reduce((a, b) => a + b, 0),
+        height: listing.parts
+          .map((part) => part.partDetails.height)
+          .reduce((a, b) => a + b, 0),
+        weight: listing.parts
+          .map((part) => part.partDetails.weight)
+          .reduce((a, b) => a + b, 0),
       };
       toast.success("Added to cart");
       setCart([...cart, cartItem]);
@@ -95,8 +125,8 @@ const Listing: NextPage = () => {
     setIsMobile(window.innerWidth < 1300);
     window.addEventListener("resize", () => {
       setIsMobile(window.innerWidth < 1300);
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <>
@@ -108,14 +138,14 @@ const Listing: NextPage = () => {
         <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="w-[50%]">
             <div className="flex flex-col items-center">
-              <Carousel thumbWidth={60} showThumbs={isMobile ? false : true} showArrows={isMobile ? false : true}>
+              <Carousel
+                thumbWidth={60}
+                showThumbs={isMobile ? false : true}
+                showArrows={isMobile ? false : true}
+              >
                 {listing.data?.images.map((image) => {
                   return (
-                      <img
-                        key={image.id}
-                        className="max-w-lg"
-                        src={image.url}
-                      />
+                    <img key={image.id} className="max-w-lg" src={image.url} />
                   );
                 })}
               </Carousel>
@@ -194,10 +224,11 @@ const Listing: NextPage = () => {
                 }, [] as any[])
                 .map((part) => {
                   return part.partDetails.cars
-                    .reduce((acc:any, car:Car) => {
+                    .reduce((acc: any, car: Car) => {
                       const { id, generation, model, body } = car;
                       const existingCar = acc.find(
-                        (c:any) => c.generation === generation && c.model === model
+                        (c: any) =>
+                          c.generation === generation && c.model === model
                       );
                       if (existingCar) {
                         existingCar.body = `${existingCar.body}, ${body}`;

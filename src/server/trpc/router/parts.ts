@@ -42,7 +42,7 @@ export const partRouter = router({
       z.object({
         partNo: z.string().min(3),
         name: z.string().min(3),
-        itemLength: z.number(),
+        partLength: z.number(),
         width: z.number(),
         height: z.number(),
         weight: z.number(),
@@ -57,7 +57,7 @@ export const partRouter = router({
         },
         data: {
           name: input.name,
-          length: input.itemLength,
+          length: input.partLength,
           width: input.width,
           height: input.height,
           weight: input.weight,

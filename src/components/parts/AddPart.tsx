@@ -38,8 +38,14 @@ const AddPart: React.FC<AddPartProps> = ({
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
   const [partDetailsId, setPartDetailsId] = useState<string>("");
-  const [inventoryLocation, setInventoryLocation] = useState<string>(part?.inventoryLocationId || "");
+  const [inventoryLocation, setInventoryLocation] = useState<string>(
+    part?.inventoryLocationId || ""
+  );
   const [donor, setDonor] = useState<string>(part?.donorVin || donorVin || "");
+  const [weight, setWeight] = useState<number>(0);
+  const [length, setLength] = useState<number>(0);
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
   const [addInventoryLocation, setAddInventoryLocation] =
     useState<boolean>(false);
   const [newInventoryLocation, setNewInventoryLocation] = useState<string>("");
@@ -140,6 +146,10 @@ const AddPart: React.FC<AddPartProps> = ({
         name: name,
         cars: compatibleCars,
         partTypes: partTypeIds as string[],
+        weight: weight,
+        partLength: length,
+        width: width,
+        height: height,
       },
       {
         onSuccess: (data) => {
@@ -313,6 +323,50 @@ const AddPart: React.FC<AddPartProps> = ({
                       <input
                         value={partNo}
                         onChange={(e) => setPartNo(e.target.value)}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Weight
+                      </label>
+                      <input
+                        value={weight || undefined}
+                        onChange={(e) => setWeight(Number(e.target.value))}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Length
+                      </label>
+                      <input
+                        value={length || undefined}
+                        onChange={(e) => setLength(Number(e.target.value))}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Width
+                      </label>
+                      <input
+                        value={width || undefined}
+                        onChange={(e) => setWidth(Number(e.target.value))}
+                        className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                        Height
+                      </label>
+                      <input
+                        value={height || undefined}
+                        onChange={(e) => setHeight(Number(e.target.value))}
                         className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
                       />
