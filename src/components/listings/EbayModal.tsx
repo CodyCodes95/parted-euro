@@ -78,6 +78,9 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
     });
+    if (result) {
+      
+    }
     refetch()
     setLoading(false);
   };
