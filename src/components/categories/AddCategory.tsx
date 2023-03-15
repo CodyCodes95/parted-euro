@@ -2,9 +2,7 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import type {
-  PartTypeParentCategory,
-} from "@prisma/client";
+import type { PartTypeParentCategory, PartTypes } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,6 +12,7 @@ interface AddCategoryProps {
   success: (message: string) => void;
   error: (message: string) => void;
   refetch: () => void;
+  selection: any;
 }
 
 const AddCategory: React.FC<AddCategoryProps> = ({
@@ -22,12 +21,14 @@ const AddCategory: React.FC<AddCategoryProps> = ({
   success,
   error,
   refetch,
+  selection,
 }) => {
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>(selection?.name || "");
   const [parentCategoryId, setParentCategoryId] = useState<string>("");
 
   const parentCategories = trpc.categories.getAllCategories.useQuery();
   const saveCategory = trpc.categories.createSubCategory.useMutation();
+  const updateCateogry = trpc.categories.editSubCategory.useMutation();
 
   const onSave = async () => {
     if (!parentCategoryId) {
@@ -41,6 +42,17 @@ const AddCategory: React.FC<AddCategoryProps> = ({
       parentCategoryId,
     });
     success(`${name} Category created`);
+    refetch();
+    setName("");
+    setShowModal(false);
+  };
+
+  const onUpdate = async () => {
+    await updateCateogry.mutateAsync({
+      id: selection?.id as string,
+      name,
+    });
+    success(`${name} Category updated`);
     refetch();
     setName("");
     setShowModal(false);
@@ -93,27 +105,35 @@ const AddCategory: React.FC<AddCategoryProps> = ({
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                Parent Category
-              </label>
-              <Select
-                placeholder={"Select a donor"}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                onChange={(e: any) => setParentCategoryId(e.value as string)}
-                options={parentCategories.data?.map(
-                  (category: PartTypeParentCategory) => {
-                    return {
-                      label: category.name,
-                      value: category.id,
-                    };
-                  }
-                )}
-              />
-            </div>
+            {!selection && (
+              <div className="mb-6">
+                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                  Parent Category
+                </label>
+                <Select
+                  placeholder={"Select a donor"}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={(e: any) => setParentCategoryId(e.value as string)}
+                  options={parentCategories.data?.map(
+                    (category: PartTypeParentCategory) => {
+                      return {
+                        label: category.name,
+                        value: category.id,
+                      };
+                    }
+                  )}
+                />
+              </div>
+            )}
             <button
-              onClick={onSave}
+              onClick={() => {
+                if (selection) {
+                  onUpdate();
+                } else {
+                  onSave();
+                }
+              }}
               data-modal-toggle="defaultModal"
               type="button"
               className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

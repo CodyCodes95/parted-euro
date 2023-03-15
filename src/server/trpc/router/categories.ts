@@ -31,4 +31,22 @@ export const categoryRouter = router({
         },
       });
     }),
+  editSubCategory: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+      })
+  )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.partTypes.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }
+  ),
 });

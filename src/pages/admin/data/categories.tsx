@@ -74,6 +74,20 @@ const Categories: NextPage = () => {
         Header: "Parent Category",
         accessor: (d) => d.parentCategory.name,
       },
+      {
+        Header: "Edit",
+        accessor: (d) => (
+          <button
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              setSelectedCategory(d);
+              setShowModal(true);
+            }}
+          >
+            Edit
+          </button>
+        ),
+      },
       //   {
       //     Header: "Edit",
       //     accessor: (d) => (
@@ -106,6 +120,7 @@ const Categories: NextPage = () => {
           error={error}
           setShowModal={setShowModal}
           showModal={showModal}
+          selection={selectedCategory}
         />
       ) : null}
       <main className="m-20 flex min-h-screen flex-col bg-white">
@@ -113,7 +128,10 @@ const Categories: NextPage = () => {
           <button
             className="
                 mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setSelectedCategory(null);
+              setShowModal(true);
+            }}
           >
             Add Category
           </button>
