@@ -52,6 +52,22 @@ const Inventory: NextPage = () => {
         accessor: "partNo",
       },
       {
+        Header: "Weight",
+        accessor: "weight",
+      },
+      {
+        Header: "Width",
+        accessor: "width",
+      },
+      {
+        Header: "Height",
+        accessor: "height",
+      },
+      {
+        Header: "Length",
+        accessor: "length",
+      },
+      {
         Header: "Type",
         accessor: (d) => d.partTypes.map((type) => type.name).join(", "),
       },
@@ -90,7 +106,7 @@ const Inventory: NextPage = () => {
   const deletePartDetailFunc = async () => {
     if (selectedPart) {
       await deletePart.mutateAsync({ partNo: selectedPart.partNo });
-      parts.refetch()
+      parts.refetch();
       setShowConfirmDelete(false);
     }
   };
