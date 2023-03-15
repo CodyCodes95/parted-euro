@@ -99,10 +99,6 @@ model Listing {
   description  String
   condition    String
   price        Float
-  weight       Float
-  length       Float
-  width        Float
-  height       Float
   parts        Part[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -134,6 +130,10 @@ model Part {
 model PartDetail {
   partNo    String      @id @unique
   name      String
+  weight    Float
+  length    Float
+  width     Float
+  height    Float
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   cars      Car[]
