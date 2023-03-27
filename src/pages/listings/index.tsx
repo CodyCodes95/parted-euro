@@ -56,7 +56,7 @@ const Listings: NextPage = () => {
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
       </div>
-      <div className="flex w-full items-center p-4 flex-wrap jus">
+      <div className="flex w-full items-center p-4 flex-wrap justify-center">
         {listings.data?.map((listing) => (
           <Link
             onMouseEnter={() => setHoveredListing(listing.id)}
