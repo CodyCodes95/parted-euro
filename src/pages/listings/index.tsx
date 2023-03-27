@@ -43,7 +43,7 @@ const Listings: NextPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col p-24">
+    <div className="flex min-h-screen w-full flex-col py-24">
       <div className="flex w-full items-center justify-center">
         <TextField
           value={search}
@@ -56,13 +56,13 @@ const Listings: NextPage = () => {
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
       </div>
-      <div className="flex w-full items-center p-4">
+      <div className="flex w-full items-center p-4 flex-wrap jus">
         {listings.data?.map((listing) => (
           <Link
             onMouseEnter={() => setHoveredListing(listing.id)}
             onMouseLeave={() => setHoveredListing("")}
             key={listing.id}
-            className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+            className="group m-4 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
             href={`listings/listing?id=${listing.id}`}
           >
             <div className="max-h-[634px]">
