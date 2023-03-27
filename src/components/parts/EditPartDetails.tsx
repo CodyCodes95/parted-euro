@@ -2,7 +2,7 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface EditPartProps {
   showModal: boolean;
@@ -127,7 +127,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
       }`}
     >
       <ModalBackDrop setShowModal={setShowModal} />
-      <div className="top relative h-full w-full max-w-2xl max-h-screen overflow-auto">
+      <div className="top relative h-full max-h-screen w-full max-w-2xl overflow-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -232,7 +232,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 onChange={(e: any) => {
                   setPartTypeIds(e.map((partType: Options) => partType.value));
                 }}
-                value={selection.partTypes.map((partType) => {
+                defaultValue={selection.partTypes.map((partType) => {
                   return {
                     label: partType.name,
                     value: partType.id,
