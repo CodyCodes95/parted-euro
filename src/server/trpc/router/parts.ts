@@ -86,7 +86,23 @@ export const partRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.create({ data: input });
     }),
-  getAll: adminProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.input(z.object({ vin: z.string() })).query(({ input, ctx }) => {
+    if (input.vin) {
+      return ctx.prisma.part.findMany({
+        where: {
+          donorVin: input.vin,
+        },
+        include: {
+          partDetails: true,
+          donor: {
+            include: {
+              car: true,
+            },
+          },
+          inventoryLocation: true,
+        },
+      });
+    }
     return ctx.prisma.part.findMany({
       include: {
         partDetails: true,

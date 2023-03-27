@@ -13,24 +13,29 @@ import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import Link from "next/link";
 import Spacer from "../../components/Spacer";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const Inventory: NextPage = () => {
-    const { status } = useSession({
-      required: true,
-      onUnauthenticated() {
-        window.location.href = "/";
-      },
-    });
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = "/";
+    },
+  });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const [selected, setSelected] = useState<Part | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
 
+  const router = useRouter();
+
+  const { vin } = router.query;
+
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
-  const parts = trpc.parts.getAll.useQuery();
+  const parts = trpc.parts.getAll.useQuery({ vin: vin as string || ""});
   const deletePart = trpc.parts.deletePart.useMutation();
 
   const columns = useMemo<Array<Column<any>>>(
@@ -50,6 +55,10 @@ const Inventory: NextPage = () => {
       {
         Header: "Variant",
         accessor: "variant",
+      },
+      {
+        Header: "Donor",
+        accessor: "donorVin",
       },
       // {
       //   Header: "Edit",
@@ -172,7 +181,12 @@ const Inventory: NextPage = () => {
         {parts.isLoading ? (
           <p>Loading</p>
         ) : (
-          <AdminTable columns={columns} filter={filter} setFilter={setFilter} data={parts.data} />
+          <AdminTable
+            columns={columns}
+            filter={filter}
+            setFilter={setFilter}
+            data={parts.data}
+          />
         )}
       </main>
     </>

@@ -69,7 +69,9 @@ const Donors: NextPage = () => {
       },
       {
         Header: "Parts",
-        accessor: (d) => `${d.parts.length} Parts`,
+        accessor: (d) => (
+          <a className="text-blue-400 hover:underline" href={`/admin/inventory?vin=${d.vin}`}>{d.parts.length} parts</a>
+        ),
       },
       {
         Header: "Total Unsold Parts",
