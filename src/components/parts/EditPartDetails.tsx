@@ -37,10 +37,10 @@ const EditPartDetails: React.FC<EditPartProps> = ({
 }) => {
   const [partNo, setPartNo] = useState<string>(selection.partNo);
   const [name, setName] = useState<string>(selection.name);
-  const [weight, setWeight] = useState<number>(selection.weight);
-  const [length, setLength] = useState<number>(selection.length);
-  const [width, setWidth] = useState<number>(selection.width);
-  const [height, setHeight] = useState<number>(selection.height);
+  const [weight, setWeight] = useState<string>(selection.weight.toString());
+  const [length, setLength] = useState<string>(selection.length.toString());
+  const [width, setWidth] = useState<string>(selection.width.toString());
+  const [height, setHeight] = useState<string>(selection.height.toString());
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>(
     selection.cars.map((car: any) => car.id)
   );
@@ -94,11 +94,10 @@ const EditPartDetails: React.FC<EditPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
-        weight: weight,
-        partLength: length,
-        width: width,
-        height: height,
-
+        weight: Number(weight),
+        partLength: Number(length),
+        width: Number(width),
+        height: Number(height),
         partTypes: partTypeIds,
       },
       {
@@ -181,8 +180,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 Weight
               </label>
               <input
-                value={weight || undefined}
-                onChange={(e) => setWeight(Number(e.target.value))}
+                value={weight}
+                type="numberic"
+                onChange={(e) => setWeight(e.target.value)}
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -192,8 +192,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 Length
               </label>
               <input
-                value={length || undefined}
-                onChange={(e) => setLength(Number(e.target.value))}
+                value={length}
+                onChange={(e) => setLength(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -203,8 +204,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 Width
               </label>
               <input
-                value={width || undefined}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                value={width}
+                onChange={(e) => setWidth(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -214,8 +216,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 Height
               </label>
               <input
-                value={height || undefined}
-                onChange={(e) => setHeight(Number(e.target.value))}
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />

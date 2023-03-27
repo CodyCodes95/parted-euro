@@ -130,10 +130,10 @@ model Part {
 model PartDetail {
   partNo    String      @id @unique
   name      String
-  weight    Float       @default(999)
-  length    Float       @default(999)
-  width     Float       @default(999)
-  height    Float       @default(999)
+  weight    Float 
+  length    Float 
+  width     Float 
+  height    Float 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   cars      Car[]

@@ -36,10 +36,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
   const [carSearchInput, setCarSearchInput] = useState<string>("");
-  const [weight, setWeight] = useState<number>(0);
-  const [length, setLength] = useState<number>(0);
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [weight, setWeight] = useState<string>("");
+  const [length, setLength] = useState<string>("");
+  const [width, setWidth] = useState<string>("");
+  const [height, setHeight] = useState<string>("");
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
@@ -94,10 +94,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partNo: partNo,
         name: name,
         cars: compatibleCars,
-        weight: weight,
-        partLength: length,
-        width: width,
-        height: height,
+        weight: Number(weight),
+        partLength: Number(length),
+        width: Number(width),
+        height: Number(height),
         partTypes: partTypeIds as string[],
       },
       {
@@ -180,8 +180,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 Weight
               </label>
               <input
-                value={weight || undefined}
-                onChange={(e) => setWeight(Number(e.target.value))}
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -191,8 +192,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 Length
               </label>
               <input
-                value={length || undefined}
-                onChange={(e) => setLength(Number(e.target.value))}
+                value={length}
+                onChange={(e) => setLength(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -202,8 +204,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 Width
               </label>
               <input
-                value={width || undefined}
-                onChange={(e) => setWidth(Number(e.target.value))}
+                value={width}
+                onChange={(e) => setWidth(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
@@ -213,8 +216,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 Height
               </label>
               <input
-                value={height || undefined}
-                onChange={(e) => setHeight(Number(e.target.value))}
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                type="numeric"
                 className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
               />
