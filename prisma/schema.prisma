@@ -96,7 +96,7 @@ model Donor {
 model Listing {
   id           String   @id @default(cuid())
   title        String
-  description  String
+  description  String   @db.Text
   condition    String
   price        Float
   parts        Part[]
@@ -130,10 +130,10 @@ model Part {
 model PartDetail {
   partNo    String      @id @unique
   name      String
-  weight    Float @default(999)
-  length    Float @default(999)
-  width     Float @default(999)
-  height    Float @default(999)
+  weight    Float       @default(999)
+  length    Float       @default(999)
+  width     Float       @default(999)
+  height    Float       @default(999)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   cars      Car[]
