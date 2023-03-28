@@ -155,6 +155,9 @@ export const ebayRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      console.log("====================INPUT=====================")
+      console.log(input)
+      console.log("====================INPUT=====================")
       const token = await ctx.prisma.ebayCreds.findFirst();
       ebay.OAuth2.setCredentials(token?.refreshToken as any);
       ebay.OAuth2.on("refreshAuthToken", async (token) => {
@@ -169,6 +172,7 @@ export const ebayRouter = router({
         });
       });
       try {
+        console.log("CREATING FULFILLMENT POLICY")
         const createFulfillmentPolicy =
           await ebay.sell.account.createFulfillmentPolicy({
             name: input.listingId,
@@ -214,7 +218,10 @@ export const ebayRouter = router({
               },
             ],
           } as FulfillmentPolicyRequest);
+        console.log("CREATED FULFILLMENT POLICY")
+        console.log("=====================================")
         const fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
+        console.log("CREATING INVENTORY ITEM")
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
             input.listingId,
@@ -237,6 +244,9 @@ export const ebayRouter = router({
               },
             }
           );
+        console.log("CREATED INVENTORY ITEM")
+        console.log("=====================================")
+        console.log("CREATING OFFER")
         const createOffer = await ebay.sell.inventory.createOffer({
           sku: input.listingId,
           marketplaceId: "EBAY_AU" as Marketplace,
@@ -257,6 +267,9 @@ export const ebayRouter = router({
             },
           },
         });
+        console.log("CREATED OFFER")
+        console.log("=====================================")
+        console.log("PUBLISHING OFFER")
         const publishOffer = await ebay.sell.inventory.publishOffer(
           createOffer.offerId
         );
@@ -268,6 +281,7 @@ export const ebayRouter = router({
             listedOnEbay: true,
           },
         });
+        console.log("PUBLISHED OFFER")
         return {
           publishOffer,
         };
