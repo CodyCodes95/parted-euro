@@ -4,20 +4,12 @@ import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import { Input } from "@material-tailwind/react";
 import LoadingButton from "../LoadingButton";
-import { Image, Listing, Part, PartDetail } from "@prisma/client";
 
 interface EbayModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   success: (message: string) => void;
   error: (message: string) => void;
-  // listing: Listing & {
-  //   parts: Part &
-  //     {
-  //       partDetails: PartDetail;
-  //     }[];
-  //   images: Image[];
-  // };
   listing: any,
   refetch: () => void;
 }
