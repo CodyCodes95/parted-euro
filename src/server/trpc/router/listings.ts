@@ -343,4 +343,21 @@ export const listingRouter = router({
       });
     }
   ),
+  markAsNotListedEbay: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+  )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.listing.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          listedOnEbay: false,
+        },
+      });
+    }
+  ),
 });

@@ -74,6 +74,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       
     }
     refetch()
+    setShowModal(false);
     setLoading(false);
   };
 
