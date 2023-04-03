@@ -184,8 +184,6 @@ export const ebayRouter = router({
               unit: "DAY",
               value: 3,
             },
-            localPickup: true,
-            // localPickup: true,
             shippingOptions: [
               {
                 costType: "FLAT_RATE",
@@ -196,6 +194,19 @@ export const ebayRouter = router({
                     shippingCost: {
                       currency: "AUD",
                       value: input.domesticShipping.toString(),
+                    },
+                  },
+                ],
+              },
+              {
+                costType: "FLAT_RATE",
+                optionType: "DOMESTIC",
+                shippingServices: [
+                  {
+                    shippingServiceCode: "AU_Pickup",
+                    shippingCost: {
+                      currency: "AUD",
+                      value: 0,
                     },
                   },
                 ],
