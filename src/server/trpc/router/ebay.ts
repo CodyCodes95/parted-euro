@@ -137,6 +137,23 @@ export const ebayRouter = router({
       });
       return categoryChoices;
     }),
+  // getShippingPolicies: adminProcedure.query(async ({ ctx }) => {
+  //   const token = await ctx.prisma.ebayCreds.findFirst();
+  //   ebay.OAuth2.setCredentials(token?.refreshToken as any);
+  //   ebay.OAuth2.on("refreshAuthToken", async (token) => {
+  //     const creds = await ctx.prisma.ebayCreds.findFirst();
+  //     const updatedCreds = await ctx.prisma.ebayCreds.update({
+  //       where: {
+  //         id: creds?.id,
+  //       },
+  //       data: {
+  //         refreshToken: token,
+  //       },
+  //     });
+  //   });
+  //   const policies = await ebay.sell.fulfillment.getShippingFulfillments();
+  //   return policies;
+  // }),
   createListing: adminProcedure
     .input(
       z.object({
@@ -175,7 +192,9 @@ export const ebayRouter = router({
         console.log("CREATING FULFILLMENT POLICY")
         const createFulfillmentPolicy =
           await ebay.sell.account.createFulfillmentPolicy({
-            name: input.listingId,
+            name: `${input.listingId} ${Math.floor(
+              100000 + Math.random() * 900000
+            )}`,
             marketplaceId: "EBAY_AU" as MarketplaceId,
             categoryTypes: [
               { name: "ALL_EXCLUDING_MOTORS_VEHICLES", default: true },
