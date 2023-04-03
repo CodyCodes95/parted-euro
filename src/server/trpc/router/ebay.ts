@@ -190,11 +190,10 @@ export const ebayRouter = router({
       });
       try {
         console.log("CREATING FULFILLMENT POLICY")
+        const random = Math.floor(100000 + Math.random() * 900000)
         const createFulfillmentPolicy =
           await ebay.sell.account.createFulfillmentPolicy({
-            name: `${input.listingId} ${Math.floor(
-              100000 + Math.random() * 900000
-            )}`,
+            name: `${input.listingId} ${random}`,
             marketplaceId: "EBAY_AU" as MarketplaceId,
             categoryTypes: [
               { name: "ALL_EXCLUDING_MOTORS_VEHICLES", default: true },
@@ -255,7 +254,7 @@ export const ebayRouter = router({
         console.log("CREATING INVENTORY ITEM")
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
-            input.listingId,
+            `${input.listingId} ${random}`,
             {
               availability: {
                 shipToLocationAvailability: {
@@ -279,7 +278,7 @@ export const ebayRouter = router({
         console.log("=====================================")
         console.log("CREATING OFFER")
         const createOffer = await ebay.sell.inventory.createOffer({
-          sku: input.listingId,
+          sku: `${input.listingId} ${random}`,
           marketplaceId: "EBAY_AU" as Marketplace,
           format: "FIXED_PRICE" as FormatType,
           availableQuantity: input.quantity,
