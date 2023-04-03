@@ -184,6 +184,7 @@ export const ebayRouter = router({
               unit: "DAY",
               value: 3,
             },
+            localPickup: true,
             // localPickup: true,
             shippingOptions: [
               {
