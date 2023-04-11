@@ -172,9 +172,9 @@ export const ebayRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("====================INPUT=====================")
-      console.log(input)
-      console.log("====================INPUT=====================")
+      console.log("====================INPUT=====================");
+      console.log(input);
+      console.log("====================INPUT=====================");
       const token = await ctx.prisma.ebayCreds.findFirst();
       ebay.OAuth2.setCredentials(token?.refreshToken as any);
       ebay.OAuth2.on("refreshAuthToken", async (token) => {
@@ -189,8 +189,8 @@ export const ebayRouter = router({
         });
       });
       try {
-        console.log("CREATING FULFILLMENT POLICY")
-        const random = Math.floor(100000 + Math.random() * 900000)
+        console.log("CREATING FULFILLMENT POLICY");
+        const random = Math.floor(100000 + Math.random() * 900000);
         const createFulfillmentPolicy =
           await ebay.sell.account.createFulfillmentPolicy({
             name: `${input.listingId} ${random}`,
@@ -248,10 +248,10 @@ export const ebayRouter = router({
               },
             ],
           } as FulfillmentPolicyRequest);
-        console.log("CREATED FULFILLMENT POLICY")
-        console.log("=====================================")
+        console.log("CREATED FULFILLMENT POLICY");
+        console.log("=====================================");
         const fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
-        console.log("CREATING INVENTORY ITEM")
+        console.log("CREATING INVENTORY ITEM");
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
             `${input.listingId} ${random}`,
@@ -274,9 +274,9 @@ export const ebayRouter = router({
               },
             }
           );
-        console.log("CREATED INVENTORY ITEM")
-        console.log("=====================================")
-        console.log("CREATING OFFER")
+        console.log("CREATED INVENTORY ITEM");
+        console.log("=====================================");
+        console.log("CREATING OFFER");
         const createOffer = await ebay.sell.inventory.createOffer({
           sku: `${input.listingId} ${random}`,
           marketplaceId: "EBAY_AU" as Marketplace,
@@ -298,9 +298,9 @@ export const ebayRouter = router({
             },
           },
         });
-        console.log("CREATED OFFER")
-        console.log("=====================================")
-        console.log("PUBLISHING OFFER")
+        console.log("CREATED OFFER");
+        console.log("=====================================");
+        console.log("PUBLISHING OFFER");
         const publishOffer = await ebay.sell.inventory.publishOffer(
           createOffer.offerId
         );
@@ -312,7 +312,7 @@ export const ebayRouter = router({
             listedOnEbay: true,
           },
         });
-        console.log("PUBLISHED OFFER")
+        console.log("PUBLISHED OFFER");
         return {
           publishOffer,
         };
@@ -419,5 +419,24 @@ export const ebayRouter = router({
     );
     const createdLocation = await ebay.sell.inventory.getInventoryLocations();
     return createdLocation.locations[0].merchantLocationKey;
+  }),
+  getFulfillmentPolicies: adminProcedure.mutation(async ({ ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: token,
+        },
+      });
+    });
+    const fulfillmentPolicies = await ebay.sell.account.getFulfillmentPolicies(
+      "EBAY_AU"
+    );
+    return fulfillmentPolicies;
   }),
 });
