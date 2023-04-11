@@ -15,7 +15,7 @@ const Ebay: NextPage = () => {
   const getPayment = trpc.ebay.getPaymentPolicy.useMutation();
   const getReturn = trpc.ebay.getReturnPolicy.useMutation();
   const getMerchant = trpc.ebay.createInventoryLocation.useMutation();
-  const getFulfillment = trpc.ebay.getFulfillmentPolicies.useMutation();
+  const getFulfillment = trpc.ebay.getFulfillmentPolicies.useQuery();
 
   const getReturnId = async () => {
     const res = await getReturn.mutateAsync();
