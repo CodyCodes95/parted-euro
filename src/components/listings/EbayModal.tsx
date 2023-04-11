@@ -151,6 +151,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       categoryId: categoryId,
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
+      // fulfillmentPolicyId: fulfillmentPolicy[0].fulfillmentPolicyId,
     });
     if (result) {
     }
@@ -246,6 +247,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
+            {fulfillmentPolicies.data && (
+           
             <Combobox value={fulfillmentPolicy} onChange={setFulfillmentPolicy}>
               <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -267,12 +270,12 @@ const EbayModal: React.FC<EbayModalProps> = ({
                   leaveTo="opacity-0"
                 >
                   <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                    {fulfillmentPolicies.data.length === 0  ? (
+                    {fulfillmentPolicies.data?.length === 0  ? (
                       <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                         Nothing found.
                       </div>
                     ) : (
-                      fulfillmentPolicies.data.map((policy:FulfillmentPolicyType) => (
+                      fulfillmentPolicies.data?.map((policy:FulfillmentPolicyType) => (
                         <Combobox.Option
                           key={policy.fulfillmentPolicyId}
                           className={({ active }) =>
@@ -310,6 +313,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 </Transition>
               </div>
             </Combobox>
+            )}
             <a
               onClick={() => {
                 setFulfillmentPolicy([]);
