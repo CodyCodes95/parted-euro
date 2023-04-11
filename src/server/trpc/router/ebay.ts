@@ -402,7 +402,7 @@ export const ebayRouter = router({
     const createdLocation = await ebay.sell.inventory.getInventoryLocations();
     return createdLocation.locations[0].merchantLocationKey;
   }),
-  getFulfillmentPolicies: adminProcedure.mutation(async ({ ctx }) => {
+  getFulfillmentPolicies: adminProcedure.query(async ({ ctx }) => {
     const token = await ctx.prisma.ebayCreds.findFirst();
     ebay.OAuth2.setCredentials(token?.refreshToken as any);
     ebay.OAuth2.on("refreshAuthToken", async (token) => {
