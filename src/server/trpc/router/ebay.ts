@@ -419,6 +419,6 @@ export const ebayRouter = router({
     const fulfillmentPolicies = await ebay.sell.account.getFulfillmentPolicies(
       "EBAY_AU"
     )
-    return fulfillmentPolicies;
+    return fulfillmentPolicies.fulfillmentPolicies;
   }),
 });
