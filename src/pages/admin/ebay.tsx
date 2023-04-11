@@ -15,7 +15,7 @@ const Ebay: NextPage = () => {
   const getPayment = trpc.ebay.getPaymentPolicy.useMutation();
   const getReturn = trpc.ebay.getReturnPolicy.useMutation();
   const getMerchant = trpc.ebay.createInventoryLocation.useMutation();
-  const fulfillmentPolicies = trpc.ebay.getFulfillmentPolicies.useMutation();
+  const getFulfillment = trpc.ebay.getFulfillmentPolicies.useMutation();
 
   const getReturnId = async () => {
     const res = await getReturn.mutateAsync();
@@ -34,6 +34,11 @@ const Ebay: NextPage = () => {
     const res = await getMerchant.mutateAsync();
     navigator.clipboard.writeText(res);
     toast.info("Copied to clipboard");
+  };
+
+  const getShippingPolicies = async () => {
+    const res = await getFulfillment.mutateAsync();
+   console.log(res)
   };
 
   return (
@@ -58,7 +63,7 @@ const Ebay: NextPage = () => {
         Create Merchant Key
       </button>
       <button
-        onClick={() => console.log(fulfillmentPolicies.data)}
+        onClick={getShippingPolicies}
         className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
         Get policies

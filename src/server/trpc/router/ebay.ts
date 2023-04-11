@@ -124,7 +124,6 @@ export const ebayRouter = router({
         "15",
         input.title
       );
-      // return res.categorySuggestions
       const categoryChoices = res.categorySuggestions.map((category: any) => {
         return {
           label: `${category.category.categoryName} // ${
@@ -137,23 +136,6 @@ export const ebayRouter = router({
       });
       return categoryChoices;
     }),
-  // getShippingPolicies: adminProcedure.query(async ({ ctx }) => {
-  //   const token = await ctx.prisma.ebayCreds.findFirst();
-  //   ebay.OAuth2.setCredentials(token?.refreshToken as any);
-  //   ebay.OAuth2.on("refreshAuthToken", async (token) => {
-  //     const creds = await ctx.prisma.ebayCreds.findFirst();
-  //     const updatedCreds = await ctx.prisma.ebayCreds.update({
-  //       where: {
-  //         id: creds?.id,
-  //       },
-  //       data: {
-  //         refreshToken: token,
-  //       },
-  //     });
-  //   });
-  //   const policies = await ebay.sell.fulfillment.getShippingFulfillments();
-  //   return policies;
-  // }),
   createListing: adminProcedure
     .input(
       z.object({
@@ -436,7 +418,7 @@ export const ebayRouter = router({
     });
     const fulfillmentPolicies = await ebay.sell.account.getFulfillmentPolicies(
       "EBAY_AU"
-    );
+    )
     return fulfillmentPolicies;
   }),
 });
