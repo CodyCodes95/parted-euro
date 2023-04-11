@@ -9,6 +9,7 @@ import LoadingButton from "../LoadingButton";
 import Compressor from "compressorjs";
 import type { Image, Listing, Part, PartDetail } from "@prisma/client";
 import SortableList, { SortableItem } from "react-easy-sort";
+import { RxCross2 } from "react-icons/rx";
 
 interface AddListingProps {
   showModal: boolean;
@@ -37,7 +38,7 @@ const AddListing: React.FC<AddListingProps> = ({
   success,
   error,
   listing,
-  refetch
+  refetch,
 }) => {
   const [title, setTitle] = useState<string>(listing?.title || "");
   const [description, setDescription] = useState<string>(
@@ -77,6 +78,7 @@ const AddListing: React.FC<AddListingProps> = ({
   const updateListing = trpc.listings.updateListing.useMutation();
   const uploadImage = trpc.images.uploadListingImage.useMutation();
   const updateImageOrder = trpc.images.updateImageOrder.useMutation();
+  const deleteImage = trpc.images.deleteImage.useMutation();
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -120,6 +122,13 @@ const AddListing: React.FC<AddListingProps> = ({
     setShowImageSorter(false);
   };
 
+  const onImageDelete = async (image: Image) => {
+    await deleteImage.mutateAsync({ id: image.id });
+    setUploadedImages((uploadedImages) =>
+      uploadedImages.filter((img) => img.id !== image.id)
+    );
+  };
+
   const onSave = async () => {
     setLoading(true);
     if (listing) {
@@ -149,7 +158,7 @@ const AddListing: React.FC<AddListingProps> = ({
       });
       await Promise.all([...imagePromises]);
       success("Listing updated successfully");
-      refetch()
+      refetch();
       setShowModal(false);
       setLoading(false);
       setTitle("");
@@ -236,7 +245,13 @@ const AddListing: React.FC<AddListingProps> = ({
             >
               {uploadedImages.map((image) => (
                 <SortableItem key={image.url}>
-                  <img className="h-56 w-32" src={image.url} />
+                  <div className="relative">
+                    <RxCross2
+                      onClick={() => onImageDelete(image)}
+                      className="absolute right-0 cursor-pointer text-xl text-red-500"
+                    />
+                    <img className="h-56 w-32" src={image.url} />
+                  </div>
                 </SortableItem>
               ))}
             </SortableList>
