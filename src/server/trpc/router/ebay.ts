@@ -173,6 +173,7 @@ export const ebayRouter = router({
       });
       try {
         console.log("CREATING FULFILLMENT POLICY");
+        const random = Math.floor(100000 + Math.random() * 900000);
         let fulfillmentPolicy;
         if (!input.fulfillmentPolicyId) {
           const createFulfillmentPolicy =
