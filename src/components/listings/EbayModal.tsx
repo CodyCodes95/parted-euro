@@ -153,7 +153,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       categoryId: categoryId,
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
-      // fulfillmentPolicyId: fulfillmentPolicy[0].fulfillmentPolicyId,
+      fulfillmentPolicyId: fulfillmentPolicy[0]?.fulfillmentPolicyId,
     });
     if (result) {
     }

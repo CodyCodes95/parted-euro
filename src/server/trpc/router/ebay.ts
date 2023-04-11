@@ -151,6 +151,7 @@ export const ebayRouter = router({
         categoryId: z.string(),
         domesticShipping: z.number(),
         internationalShipping: z.number(),
+        fulfillmentPolicyId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -172,67 +173,71 @@ export const ebayRouter = router({
       });
       try {
         console.log("CREATING FULFILLMENT POLICY");
-        const random = Math.floor(100000 + Math.random() * 900000);
-        const createFulfillmentPolicy =
-          await ebay.sell.account.createFulfillmentPolicy({
-            name: `${input.listingId} ${random}`,
-            marketplaceId: "EBAY_AU" as MarketplaceId,
-            categoryTypes: [
-              { name: "ALL_EXCLUDING_MOTORS_VEHICLES", default: true },
-            ],
-            handlingTime: {
-              unit: "DAY",
-              value: 3,
-            },
-            shippingOptions: [
-              {
-                costType: "FLAT_RATE",
-                optionType: "DOMESTIC",
-                shippingServices: [
-                  {
-                    shippingServiceCode: "AU_StandardDelivery",
-                    shippingCost: {
-                      currency: "AUD",
-                      value: input.domesticShipping.toString(),
-                    },
-                  },
-                ],
+        let fulfillmentPolicy;
+        if (!input.fulfillmentPolicyId) {
+          const createFulfillmentPolicy =
+            await ebay.sell.account.createFulfillmentPolicy({
+              name: `${input.domesticShipping.toString()}-${input.internationalShipping.toString()}`,
+              marketplaceId: "EBAY_AU" as MarketplaceId,
+              categoryTypes: [
+                { name: "ALL_EXCLUDING_MOTORS_VEHICLES", default: true },
+              ],
+              handlingTime: {
+                unit: "DAY",
+                value: 3,
               },
-              {
-                costType: "FLAT_RATE",
-                optionType: "DOMESTIC",
-                shippingServices: [
-                  {
-                    shippingServiceCode: "AU_Pickup",
-                    shippingCost: {
-                      currency: "AUD",
-                      value: 0,
+              shippingOptions: [
+                {
+                  costType: "FLAT_RATE",
+                  optionType: "DOMESTIC",
+                  shippingServices: [
+                    {
+                      shippingServiceCode: "AU_StandardDelivery",
+                      shippingCost: {
+                        currency: "AUD",
+                        value: input.domesticShipping.toString(),
+                      },
                     },
-                  },
-                ],
-              },
-              {
-                costType: "FLAT_RATE",
-                optionType: "INTERNATIONAL",
-                shippingServices: [
-                  {
-                    shipToLocations: {
-                      regionIncluded: [{ regionName: "Worldwide" }],
+                  ],
+                },
+                {
+                  costType: "FLAT_RATE",
+                  optionType: "DOMESTIC",
+                  shippingServices: [
+                    {
+                      shippingServiceCode: "AU_Pickup",
+                      shippingCost: {
+                        currency: "AUD",
+                        value: 0,
+                      },
                     },
-                    shippingCarrierCode: "AustraliaPost",
-                    shippingServiceCode: "AU_StandardInternational",
-                    shippingCost: {
-                      currency: "AUD",
-                      value: input.internationalShipping.toString(),
+                  ],
+                },
+                {
+                  costType: "FLAT_RATE",
+                  optionType: "INTERNATIONAL",
+                  shippingServices: [
+                    {
+                      shipToLocations: {
+                        regionIncluded: [{ regionName: "Worldwide" }],
+                      },
+                      shippingCarrierCode: "AustraliaPost",
+                      shippingServiceCode: "AU_StandardInternational",
+                      shippingCost: {
+                        currency: "AUD",
+                        value: input.internationalShipping.toString(),
+                      },
                     },
-                  },
-                ],
-              },
-            ],
-          } as FulfillmentPolicyRequest);
-        console.log("CREATED FULFILLMENT POLICY");
-        console.log("=====================================");
-        const fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
+                  ],
+                },
+              ],
+            } as FulfillmentPolicyRequest);
+          console.log("CREATED FULFILLMENT POLICY");
+          console.log("=====================================");
+          fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
+        } else {
+          fulfillmentPolicy = input.fulfillmentPolicyId;
+        }
         console.log("CREATING INVENTORY ITEM");
         const createInventoryItem =
           await ebay.sell.inventory.createOrReplaceInventoryItem(
@@ -418,7 +423,7 @@ export const ebayRouter = router({
     });
     const fulfillmentPolicies = await ebay.sell.account.getFulfillmentPolicies(
       "EBAY_AU"
-    )
+    );
     return fulfillmentPolicies.fulfillmentPolicies;
   }),
 });
