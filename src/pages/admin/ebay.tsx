@@ -37,8 +37,8 @@ const Ebay: NextPage = () => {
   };
 
   const getShippingPolicies = async () => {
-    const res = await getFulfillment.mutateAsync();
-   console.log(res)
+    // const res = await getFulfillment.mutateAsync();
+   console.log("1")
   };
 
   return (
