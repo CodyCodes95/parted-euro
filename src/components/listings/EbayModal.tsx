@@ -324,7 +324,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                                       : "text-gray-900"
                                   }`
                                 }
-                                value={policy.fulfillmentPolicyId}
+                                value={policy}
                               >
                                 {({ selected, active }) => (
                                   <>

@@ -172,10 +172,10 @@ export const ebayRouter = router({
         });
       });
       try {
-        console.log("CREATING FULFILLMENT POLICY");
         const random = Math.floor(100000 + Math.random() * 900000);
         let fulfillmentPolicy;
         if (!input.fulfillmentPolicyId) {
+          console.log("CREATING FULFILLMENT POLICY");
           const createFulfillmentPolicy =
             await ebay.sell.account.createFulfillmentPolicy({
               name: `${input.domesticShipping.toString()}-${input.internationalShipping.toString()}`,
@@ -235,7 +235,7 @@ export const ebayRouter = router({
             } as FulfillmentPolicyRequest);
           console.log("CREATED FULFILLMENT POLICY");
           console.log("=====================================");
-          fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId;
+          fulfillmentPolicy = createFulfillmentPolicy.fulfillmentPolicyId
         } else {
           fulfillmentPolicy = input.fulfillmentPolicyId;
         }
