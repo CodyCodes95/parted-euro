@@ -114,7 +114,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
     useState<boolean>(false);
   const [fulfillmentPolicy, setFulfillmentPolicy] = useState<
     FulfillmentPolicyType[]
-  >([]);
+    >([]);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
   const fulfillmentPolicies = trpc.ebay.getFulfillmentPolicies.useQuery();
@@ -148,7 +149,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       images: listing.images.map((image: any) => image.url),
       condition: condition,
       conditionDescription: ebayCondition.value,
-      quantity: 1,
+      quantity: quantity,
       partNo: listing.parts[0]?.partDetails.partNo as string,
       categoryId: categoryId,
       domesticShipping: domesticShipping,
@@ -249,18 +250,14 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
-
-            <a
-              onClick={() => {
-                setFulfillmentPolicy([]);
-                setCreateNewFulfillmentPolicy(true);
-              }}
-              className="
-            text-sm text-gray-500 hover:text-gray-700 hover:underline
-            "
-            >
-              Create new shipping policy
-            </a>
+            <div className="">
+              <Input
+                value={quantity || undefined}
+                type="number"
+                label="Quantity"
+                onChange={(e) => setQuantity(Number(e.target.value))}
+              />
+            </div>
             {createNewFulfillmentPolicy ? (
               <>
                 <div className="flex">
@@ -283,76 +280,91 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 </div>
               </>
             ) : (
-              <Combobox
-                value={fulfillmentPolicy}
-                onChange={setFulfillmentPolicy}
-              >
-                <div className="relative mt-1">
-                  <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-                    <Combobox.Input
-                      className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                      displayValue={(policy: FulfillmentPolicyType) =>
-                        policy.name
-                      }
-                    />
-                    <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                      <BiChevronDown
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
+              <>
+                <Combobox
+                  value={fulfillmentPolicy}
+                  onChange={setFulfillmentPolicy}
+                >
+                  <div className="relative mt-1">
+                    <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                      <Combobox.Input
+                        className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                        displayValue={(policy: FulfillmentPolicyType) =>
+                          policy.name
+                        }
                       />
-                    </Combobox.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    leave="transition ease-in duration-100"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                      {fulfillmentPolicies.data?.length === 0 ? (
-                        <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                          Nothing found.
-                        </div>
-                      ) : (
-                        fulfillmentPolicies.data?.map(
-                          (policy: FulfillmentPolicyType) => (
-                            <Combobox.Option
-                              key={policy.fulfillmentPolicyId}
-                              className={({ active }) =>
-                                `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                  active
-                                    ? "bg-teal-600 text-white"
-                                    : "text-gray-900"
-                                }`
-                              }
-                              value={policy.fulfillmentPolicyId}
-                            >
-                              {({ selected, active }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium" : "font-normal"
-                                    }`}
-                                  >
-                                    {policy.name}
-                                  </span>
-                                  {selected ? (
+                      <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <BiChevronDown
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </Combobox.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {fulfillmentPolicies.data?.length === 0 ? (
+                          <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                            Nothing found.
+                          </div>
+                        ) : (
+                          fulfillmentPolicies.data?.map(
+                            (policy: FulfillmentPolicyType) => (
+                              <Combobox.Option
+                                key={policy.fulfillmentPolicyId}
+                                className={({ active }) =>
+                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                    active
+                                      ? "bg-teal-600 text-white"
+                                      : "text-gray-900"
+                                  }`
+                                }
+                                value={policy.fulfillmentPolicyId}
+                              >
+                                {({ selected, active }) => (
+                                  <>
                                     <span
-                                      className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                        active ? "text-white" : "text-teal-600"
+                                      className={`block truncate ${
+                                        selected ? "font-medium" : "font-normal"
                                       }`}
-                                    ></span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Combobox.Option>
+                                    >
+                                      {policy.name}
+                                    </span>
+                                    {selected ? (
+                                      <span
+                                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                          active
+                                            ? "text-white"
+                                            : "text-teal-600"
+                                        }`}
+                                      ></span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Combobox.Option>
+                            )
                           )
-                        )
-                      )}
-                    </Combobox.Options>
-                  </Transition>
-                </div>
-              </Combobox>
+                        )}
+                      </Combobox.Options>
+                    </Transition>
+                  </div>
+                </Combobox>
+                <a
+                  onClick={() => {
+                    setFulfillmentPolicy([]);
+                    setCreateNewFulfillmentPolicy(true);
+                  }}
+                  className="
+            text-sm text-blue-500 hover:text-blue-700 hover:underline cursor-pointer block
+            "
+                >
+                  Create new shipping policy
+                </a>
+              </>
             )}
             <LoadingButton onClick={onSubmit} loading={loading} text="List" />
           </div>
