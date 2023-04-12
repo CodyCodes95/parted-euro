@@ -290,7 +290,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
                       <Combobox.Input
                         className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
                         displayValue={(policy: FulfillmentPolicyType) =>
-                          policy.name || "Select a fulfillment policy"
+                          fulfillmentPolicy?.name ||
+                          "Select a fulfillment policy"
                         }
                       />
                       <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -359,7 +360,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                     setCreateNewFulfillmentPolicy(true);
                   }}
                   className="
-            text-sm text-blue-500 hover:text-blue-700 hover:underline cursor-pointer block
+            block cursor-pointer text-sm text-blue-500 hover:text-blue-700 hover:underline
             "
                 >
                   Create new shipping policy
