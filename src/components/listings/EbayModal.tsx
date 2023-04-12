@@ -113,8 +113,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [createNewFulfillmentPolicy, setCreateNewFulfillmentPolicy] =
     useState<boolean>(false);
   const [fulfillmentPolicy, setFulfillmentPolicy] = useState<
-    FulfillmentPolicyType[]
-    >([]);
+    FulfillmentPolicyType | null
+    >(null);
   const [quantity, setQuantity] = useState<number>(1);
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
@@ -154,7 +154,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       categoryId: categoryId,
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
-      fulfillmentPolicyId: fulfillmentPolicy[0]?.fulfillmentPolicyId,
+      fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
     });
     if (result) {
     }
@@ -355,7 +355,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 </Combobox>
                 <a
                   onClick={() => {
-                    setFulfillmentPolicy([]);
+                    setFulfillmentPolicy(null);
                     setCreateNewFulfillmentPolicy(true);
                   }}
                   className="
