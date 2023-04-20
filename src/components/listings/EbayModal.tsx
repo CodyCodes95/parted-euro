@@ -6,6 +6,7 @@ import { Input } from "@material-tailwind/react";
 import LoadingButton from "../LoadingButton";
 import { Combobox, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
+import type { Car } from "@prisma/client";
 
 interface EbayModalProps {
   showModal: boolean;
@@ -112,9 +113,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [internationalShipping, setInternationalShipping] = useState<number>(0);
   const [createNewFulfillmentPolicy, setCreateNewFulfillmentPolicy] =
     useState<boolean>(false);
-  const [fulfillmentPolicy, setFulfillmentPolicy] = useState<
-    FulfillmentPolicyType | null
-    >(null);
+  const [fulfillmentPolicy, setFulfillmentPolicy] =
+    useState<FulfillmentPolicyType | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
@@ -129,6 +129,28 @@ const EbayModal: React.FC<EbayModalProps> = ({
       },
     }
   );
+
+  const makeTableHTML = () => {
+    return listing.data?.parts
+      .reduce((acc: any, cur: any) => {
+        if (
+          !acc.some(
+            (part: any) =>
+              part.partDetails.cars[0].id === cur.partDetails.cars[0]?.id
+          )
+        ) {
+          acc.push(cur);
+        }
+        return acc;
+      }, [] as any[])
+      .map((part: any) => {
+        return part.partDetails.cars.map((car: Car) => {
+          return (
+            `<tr><td>${car.series}</td><td>${car.generation}</td><td>${car.model}</td></tr>`
+          );
+        });
+      }).join("");
+  };
 
   useEffect(() => {
     if (title && description && condition && price && ebayCondition) {
@@ -155,6 +177,18 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
       fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
+      partsTable: `<table>
+    <thead>
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Series</th>
+        </tr>
+    </thead>
+    <tbody>
+      ${makeTableHTML()}
+    </tbody>
+      </table>`,
     });
     if (result) {
     }
