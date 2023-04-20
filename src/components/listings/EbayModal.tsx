@@ -177,7 +177,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
       fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
-      partsTable: `<table>
+      partsTable: `<table style="padding:1rem;">
     <thead>
       <tr>
         <th>Make</th>
