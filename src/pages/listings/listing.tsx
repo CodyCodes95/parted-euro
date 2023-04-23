@@ -341,22 +341,21 @@ const Listing: NextPage = () => {
             </div>
           </div>
         </div>
-        <Spacer amount="3"/>
+        <Spacer amount="3" />
         <div className="flex w-full">
           <div className="w-1/2"></div>
           <div className="flex bg-gray-200">
             <Tab.Group>
-              <Tab.List className="flex flex-col space-x-1 p-1">
-                {processParts(listing.data?.parts)?.map((generation:any) => (
+              <Tab.List className="flex flex-col p-1">
+                {processParts(listing.data?.parts)?.map((generation: any) => (
                   <Tab
                     key={generation.generation}
                     className={({ selected }) =>
                       classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-black",
-                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                        "w-full py-2.5 px-2 text-sm font-medium leading-5 text-black text-left",
                         selected
-                          ? "bg-white shadow font-bold"
-                          : " hover:bg-white/[0.12] hover:text-white"
+                          ? "bg-white font-bold shadow"
+                          : " hover:bg-gray-300"
                       )
                     }
                   >
@@ -364,27 +363,32 @@ const Listing: NextPage = () => {
                   </Tab>
                 ))}
               </Tab.List>
-              <Tab.Panels className="mt-2">
-                {processParts(listing.data?.parts)?.map((generation:any) => (
+              <Tab.Panels className="ml-2">
+                {processParts(listing.data?.parts)?.map((generation: any) => (
                   <Tab.Panel
                     key={generation.generation}
                     className={classNames(
-                      "rounded-xl bg-white p-3",
+                      "bg-white",
                       "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400"
                     )}
                   >
-                    <table>
-                      <thead>
+                    <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                      <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                          <th>Model</th>
-                          <th>Body</th>
+                          <th className="px-4 py-2">Model</th>
+                          <th className="px-4 py-2">Body</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {generation.models.map((model:any) => (
-                          <tr key={model.model}>
-                            <td>{model.model}</td>
-                            <td>{model.body ? model.body : "All"}</td>
+                        {generation.models.map((model: any) => (
+                          <tr
+                            className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
+                            key={model.model}
+                          >
+                            <td className="px-4 py-4">{model.model}</td>
+                            <td className="px-4 py-4">
+                              {model.body ? model.body : "All"}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
