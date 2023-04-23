@@ -146,7 +146,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       .map((part: any) => {
         return part.partDetails.cars.map((car: Car) => {
           return (
-            `<tr><td>${car.series}</td><td>${car.generation}</td><td>${car.model}</td></tr>`
+            `<tr style="padding:1rem;"><td>${car.series}</td><td>${car.generation}</td><td>${car.model}</td></tr>`
           );
         });
       }).join("");
@@ -177,18 +177,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
       fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
-      partsTable: `<table style="padding:1rem;">
-    <thead>
-      <tr>
-        <th>Make</th>
-        <th>Model</th>
-        <th>Series</th>
-        </tr>
-    </thead>
-    <tbody>
-      ${makeTableHTML()}
-    </tbody>
-      </table>`,
+      partsTable: `<table style="padding:1rem; text-align:center;"><thead><tr><th style="padding:1rem;">Make</th><th>Model</th><th>Series</th></tr></thead><tbody>${makeTableHTML()}</tbody></table>`,
     });
     if (result) {
     }
