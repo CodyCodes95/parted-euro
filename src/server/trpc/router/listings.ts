@@ -3,7 +3,6 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 export const listingRouter = router({
-
   createListing: adminProcedure
     .input(
       z.object({
@@ -38,7 +37,7 @@ export const listingRouter = router({
         condition: z.string().min(3),
         price: z.number().min(100).max(100000000),
       })
-  )
+    )
     .mutation(async ({ ctx, input }) => {
       const listing = await ctx.prisma.listing.update({
         where: {
@@ -58,16 +57,19 @@ export const listingRouter = router({
       include: {
         parts: {
           include: {
-            partDetails: true,
-          }
+            partDetails: {
+              include: {
+                cars: true,
+              },
+            },
+          },
         },
         images: {
           orderBy: {
             order: "asc",
           },
-          
-        }
-      }
+        },
+      },
     });
     return listings;
   }),
@@ -82,14 +84,19 @@ export const listingRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.generation && !input.model && !input.series && !input.category) {
+      if (
+        !input.generation &&
+        !input.model &&
+        !input.series &&
+        !input.category
+      ) {
         const listings = await ctx.prisma.listing.findMany({
           // return all listings of if input.search is not empty return all listings where the description or title contains the search string
           include: {
             images: {
               orderBy: {
                 order: "asc",
-              }
+              },
             },
             parts: true,
           },
@@ -127,7 +134,7 @@ export const listingRouter = router({
             images: {
               orderBy: {
                 order: "asc",
-              }
+              },
             },
             parts: true,
           },
@@ -151,7 +158,7 @@ export const listingRouter = router({
                   // partType: {
                   //   name: {
                   //     contains: input.category || "",
-                  //   }  
+                  //   }
                   // },
                   cars: {
                     some: {
@@ -183,7 +190,7 @@ export const listingRouter = router({
           images: {
             orderBy: {
               order: "asc",
-            }
+            },
           },
           parts: true,
         },
@@ -295,7 +302,7 @@ export const listingRouter = router({
           images: {
             orderBy: {
               order: "asc",
-            }
+            },
           },
           parts: {
             select: {
@@ -319,7 +326,7 @@ export const listingRouter = router({
                       id: true,
                       generation: true,
                       model: true,
-                      body:true
+                      body: true,
                     },
                   },
                 },
@@ -332,23 +339,22 @@ export const listingRouter = router({
   deleteListing: adminProcedure
     .input(
       z.object({
-        id: z.string(), 
+        id: z.string(),
       })
-  )
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.listing.delete({
         where: {
           id: input.id,
         },
       });
-    }
-  ),
+    }),
   markAsNotListedEbay: adminProcedure
     .input(
       z.object({
         id: z.string(),
       })
-  )
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.listing.update({
         where: {
@@ -358,6 +364,5 @@ export const listingRouter = router({
           listedOnEbay: false,
         },
       });
-    }
-  ),
+    }),
 });

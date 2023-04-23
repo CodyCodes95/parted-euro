@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { useContext, useEffect, useState } from "react";
-import type { Car } from "@prisma/client";
+import type { Car, Part } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
@@ -12,6 +12,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Tab } from "@headlessui/react";
+import Spacer from "../../components/Spacer";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -121,6 +123,10 @@ const Listing: NextPage = () => {
     }
   );
 
+  const classNames = (...classes: any) => {
+    return classes.filter(Boolean).join(" ");
+  };
+
   useEffect(() => {
     setIsMobile(window.innerWidth < 1300);
     window.addEventListener("resize", () => {
@@ -128,14 +134,54 @@ const Listing: NextPage = () => {
     });
   }, []);
 
+  const processParts = (parts: any) => {
+    if (!parts) return
+    const result: any = [];
+
+    parts.forEach((part: any) => {
+      part.partDetails.cars.forEach((car: Car) => {
+        let generationObj = result.find(
+          (obj: any) => obj.generation === car.generation
+        );
+
+        if (!generationObj) {
+          generationObj = { generation: car.generation, models: [] };
+          result.push(generationObj);
+        }
+
+        let modelObj = generationObj.models.find(
+          (obj: any) => obj.model === car.model
+        );
+
+        if (!modelObj) {
+          modelObj = { model: car.model, bodies: new Set() };
+          generationObj.models.push(modelObj);
+        }
+
+        if (car.body) {
+          modelObj.bodies.add(car.body);
+        }
+      });
+    });
+
+    // Convert Set to Array
+    result.forEach((generationObj: any) => {
+      generationObj.models.forEach((modelObj: any) => {
+        modelObj.bodies = Array.from(modelObj.bodies);
+      });
+    });
+
+    return result;
+  };
+
   return (
     <>
       <Head>
         <title>{listing.data?.title}</title>
       </Head>
       <ToastContainer />
-      <div className="flex min-h-screen w-full flex-col md:p-24">
-        <div className="flex flex-col items-center justify-center md:flex-row">
+      <div className="flex min-h-screen w-full flex-col">
+        <div className="flex flex-col items-center justify-center bg-gray-200 md:flex-row md:p-24">
           <div className="w-[50%]">
             <div className="flex flex-col items-center">
               <Carousel
@@ -293,6 +339,60 @@ const Listing: NextPage = () => {
               <IosShareIcon />
               <button className="ml-2 mt-2">Share</button>
             </div>
+          </div>
+        </div>
+        <Spacer amount="3"/>
+        <div className="flex w-full">
+          <div className="w-1/2"></div>
+          <div className="flex bg-gray-200">
+            <Tab.Group>
+              <Tab.List className="flex flex-col space-x-1 p-1">
+                {processParts(listing.data?.parts)?.map((generation:any) => (
+                  <Tab
+                    key={generation.generation}
+                    className={({ selected }) =>
+                      classNames(
+                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-black",
+                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                        selected
+                          ? "bg-white shadow font-bold"
+                          : " hover:bg-white/[0.12] hover:text-white"
+                      )
+                    }
+                  >
+                    {generation.generation}
+                  </Tab>
+                ))}
+              </Tab.List>
+              <Tab.Panels className="mt-2">
+                {processParts(listing.data?.parts)?.map((generation:any) => (
+                  <Tab.Panel
+                    key={generation.generation}
+                    className={classNames(
+                      "rounded-xl bg-white p-3",
+                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400"
+                    )}
+                  >
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Model</th>
+                          <th>Body</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {generation.models.map((model:any) => (
+                          <tr key={model.model}>
+                            <td>{model.model}</td>
+                            <td>{model.body ? model.body : "All"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </Tab.Panel>
+                ))}
+              </Tab.Panels>
+            </Tab.Group>
           </div>
         </div>
         <div>
