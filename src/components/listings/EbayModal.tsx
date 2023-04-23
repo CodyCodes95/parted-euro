@@ -161,38 +161,23 @@ const EbayModal: React.FC<EbayModalProps> = ({
   }, [title, description, condition, price, ebayCondition]);
 
   const onSubmit = async () => {
-    // if (!validated) return;
-    // setLoading(true);
-    // const result = await createEbayListing.mutateAsync({
-    //   listingId: listing.id,
-    //   title: title,
-    //   price: price,
-    //   description: description,
-    //   images: listing.images.map((image: any) => image.url),
-    //   condition: condition,
-    //   conditionDescription: ebayCondition.value,
-    //   quantity: quantity,
-    //   partNo: listing.parts[0]?.partDetails.partNo as string,
-    //   categoryId: categoryId,
-    //   domesticShipping: domesticShipping,
-    //   internationalShipping: internationalShipping,
-    //   fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
-    //   partsTable: `<table style="padding:1rem;">
-    // <thead>
-    //   <tr>
-    //     <th>Make</th>
-    //     <th>Model</th>
-    //     <th>Series</th>
-    //     </tr>
-    // </thead>
-    // <tbody>
-    //   ${makeTableHTML()}
-    // </tbody>
-    //   </table>`,
-    // });
-    // if (result) {
-    // }
-    console.log(`<table style="padding:1rem;">
+    if (!validated) return;
+    setLoading(true);
+    const result = await createEbayListing.mutateAsync({
+      listingId: listing.id,
+      title: title,
+      price: price,
+      description: description,
+      images: listing.images.map((image: any) => image.url),
+      condition: condition,
+      conditionDescription: ebayCondition.value,
+      quantity: quantity,
+      partNo: listing.parts[0]?.partDetails.partNo as string,
+      categoryId: categoryId,
+      domesticShipping: domesticShipping,
+      internationalShipping: internationalShipping,
+      fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
+      partsTable: `<table style="padding:1rem;">
     <thead>
       <tr>
         <th>Make</th>
@@ -203,7 +188,10 @@ const EbayModal: React.FC<EbayModalProps> = ({
     <tbody>
       ${makeTableHTML()}
     </tbody>
-      </table>`);
+      </table>`,
+    });
+    if (result) {
+    }
     refetch();
     setShowModal(false);
     setLoading(false);
