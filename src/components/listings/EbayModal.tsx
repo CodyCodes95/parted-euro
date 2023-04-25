@@ -177,7 +177,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
       fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
-      partsTable: `<table style="padding:1rem; text-align:center;"><thead><tr><th style="padding:1rem;">Make</th><th>Series</th><th>Model</th></tr></thead><tbody>${makeTableHTML()}</tbody></table>`,
+      partsTable: `<table style="padding:1rem; text-align:center;"><thead><tr><th style="padding:1rem;">Make</th><th>Generation</th><th>Model</th></tr></thead><tbody>${makeTableHTML()}</tbody></table>`,
     });
     if (result) {
     }
