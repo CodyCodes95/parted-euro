@@ -2,7 +2,6 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Input } from "@material-tailwind/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "../LoadingButton";
@@ -10,6 +9,7 @@ import Compressor from "compressorjs";
 import type { Image, Listing, Part, PartDetail } from "@prisma/client";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
+import { Input } from "../ui/input";
 
 interface AddListingProps {
   showModal: boolean;
@@ -306,21 +306,21 @@ const AddListing: React.FC<AddListingProps> = ({
             <div className="">
               <Input
                 value={title}
-                label="Title"
+                placeholder="Title"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="">
               <Input
                 value={description}
-                label="Description"
+                placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="">
               <Input
                 value={condition}
-                label="Condition"
+                placeholder="Condition"
                 onChange={(e) => setCondition(e.target.value)}
               />
             </div>
@@ -328,7 +328,7 @@ const AddListing: React.FC<AddListingProps> = ({
               <Input
                 value={price || undefined}
                 type="number"
-                label="Price"
+                placeholder="Price"
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
@@ -352,7 +352,7 @@ const AddListing: React.FC<AddListingProps> = ({
             <div className="flex items-center justify-between">
               <IconButton
                 color="primary"
-                aria-label="upload picture"
+                aria-placeholder="upload picture"
                 component="label"
               >
                 <input

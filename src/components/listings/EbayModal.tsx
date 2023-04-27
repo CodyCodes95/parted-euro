@@ -2,11 +2,11 @@ import { useEffect, useState, Fragment } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import { Input } from "@material-tailwind/react";
 import LoadingButton from "../LoadingButton";
 import { Combobox, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 import type { Car } from "@prisma/client";
+import { Input } from "../ui/input";
 
 interface EbayModalProps {
   showModal: boolean;
@@ -223,21 +223,21 @@ const EbayModal: React.FC<EbayModalProps> = ({
             <div className="">
               <Input
                 value={title}
-                label="Title"
+                placeholder="Title"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="">
               <Input
                 value={description}
-                label="Description"
+                placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="">
               <Input
                 value={condition}
-                label="Condition (Will be apended to description)"
+                placeholder="Condition (Will be apended to description)"
                 onChange={(e) => setCondition(e.target.value)}
               />
             </div>
@@ -269,7 +269,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
               <Input
                 value={price || undefined}
                 type="number"
-                label="Price"
+                placeholder="Price"
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
@@ -277,7 +277,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
               <Input
                 value={quantity || undefined}
                 type="number"
-                label="Quantity"
+                placeholder="Quantity"
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
@@ -286,7 +286,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 <div className="flex">
                   <Input
                     value={domesticShipping}
-                    label="Domestic shipping"
+                    placeholder="Domestic shipping"
                     onChange={(e) =>
                       setDomesticShipping(Number(e.target.value))
                     }
@@ -295,7 +295,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 <div className="flex">
                   <Input
                     value={internationalShipping}
-                    label="International shipping"
+                    placeholder="International shipping"
                     onChange={(e) =>
                       setInternationalShipping(Number(e.target.value))
                     }

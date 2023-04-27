@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import LoadingButton from "@mui/lab/LoadingButton";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { useContext, useEffect, useState } from "react";
 import type { Car, Part } from "@prisma/client";
@@ -14,6 +13,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Tab } from "@headlessui/react";
 import Spacer from "../../components/Spacer";
+import { Button } from "../../components/ui/button";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -206,22 +206,20 @@ const Listing: NextPage = () => {
               AUD
             </h4>
             <div className="flex w-full flex-col items-center md:place-items-start">
-              <LoadingButton
+              <Button
                 onClick={() => addToCart(listing.data as any)}
                 className="mb-4 h-12 w-[50%] bg-[#1976d2]"
-                loading={false}
-                variant="contained"
+                variant="ghost"
               >
                 Add to Cart
-              </LoadingButton>
-              <LoadingButton
+              </Button>
+              <Button
                 onClick={() => console.log("clicked")}
                 className="mb-4 h-12 w-[50%] bg-[#3c3844] text-white hover:bg-black"
-                loading={false}
-                variant="text"
+                variant="ghost"
               >
                 Buy Now
-              </LoadingButton>
+              </Button>
             </div>
             <div className="p-2 text-sm">
               <p>

@@ -2,12 +2,12 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
-import { Button } from "@material-tailwind/react";
 import { useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Select from "react-select";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { Button } from "../components/ui/button";
 
 interface IOptions {
   label: string;
@@ -103,17 +103,17 @@ const Home: NextPage = () => {
                 <div className="mt-4 flex  justify-around ">
                   <Button
                     className="ml-28 border-white text-sm text-white"
-                    variant="outlined"
+                    variant="outline"
                     onClick={() => setCarSelectOpen(!carSelectOpen)}
                   >
-                    Shop By Car
+                    SHOP BY CAR
                   </Button>
                   <Button
                     className="mr-28 border-white text-sm text-white"
-                    variant="outlined"
+                    variant="outline"
                     onClick={() => router.push("/listings")}
                   >
-                    Browse ALl
+                    BROWSE ALL
                   </Button>
                 </div>
               </div>
@@ -164,7 +164,7 @@ const Home: NextPage = () => {
                       )
                     }
                     className="border-white text-sm text-white"
-                    variant="outlined"
+                    variant="outline"
                   >
                     Search
                   </Button>
