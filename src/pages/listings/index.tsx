@@ -4,9 +4,10 @@ import { trpc } from "../../utils/trpc";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import loader from "../../../public/loader.svg";
+import { useInView } from "react-intersection-observer";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -26,13 +27,27 @@ const Listings: NextPage = () => {
 
   const [debouncedSearch] = useDebounce(search, 500);
 
-  const listings = trpc.listings.getAllAvailable.useQuery({
-    series: series as string,
-    generation: generation as string,
-    model: model as string,
-    search: (debouncedSearch as string) || undefined,
-    category: category as string,
-  });
+  const { ref, inView } = useInView();
+
+  const listings = trpc.listings.getAllAvailable.useInfiniteQuery(
+    {
+      series: series as string,
+      generation: generation as string,
+      model: model as string,
+      search: (debouncedSearch as string) || undefined,
+      category: category as string,
+    },
+    {
+      getNextPageParam: (lastPage) => 
+        lastPage.nextCursor ? lastPage.nextCursor : undefined,
+    }
+  );
+
+  useEffect(() => {
+    if (inView && listings.hasNextPage) {
+      listings.fetchNextPage();
+    }
+  }, [inView, listings]);
 
   if (listings.isLoading) {
     return (
@@ -56,8 +71,41 @@ const Listings: NextPage = () => {
           <SearchIcon className="absolute top-[-9px] right-2" />
         </div>
       </div>
-      <div className="flex w-full items-center p-4 flex-wrap justify-center">
-        {listings.data?.map((listing) => (
+      <div className="flex w-full flex-wrap items-center justify-center p-4">
+        {listings.data?.pages.map((page) => (
+          <>
+            {page.listings.map((listing) => (
+              <Link
+                onMouseEnter={() => setHoveredListing(listing.id)}
+                onMouseLeave={() => setHoveredListing("")}
+                key={listing.id}
+                className="group m-4 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+                href={`listings/listing?id=${listing.id}`}
+              >
+                <div className="max-h-[634px]">
+                  <img
+                    src={
+                      hoveredListing === listing.id && listing.images[1]
+                        ? listing.images[1]?.url
+                        : listing.images[0]?.url
+                    }
+                    className="h-full duration-100 ease-linear group-hover:scale-105"
+                    alt=""
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
+                    {listing.title}
+                  </p>
+                  <p className="text-lg">
+                    {formatter.format(listing.price).split("A")[1]} AUD
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </>
+        ))}
+        {/* {listings.data?.pages[0]?.listings?.map((listing) => (
           <Link
             onMouseEnter={() => setHoveredListing(listing.id)}
             onMouseLeave={() => setHoveredListing("")}
@@ -85,7 +133,8 @@ const Listings: NextPage = () => {
               </p>
             </div>
           </Link>
-        ))}
+        ))} */}
+        <div ref={ref}></div>
       </div>
     </div>
   );

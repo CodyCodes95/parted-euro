@@ -81,101 +81,110 @@ export const listingRouter = router({
         series: z.string().optional(),
         search: z.string().optional(),
         category: z.string().optional(),
+        cursor: z.any().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
-      if (
-        !input.generation &&
-        !input.model &&
-        !input.series &&
-        !input.category
-      ) {
-        const listings = await ctx.prisma.listing.findMany({
-          // return all listings of if input.search is not empty return all listings where the description or title contains the search string
-          include: {
-            images: {
-              orderBy: {
-                order: "asc",
+      // if (
+      //   !input.generation &&
+      //   !input.model &&
+      //   !input.series &&
+      //   !input.category
+      // )
+      // {
+      const listings = await ctx.prisma.listing.findMany({
+        // return all listings of if input.search is not empty return all listings where the description or title contains the search string
+        include: {
+          images: {
+            orderBy: {
+              order: "asc",
+            },
+          },
+          parts: true,
+        },
+        where: {
+          active: true,
+          OR: [
+            {
+              description: {
+                contains: input.search || "",
               },
             },
-            parts: true,
-          },
-          where: {
-            active: true,
-            OR: [
-              {
-                description: {
-                  contains: input.search || "",
-                },
-              },
-              {
-                title: {
-                  contains: input.search || "",
-                },
-              },
-              {
-                parts: {
-                  some: {
-                    partDetails: {
-                      partNo: {
-                        contains: input.search || "",
-                      },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        });
-        return listings;
-      } else {
-        const listings = await ctx.prisma.listing.findMany({
-          include: {
-            images: {
-              orderBy: {
-                order: "asc",
+            {
+              title: {
+                contains: input.search || "",
               },
             },
-            parts: true,
-          },
-          where: {
-            active: true,
-            OR: [
-              {
-                description: {
-                  contains: input.search || "",
-                },
-              },
-              {
-                title: {
-                  contains: input.search || "",
-                },
-              },
-            ],
-            parts: {
-              some: {
-                partDetails: {
-                  // partType: {
-                  //   name: {
-                  //     contains: input.category || "",
-                  //   }
-                  // },
-                  cars: {
-                    some: {
-                      generation: {
-                        contains: input.generation || "",
-                      },
-                      model: input.model,
-                      series: input.series,
+            {
+              parts: {
+                some: {
+                  partDetails: {
+                    partNo: {
+                      contains: input.search || "",
                     },
                   },
                 },
               },
             },
-          },
-        });
-        return listings;
+          ],
+        },
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        take: 20,
+      });
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (listings.length > 19) {
+        const nextItem = listings.pop();
+        nextCursor = nextItem?.id;
       }
+      return { listings, nextCursor };
+      // } else {
+      //   const listings = await ctx.prisma.listing.findMany({
+      //     include: {
+      //       images: {
+      //         orderBy: {
+      //           order: "asc",
+      //         },
+      //       },
+      //       parts: true,
+      //     },
+      //     where: {
+      //       active: true,
+      //       OR: [
+      //         {
+      //           description: {
+      //             contains: input.search || "",
+      //           },
+      //         },
+      //         {
+      //           title: {
+      //             contains: input.search || "",
+      //           },
+      //         },
+      //       ],
+      //       parts: {
+      //         some: {
+      //           partDetails: {
+      //             // partType: {
+      //             //   name: {
+      //             //     contains: input.category || "",
+      //             //   }
+      //             // },
+      //             cars: {
+      //               some: {
+      //                 generation: {
+      //                   contains: input.generation || "",
+      //                 },
+      //                 model: input.model,
+      //                 series: input.series,
+      //               },
+      //             },
+      //           },
+      //         },
+      //       },
+      //     },
+      //   });
+      // return listings;
+      // }
     }),
   getSearchBar: publicProcedure
     .input(
