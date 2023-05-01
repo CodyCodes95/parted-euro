@@ -21,6 +21,7 @@ export const listingRouter = router({
           description: input.description,
           condition: input.condition,
           price: input.price,
+          quantity: input.quantity,
           parts: {
             connect: input.parts.map((part) => {
               return { id: part };
@@ -50,6 +51,7 @@ export const listingRouter = router({
           description: input.description,
           condition: input.condition,
           price: input.price,
+          quantity: input.quantity,
         },
       });
       return listing;
