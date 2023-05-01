@@ -49,6 +49,7 @@ const AddListing: React.FC<AddListingProps> = ({
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>([]);
   const [partOptions, setPartOptions] = useState<any>([]);
+  const [quantity, setQuantity] = useState<number>(listing?.quantity || 1);
   const [loading, setLoading] = useState<boolean>(false);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     listing?.images || []
@@ -139,6 +140,7 @@ const AddListing: React.FC<AddListingProps> = ({
           description: description,
           condition: condition,
           price: price,
+          quantity: quantity,
         },
         {
           onSuccess: (listing) => {
@@ -175,6 +177,7 @@ const AddListing: React.FC<AddListingProps> = ({
         condition: condition,
         price: price,
         parts: parts,
+        quantity: quantity,
       },
       {
         onSuccess: (listing) => {
@@ -330,6 +333,14 @@ const AddListing: React.FC<AddListingProps> = ({
                 type="number"
                 placeholder="Price"
                 onChange={(e) => setPrice(Number(e.target.value))}
+              />
+            </div>
+            <div className="">
+              <Input
+                value={quantity || undefined}
+                type="number"
+                placeholder="Quantity"
+                onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
             {listing ? null : (

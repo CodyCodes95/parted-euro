@@ -106,6 +106,7 @@ model Listing {
   images       Image[]
   active       Boolean  @default(true)
   listedOnEbay Boolean  @default(false)
+  quantity     Int      @default(1)
   // quantity will simply be the amount of non unique parts in the same listing
 }
 

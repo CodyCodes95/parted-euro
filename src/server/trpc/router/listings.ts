@@ -11,6 +11,7 @@ export const listingRouter = router({
         condition: z.string().min(3),
         price: z.number().min(1).max(1000000),
         parts: z.array(z.string()),
+        quantity: z.number().min(1).max(1000000),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -36,6 +37,7 @@ export const listingRouter = router({
         description: z.string().min(5),
         condition: z.string().min(3),
         price: z.number().min(100).max(100000000),
+        quantity: z.number().min(1).max(1000000),
       })
     )
     .mutation(async ({ ctx, input }) => {
