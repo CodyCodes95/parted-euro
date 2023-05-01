@@ -98,7 +98,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       {
         partNo: partNo,
         name: name,
-        cars: compatibleCars,
+        cars: compatibleCars.map((car: any) => car.value),
         weight: Number(weight),
         partLength: Number(length),
         width: Number(width),
@@ -254,7 +254,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
               <div className="flex justify-between">
                 <Select
                   onChange={(e: any) => {
-                    setCompatibleCars(e.map((car: Options) => car.value));
+                    setCompatibleCars(e.map((car: Options) => car));
                   }}
                   isMulti
                   onInputChange={(e) => {
@@ -272,9 +272,9 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                   onClick={() =>
                     setCompatibleCars([
                       ...compatibleCars,
-                      ...carOptions.reduce((acc:any, car:any) => {
+                      ...carOptions.reduce((acc: any, car: any) => {
                         if (!compatibleCars.includes(car.label)) {
-                          if (acc.find((c:any) => c.label === car.label)) {
+                          if (acc.find((c: any) => c.label === car.label)) {
                             return acc;
                           }
                           return [...acc, ...car.options];
@@ -282,7 +282,6 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                         return acc;
                       }, [] as Options[]),
                     ])
-                        
                   }
                 >
                   Select All
