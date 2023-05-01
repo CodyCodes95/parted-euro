@@ -274,7 +274,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                       ...compatibleCars,
                       ...carOptions.reduce((acc:any, car:any) => {
                         if (!compatibleCars.includes(car.label)) {
-                          if (acc.find((c) => c.label === car.label)) {
+                          if (acc.find((c:any) => c.label === car.label)) {
                             return acc;
                           }
                           return [...acc, ...car.options];
