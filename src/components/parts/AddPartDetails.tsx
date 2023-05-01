@@ -132,7 +132,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       }`}
     >
       <ModalBackDrop setShowModal={setShowModal} />
-      <div className="top relative h-full max-h-screen w-full max-w-2xl overflow-auto">
+      <div className="top relative h-full max-h-screen w-full max-w-4xl overflow-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -264,7 +264,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                   }}
                   closeMenuOnSelect={false}
                   options={carOptions}
-                  className="basic-multi-select w-3/4"
+                  className="basic-multi-select w-full"
                   classNamePrefix="select"
                   value={compatibleCars as any}
                 />
