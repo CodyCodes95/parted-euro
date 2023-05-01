@@ -13,18 +13,23 @@ export const partDetailsRouter = router({
     });
   }),
   getAllPartTypes: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.partTypes.findMany({});
-  }),
-  deletePartDetail: adminProcedure.input(
-    z.object({
-      partNo: z.string(),
-    })
-  ).mutation(async ({ ctx, input }) => {
-    return ctx.prisma.partDetail.delete({
-      where: {
-        partNo: input.partNo,
+    return ctx.prisma.partTypes.findMany({
+      include: {
+        parentCategory: true,
       },
     });
-  }
-  ),
+  }),
+  deletePartDetail: adminProcedure
+    .input(
+      z.object({
+        partNo: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.partDetail.delete({
+        where: {
+          partNo: input.partNo,
+        },
+      });
+    }),
 });

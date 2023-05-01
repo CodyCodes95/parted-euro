@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import { useDebounce } from "use-debounce";
 import type { Car } from "@prisma/client";
+import { Button } from "../ui/button";
 
 interface AddPartProps {
   showModal: boolean;
@@ -43,6 +44,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
+
+  useEffect(() => {
+    console.log(compatibleCars);
+  }, [compatibleCars]);
 
   const cars = trpc.cars.getAllSearch.useQuery(
     { search: debouncedSearch },
@@ -127,7 +132,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       }`}
     >
       <ModalBackDrop setShowModal={setShowModal} />
-      <div className="top relative h-full w-full max-w-2xl max-h-screen overflow-auto">
+      <div className="top relative h-full max-h-screen w-full max-w-2xl overflow-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -234,7 +239,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 isMulti={true}
                 options={partTypes.data?.map((partType) => {
                   return {
-                    label: partType.name,
+                    label: `${partType.name} - ${partType.parentCategory?.name}`,
                     value: partType.id,
                   };
                 })}
@@ -246,21 +251,43 @@ const AddPartDetails: React.FC<AddPartProps> = ({
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Compatible Cars
               </label>
-              <Select
-                onChange={(e: any) => {
-                  setCompatibleCars(e.map((car: Options) => car.value));
-                }}
-                isMulti
-                onInputChange={(e) => {
-                  if (e.length > 1) {
-                    setCarSearchInput(e);
+              <div className="flex justify-between">
+                <Select
+                  onChange={(e: any) => {
+                    setCompatibleCars(e.map((car: Options) => car.value));
+                  }}
+                  isMulti
+                  onInputChange={(e) => {
+                    if (e.length > 1) {
+                      setCarSearchInput(e);
+                    }
+                  }}
+                  closeMenuOnSelect={false}
+                  options={carOptions}
+                  className="basic-multi-select w-3/4"
+                  classNamePrefix="select"
+                  value={compatibleCars as any}
+                />
+                <Button
+                  onClick={() =>
+                    setCompatibleCars([
+                      ...compatibleCars,
+                      ...carOptions.reduce((acc:any, car:any) => {
+                        if (!compatibleCars.includes(car.label)) {
+                          if (acc.find((c) => c.label === car.label)) {
+                            return acc;
+                          }
+                          return [...acc, ...car.options];
+                        }
+                        return acc;
+                      }, [] as Options[]),
+                    ])
+                        
                   }
-                }}
-                closeMenuOnSelect={false}
-                options={carOptions}
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
+                >
+                  Select All
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">

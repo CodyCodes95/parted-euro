@@ -3,6 +3,7 @@ import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 interface EditPartProps {
   showModal: boolean;
@@ -252,25 +253,45 @@ const EditPartDetails: React.FC<EditPartProps> = ({
               <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                 Compatible Cars
               </label>
-              <Select
-                onChange={(e: any) => {
-                  setCompatibleCars(e.map((car: Options) => car.value));
-                }}
-                value={carOptions.reduce(
-                  (options: any, group: any) => [
-                    ...options,
-                    ...group.options.filter((option: any) =>
-                      compatibleCars.includes(option.value)
-                    ),
-                  ],
-                  []
-                )}
-                isMulti
-                closeMenuOnSelect={false}
-                options={carOptions}
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
+              <div className="flex justify-between">
+                <Select
+                  onChange={(e: any) => {
+                    setCompatibleCars(e.map((car: Options) => car.value));
+                  }}
+                  value={carOptions.reduce(
+                    (options: any, group: any) => [
+                      ...options,
+                      ...group.options.filter((option: any) =>
+                        compatibleCars.includes(option.value)
+                      ),
+                    ],
+                    []
+                  )}
+                  isMulti
+                  closeMenuOnSelect={false}
+                  options={carOptions}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                />
+                <Button
+                  onClick={() =>
+                    setCompatibleCars([
+                      ...compatibleCars,
+                      ...carOptions.reduce((acc: any, car: any) => {
+                        if (!compatibleCars.includes(car.label)) {
+                          if (acc.find((c) => c.label === car.label)) {
+                            return acc;
+                          }
+                          return [...acc, ...car.options];
+                        }
+                        return acc;
+                      }, [] as Options[]),
+                    ])
+                  }
+                >
+                  Select All
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
