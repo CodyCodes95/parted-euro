@@ -1,7 +1,7 @@
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
+import type { Car, Part, PartDetail, PartTypeParentCategory, PartTypes } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 interface EditPartProps {
@@ -11,7 +11,7 @@ interface EditPartProps {
   error: (message: string) => void;
   refetch: () => void;
   selection: PartDetail & {
-    partTypes: PartTypes[];
+    partTypes: any
     parts: Part[];
     cars: Car[];
   };
@@ -46,7 +46,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   );
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<Array<string>>(
-    selection.partTypes.map((category) => category.id)
+    selection.partTypes.map((category:any) => category.id)
   );
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
@@ -232,15 +232,15 @@ const EditPartDetails: React.FC<EditPartProps> = ({
                 onChange={(e: any) => {
                   setPartTypeIds(e.map((partType: Options) => partType.value));
                 }}
-                defaultValue={selection.partTypes.map((partType) => {
+                defaultValue={selection.partTypes.map((partType:any) => {
                   return {
-                    label: partType.name,
+                    label: `${partType.name} - ${partType.parentCategory?.name}`,
                     value: partType.id,
                   };
                 })}
                 options={partTypes.data?.map((partType) => {
                   return {
-                    label: partType.name,
+                    label: `${partType.name} - ${partType.parentCategory?.name}`,
                     value: partType.id,
                   };
                 })}
