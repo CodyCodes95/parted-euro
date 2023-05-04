@@ -7,6 +7,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 import type { Car } from "@prisma/client";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 interface EbayModalProps {
   showModal: boolean;
@@ -231,9 +232,9 @@ const EbayModal: React.FC<EbayModalProps> = ({
               />
             </div>
             <div className="">
-              <Input
-                type="textarea"
+              <Textarea
                 value={description}
+                rows={4}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               />
