@@ -38,7 +38,7 @@ const Listings: NextPage = () => {
       category: category as string,
     },
     {
-      getNextPageParam: (lastPage) => 
+      getNextPageParam: (lastPage) =>
         lastPage.nextCursor ? lastPage.nextCursor : undefined,
     }
   );
@@ -134,7 +134,14 @@ const Listings: NextPage = () => {
             </div>
           </Link>
         ))} */}
-        <div ref={ref}></div>
+        {listings.hasNextPage && (
+          <div
+            ref={ref}
+            className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24"
+          >
+            <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
+          </div>
+        )}
       </div>
     </div>
   );
