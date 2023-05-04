@@ -7,6 +7,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
+import Compressor from "compressorjs";
 
 interface AddDonorProps {
   showModal: boolean;
