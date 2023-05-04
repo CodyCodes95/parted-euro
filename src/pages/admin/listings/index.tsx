@@ -29,6 +29,7 @@ const Listings: NextPage = () => {
   const [selected, setSelected] = useState<any>(null);
   const [showEbayModal, setShowEbayModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);

@@ -1,6 +1,6 @@
-import { useEffect, } from "react";
+import { useEffect, useState } from "react";
+import type { Column } from "react-table";
 import {
-  Column,
   useGlobalFilter,
   usePagination,
   useRowSelect,
@@ -15,11 +15,8 @@ type AdminTableProps = {
   setFilter?: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const AdminTable: React.FC<AdminTableProps> = ({
-  data,
-  columns,
-  filter,
-}) => {
+const AdminTable: React.FC<AdminTableProps> = ({ data, columns, filter }) => {
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const {
     getTableProps,
     getTableBodyProps,
@@ -40,17 +37,21 @@ const AdminTable: React.FC<AdminTableProps> = ({
     {
       columns,
       data,
-      initialState: {pageSize: 15}
+      initialState: { pageSize: 15, pageIndex: currentPage },
     },
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useRowSelect,
+    useRowSelect
   );
 
   useEffect(() => {
     setGlobalFilter(filter);
   }, [filter]);
+
+  useEffect(() => {
+    setCurrentPage(pageIndex);
+  }, [pageIndex]);
 
   return (
     <div>
@@ -108,7 +109,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            {1 + (pageIndex * pageSize)}-{page.length + (pageIndex * pageSize)}
+            {1 + pageIndex * pageSize}-{page.length + pageIndex * pageSize}
           </span>{" "}
           of{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -117,9 +118,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         </span>
         <ul className="inline-flex items-center -space-x-px">
           <li onClick={previousPage}>
-            <a
-              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
+            <a className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
               <span className="sr-only">Previous</span>
               <svg
                 className="h-5 w-5"
@@ -152,9 +151,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                     gotoPage(page - 1);
                   }}
                 >
-                  <a
-                    className="border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
+                  <a className="border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                     {page}
                   </a>
                 </li>
