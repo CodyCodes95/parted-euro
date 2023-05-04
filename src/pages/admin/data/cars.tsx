@@ -39,7 +39,6 @@ const Cars: NextPage = () => {
     }
   };
 
-  const tableData = useMemo(() => cars.data, [cars.data]);
 
   const columns = useMemo<Array<Column<any>>>(
     () => [
