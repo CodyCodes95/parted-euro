@@ -3,6 +3,7 @@ import { trpc } from "../../utils/trpc";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 const Ebay: NextPage = () => {
   const { status } = useSession({
@@ -12,10 +13,17 @@ const Ebay: NextPage = () => {
     },
   });
 
+  const [offer, setOffer] = useState<string>("");
   const getPayment = trpc.ebay.getPaymentPolicy.useMutation();
   const getReturn = trpc.ebay.getReturnPolicy.useMutation();
   const getMerchant = trpc.ebay.createInventoryLocation.useMutation();
   const getFulfillment = trpc.ebay.getFulfillmentPolicies.useQuery();
+  const getOffer = trpc.ebay.getOffers.useQuery({
+    id: offer,
+  }, {
+    enabled: false,
+    onSuccess: (data) => console.log(data)
+  });
 
   const getReturnId = async () => {
     const res = await getReturn.mutateAsync();
@@ -67,6 +75,17 @@ const Ebay: NextPage = () => {
         className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
         Get policies
+      </button>
+      <input
+        type="text"
+        value={offer}
+        onChange={(e) => setOffer(e.target.value)}
+      />
+      <button
+        onClick={() => getOffer.refetch()}
+        className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Get Offer
       </button>
     </div>
   );
