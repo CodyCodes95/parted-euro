@@ -80,7 +80,7 @@ export const ebayRouter = router({
     const listings = await ebay.sell.inventory.getInventoryItems();
     return listings;
   }),
-  getOffers: adminProcedure.input(
+  getOffer: adminProcedure.input(
     z.object({
       id: z.string(),
     })
@@ -99,6 +99,29 @@ export const ebayRouter = router({
       });
     });
     const offers = await ebay.sell.inventory.getOffer(input.id);
+    return offers;
+  }),
+  getOffers: adminProcedure.input(
+    z.object({
+      sku: z.string(),
+    })
+  ).query(async ({ input, ctx }) => {
+    const token = await ctx.prisma.ebayCreds.findFirst();
+    ebay.OAuth2.setCredentials(token?.refreshToken as any);
+    ebay.OAuth2.on("refreshAuthToken", async (token) => {
+      const creds = await ctx.prisma.ebayCreds.findFirst();
+      const updatedCreds = await ctx.prisma.ebayCreds.update({
+        where: {
+          id: creds?.id,
+        },
+        data: {
+          refreshToken: token,
+        },
+      });
+    });
+    const offers = await ebay.sell.inventory.getOffers({
+      sku: input.sku,
+    });
     return offers;
   }),
   getCategoryIds: adminProcedure
