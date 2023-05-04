@@ -290,6 +290,8 @@ export const ebayRouter = router({
         console.log("CREATED OFFER");
         console.log("=====================================");
         console.log("PUBLISHING OFFER");
+        console.log(`CREATED OFFER ID: ${createOffer.offerId}`)
+        console.log(`CREATED INVENTORY ITEM ID: ${createInventoryItem.sku}`)
         const publishOffer = await ebay.sell.inventory.publishOffer(
           createOffer.offerId
         );
