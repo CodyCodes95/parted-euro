@@ -104,7 +104,9 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [title, setTitle] = useState<string>(listing.title);
   const [description, setDescription] = useState<string>(listing.description);
   const [condition, setCondition] = useState<string>(listing.condition);
-  const [price, setPrice] = useState<number>(listing.price);
+  const [price, setPrice] = useState<number>(
+    listing.price * 0.1 + listing.price
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [ebayCondition, setEbayCondition] = useState<any>("");
   const [validated, setValidated] = useState<boolean>(false);
@@ -116,7 +118,6 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [fulfillmentPolicy, setFulfillmentPolicy] =
     useState<FulfillmentPolicyType | null>(null);
   const [quantity, setQuantity] = useState<number>(listing.quantity || 1);
-
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
   const fulfillmentPolicies = trpc.ebay.getFulfillmentPolicies.useQuery();
