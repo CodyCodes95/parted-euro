@@ -357,25 +357,6 @@ const AddDonor: React.FC<AddDonorProps> = ({
               dark:focus:ring-blue-500`}
               />
             </div>
-            {donor ? null : (
-              <div className="flex items-center justify-between">
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="label"
-                >
-                  <input
-                    hidden
-                    accept="image/*"
-                    type="file"
-                    multiple={true}
-                    onChange={handleImageAttach}
-                  />
-                  <PhotoCamera />
-                </IconButton>
-                <p>{images.length} Photos attached</p>
-              </div>
-            )}
             <div className="flex items-center justify-between">
               <IconButton
                 color="primary"

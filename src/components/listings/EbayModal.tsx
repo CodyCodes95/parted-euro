@@ -101,7 +101,9 @@ const EbayModal: React.FC<EbayModalProps> = ({
   listing,
   refetch,
 }) => {
-  const [title, setTitle] = useState<string>(listing.title);
+  const [title, setTitle] = useState<string>(
+    `${listing.title}-${listing.parts[0]?.partDetails.partNo}`
+  );
   const [description, setDescription] = useState<string>(listing.description);
   const [condition, setCondition] = useState<string>(listing.condition);
   const [price, setPrice] = useState<number>(
