@@ -43,7 +43,7 @@ export const imagesRouter = router({
           return ctx.prisma.image.create({
             data: {
               url: res.url,
-              listingId: input.donorVin,
+              donorVin: input.donorVin,
               order: input.order,
             },
           });

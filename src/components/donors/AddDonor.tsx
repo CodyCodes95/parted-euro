@@ -119,11 +119,10 @@ const AddDonor: React.FC<AddDonorProps> = ({
         },
       }
     );
-    const donorVin = result.vin;
     const imagePromises = images.map(async (image: string, i:number) => {
       return await uploadImage.mutateAsync({
         image: image,
-        donorVin: donorVin,
+        donorVin: vin,
         order: i,
       });
     });
