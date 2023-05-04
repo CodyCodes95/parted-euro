@@ -13,6 +13,7 @@ import type { Column } from "react-table";
 import EbayModal from "../../../components/listings/EbayModal";
 import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
+import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 
 const Listings: NextPage = () => {
   const { status } = useSession({
@@ -30,6 +31,7 @@ const Listings: NextPage = () => {
   const [showEbayModal, setShowEbayModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -107,9 +109,8 @@ const Listings: NextPage = () => {
         accessor: (d) => (
           <button
             onClick={() => {
-              const res = deleteListing.mutateAsync({ id: d.id });
-              listings.refetch();
-              success("Listing deleted");
+              setSelected(d);
+              setShowDeleteModal(true);
             }}
             className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
           >
@@ -120,6 +121,12 @@ const Listings: NextPage = () => {
     ],
     []
   );
+
+  const onDeleteListing = async () => {
+       const res = deleteListing.mutateAsync({ id: selected.id });
+       listings.refetch();
+       success("Listing deleted");
+  }
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
@@ -145,6 +152,11 @@ const Listings: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ToastContainer />
+      <ConfirmDelete
+        deleteFunction={onDeleteListing}
+        setShowModal={setShowDeleteModal}
+        showModal={showDeleteModal}
+      />
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <div className="flex items-center">
           <Link
