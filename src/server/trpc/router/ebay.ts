@@ -139,7 +139,7 @@ export const ebayRouter = router({
   createListing: adminProcedure
     .input(
       z.object({
-        title: z.string(),
+        title: z.string().max(80, {message: "Title must be less than 80 characters"}),
         description: z.string(),
         price: z.number(),
         partNo: z.string(),
