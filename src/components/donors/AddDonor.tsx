@@ -2,9 +2,11 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import type { Car } from "@prisma/client";
+import type { Car, Image } from "@prisma/client";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
+import SortableList, { SortableItem } from "react-easy-sort";
+import { RxCross2 } from "react-icons/rx";
 
 interface AddDonorProps {
   showModal: boolean;
@@ -26,7 +28,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   success,
   error,
   donor,
-  refetch
+  refetch,
 }) => {
   const [vin, setVin] = useState<string>(donor?.vin || "");
   const [cost, setCost] = useState<number>(donor?.cost || 0);
@@ -35,6 +37,10 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const [mileage, setMileage] = useState<number>(donor?.mileage || 0);
   const [options, setOptions] = useState<ISelectOptions[]>([]);
   const [images, setImages] = useState<Array<string>>([]);
+  const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
+    donor?.images || []
+  );
+  const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
 
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -75,6 +81,8 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const saveDonor = trpc.donors.createDonor.useMutation();
   const updateDonor = trpc.donors.updateDonor.useMutation();
   const uploadImage = trpc.images.uploadDonorImage.useMutation();
+  const updateImageOrder = trpc.images.updateImageOrder.useMutation();
+  const deleteImage = trpc.images.deleteImage.useMutation();
 
   const onSave = async () => {
     if (donor) {
@@ -100,7 +108,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       setCarId("");
       setYear(0);
       setImages([]);
-      refetch()
+      refetch();
       setShowModal(false);
       return;
     }
@@ -119,7 +127,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         },
       }
     );
-    const imagePromises = images.map(async (image: string, i:number) => {
+    const imagePromises = images.map(async (image: string, i: number) => {
       return await uploadImage.mutateAsync({
         image: image,
         donorVin: vin,
@@ -137,25 +145,119 @@ const AddDonor: React.FC<AddDonorProps> = ({
     setShowModal(false);
   };
 
- const handleImageAttach = (e: any) => {
-   Array.from(e.target.files).forEach((file: any) => {
-     const reader = new FileReader();
-     reader.onload = (onLoadEvent: any) => {
-       setImages((imageState: any) => [
-         ...imageState,
-         onLoadEvent.target.result,
-       ]);
-     };
-     new Compressor(file, {
-       quality: 0.6,
-       maxHeight: 1422,
-       maxWidth: 800,
-       success(result) {
-         reader.readAsDataURL(result);
-       },
-     });
-   });
- };
+  const handleImageAttach = (e: any) => {
+    Array.from(e.target.files).forEach((file: any) => {
+      const reader = new FileReader();
+      reader.onload = (onLoadEvent: any) => {
+        setImages((imageState: any) => [
+          ...imageState,
+          onLoadEvent.target.result,
+        ]);
+      };
+      new Compressor(file, {
+        quality: 0.6,
+        maxHeight: 1422,
+        maxWidth: 800,
+        success(result) {
+          reader.readAsDataURL(result);
+        },
+      });
+    });
+  };
+
+  const runUpdateImageOrder = async () => {
+    const imagePromises = uploadedImages.map(
+      async (image: Image, i: number) => {
+        return await updateImageOrder.mutateAsync({
+          id: image.id,
+          order: i,
+        });
+      }
+    );
+    await Promise.all([...imagePromises]);
+    setShowImageSorter(false);
+  };
+
+  const onSortEnd = (oldIndex: number, newIndex: number) => {
+    const newImages = [...uploadedImages] as Image[];
+    const [removedImage] = newImages.splice(oldIndex, 1);
+    if (removedImage !== undefined) {
+      newImages.splice(newIndex, 0, removedImage);
+      setUploadedImages(newImages);
+    }
+  };
+
+  const onImageDelete = async (image: Image) => {
+    await deleteImage.mutateAsync({ id: image.id });
+    setUploadedImages((uploadedImages) =>
+      uploadedImages.filter((img) => img.id !== image.id)
+    );
+  };
+
+  if (showImageSorter) {
+    return (
+      <div
+        id="defaultModal"
+        aria-hidden="true"
+        className={`h-modal fixed top-0 left-0 right-0 z-50 flex w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
+          showModal ? "" : "hidden"
+        }`}
+      >
+        <ModalBackDrop setShowModal={setShowModal} />
+        <div className="relative h-full w-full max-w-4xl md:h-auto">
+          <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
+            <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Sort Images
+              </h3>
+              <button
+                onClick={() => setShowModal(!showModal) as any}
+                type="button"
+                className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-toggle="defaultModal"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path>
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
+            <SortableList
+              className="flex flex-wrap items-center"
+              onSortEnd={onSortEnd}
+              draggedItemClassName=""
+            >
+              {uploadedImages.map((image) => (
+                <SortableItem key={image.url}>
+                  <div className="relative">
+                    <RxCross2
+                      onClick={() => onImageDelete(image)}
+                      className="absolute right-0 cursor-pointer text-xl text-red-500"
+                    />
+                    <img className="h-56 w-32" src={image.url} />
+                  </div>
+                </SortableItem>
+              ))}
+            </SortableList>
+            <button
+              className="mr-2 mt-4 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={() => {
+                runUpdateImageOrder();
+              }}
+            >
+              Save Order
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -274,8 +376,29 @@ const AddDonor: React.FC<AddDonorProps> = ({
                 <p>{images.length} Photos attached</p>
               </div>
             )}
-          </div>
-          <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
+            <div className="flex items-center justify-between">
+              <IconButton
+                color="primary"
+                aria-placeholder="upload picture"
+                component="label"
+              >
+                <input
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  multiple={true}
+                  onChange={handleImageAttach}
+                />
+                <PhotoCamera />
+              </IconButton>
+              <p>{images.length} Photos attached</p>
+              <a
+                onClick={() => setShowImageSorter(true)}
+                className="cursor-pointer text-blue-500"
+              >
+                Sort Order
+              </a>
+            </div>
             <button
               onClick={() => onSave()}
               data-modal-toggle="defaultModal"
