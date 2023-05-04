@@ -102,7 +102,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
   refetch,
 }) => {
   const [title, setTitle] = useState<string>(
-    `${listing.title}-${listing.parts[0]?.partDetails.partNo}`
+    `${listing.title} ${listing.parts[0]?.partDetails.partNo}`
   );
   const [description, setDescription] = useState<string>(listing.description);
   const [condition, setCondition] = useState<string>(listing.condition);
@@ -232,6 +232,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
             </div>
             <div className="">
               <Input
+                type="textarea"
                 value={description}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
