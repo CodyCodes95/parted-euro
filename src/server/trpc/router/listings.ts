@@ -9,7 +9,7 @@ export const listingRouter = router({
         title: z.string().min(3),
         description: z.string().min(5),
         condition: z.string().min(3),
-        price: z.number().min(1).max(10000),
+        price: z.number().min(1).max(100),
         parts: z.array(z.string()),
         quantity: z.number().min(1).max(1000000),
       })
@@ -37,7 +37,7 @@ export const listingRouter = router({
         title: z.string().min(3),
         description: z.string().min(5),
         condition: z.string().min(3),
-        price: z.number().min(100).max(10000),
+        price: z.number().min(100).max(100),
         quantity: z.number().min(1).max(1000000),
       })
     )

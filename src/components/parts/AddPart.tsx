@@ -5,6 +5,8 @@ import Select from "react-select";
 import type { Car, Donor, InventoryLocations, Part } from "@prisma/client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Button } from "../ui/button";
+import { useDebounce } from "use-debounce";
 
 interface AddPartProps {
   showModal: boolean;
@@ -55,6 +57,8 @@ const AddPart: React.FC<AddPartProps> = ({
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
   const [partNo, setPartNo] = useState<string>("");
+  const [carSearchInput, setCarSearchInput] = useState<string>("");
+  const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -73,41 +77,47 @@ const AddPart: React.FC<AddPartProps> = ({
     },
   });
 
-  const cars = trpc.cars.getAll.useQuery(undefined, {
-    onSuccess: (data) => {
-      setCarOptions([]);
-      data.forEach((car: Car) => {
-        setCarOptions((prevState: Array<NestedOptions>) => {
-          if (
-            prevState.some((group: NestedOptions) => group.label === car.series)
-          ) {
-            return prevState.map((group: NestedOptions) => {
-              if (group.label === car.series) {
-                group.options.push({
-                  label: `${car.generation} ${car.model} ${car.body || ""}`,
-                  value: car.id,
-                });
-              }
-              return group;
-            });
-          } else {
-            return [
-              ...prevState,
-              {
-                label: car.series,
-                options: [
-                  {
-                    label: `${car.generation} ${car.model} ${car.body || ""}`,
-                    value: car.id,
-                  },
-                ],
-              },
-            ];
-          }
-        });
-      });
-    },
-  });
+ const cars = trpc.cars.getAllSearch.useQuery(
+   { search: debouncedSearch },
+   {
+     enabled: !!debouncedSearch,
+     onSuccess: (data) => {
+       setCarOptions([]);
+       data.forEach((car: Car) => {
+         setCarOptions((prevState: Array<NestedOptions>) => {
+           if (
+             prevState.some(
+               (group: NestedOptions) => group.label === car.series
+             )
+           ) {
+             return prevState.map((group: NestedOptions) => {
+               if (group.label === car.series) {
+                 group.options.push({
+                   label: `${car.generation} ${car.model} ${car.body || ""}`,
+                   value: car.id,
+                 });
+               }
+               return group;
+             });
+           } else {
+             return [
+               ...prevState,
+               {
+                 label: car.series,
+                 options: [
+                   {
+                     label: `${car.generation} ${car.model} ${car.body || ""}`,
+                     value: car.id,
+                   },
+                 ],
+               },
+             ];
+           }
+         });
+       });
+     },
+   }
+ );
 
   const donors = trpc.donors.getAll.useQuery();
 
@@ -144,7 +154,7 @@ const AddPart: React.FC<AddPartProps> = ({
       {
         partNo: partNo,
         name: name,
-        cars: compatibleCars,
+        cars: compatibleCars.map((car: any) => car.value),
         partTypes: partTypeIds as string[],
         weight: weight,
         partLength: length,
@@ -384,7 +394,7 @@ const AddPart: React.FC<AddPartProps> = ({
                         isMulti={true}
                         options={partTypes.data?.map((partType) => {
                           return {
-                            label: partType.name,
+                            label: `${partType.name} - ${partType.parentCategory?.name}`,
                             value: partType.id,
                           };
                         })}
@@ -396,16 +406,44 @@ const AddPart: React.FC<AddPartProps> = ({
                       <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                         Compatible Cars
                       </label>
-                      <Select
-                        onChange={(e: any) => {
-                          setCompatibleCars(e.map((car: Options) => car.value));
-                        }}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        options={carOptions}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                      />
+                      <div className="flex justify-between">
+                        <Select
+                          onChange={(e: any) => {
+                            setCompatibleCars(e.map((car: Options) => car));
+                          }}
+                          isMulti
+                          onInputChange={(e) => {
+                            if (e.length > 1) {
+                              setCarSearchInput(e);
+                            }
+                          }}
+                          closeMenuOnSelect={false}
+                          options={carOptions}
+                          className="basic-multi-select w-full"
+                          classNamePrefix="select"
+                          value={compatibleCars as any}
+                        />
+                        <Button
+                          onClick={() =>
+                            setCompatibleCars([
+                              ...compatibleCars,
+                              ...carOptions.reduce((acc: any, car: any) => {
+                                if (!compatibleCars.includes(car.label)) {
+                                  if (
+                                    acc.find((c: any) => c.label === car.label)
+                                  ) {
+                                    return acc;
+                                  }
+                                  return [...acc, ...car.options];
+                                }
+                                return acc;
+                              }, [] as Options[]),
+                            ])
+                          }
+                        >
+                          Select All
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ) : (
