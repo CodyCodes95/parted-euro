@@ -131,6 +131,7 @@ model Part {
 
 model PartDetail {
   partNo    String      @id @unique
+  alternatePartNumbers String?
   name      String
   weight    Float 
   length    Float 

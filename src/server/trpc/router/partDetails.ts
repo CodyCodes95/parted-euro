@@ -6,7 +6,11 @@ export const partDetailsRouter = router({
   getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.partDetail.findMany({
       include: {
-        partTypes: true,
+        partTypes: {
+          include: {
+            parentCategory: true,
+          },
+        },
         parts: true,
         cars: true,
       },
