@@ -9,7 +9,8 @@ import Compressor from "compressorjs";
 import type { Image, Listing, Part, PartDetail } from "@prisma/client";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
-import { Input } from "../ui/input";
+import { Input } from "../ui/input"; 
+import { Textarea } from "../ui/textarea";
 
 interface AddListingProps {
   showModal: boolean;
@@ -314,8 +315,9 @@ const AddListing: React.FC<AddListingProps> = ({
               />
             </div>
             <div className="">
-              <Input
+              <Textarea
                 value={description}
+                rows={4}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
               />
