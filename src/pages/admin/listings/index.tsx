@@ -46,9 +46,12 @@ const Listings: NextPage = () => {
     () => [
       {
         Header: "Title",
-        accessor: (d) => (
-          <Link href={`/listings/listing?id=${d.id}`}>
-            <p className="text-blue-500 hover:text-blue-600">{d.title}</p>
+        accessor: (d) => d.title,
+        Cell: ({ row }) => (
+          <Link href={`/listings/listing?id=${row.original.id}`}>
+            <p className="text-blue-500 hover:text-blue-600">
+              {row.original.title}
+            </p>
           </Link>
         ),
       },
