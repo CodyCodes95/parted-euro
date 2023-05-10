@@ -57,7 +57,7 @@ const Listings: NextPage = () => {
       },
       {
         Header: "Part Numbers",
-        accessor: (d) => d.parts.map((p) => p.partDetailsId).join(", "),
+        accessor: (d) => d.parts.map((p:any) => p.partDetailsId).join(", "),
       },
       {
         Header: "Quantity",
