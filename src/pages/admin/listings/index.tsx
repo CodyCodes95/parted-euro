@@ -56,6 +56,10 @@ const Listings: NextPage = () => {
         ),
       },
       {
+        Header: "Part Numbers",
+        accessor: (d) => d.parts.map((p) => p.partDetailsId).join(", "),
+      },
+      {
         Header: "Quantity",
         accessor: "quantity",
       },
@@ -126,10 +130,10 @@ const Listings: NextPage = () => {
   );
 
   const onDeleteListing = async () => {
-       const res = deleteListing.mutateAsync({ id: selected.id });
-       listings.refetch();
-       success("Listing deleted");
-  }
+    const res = deleteListing.mutateAsync({ id: selected.id });
+    listings.refetch();
+    success("Listing deleted");
+  };
 
   const authenticateEbay = async () => {
     const result = await ebayLogin.mutateAsync();
