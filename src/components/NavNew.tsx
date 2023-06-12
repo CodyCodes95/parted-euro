@@ -14,18 +14,15 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { useSession, signIn } from "next-auth/react";
-// import { Icons } from "@/components/icons";
 import { Badge } from "./ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
-import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import CartContext from "../context/cartContext";
+import { FaShoppingCart, FaSearch } from "react-icons/fa";
 
 
 
@@ -124,7 +121,7 @@ const NavNew = () => {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger>Components</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
@@ -139,11 +136,25 @@ const NavNew = () => {
                 ))}
               </ul>
             </NavigationMenuContent>
+          </NavigationMenuItem> */}
+          <NavigationMenuItem>
+            <Link href="/wrecking" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Cars Wrecking Now
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/docs" legacyBehavior passHref>
+            <Link href="/returns-refunds" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Documentation
+                Warrenty & Return Policy
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/contact" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Contact
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -154,24 +165,24 @@ const NavNew = () => {
           onClick={() => setShowSearch(!showSearch)}
           className="cursor-pointer p-2"
         >
-          <SearchIcon />
+          <FaSearch />
         </div>
         <div className="relative">
           <Badge
-            className="absolute top-[-0.8rem] left-3 text-xs"
+            className="absolute top-[-1.5rem] left-3 text-xs"
             variant={"destructive"}
           >
             {cart.length}
           </Badge>
+        </div>
           <Popover>
             <PopoverTrigger>
-              <ShoppingCartIcon />
+              <FaShoppingCart className="h-5 w-5" />
             </PopoverTrigger>
             <PopoverContent className="mt-5 w-[40rem] bg-white">
               <CartPopover />
             </PopoverContent>
           </Popover>
-        </div>
         <div
           className={`cursor-pointer p-2 ${
             !session && !showLogin ? "invisible" : ""
