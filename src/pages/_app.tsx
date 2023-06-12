@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import Nav from "../components/Nav";
+import NavNew from "../components/NavNew";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/cartContext";
 import { ToastContainer } from "react-toastify";
@@ -16,6 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <CartProvider>
       <SessionProvider session={session}>
         <ToastContainer />
+        <NavNew />
         <Nav />
         <Component {...pageProps} />
         <Footer />
