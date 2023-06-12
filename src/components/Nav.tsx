@@ -10,7 +10,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import AdminMenu from "./Nav/AdminMenu";
-import CartPopup from "./Nav/CartPopup";
 import SearchBar from "./Nav/SearchBar";
 import { Badge } from "./ui/badge";
 import CartContext from "../context/cartContext";

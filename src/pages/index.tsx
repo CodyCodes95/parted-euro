@@ -8,6 +8,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface IOptions {
   label: string;
@@ -90,95 +91,106 @@ const Home: NextPage = () => {
           />
           <div className="absolute w-[50%] text-center text-white">
             <div className="flex w-full flex-col items-center">
-              <div
-                className={`absolute w-full duration-150 ease-linear ${
-                  carSelectOpen ? "translate-x-[-300rem]" : ""
-                }`}
-              >
-                <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
-                <p className="mt-2 text-xl">
-                  Shop our wide range of second-hand parts from various
-                  BMW&apos;s.
-                </p>
-                <div className="mt-4 flex  justify-around ">
-                  <Button
-                    className="ml-28 border-white text-sm text-white"
-                    variant="outline"
-                    onClick={() => setCarSelectOpen(!carSelectOpen)}
+              <AnimatePresence>
+                {!carSelectOpen ? (
+                  <motion.div
+                    initial={{ x: 300, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -300, opacity: 0 }}
+                    // transition={{ duration: 1 }}
+                    className={`absolute w-full duration-150 ease-linear`}
                   >
-                    SHOP BY CAR
-                  </Button>
-                  <Button
-                    className="mr-28 border-white text-sm text-white"
-                    variant="outline"
-                    onClick={() => router.push("/listings")}
+                    <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
+                    <p className="mt-2 text-xl">
+                      Shop our wide range of second-hand parts from various
+                      BMW&apos;s.
+                    </p>
+                    <div className="mt-4 flex  justify-around ">
+                      <Button
+                        className="ml-28 border-white text-sm text-white"
+                        variant="outline"
+                        onClick={() => setCarSelectOpen(!carSelectOpen)}
+                      >
+                        SHOP BY CAR
+                      </Button>
+                      <Button
+                        className="mr-28 border-white text-sm text-white"
+                        variant="outline"
+                        onClick={() => router.push("/listings")}
+                      >
+                        BROWSE ALL
+                      </Button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ x: 300, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -300, opacity: 0 }}
+                    className={` absolute duration-150 ease-linear`}
                   >
-                    BROWSE ALL
-                  </Button>
-                </div>
-              </div>
-              <div
-                className={` absolute translate-x-[300rem] duration-150 ease-linear ${
-                  carSelectOpen ? "translate-x-[-0rem]" : ""
-                }`}
-              >
-                <div className="mt-4 flex items-center justify-center text-black">
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setCarSelectOpen(!carSelectOpen);
-                      setSeries("");
-                      setGeneration("");
-                      setModel("");
-                    }}
-                  >
-                    <ArrowBackIcon fontSize="large" className="text-white" />
-                  </div>
-                  <Select
-                    instanceId="seriesSelect"
-                    className="mx-4 w-36"
-                    placeholder="Series"
-                    options={seriesOptions}
-                    onChange={(e) => setSeries(e?.value || "")}
-                  />
-                  <Select
-                    className="mx-4 w-36"
-                    instanceId="generationSelect"
-                    placeholder="Generation"
-                    options={generationOptions}
-                    onChange={(e) => setGeneration(e?.value || "")}
-                    isDisabled={generationOptions.length === 0}
-                  />
-                  <Select
-                    className="mx-4 w-36"
-                    instanceId="modelSelect"
-                    placeholder="Model"
-                    options={modelOptions}
-                    onChange={(e) => setModel(e?.value || "")}
-                    isDisabled={modelOptions.length === 0}
-                  />
-                  <Button
-                    onClick={() =>
-                      router.push(
-                        `/listings?series=${series}&generation=${generation}&model=${model}`
-                      )
-                    }
-                    className="border-white text-sm text-white"
-                    variant="outline"
-                  >
-                    Search
-                  </Button>
-                </div>
-              </div>
+                    <div className="mt-4 flex items-center justify-center text-black">
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setCarSelectOpen(!carSelectOpen);
+                          setSeries("");
+                          setGeneration("");
+                          setModel("");
+                        }}
+                      >
+                        <ArrowBackIcon
+                          fontSize="large"
+                          className="text-white"
+                        />
+                      </div>
+                      <Select
+                        instanceId="seriesSelect"
+                        className="mx-4 w-36"
+                        placeholder="Series"
+                        options={seriesOptions}
+                        onChange={(e) => setSeries(e?.value || "")}
+                      />
+                      <Select
+                        className="mx-4 w-36"
+                        instanceId="generationSelect"
+                        placeholder="Generation"
+                        options={generationOptions}
+                        onChange={(e) => setGeneration(e?.value || "")}
+                        isDisabled={generationOptions.length === 0}
+                      />
+                      <Select
+                        className="mx-4 w-36"
+                        instanceId="modelSelect"
+                        placeholder="Model"
+                        options={modelOptions}
+                        onChange={(e) => setModel(e?.value || "")}
+                        isDisabled={modelOptions.length === 0}
+                      />
+                      <Button
+                        onClick={() =>
+                          router.push(
+                            `/listings?series=${series}&generation=${generation}&model=${model}`
+                          )
+                        }
+                        className="border-white text-sm text-white"
+                        variant="outline"
+                      >
+                        Search
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center p-4">
           {/* {listings.data?.map((listing) => (
             <Link
-              key={listing.id}
-              className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-              href={`listings/listing?id=${listing.id}`}
+            key={listing.id}
+            className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
+            href={`listings/listing?id=${listing.id}`}
             >
               <div className="max-h-[634px]">
                 <img

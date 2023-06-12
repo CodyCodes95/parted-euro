@@ -31,6 +31,7 @@
     "compressorjs": "^1.1.1",
     "ebay-api": "^8.3.0",
     "ebay-oauth-nodejs-client": "^1.2.2",
+    "framer-motion": "^10.12.16",
     "lucide-react": "^0.181.0",
     "micro": "^10.0.1",
     "next": "13.0.2",
