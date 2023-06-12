@@ -7,13 +7,14 @@ import { trpc } from "../../../utils/trpc";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import loader from "../../../../public/loader.svg";
 import AdminTable from "../../../components/tables/AdminTable";
 import type { Column } from "react-table";
 import EbayModal from "../../../components/listings/EbayModal";
 import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
+import { Button } from "../../../components/ui/button";
+import FilterInput from "../../../components/tables/FilterInput";
 
 const Listings: NextPage = () => {
   const { status } = useSession({
@@ -57,7 +58,7 @@ const Listings: NextPage = () => {
       },
       {
         Header: "Part Numbers",
-        accessor: (d) => d.parts.map((p:any) => p.partDetailsId).join(", "),
+        accessor: (d) => d.parts.map((p: any) => p.partDetailsId).join(", "),
       },
       {
         Header: "Quantity",
@@ -71,26 +72,24 @@ const Listings: NextPage = () => {
         Header: "Listed On Ebay",
         accessor: (d) =>
           d.listedOnEbay ? (
-            <button
+            <Button
               onClick={() => {
                 markAsNotListedEbay.mutate({ id: d.id });
                 setShowEbayModal(true);
                 setSelected(d);
               }}
-              className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
             >
               Relist
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={() => {
-                setShowEbayModal(true);
                 setSelected(d);
+                setShowEbayModal(true);
               }}
-              className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
             >
-              List on eBay
-            </button>
+              List
+            </Button>
           ),
       },
       {
@@ -100,29 +99,27 @@ const Listings: NextPage = () => {
       {
         Header: "Edit",
         accessor: (d) => (
-          <button
+          <Button
             onClick={() => {
               setSelected(d);
               setShowModal(true);
             }}
-            className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
           >
             Edit
-          </button>
+          </Button>
         ),
       },
       {
         Header: "Delete",
         accessor: (d) => (
-          <button
+          <Button
             onClick={() => {
               setSelected(d);
               setShowDeleteModal(true);
             }}
-            className="mr-2 mb-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
           >
             Delete
-          </button>
+          </Button>
         ),
       },
     ],
@@ -208,58 +205,23 @@ const Listings: NextPage = () => {
               Add Listing
             </button>
           </div>
-          <label className="sr-only">Search</label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search-users"
-              className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Search for listings"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-          </div>
-        </div>
-        {listings.isLoading ? (
-          <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
-            <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
-          </div>
-        ) : (
-          <AdminTable
+          <FilterInput
             filter={filter}
             setFilter={setFilter}
-            columns={columns}
-            data={listings.data}
+            placeholder="Search for listings..."
           />
-        )}
+        </div>
+        <AdminTable
+          filter={filter}
+          setFilter={setFilter}
+          columns={columns}
+          data={listings}
+        />
         <div>
-          <button
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={authenticateEbay}
-          >
-            Renew Ebay
-          </button>
-          <Link
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            href="/admin/ebay"
-          >
-            Ebay Dashboard
-          </Link>
+          <Button onClick={authenticateEbay}>Renew Ebay</Button>
+          <Button>
+            <Link href="/admin/ebay">Ebay Dashboard</Link>
+          </Button>
         </div>
       </main>
     </>

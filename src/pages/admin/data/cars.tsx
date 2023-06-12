@@ -13,14 +13,16 @@ import type { Car } from "@prisma/client";
 import Spacer from "../../../components/Spacer";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import FilterInput from "../../../components/tables/FilterInput";
+import { Button } from "../../../components/ui/button";
 
 const Cars: NextPage = () => {
-    const { status } = useSession({
-      required: true,
-      onUnauthenticated() {
-        window.location.href = "/";
-      },
-    });
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = "/";
+    },
+  });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
@@ -38,7 +40,6 @@ const Cars: NextPage = () => {
       setShowDeleteModal(false);
     }
   };
-
 
   const columns = useMemo<Array<Column<any>>>(
     () => [
@@ -94,9 +95,7 @@ const Cars: NextPage = () => {
     <>
       <Head>
         <title>Parts</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ToastContainer />
       <ConfirmDelete
         deleteFunction={deleteCarFunction}
         setShowModal={setShowDeleteModal}
@@ -126,50 +125,27 @@ const Cars: NextPage = () => {
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
-            <button
-              className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            <Button
               onClick={() => {
                 setSelectedCar(null);
                 setShowModal(true);
               }}
             >
               Add Car
-            </button>
+            </Button>
           </div>
-          <label className="sr-only">Search</label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search-users"
-              className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Search for cars"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-          </div>
+          <FilterInput
+            filter={filter}
+            setFilter={setFilter}
+            placeholder="Search for cars..."
+          />
         </div>
-        {cars.isLoading ? (
-          <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
-            <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
-          </div>
-        ) : (
-          <AdminTable columns={columns} data={cars.data}  filter={filter} setFilter={setFilter}/>
-        )}
+        <AdminTable
+          columns={columns}
+          data={cars}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </main>
     </>
   );

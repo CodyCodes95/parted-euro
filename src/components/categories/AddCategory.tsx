@@ -12,7 +12,10 @@ interface AddCategoryProps {
   success: (message: string) => void;
   error: (message: string) => void;
   refetch: () => void;
-  selection: any;
+  selection:
+    | PartTypeParentCategory 
+    | (PartTypes & { parentCategory: PartTypeParentCategory })
+    | undefined;
 }
 
 const AddCategory: React.FC<AddCategoryProps> = ({
@@ -75,7 +78,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
               Add a category
             </h3>
             <button
-              onClick={() => setShowModal(!showModal) as any}
+              onClick={() => setShowModal(!showModal)}
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               data-modal-toggle="defaultModal"
@@ -114,7 +117,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
                   placeholder={"Select a donor"}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={(e: any) => setParentCategoryId(e.value as string)}
+                  onChange={(e:any) => setParentCategoryId(e.value)}
                   options={parentCategories.data?.map(
                     (category: PartTypeParentCategory) => {
                       return {
@@ -127,11 +130,11 @@ const AddCategory: React.FC<AddCategoryProps> = ({
               </div>
             )}
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (selection) {
-                  onUpdate();
+                  await onUpdate();
                 } else {
-                  onSave();
+                   await onSave();
                 }
               }}
               data-modal-toggle="defaultModal"

@@ -6,11 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
-import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
 import type { PartTypeParentCategory, PartTypes } from "@prisma/client";
 import AddCategory from "../../../components/categories/AddCategory";
 import { error, success } from "../../../utils/toast";
+import { Button } from "../../../components/ui/button";
 
 const Categories: NextPage = () => {
   const { status } = useSession({
@@ -20,47 +20,16 @@ const Categories: NextPage = () => {
     },
   });
   const [showModal, setShowModal] = useState<boolean>(false);
-  //   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<
     | PartTypeParentCategory
     | (PartTypes & { parentCategory: PartTypeParentCategory })
-    | null
-  >(null);
+    | undefined
+  >();
   const [filter, setFilter] = useState<string>("");
 
-  //   const parentCategories = trpc.categories.getAllCategories.useQuery();
   const subCategories = trpc.categories.getAllSubCategories.useQuery();
 
-  //   const parentData = useMemo(
-  //     () => parentCategories.data,
-  //     [parentCategories.data]
-  //   );
-
   const subData = useMemo(() => subCategories.data, [subCategories.data]);
-
-  //   const parentCols = useMemo<Array<Column<PartTypeParentCategory>>>(
-  //     () => [
-  //       {
-  //         Header: "Category",
-  //         accessor: "name",
-  //       },
-  //       {
-  //         Header: "Edit",
-  //         accessor: (d) => (
-  //           <button
-  //             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-  //             onClick={() => {
-  //               setSelectedCategory(d);
-  //               setShowEditModal(true);
-  //             }}
-  //           >
-  //             Edit
-  //           </button>
-  //         ),
-  //       },
-  //     ],
-  //     []
-  //   );
 
   const subCols = useMemo<
     Array<Column<PartTypes & { parentCategory: PartTypeParentCategory }>>
@@ -77,31 +46,16 @@ const Categories: NextPage = () => {
       {
         Header: "Edit",
         accessor: (d) => (
-          <button
-            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+          <Button
             onClick={() => {
               setSelectedCategory(d);
               setShowModal(true);
             }}
           >
             Edit
-          </button>
+          </Button>
         ),
       },
-      //   {
-      //     Header: "Edit",
-      //     accessor: (d) => (
-      //       <button
-      //         className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-      //         onClick={() => {
-      //           setSelectedCategory(d);
-      //           setShowEditModal(true);
-      //         }}
-      //       >
-      //         Edit
-      //       </button>
-      //     ),
-      //   },
     ],
     []
   );
@@ -129,19 +83,14 @@ const Categories: NextPage = () => {
             className="
                 mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             onClick={() => {
-              setSelectedCategory(null);
+              setSelectedCategory(undefined);
               setShowModal(true);
             }}
           >
             Add Category
           </button>
         </div>
-        {/* {parentCategories.data ? (
-                  <AdminTable columns={parentCols} data={parentCategories.data} />
-              ) : null} */}
-        {subCategories.data ? (
-          <AdminTable columns={subCols} data={subCategories.data} />
-        ) : null}
+        <AdminTable columns={subCols} data={subCategories} />
       </main>
     </>
   );

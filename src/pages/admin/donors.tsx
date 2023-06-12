@@ -11,7 +11,6 @@ import AddDonor from "../../components/donors/AddDonor";
 import { LinearProgress } from "@mui/material";
 import { formatPrice } from "../../utils/formatPrice";
 import AddPart from "../../components/parts/AddPart";
-import loader from "../../../public/loader.svg";
 import type { Donor } from "@prisma/client";
 import Spacer from "../../components/Spacer";
 import Link from "next/link";
@@ -70,7 +69,12 @@ const Donors: NextPage = () => {
       {
         Header: "Parts",
         accessor: (d) => (
-          <a className="text-blue-400 hover:underline" href={`/admin/inventory?vin=${d.vin}`}>{d.parts.length} parts</a>
+          <a
+            className="text-blue-400 hover:underline"
+            href={`/admin/inventory?vin=${d.vin}`}
+          >
+            {d.parts.length} parts
+          </a>
         ),
       },
       {
@@ -223,14 +227,6 @@ const Donors: NextPage = () => {
     }
   };
 
-  if (donors.isLoading) {
-    return (
-      <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
-        <img className="h-80 w-80" src={loader.src} alt="Loading spinner" />
-      </div>
-    );
-  }
-
   return (
     <>
       <Head>
@@ -316,7 +312,7 @@ const Donors: NextPage = () => {
         </div>
         <AdminTable
           columns={columns}
-          data={donors.data}
+          data={donors}
           filter={filter}
           setFilter={setFilter}
         />
