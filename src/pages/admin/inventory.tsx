@@ -15,6 +15,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
+import BreadCrumbs from "../../components/BreadCrumbs";
 
 const Inventory: NextPage = () => {
   const { status } = useSession({
@@ -94,16 +95,7 @@ const Inventory: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        <div className="flex items-center">
-          <Link
-            href="/admin"
-            className="mr-2 mb-2 w-fit rounded-lg border border-gray-800 px-5 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-800"
-          >
-            {"<"}
-          </Link>
-          <Spacer amount="2" />
-          <p className="text-xl">admin/inventory</p>
-        </div>
+        <BreadCrumbs />
         {showModal ? (
           <AddPart
             success={success}
@@ -125,7 +117,11 @@ const Inventory: NextPage = () => {
               Add Inventory Item
             </Button>
           </div>
-          <FilterInput filter={filter} setFilter={setFilter} placeholder="Search for parts..." />
+          <FilterInput
+            filter={filter}
+            setFilter={setFilter}
+            placeholder="Search for parts..."
+          />
         </div>
         <AdminTable
           columns={columns}
