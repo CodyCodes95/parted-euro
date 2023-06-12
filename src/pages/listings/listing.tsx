@@ -179,7 +179,6 @@ const Listing: NextPage = () => {
       <Head>
         <title>{listing.data?.title}</title>
       </Head>
-      <ToastContainer />
       <div className="flex min-h-screen w-full flex-col">
         <div className="flex flex-col items-center justify-center bg-gray-200 md:flex-row md:p-24">
           <div className="w-[50%]">

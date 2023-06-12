@@ -69,7 +69,6 @@ const AddCategory: React.FC<AddCategoryProps> = ({
         showModal ? "" : "hidden"
       }`}
     >
-      <ToastContainer />
       <ModalBackDrop setShowModal={setShowModal} />
       <div className="relative h-full w-full max-w-2xl md:h-auto">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">

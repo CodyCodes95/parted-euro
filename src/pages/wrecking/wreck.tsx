@@ -37,7 +37,6 @@ const Listing: NextPage = () => {
           {donor.data?.car.model}
         </title>
       </Head>
-      <ToastContainer />
       <div className="flex min-h-screen w-full flex-col md:p-24">
         <div className="flex flex-col items-center justify-center md:flex-row">
           <div className="w-[50%]">

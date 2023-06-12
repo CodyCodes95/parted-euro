@@ -66,7 +66,6 @@ const Categories: NextPage = () => {
         <title>Categories</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ToastContainer />
       {showModal ? (
         <AddCategory
           refetch={subCategories.refetch}

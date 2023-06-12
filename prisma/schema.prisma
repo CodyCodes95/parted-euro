@@ -118,8 +118,8 @@ model Part {
   listing             Listing[]
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
-  donorVin            String
-  donor               Donor               @relation(fields: [donorVin], references: [vin])
+  donorVin            String?
+  donor               Donor?               @relation(fields: [donorVin], references: [vin])
   sold                Boolean             @default(false)
   soldPrice           Int?
   soldParentPrice     Int?

@@ -155,7 +155,6 @@ const Listings: NextPage = () => {
         <title>Listings</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ToastContainer />
       <ConfirmDelete
         deleteFunction={onDeleteListing}
         setShowModal={setShowDeleteModal}

@@ -232,7 +232,6 @@ const Donors: NextPage = () => {
       <Head>
         <title>Donors</title>
       </Head>
-      <ToastContainer />
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <div className="flex items-center">
           <Link
