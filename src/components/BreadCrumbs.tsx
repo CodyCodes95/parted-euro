@@ -1,7 +1,16 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FiHome, FiChevronRight } from "react-icons/fi";
 
 const BreadCrumbs = () => {
+  const [client, setClient] = useState(false);
+
+  useEffect(() => {
+    setClient(true);
+  }, []);
+
+  if (!client) return null;
+
   return (
     <nav className="flex w-3/4 text-xl" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3">

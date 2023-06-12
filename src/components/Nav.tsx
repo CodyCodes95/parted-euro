@@ -2,7 +2,7 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import logo from "../../public/logo.png";
 import NavLink from "./Nav/NavLink";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import NavBackdrop from "./Nav/NavBackdrop";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
@@ -12,6 +12,10 @@ import LoginIcon from "@mui/icons-material/Login";
 import AdminMenu from "./Nav/AdminMenu";
 import CartPopup from "./Nav/CartPopup";
 import SearchBar from "./Nav/SearchBar";
+import { Badge } from "./ui/badge";
+import CartContext from "../context/cartContext";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import CartPopover from "./Nav/CartPopover";
 
 const Nav: React.FC = () => {
   const [width, setWidth] = useState<number>();
@@ -21,6 +25,7 @@ const Nav: React.FC = () => {
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
   const [showCart, setShowCart] = useState<boolean>(false);
+  const { cart, setCart } = useContext(CartContext);
 
   const adminRef = useRef<HTMLDivElement>(null);
 
@@ -119,7 +124,22 @@ const Nav: React.FC = () => {
         >
           <SearchIcon />
         </div>
-        {<CartPopup setShowCart={setShowCart} showCart={showCart} />}
+        <div className="relative">
+          <Badge
+            className="absolute top-[-0.8rem] left-3 text-xs"
+            variant={"destructive"}
+          >
+            {cart.length}
+          </Badge>
+          <Popover>
+            <PopoverTrigger>
+              <ShoppingCartIcon />
+            </PopoverTrigger>
+            <PopoverContent className="w-[40rem] bg-white mt-5">
+              <CartPopover />
+            </PopoverContent>
+          </Popover>
+        </div>
         <div
           className={`cursor-pointer p-2 ${
             !session && !showLogin ? "invisible" : ""
@@ -130,13 +150,15 @@ const Nav: React.FC = () => {
               <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
             </div>
           ) : (
-            <LoginIcon
-              onClick={() => signIn("google")}
-            />
+            <LoginIcon onClick={() => signIn("google")} />
           )}
         </div>
         {openAdminMenu ? (
-          <AdminMenu adminRef={adminRef} open={openAdminMenu} setOpen={setOpenAdminMenu} />
+          <AdminMenu
+            adminRef={adminRef}
+            open={openAdminMenu}
+            setOpen={setOpenAdminMenu}
+          />
         ) : null}
       </div>
       <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
