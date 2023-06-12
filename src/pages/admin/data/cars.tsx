@@ -1,17 +1,15 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useMemo, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import AddCar from "../../../components/cars/AddCar";
-import loader from "../../../../public/loader.svg";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import type { Car } from "@prisma/client";
 import Spacer from "../../../components/Spacer";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import FilterInput from "../../../components/tables/FilterInput";
 import { Button } from "../../../components/ui/button";
@@ -63,29 +61,27 @@ const Cars: NextPage = () => {
       {
         Header: "Edit Car",
         accessor: (d: Car) => (
-          <button
+          <Button
             onClick={() => {
               setSelectedCar(d);
               setShowModal(true);
             }}
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Edit Car
-          </button>
+          </Button>
         ),
       },
       {
         Header: "Delete Car",
         accessor: (d: Car) => (
-          <button
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          <Button
             onClick={() => {
               setSelectedCar(d);
               setShowDeleteModal(true);
             }}
           >
             Delete Car
-          </button>
+          </Button>
         ),
       },
     ],
@@ -103,7 +99,7 @@ const Cars: NextPage = () => {
         showModal={showDeleteModal}
       />
       <main className="m-20 flex min-h-screen flex-col bg-white">
-    <BreadCrumbs />
+        <BreadCrumbs />
         <Spacer amount="2" />
         {showModal ? (
           <AddCar
