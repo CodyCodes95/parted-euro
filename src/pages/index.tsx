@@ -3,7 +3,7 @@ import Head from "next/head";
 import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {BiArrowBack} from "react-icons/bi"
 import Select from "react-select";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -139,10 +139,7 @@ const Home: NextPage = () => {
                           setModel("");
                         }}
                       >
-                        <ArrowBackIcon
-                          fontSize="large"
-                          className="text-white"
-                        />
+                        <BiArrowBack className="text-white text-4xl" />
                       </div>
                       <Select
                         instanceId="seriesSelect"

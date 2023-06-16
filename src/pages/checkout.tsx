@@ -9,7 +9,6 @@ import { useLoadScript } from "@react-google-maps/api";
 import ShippingAddressField from "../components/checkout/ShippingAddressField";
 import Spacer from "../components/Spacer";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Select from "react-select";
 
 interface CartItem {

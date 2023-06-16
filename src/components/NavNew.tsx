@@ -19,8 +19,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
-import PersonIcon from "@mui/icons-material/Person";
-import LoginIcon from "@mui/icons-material/Login";
+import {BsFillPersonFill} from "react-icons/bs";
+import {FiLogIn} from "react-icons/fi";
 import CartContext from "../context/cartContext";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 
@@ -165,24 +165,26 @@ const NavNew = () => {
           onClick={() => setShowSearch(!showSearch)}
           className="cursor-pointer p-2"
         >
-          <FaSearch />
+          <FaSearch className="text-xl" />
         </div>
         <div className="relative">
-          <Badge
-            className="absolute top-[-1.5rem] left-3 text-xs"
-            variant={"destructive"}
-          >
-            {cart.length}
-          </Badge>
+          {cart.length ? (
+            <Badge
+              className="absolute top-[-1.5rem] left-3 text-xs"
+              variant={"destructive"}
+            >
+              {cart.length}
+            </Badge>
+          ) : null}
         </div>
-          <Popover>
-            <PopoverTrigger>
-              <FaShoppingCart className="h-5 w-5" />
-            </PopoverTrigger>
-            <PopoverContent className="mt-5 w-[40rem] bg-white">
-              <CartPopover />
-            </PopoverContent>
-          </Popover>
+        <Popover>
+          <PopoverTrigger>
+            <FaShoppingCart className="h-5 w-5" />
+          </PopoverTrigger>
+          <PopoverContent className="mt-5 w-[40rem] bg-white">
+            <CartPopover />
+          </PopoverContent>
+        </Popover>
         <div
           className={`cursor-pointer p-2 ${
             !session && !showLogin ? "invisible" : ""
@@ -190,10 +192,13 @@ const NavNew = () => {
         >
           {session ? (
             <div ref={adminRef}>
-              <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
+              <BsFillPersonFill
+                className="text-2xl"
+                onClick={() => setOpenAdminMenu(!openAdminMenu)}
+              />
             </div>
           ) : (
-            <LoginIcon onClick={() => signIn("google")} />
+            <FiLogIn className="text-2xl" onClick={() => signIn("google")} />
           )}
         </div>
         {openAdminMenu ? (

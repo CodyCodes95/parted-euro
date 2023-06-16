@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import NavBackdrop from "./NavBackdrop";
-import { TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import { useRouter } from "next/router";
 import { useDebounce } from "use-debounce";
 import { trpc } from "../../utils/trpc";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import {AiOutlineArrowRight} from "react-icons/ai"
+import { Input } from "../ui/input";
 
 interface searchBarProps {
   showSearch: boolean;
@@ -40,22 +39,17 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
       {showSearch ? (
         <NavBackdrop showSearch={showSearch} setShowSearch={setShowSearch} />
       ) : null}
-      {/* <div className="relative">
-            <SearchIcon className="absolute z-[100] translate-x-[-38rem] translate-y-[-9px]" />
-          </div> */}
       <div
         className={`absolute top-[-5rem] left-0 z-[55] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
           showSearch ? "translate-y-[5rem]" : ""
         }`}
       >
         <div className="flex w-full flex-col items-center">
-          <TextField
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={searchListings}
             className="w-[33%]"
-            // label="Search"
-            id="fullWidth"
             placeholder="Search by part number, part name, car, etc."
           />
           {showSearch && listings.data?.length ? (
@@ -71,10 +65,14 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                   className="divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   {listings.data.slice(0, 5).map((listing) => (
-                    <li onClick={() => {
-                      setShowSearch(false);
-                      router.push(`/listings/listing?id=${listing.id}`)
-                    }} key={listing.id} className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4">
+                    <li
+                      onClick={() => {
+                        setShowSearch(false);
+                        router.push(`/listings/listing?id=${listing.id}`);
+                      }}
+                      key={listing.id}
+                      className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4"
+                    >
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
                           <img
@@ -101,7 +99,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                     <p className="p-4 text-lg">
                       Search for &quot;{search}&quot;
                     </p>
-                    <ArrowForwardIcon className="ml-auto mr-5" />
+                    <AiOutlineArrowRight className="ml-auto mr-5" />
                   </li>
                 </ul>
               </div>

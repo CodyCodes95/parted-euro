@@ -1,14 +1,13 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import IosShareIcon from "@mui/icons-material/IosShare";
+import {IoShareOutline} from 'react-icons/io5'
 import { useContext, useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Tab } from "@headlessui/react";
@@ -327,14 +326,15 @@ const Listing: NextPage = () => {
               <p>Available for pickup from our Knoxfield Warehouse. </p>
             </div>
             <div
+            
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
                 toast.info("Link copied");
               }}
-              className="flex cursor-pointer items-center"
+              className="flex cursor-pointer items-center p-2 bg-gray-300 rounded-md"
             >
-              <IosShareIcon />
-              <button className="ml-2 mt-2">Share</button>
+              <IoShareOutline />
+              <span className="ml-2">Share</span>
             </div>
           </div>
         </div>

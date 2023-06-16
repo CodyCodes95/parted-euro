@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import AddPart from "../../components/parts/AddPart";
 import type { Column } from "react-table";

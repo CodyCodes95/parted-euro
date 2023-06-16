@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
+import { AiOutlineSearch } from "react-icons/ai";
 import Link from "next/link";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
+import { Input } from "../../components/ui/input";
 
 const Wrecking: NextPage = () => {
   const router = useRouter();
@@ -29,15 +29,14 @@ const Wrecking: NextPage = () => {
   return (
     <div className="flex min-h-screen w-full flex-col p-24">
       <div className="flex w-full items-center justify-center">
-        <TextField
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-[33%]"
-          label="Search"
-          id="fullWidth"
-        />
-        <div className="relative">
-          <SearchIcon className="absolute top-[-9px] right-2" />
+        <div className="relative flex w-1/2 items-center justify-center">
+          <AiOutlineSearch className="absolute left-0 ml-1 text-xl" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-7"
+            placeholder="Search..."
+          />
         </div>
       </div>
       <div className="flex w-full items-center p-4">

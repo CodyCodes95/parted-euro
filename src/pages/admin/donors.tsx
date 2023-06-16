@@ -2,18 +2,18 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import {  toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
-import { LinearProgress } from "@mui/material";
 import { formatPrice } from "../../utils/formatPrice";
 import AddPart from "../../components/parts/AddPart";
 import type { Donor } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import BreadCrumbs from "../../components/BreadCrumbs";
+import { Progress } from "../../components/ui/progress";
+import { Button } from "../../components/ui/button";
 
 const Donors: NextPage = () => {
   const { status } = useSession({
@@ -80,37 +80,6 @@ const Donors: NextPage = () => {
         Header: "Total Unsold Parts",
         accessor: (d) => (
           <>
-            <LinearProgress
-              value={
-                (d.parts
-                  .reduce((acc: any, cur: any) => {
-                    if (cur.listing.length === 0) return acc;
-                    if (
-                      !acc.some(
-                        (part: any) => part.listing.id === cur.listing.id
-                      )
-                    ) {
-                      acc.push(cur);
-                    }
-                    return acc;
-                  }, [] as any[])
-                  .reduce((acc: any, part: any) => {
-                    if (part.sold) return acc;
-                    const listingsTotal = part?.listing?.reduce(
-                      (accum: number, listing: any) => {
-                        if (listing.active) return accum + listing.price;
-                        return accum;
-                      },
-                      0
-                    );
-                    return listingsTotal + acc;
-                  }, 0) /
-                  d.cost) *
-                  100 || 0
-              }
-              variant="determinate"
-              className="h-6 rounded-md bg-[#98d219a3]"
-            />
             <p>
               {formatPrice(
                 d.parts
@@ -145,13 +114,12 @@ const Donors: NextPage = () => {
         Header: "Total Sold Parts",
         accessor: (d) => (
           <>
-            <LinearProgress
+            <Progress
               value={d.parts.reduce((acc: any, part: any) => {
                 if (part.soldPrice === null || !part.sold) return acc;
                 return part.soldPrice + acc;
-              }, 0)}
-              variant="determinate"
-              className="h-6 rounded-md bg-[#98d219a3]"
+              }, 0) / d.cost * 100 || 0}
+              className="h-6 rounded-md"
             />
             <p>
               {formatPrice(
@@ -167,15 +135,14 @@ const Donors: NextPage = () => {
       {
         Header: "Add Parts",
         accessor: (d) => (
-          <button
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          <Button
             onClick={() => {
               setDonorVin(d.vin);
               setShowPartModal(true);
             }}
           >
             Add Parts
-          </button>
+          </Button>
         ),
         disableSortBy: true,
         minWidth: 100,
@@ -183,15 +150,14 @@ const Donors: NextPage = () => {
       {
         Header: "Edit",
         accessor: (d) => (
-          <button
-            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          <Button
             onClick={() => {
               setSelectedDonor(d);
               setShowModal(true);
             }}
           >
             Edit Donor
-          </button>
+          </Button>
         ),
       },
       {

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import IconButton from "@mui/material/IconButton";
+import { FaCamera } from "react-icons/fa";
 import LoadingButton from "../LoadingButton";
 import Compressor from "compressorjs";
 import type { Image, Listing, Part, PartDetail } from "@prisma/client";
@@ -55,6 +54,8 @@ const AddListing: React.FC<AddListingProps> = ({
     listing?.images || []
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
+
+  const photoUploadRef = useRef<HTMLInputElement>(null);
 
   const donors = trpc.donors.getAllWithParts.useQuery(undefined, {
     onSuccess: (data) => {
@@ -314,20 +315,17 @@ const AddListing: React.FC<AddListingProps> = ({
               </div>
             )}
             <div className="flex items-center justify-between">
-              <IconButton
-                color="primary"
-                aria-placeholder="upload picture"
-                component="label"
-              >
+              <div onClick={() => photoUploadRef.current?.click()}>
                 <input
                   hidden
+                  ref={photoUploadRef}
                   accept="image/*"
                   type="file"
                   multiple={true}
                   onChange={handleImageAttach}
                 />
-                <PhotoCamera />
-              </IconButton>
+                <FaCamera className="text-xl text-blue-500" />
+              </div>
               <p>{uploadedImages.length || images.length} Photos attached</p>
               <a
                 onClick={() => setShowImageSorter(true)}

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { Car, Image } from "@prisma/client";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import IconButton from "@mui/material/IconButton";
+import { FaCamera } from "react-icons/fa";
+
 import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
 import Compressor from "compressorjs";
@@ -42,6 +42,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
     donor?.images || []
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
+  const photoUploadRef = useRef<HTMLInputElement>(null);
 
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -359,20 +360,17 @@ const AddDonor: React.FC<AddDonorProps> = ({
               />
             </div>
             <div className="flex items-center justify-between">
-              <IconButton
-                color="primary"
-                aria-placeholder="upload picture"
-                component="label"
-              >
+              <div onClick={() => photoUploadRef.current?.click()}>
                 <input
                   hidden
+                  ref={photoUploadRef}
                   accept="image/*"
                   type="file"
                   multiple={true}
                   onChange={handleImageAttach}
                 />
-                <PhotoCamera />
-              </IconButton>
+                <FaCamera className="text-xl text-blue-500" />
+              </div>
               <p>{images.length} Photos attached</p>
               <a
                 onClick={() => setShowImageSorter(true)}

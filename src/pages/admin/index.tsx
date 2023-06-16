@@ -1,17 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import TimeToLeaveIcon from "@mui/icons-material/TimeToLeave";
-import CarRepairIcon from "@mui/icons-material/CarRepair";
-import BuildIcon from "@mui/icons-material/Build";
-import SellIcon from "@mui/icons-material/Sell";
+import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
+import { FaDatabase, FaTag } from "react-icons/fa";
 import xero from "../../../public/xero.png";
 import { trpc } from "../../utils/trpc";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const Admin: NextPage = () => {
   const { status } = useSession({
@@ -78,7 +75,7 @@ const Admin: NextPage = () => {
                 className="w-full cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <TimeToLeaveIcon fontSize="large" />
+                  <FaDatabase className="text-5xl" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">Data</h3>
               </Link>
@@ -87,7 +84,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <CarRepairIcon fontSize="large" />
+                  <IoCarSharp className="text-5xl" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Donors
@@ -98,7 +95,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <BuildIcon fontSize="large" />
+                  <IoBuildSharp className="text-5xl" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Inventory
@@ -109,7 +106,7 @@ const Admin: NextPage = () => {
                 className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
               >
                 <div className="relative mx-auto flex items-center justify-center">
-                  <SellIcon fontSize="large" />
+                  <FaTag className="text-5xl" />
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Listings

@@ -1,12 +1,11 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import IosShareIcon from "@mui/icons-material/IosShare";
-import {useState } from "react";
+import { IoShareOutline } from "react-icons/io5";
+import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -25,9 +24,7 @@ const Listing: NextPage = () => {
     }
   );
 
-  const fourWrecks = trpc.donors.getFourWrecks.useQuery()
-
-
+  const fourWrecks = trpc.donors.getFourWrecks.useQuery();
 
   return (
     <>
@@ -56,21 +53,27 @@ const Listing: NextPage = () => {
             <h2 className="my-6 text-xl">Mileage: {donor.data?.mileage}KM</h2>
             <h3 className="text-2xl">Parts For Sale</h3>
             <div className="p-2"></div>
-            {donor.data?.parts.reduce((acc, cur:any) => {
-              if (acc.find((part) => part.listing.id === cur.listing.id)) {
-                return acc;
-              } else {
-                return [...acc, cur];
-              }
-            }, [] as any[]).map((part) =>
-              part.listing.map((list:any) => {
-                return (
-                  <Link className="hover:underline" key={list.id} href={`/listings/listing?id=${list.id}`}>
-                    {list.title}
-                  </Link>
-                );
-              })
-            )}
+            {donor.data?.parts
+              .reduce((acc, cur: any) => {
+                if (acc.find((part) => part.listing.id === cur.listing.id)) {
+                  return acc;
+                } else {
+                  return [...acc, cur];
+                }
+              }, [] as any[])
+              .map((part) =>
+                part.listing.map((list: any) => {
+                  return (
+                    <Link
+                      className="hover:underline"
+                      key={list.id}
+                      href={`/listings/listing?id=${list.id}`}
+                    >
+                      {list.title}
+                    </Link>
+                  );
+                })
+              )}
             <div className="p-2"></div>
             <div className="flex w-full flex-col items-center md:place-items-start">
               <div
@@ -78,10 +81,10 @@ const Listing: NextPage = () => {
                   navigator.clipboard.writeText(window.location.href);
                   toast.info("Link copied");
                 }}
-                className="flex cursor-pointer items-center"
+                className="flex cursor-pointer items-center rounded-md bg-gray-300 p-2"
               >
-                <IosShareIcon />
-                <button className="ml-2 mt-2">Share</button>
+                <IoShareOutline />
+                <span className="ml-2">Share</span>
               </div>
             </div>
           </div>

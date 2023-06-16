@@ -54,7 +54,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
   }, [pageIndex]);
 
   return (
-    <div>
+    <div className="overflow-x-auto">
       <table
         className="w-full text-left text-sm text-gray-500 dark:text-gray-400"
         {...getTableProps()}

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
+import { FaFacebookSquare } from "react-icons/fa";
+import { FiInstagram } from "react-icons/fi";
 
 const Footer: React.FC = () => {
   return (
@@ -32,10 +32,10 @@ const Footer: React.FC = () => {
       </div>
       <div className="flex w-20 justify-between py-2">
         <Link href="https://www.facebook.com/partedeuro">
-          <FacebookIcon className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998]" />
+          <FaFacebookSquare className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998]" />
         </Link>
         <Link href="https://www.instagram.com/partedeuro/">
-          <InstagramIcon className="h-8 w-8 duration-300 ease-in-out hover:fill-[#d62976]" />
+          <FiInstagram className="h-8 w-8 duration-300 ease-in-out hover:text-[#d62976]" />
         </Link>
       </div>
     </div>

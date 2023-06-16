@@ -3,8 +3,7 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { Car, Donor, InventoryLocations, Part } from "@prisma/client";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Button } from "../ui/button";
 import { useDebounce } from "use-debounce";
 
@@ -77,47 +76,47 @@ const AddPart: React.FC<AddPartProps> = ({
     },
   });
 
- const cars = trpc.cars.getAllSearch.useQuery(
-   { search: debouncedSearch },
-   {
-     enabled: !!debouncedSearch,
-     onSuccess: (data) => {
-       setCarOptions([]);
-       data.forEach((car: Car) => {
-         setCarOptions((prevState: Array<NestedOptions>) => {
-           if (
-             prevState.some(
-               (group: NestedOptions) => group.label === car.series
-             )
-           ) {
-             return prevState.map((group: NestedOptions) => {
-               if (group.label === car.series) {
-                 group.options.push({
-                   label: `${car.generation} ${car.model} ${car.body || ""}`,
-                   value: car.id,
-                 });
-               }
-               return group;
-             });
-           } else {
-             return [
-               ...prevState,
-               {
-                 label: car.series,
-                 options: [
-                   {
-                     label: `${car.generation} ${car.model} ${car.body || ""}`,
-                     value: car.id,
-                   },
-                 ],
-               },
-             ];
-           }
-         });
-       });
-     },
-   }
- );
+  const cars = trpc.cars.getAllSearch.useQuery(
+    { search: debouncedSearch },
+    {
+      enabled: !!debouncedSearch,
+      onSuccess: (data) => {
+        setCarOptions([]);
+        data.forEach((car: Car) => {
+          setCarOptions((prevState: Array<NestedOptions>) => {
+            if (
+              prevState.some(
+                (group: NestedOptions) => group.label === car.series
+              )
+            ) {
+              return prevState.map((group: NestedOptions) => {
+                if (group.label === car.series) {
+                  group.options.push({
+                    label: `${car.generation} ${car.model} ${car.body || ""}`,
+                    value: car.id,
+                  });
+                }
+                return group;
+              });
+            } else {
+              return [
+                ...prevState,
+                {
+                  label: car.series,
+                  options: [
+                    {
+                      label: `${car.generation} ${car.model} ${car.body || ""}`,
+                      value: car.id,
+                    },
+                  ],
+                },
+              ];
+            }
+          });
+        });
+      },
+    }
+  );
 
   const donors = trpc.donors.getAll.useQuery();
 
@@ -458,12 +457,7 @@ const AddPart: React.FC<AddPartProps> = ({
                       className="w-[90%]"
                       onChange={(e: any) => setPartDetailsId(e.value)}
                     />
-                    <button
-                      onClick={() => setAddParts(true)}
-                      className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    >
-                      +
-                    </button>
+                    <Button onClick={() => setAddParts(true)}>+</Button>
                   </>
                 )}
               </div>
@@ -471,23 +465,9 @@ const AddPart: React.FC<AddPartProps> = ({
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             {addParts ? (
-              <button
-                onClick={savePartDetails}
-                data-modal-toggle="defaultModal"
-                type="button"
-                className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Save Part Details
-              </button>
+              <Button onClick={savePartDetails}>Save Part Details</Button>
             ) : (
-              <button
-                onClick={onSave}
-                data-modal-toggle="defaultModal"
-                type="button"
-                className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Save
-              </button>
+              <Button onClick={onSave}>Save</Button>
             )}
           </div>
         </div>
