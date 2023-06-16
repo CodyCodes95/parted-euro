@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { trpc } from "../../../utils/trpc";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
