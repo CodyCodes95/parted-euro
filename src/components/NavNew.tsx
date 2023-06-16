@@ -14,6 +14,7 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { useSession, signIn } from "next-auth/react";
+import { Menu, Transition } from '@headlessui/react'
 import { Badge } from "./ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
@@ -89,7 +90,7 @@ const NavNew = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+            <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
@@ -186,28 +187,16 @@ const NavNew = () => {
           </PopoverContent>
         </Popover>
         <div
-          className={`cursor-pointer p-2 ${
+          className={`p-2 ${
             !session && !showLogin ? "invisible" : ""
           } ${showLogin && !session ? "visible" : ""}`}
         >
           {session ? (
-            <div ref={adminRef}>
-              <BsFillPersonFill
-                className="text-2xl"
-                onClick={() => setOpenAdminMenu(!openAdminMenu)}
-              />
-            </div>
+            <AdminMenu />
           ) : (
             <FiLogIn className="text-2xl" onClick={() => signIn("google")} />
           )}
         </div>
-        {openAdminMenu ? (
-          <AdminMenu
-            adminRef={adminRef}
-            open={openAdminMenu}
-            setOpen={setOpenAdminMenu}
-          />
-        ) : null}
       </div>
       <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
     </div>
