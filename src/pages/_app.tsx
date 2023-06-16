@@ -7,6 +7,7 @@ import NavNew from "../components/NavNew";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/cartContext";
 import { ToastContainer } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
