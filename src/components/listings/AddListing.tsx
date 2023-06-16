@@ -7,8 +7,6 @@ import IconButton from "@mui/material/IconButton";
 import LoadingButton from "../LoadingButton";
 import Compressor from "compressorjs";
 import type { Image, Listing, Part, PartDetail } from "@prisma/client";
-import SortableList, { SortableItem } from "react-easy-sort";
-import { RxCross2 } from "react-icons/rx";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import ImageSorter from "./ImageSorter";

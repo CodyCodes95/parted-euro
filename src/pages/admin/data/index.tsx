@@ -4,7 +4,6 @@ import Link from "next/link";
 import TimeToLeaveIcon from "@mui/icons-material/TimeToLeave";
 import BuildIcon from "@mui/icons-material/Build";
 import { useSession } from "next-auth/react";
-import Spacer from "../../../components/Spacer";
 import { MdCategory } from "react-icons/md";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 

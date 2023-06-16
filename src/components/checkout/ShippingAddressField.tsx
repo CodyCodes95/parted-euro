@@ -3,11 +3,6 @@ import { Fragment, useEffect, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 
 type ShippingAddress = {
-  // line1: string;
-  // line2: string;
-  // city: string;
-  // state: string;
-  // country: string;
   postCode: string;
 };
 

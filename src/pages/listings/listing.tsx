@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { useContext, useEffect, useState } from "react";
-import type { Car, Part } from "@prisma/client";
+import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -135,7 +135,7 @@ const Listing: NextPage = () => {
   }, []);
 
   const processParts = (parts: any) => {
-    if (!parts) return
+    if (!parts) return;
     const result: any = [];
 
     parts.forEach((part: any) => {
@@ -305,7 +305,7 @@ const Listing: NextPage = () => {
               <h4 className="text-xl">Donor Car:</h4>
               {listing.data?.parts
                 .reduce((acc, cur) => {
-                  if (!acc.some((part) => part.donor.vin === cur.donor.vin)) {
+                  if (!acc.some((part) => part.donor.vin === cur.donor?.vin)) {
                     acc.push(cur);
                   }
                   return acc;
@@ -349,7 +349,7 @@ const Listing: NextPage = () => {
                     key={generation.generation}
                     className={({ selected }) =>
                       classNames(
-                        "w-full py-2.5 px-2 text-sm font-medium leading-5 text-black text-left",
+                        "w-full py-2.5 px-2 text-left text-sm font-medium leading-5 text-black",
                         selected
                           ? "bg-white font-bold shadow"
                           : " hover:bg-gray-300"

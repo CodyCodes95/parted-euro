@@ -1,12 +1,5 @@
 import React from "react";
 
-// interface DonorCardProps {
-//   title: string;
-//   data: any;
-//   value: string;
-//   setValue: React.Dispatch<React.SetStateAction<string>>;
-// }
-
 const DonorCard: React.FC = ({}) => {
   const [newValue, setNewValue] = React.useState<boolean>(false);
 

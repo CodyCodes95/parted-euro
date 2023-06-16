@@ -3,8 +3,6 @@ import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
 import type { PartTypeParentCategory, PartTypes } from "@prisma/client";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 interface AddCategoryProps {
   showModal: boolean;
