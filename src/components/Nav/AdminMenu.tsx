@@ -2,10 +2,9 @@ import { Fragment } from "react";
 import { signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { BsFillPersonFill } from "react-icons/bs";
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 const AdminMenu = () => {
-  const router = useRouter();
 
   return (
     <div className="">
@@ -28,14 +27,14 @@ const AdminMenu = () => {
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
-                  <button
-                    onClick={() => router.push("/admin")}
+                  <Link
+                    href="/admin"
                     className={`${
                       active ? "bg-[#d03b36] text-white" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   >
                     Admin
-                  </button>
+                  </Link>
                 )}
               </Menu.Item>
               <Menu.Item>
