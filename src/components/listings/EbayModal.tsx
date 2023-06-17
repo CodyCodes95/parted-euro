@@ -224,12 +224,14 @@ const EbayModal: React.FC<EbayModalProps> = ({
             </button>
           </div>
           <div className="space-y-6 p-6">
-            <div className="">
+            <div className="relative">
               <Input
+                className="pb-6"
                 value={title}
                 placeholder="Title"
                 onChange={(e) => setTitle(e.target.value)}
               />
+              <span className={`absolute right-2 bottom-1 text-xs ${title.length > 80 && "text-red-600"}`}>{title.length}/80</span>
             </div>
             <div className="">
               <Textarea
