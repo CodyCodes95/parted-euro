@@ -1,168 +1,256 @@
-// import Link from "next/link";
-// import { signIn, useSession } from "next-auth/react";
-// import logo from "../../public/logo.png";
-// import NavLink from "./Nav/NavLink";
-// import { useContext, useEffect, useRef, useState } from "react";
-// import NavBackdrop from "./Nav/NavBackdrop";
-// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-// import SearchIcon from "@mui/icons-material/Search";
-// import PersonIcon from "@mui/icons-material/Person";
-// import MenuIcon from "@mui/icons-material/Menu";
-// import LoginIcon from "@mui/icons-material/Login";
-// import AdminMenu from "./Nav/AdminMenu";
-// import SearchBar from "./Nav/SearchBar";
-// import { Badge } from "./ui/badge";
-// import CartContext from "../context/cartContext";
-// import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-// import CartPopover from "./Nav/CartPopover";
+import Link from "next/link";
+import logo from "../../public/logo.png";
+import { cn } from "../lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "./ui/navigation-menu";
+import { useSession, signIn } from "next-auth/react";
+import { Badge } from "./ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import CartPopover from "./Nav/CartPopover";
+import AdminMenu from "./Nav/AdminMenu";
+import SearchBar from "./Nav/SearchBar";
+import { FiLogIn } from "react-icons/fi";
+import CartContext from "../context/cartContext";
+import { FaShoppingCart, FaSearch } from "react-icons/fa";
+import { forwardRef, useContext, useRef, useState } from "react";
 
-// const Nav: React.FC = () => {
-//   const [width, setWidth] = useState<number>();
-//   const [isMobile, setIsMobile] = useState<boolean>(false);
-//   const [showMenu, setShowMenu] = useState<boolean>(false);
-//   const [showSearch, setShowSearch] = useState<boolean>(false);
-//   const [showLogin, setShowLogin] = useState<boolean>(false);
-//   const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
-//   const [showCart, setShowCart] = useState<boolean>(false);
-//   const { cart, setCart } = useContext(CartContext);
+const generations = [
+  { generation: "F8X", series: "M2/M3/M4", param: "F8" },
+  { generation: "E36", series: "3 Series", param: "E36" },
+  { generation: "E46", series: "3 Series", param: "E46" },
+  { generation: "E34", series: "5 Series", param: "E34" },
+  { generation: "E39", series: "5 Series", param: "E39" },
+  { generation: "E38", series: "7 Series", param: "E38" },
+  { generation: "E31", series: "8 Series", param: "E31" },
+  { generation: "E53", series: "X Series", param: "E53" },
+];
 
-//   const adminRef = useRef<HTMLDivElement>(null);
+const Nav = () => {
+  const { cart, setCart } = useContext(CartContext);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
 
-//   const handleWindowSizeChange = () => {
-//     setWidth(window.innerWidth);
-//   };
-//   useEffect(() => {
-//     setWidth(window.innerWidth);
-//     window.addEventListener("resize", handleWindowSizeChange);
-//     return () => {
-//       window.removeEventListener("resize", handleWindowSizeChange);
-//     };
-//   }, []);
+  const adminRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
+  return (
+    <div className="flex h-16 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
+      <button
+        onClick={() => {
+          if (session) return;
+          setShowLogin(!showLogin);
+        }}
+        className="absolute left-0 cursor-default text-white"
+      >
+        G
+      </button>
+      <Link href="/">
+        <img className="mr-6 inline h-8" src={logo.src} alt="" />
+      </Link>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-screen gap-y-8 gap-x-5 p-6 lg:grid-cols-6">
+                {generations.map((generation, i) => {
+                  return (
+                    <li className="flex flex-col" key={i}>
+                      <h4>
+                        {generation.generation} - {generation.series}
+                      </h4>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            All {generation.generation} Parts
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?category=engine&generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {generation.generation} Engine/Driveline Parts &
+                            Accessories
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?category=suspension&generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {generation.generation} Suspension and & Brakes
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?category=interior&generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {generation.generation} Interior
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?category=exterior&generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {generation.generation} Exterior
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={`/listings?category=electrical&generation=${generation.param}`}
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {generation.generation} Electrical Modules &
+                            Controllers
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          {/* <NavigationMenuItem>
+            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                {components.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    href={component.href}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem> */}
+          <NavigationMenuItem>
+            <Link href="/wrecking" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Cars Wrecking Now
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/returns-refunds" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Warrenty & Return Policy
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/contact" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Contact
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+      <div className="flex items-center">
+        <div
+          onClick={() => setShowSearch(!showSearch)}
+          className="cursor-pointer p-2"
+        >
+          <FaSearch className="text-xl" />
+        </div>
+        <div className="relative">
+          {cart.length ? (
+            <Badge
+              className="absolute top-[-1.5rem] left-3 text-xs"
+              variant={"destructive"}
+            >
+              {cart.length}
+            </Badge>
+          ) : null}
+        </div>
+        <Popover>
+          <PopoverTrigger>
+            <FaShoppingCart className="h-5 w-5" />
+          </PopoverTrigger>
+          <PopoverContent className="mt-5 w-[40rem] bg-white">
+            <CartPopover />
+          </PopoverContent>
+        </Popover>
+        <div
+          className={`p-2 ${!session && !showLogin ? "invisible" : ""} ${
+            showLogin && !session ? "visible" : ""
+          }`}
+        >
+          {session ? (
+            <AdminMenu />
+          ) : (
+            <FiLogIn className="text-2xl" onClick={() => signIn("google")} />
+          )}
+        </div>
+      </div>
+      <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
+    </div>
+  );
+};
 
-//   useEffect(() => {
-//     if (width && width <= 768) {
-//       setIsMobile(true);
-//     } else {
-//       setIsMobile(false);
-//     }
-//   }, [width]);
+const ListItem = forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
 
-//   const { data: session } = useSession();
-
-//   if (isMobile)
-//     return (
-//       <>
-//         {showMenu ? <NavBackdrop /> : null}
-//         <div className="fixed z-[100] flex h-20 w-full items-center justify-between bg-white">
-//           <div
-//             className="cursor-pointer"
-//             onClick={() => setShowMenu(!showMenu)}
-//           >
-//             <MenuIcon fontSize="large" />
-//           </div>
-//           <Link href="/">
-//             <img className="mr-8 inline h-8" src={logo.src} alt="" />
-//           </Link>
-//         </div>
-//         <div
-//           className={`fixed left-[-15rem] z-[55] flex h-screen flex-col justify-between bg-[#bfb9b9da] duration-200 ${
-//             showMenu ? "translate-x-[15rem]" : ""
-//           }`}
-//         >
-//           <div className="mt-20 flex flex-col">
-//             <NavLink href=" " title="Shop By Generation" />
-//             {/* <NavLink href=" " title="Shop By Wheels" /> */}
-//             <NavLink href="/wrecking" title="Cars Wrecking Now" />
-//             <NavLink href="/returns-refunds" title="Warrenty & Return Policy" />
-//             <NavLink href="/contact" title="Contact" />
-//           </div>
-//           <div className="flex">
-//             <div
-//               onClick={() => setShowSearch(!showSearch)}
-//               className="cursor-pointer p-2"
-//             >
-//               <SearchIcon />
-//             </div>
-//             <div className="p-2">
-//               <ShoppingCartIcon />
-//             </div>
-//             <div className="p-2">
-//               <PersonIcon />
-//             </div>
-//             {session ? <NavLink href="/admin" title="Admin" /> : null}
-//           </div>
-//         </div>
-//       </>
-//     );
-
-//   return (
-//     <div className="flex h-20 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
-//       <button
-//         onClick={() => {
-//           if (session) return;
-//           setShowLogin(!showLogin);
-//         }}
-//         className="absolute left-0 cursor-default text-white"
-//       >
-//         G
-//       </button>
-//       <div className="flex items-center">
-//         <Link href="/">
-//           <img className="mr-6 inline h-8" src={logo.src} alt="" />
-//         </Link>
-//         <NavLink href=" " expand={true} title="Shop By Generation" />
-//         {/* <NavLink href=" " title="Shop By Wheels" /> */}
-//         <NavLink href="/wrecking" title="Cars Wrecking Now" />
-//         <NavLink href="/returns-refunds" title="Warranty & Return Policy" />
-//         <NavLink href="/contact" title="Contact" />
-//       </div>
-//       <div className="flex items-center">
-//         <div
-//           onClick={() => setShowSearch(!showSearch)}
-//           className="cursor-pointer p-2"
-//         >
-//           <SearchIcon />
-//         </div>
-//         <div className="relative">
-//           <Badge
-//             className="absolute top-[-0.8rem] left-3 text-xs"
-//             variant={"destructive"}
-//           >
-//             {cart.length}
-//           </Badge>
-//           <Popover>
-//             <PopoverTrigger>
-//               <ShoppingCartIcon />
-//             </PopoverTrigger>
-//             <PopoverContent className="w-[40rem] bg-white mt-5">
-//               <CartPopover />
-//             </PopoverContent>
-//           </Popover>
-//         </div>
-//         <div
-//           className={`cursor-pointer p-2 ${
-//             !session && !showLogin ? "invisible" : ""
-//           } ${showLogin && !session ? "visible" : ""}`}
-//         >
-//           {session ? (
-//             <div ref={adminRef}>
-//               <PersonIcon onClick={() => setOpenAdminMenu(!openAdminMenu)} />
-//             </div>
-//           ) : (
-//             <LoginIcon onClick={() => signIn("google")} />
-//           )}
-//         </div>
-//         {openAdminMenu ? (
-//           <AdminMenu
-//             adminRef={adminRef}
-//             open={openAdminMenu}
-//             setOpen={setOpenAdminMenu}
-//           />
-//         ) : null}
-//       </div>
-//       <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
-//     </div>
-//   );
-// };
-
-// export default Nav;
+export default Nav;
