@@ -34,9 +34,8 @@ const generations = [
 
 const Nav = () => {
   const { cart, setCart } = useContext(CartContext);
-  const [showLogin, setShowLogin] = useState<boolean>(false);
-  const [showSearch, setShowSearch] = useState<boolean>(false);
-  const [openAdminMenu, setOpenAdminMenu] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   const adminRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
