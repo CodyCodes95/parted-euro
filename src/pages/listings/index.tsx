@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import {AiOutlineSearch} from "react-icons/ai"
+import { AiOutlineSearch } from "react-icons/ai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -9,6 +9,7 @@ import loader from "../../../public/loader.svg";
 import { useInView } from "react-intersection-observer";
 import { Input } from "../../components/ui/input";
 import LoadingSpinner from "../../components/Loader";
+import { Info, Search } from "lucide-react";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -52,6 +53,32 @@ const Listings: NextPage = () => {
 
   if (listings.isLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!listings.data?.pages[0]?.listings.length) {
+    return (
+      <div className="flex min-h-screen w-full flex-col py-24">
+        <div className="flex w-full items-center justify-center">
+          <div className="relative flex w-1/2 items-center justify-center">
+            <AiOutlineSearch className="absolute left-0 ml-1 text-xl" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-7"
+              placeholder="Search..."
+            />
+          </div>
+        </div>
+        <div className="mt-12 flex h-96 w-full flex-col items-center justify-end">
+          <Search className="h-48 w-48 opacity-20" />
+          <p className="mt-4 text-3xl">No parts found</p>
+          <span className="flex">
+            <Info />
+            <p className="ml-2">Try adjusting your search and trying again</p>
+          </span>
+        </div>
+      </div>
+    );
   }
 
   return (
