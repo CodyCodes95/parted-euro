@@ -47,7 +47,7 @@ const SearchSidebar = () => {
             Categories
           </h2>
           <div className="space-y-1">
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            {/* <Button variant="ghost" size="sm" className="w-full justify-start">
               <ListMusic className="mr-2 h-4 w-4" />
               Playlists
             </Button>
@@ -66,6 +66,21 @@ const SearchSidebar = () => {
             <Button variant="ghost" size="sm" className="w-full justify-start">
               <Library className="mr-2 h-4 w-4" />
               Albums
+            </Button> */}
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              Engine/Driveline
+            </Button>
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              Suspension & Brakes
+            </Button>
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              Interior
+            </Button>
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              Exterior
+            </Button>
+            <Button variant="ghost" size="sm" className="w-full justify-start">
+              Electrical
             </Button>
           </div>
         </div>
