@@ -226,7 +226,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
           <div className="space-y-6 p-6">
             <div className="relative">
               <Input
-                className="pb-6"
+                className="pb-5"
                 value={title}
                 placeholder="Title"
                 onChange={(e) => setTitle(e.target.value)}
