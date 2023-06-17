@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "../../components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 
 
@@ -18,31 +19,32 @@ const SearchSidebar = () => {
     <div className="w-1/6">
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
-          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-            Discover
-          </h2>
-          <div className="space-y-1">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full justify-start"
-            >
-              <PlayCircle className="mr-2 h-4 w-4" />
-              Listen Now
-            </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              <LayoutGrid className="mr-2 h-4 w-4" />
-              Browse
-            </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              <Radio className="mr-2 h-4 w-4" />
-              Radio
-            </Button>
-          </div>
+          <Accordion type="multiple" className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Generation</AccordionTrigger>
+              <AccordionContent>
+                Yes. It adheres to the WAI-ARIA design pattern.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger>Series</AccordionTrigger>
+              <AccordionContent>
+                Yes. It comes with default styles that matches the other
+                components aesthetic.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger>Model</AccordionTrigger>
+              <AccordionContent>
+                Yes. Its animated by default, but you can disable it if you
+                prefer.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
-        <div className="px-4 py-2">
+        <div className="px-4">
           <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-            Library
+            Categories
           </h2>
           <div className="space-y-1">
             <Button variant="ghost" size="sm" className="w-full justify-start">
@@ -66,11 +68,6 @@ const SearchSidebar = () => {
               Albums
             </Button>
           </div>
-        </div>
-        <div className="py-2">
-          <h2 className="relative px-6 text-lg font-semibold tracking-tight">
-            Playlists
-          </h2>
         </div>
       </div>
     </div>
