@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -113,7 +113,7 @@ model Part {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   donorVin            String?
-  donor               Donor?               @relation(fields: [donorVin], references: [vin])
+  donor               Donor?              @relation(fields: [donorVin], references: [vin])
   sold                Boolean             @default(false)
   soldPrice           Int?
   soldParentPrice     Int?
@@ -124,18 +124,18 @@ model Part {
 }
 
 model PartDetail {
-  partNo    String      @id @unique
+  partNo               String      @id @unique
   alternatePartNumbers String?
-  name      String
-  weight    Float 
-  length    Float 
-  width     Float 
-  height    Float 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  cars      Car[]
-  parts     Part[]
-  partTypes PartTypes[]
+  name                 String
+  weight               Float
+  length               Float
+  width                Float
+  height               Float
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  cars                 Car[]
+  parts                Part[]
+  partTypes            PartTypes[]
 }
 
 model Image {
@@ -186,20 +186,23 @@ model Order {
   updatedAt       DateTime @updatedAt
 }
 
-model PartTypes {
-  id             String                  @id @default(cuid())
-  name           String
-  createdAt      DateTime                @default(now())
-  updatedAt      DateTime                @updatedAt
-  parts          PartDetail[]
-  parentCategory PartTypeParentCategory? @relation(fields: [parentId], references: [id])
-  parentId       String?
-}
+// model PartTypes {
+//   id             String                  @id @default(cuid())
+//   name           String
+//   createdAt      DateTime                @default(now())
+//   updatedAt      DateTime                @updatedAt
+//   parts          PartDetail[]
+//   parentCategory PartTypeParentCategory? @relation(fields: [parentId], references: [id])
+//   parentId       String?
+// }
 
-model PartTypeParentCategory {
-  id        String      @id @default(cuid())
+model PartTypes {
+  id        String       @id @default(cuid())
   name      String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  partsType PartTypes[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  parts     PartDetail[]
+  parent    PartTypes?   @relation("PartTypeToParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId  String?
+  children  PartTypes[]  @relation("PartTypeToParent")
 }

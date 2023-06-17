@@ -89,60 +89,65 @@ export const listingRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.generation && !input.model && !input.series && !input.category) {
-      const listings = await ctx.prisma.listing.findMany({
-        include: {
-          images: {
-            orderBy: {
-              order: "asc",
-            },
-          },
-          // parts: true,
-          parts: {
-            include: {
-              partDetails: {
-                include: {
-                  partTypes: true,
-                },
+      if (
+        !input.generation &&
+        !input.model &&
+        !input.series &&
+        !input.category
+      ) {
+        const listings = await ctx.prisma.listing.findMany({
+          include: {
+            images: {
+              orderBy: {
+                order: "asc",
               },
             },
-          },
-        },
-        where: {
-          active: true,
-          OR: [
-            {
-              description: {
-                contains: input.search || "",
-              },
-            },
-            {
-              title: {
-                contains: input.search || "",
-              },
-            },
-            {
-              parts: {
-                some: {
-                  partDetails: {
-                    partNo: {
-                      contains: input.search || "",
-                    },
+            // parts: true,
+            parts: {
+              include: {
+                partDetails: {
+                  include: {
+                    partTypes: true,
                   },
                 },
               },
             },
-          ],
-        },
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        take: 20,
-      });
-      let nextCursor: typeof input.cursor | undefined = undefined;
-      if (listings.length > 19) {
-        const nextItem = listings.pop();
-        nextCursor = nextItem?.id;
-      }
-      return { listings, nextCursor };
+          },
+          where: {
+            active: true,
+            OR: [
+              {
+                description: {
+                  contains: input.search || "",
+                },
+              },
+              {
+                title: {
+                  contains: input.search || "",
+                },
+              },
+              {
+                parts: {
+                  some: {
+                    partDetails: {
+                      partNo: {
+                        contains: input.search || "",
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          cursor: input.cursor ? { id: input.cursor } : undefined,
+          take: 20,
+        });
+        let nextCursor: typeof input.cursor | undefined = undefined;
+        if (listings.length > 19) {
+          const nextItem = listings.pop();
+          nextCursor = nextItem?.id;
+        }
+        return { listings, nextCursor };
       } else {
         const listings = await ctx.prisma.listing.findMany({
           include: {
@@ -155,11 +160,7 @@ export const listingRouter = router({
               include: {
                 partDetails: {
                   include: {
-                    partTypes: {
-                      include: {
-                        parentCategory: true,
-                      },
-                    },
+                    partTypes: true,
                   },
                 },
               },
@@ -184,8 +185,10 @@ export const listingRouter = router({
                 partDetails: {
                   partTypes: {
                     some: {
-                      name: {
-                        contains: input.category || "",
+                      parent: {
+                        name: {
+                          contains: input.category || "",
+                        },
                       },
                     },
                   },

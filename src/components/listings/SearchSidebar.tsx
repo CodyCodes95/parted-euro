@@ -1,20 +1,21 @@
-import {
-  LayoutGrid,
-  Library,
-  ListMusic,
-  Mic2,
-  Music2,
-  PlayCircle,
-  Radio,
-  User,
-} from "lucide-react";
-
+import { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 
 
 const SearchSidebar = () => {
+
+  const [client, setClient] = useState(false);
+
+  useEffect(() => {
+    if (window) {
+      setClient(true);
+    }
+  }, []);
+
+  if (!client) return null
+  
   return (
     <div className="w-1/6">
       <div className="space-y-4 py-4">
@@ -47,7 +48,7 @@ const SearchSidebar = () => {
             Categories
           </h2>
           <div className="space-y-1">
-            {/* <Button variant="ghost" size="sm" className="w-full justify-start">
+            {/* <Button variant="ghost" size="sm" className={`w-full justify-start`}>
               <ListMusic className="mr-2 h-4 w-4" />
               Playlists
             </Button>
@@ -67,19 +68,19 @@ const SearchSidebar = () => {
               <Library className="mr-2 h-4 w-4" />
               Albums
             </Button> */}
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Button variant="ghost" size="sm" className={`w-full justify-start ${window.location.search.includes("engine") ? "bg-accent text-accent-foreground" : ""}`}>
               Engine/Driveline
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Button variant="ghost" size="sm" className={`w-full justify-start ${window.location.search.includes("suspension") ? "bg-accent text-accent-foreground" : ""}`}>
               Suspension & Brakes
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Button variant="ghost" size="sm" className={`w-full justify-start ${window.location.search.includes("interior") ? "bg-accent text-accent-foreground" : ""}`}>
               Interior
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Button variant="ghost" size="sm" className={`w-full justify-start ${window.location.search.includes("exterior") ? "bg-accent text-accent-foreground" : ""}`}>
               Exterior
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
+            <Button variant="ghost" size="sm" className={`w-full justify-start ${window.location.search.includes("electrical") ? "bg-accent text-accent-foreground" : ""}`}>
               Electrical
             </Button>
           </div>
