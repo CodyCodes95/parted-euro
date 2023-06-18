@@ -8,7 +8,7 @@ export const partDetailsRouter = router({
       include: {
         partTypes: {
           include: {
-            parentCategory: true,
+            parent: true,
           },
         },
         parts: true,
@@ -19,7 +19,7 @@ export const partDetailsRouter = router({
   getAllPartTypes: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.partTypes.findMany({
       include: {
-        parentCategory: true,
+        parent: true,
       },
     });
   }),
