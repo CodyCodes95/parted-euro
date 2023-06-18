@@ -1,13 +1,12 @@
 import type { NextPage } from "next";
 import SearchSidebar from "../../components/listings/SearchSidebar";
 import { Input } from "../../components/ui/input";
-import { Info, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useInView } from "react-intersection-observer";
 import { trpc } from "../../utils/trpc";
-import loader from "../../../public/loader.svg";
 import type {
   Image,
   Listing,
@@ -118,31 +117,10 @@ const Listingss: NextPage = () => {
             </div>
           </div>
           <div className="p-4" />
-          <ListingsGrid listings={listings.data}
+          <ListingsGrid
+            listings={listings.data}
             isLoading={listings.isLoading}
           />
-          {/* {listings.data?.length ? (
-            <>
-              <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
-                {listings.data.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div>
-              <div className="mt-12 flex h-96 w-full flex-col items-center">
-                <Search className="h-48 w-48 opacity-20" />
-                <p className="mt-4 text-3xl">No parts found</p>
-                <span className="flex">
-                  <Info />
-                  <p className="ml-2">
-                    Try adjusting your search and trying again
-                  </p>
-                </span>
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </div>
