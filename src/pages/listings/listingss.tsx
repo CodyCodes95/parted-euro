@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useInView } from "react-intersection-observer";
 import { trpc } from "../../utils/trpc";
-import ListingCard from "../../components/listings/ListingCard";
 import loader from "../../../public/loader.svg";
 import type {
   Image,
@@ -17,6 +16,7 @@ import type {
   PartTypes,
 } from "@prisma/client";
 import { Badge } from "../../components/ui/badge";
+import ListingsGrid from "../../components/listings/ListingsGrid";
 
 const Listingss: NextPage = () => {
   const router = useRouter();
@@ -118,7 +118,10 @@ const Listingss: NextPage = () => {
             </div>
           </div>
           <div className="p-4" />
-          {listings.data?.length ? (
+          <ListingsGrid listings={listings.data}
+            isLoading={listings.isLoading}
+          />
+          {/* {listings.data?.length ? (
             <>
               <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
                 {listings.data.map((listing) => (
@@ -139,7 +142,7 @@ const Listingss: NextPage = () => {
                 </span>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
