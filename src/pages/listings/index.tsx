@@ -20,16 +20,14 @@ import ListingsGrid from "../../components/listings/ListingsGrid";
 const Listings: NextPage = () => {
   const router = useRouter();
 
-  const { series, generation, model, category, subcat } = router.query;
+  const { series, generation, model, category, subcat, search } = router.query;
 
-  const [search, setSearch] = useState<string | string[]>(
-    router.query.search || ""
-  );
+  const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [availableSubcategories, setAvailableSubcategories] = useState<
     string[]
   >([]);
 
-  const [debouncedSearch] = useDebounce(search, 500);
+  const [debouncedSearch] = useDebounce(searchQuery, 500);
 
   const { ref, inView } = useInView();
 
@@ -50,6 +48,12 @@ const Listings: NextPage = () => {
       setAvailableSubcategories([]);
     }
   }, [listings.data]);
+
+  useEffect(() => {
+    if (search) {
+      setSearchQuery(search);
+    }
+  }, [search]);
 
   const getUniquePartTypes = (
     listings: (Listing & {
@@ -111,8 +115,8 @@ const Listings: NextPage = () => {
             <div className="relative w-1/4">
               <Search size={24} className="absolute top-2 left-1" />
               <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
                 placeholder="Search..."
               />
