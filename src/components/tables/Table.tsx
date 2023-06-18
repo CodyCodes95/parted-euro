@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BsChevronDoubleLeft, BsChevronDoubleRight } from "react-icons/bs";
 import type { Column } from "react-table";
 import {
   useGlobalFilter,
@@ -120,9 +121,17 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
         <ul className="inline-flex items-center -space-x-px">
           <li
             className="cursor-pointer rounded-l-md border-2 p-2 hover:bg-gray-200"
+            onClick={() => {
+              gotoPage(0);
+            }}
+          >
+            <BsChevronDoubleLeft className="h-6 w-6" />
+          </li>
+          <li
+            className="cursor-pointer border-2 p-2 hover:bg-gray-200"
             onClick={previousPage}
           >
-            <ChevronLeft />
+            Prev
           </li>
           {[
             pageIndex - 2,
@@ -152,10 +161,18 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
               );
             })}
           <li
-            className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
+            className="cursor-pointer border-2 p-2 hover:bg-gray-200"
             onClick={nextPage}
           >
-            <ChevronRight />
+            Next
+          </li>
+          <li
+            className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
+            onClick={() => {
+              gotoPage(pageCount - 1);
+            }}
+          >
+            <BsChevronDoubleRight className="h-6 w-6" />
           </li>
         </ul>
       </nav>
