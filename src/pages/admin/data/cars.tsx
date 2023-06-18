@@ -78,6 +78,7 @@ const Cars: NextPage = () => {
               setSelectedCar(d);
               setShowDeleteModal(true);
             }}
+            variant="destructive"
           >
             Delete Car
           </Button>

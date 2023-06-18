@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import type { PartDetailWithRelations } from "../../../types/prisma-query-types";
 import FilterInput from "../../../components/tables/FilterInput";
 import BreadCrumbs from "../../../components/BreadCrumbs";
+import { Button } from "../../../components/ui/button";
 
 const Inventory: NextPage = () => {
   const { status } = useSession({
@@ -72,29 +73,28 @@ const Inventory: NextPage = () => {
       {
         Header: "Edit",
         accessor: (d) => (
-          <button
-            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+          <Button
             onClick={() => {
               setSelectedPart(d);
               setShowEditModal(true);
             }}
           >
             Edit
-          </button>
+          </Button>
         ),
       },
       {
         Header: "Delete",
         accessor: (d) => (
-          <button
-            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+          <Button
             onClick={() => {
               setSelectedPart(d);
               setShowConfirmDelete(true);
             }}
+            variant="destructive"
           >
             Delete
-          </button>
+          </Button>
         ),
       },
     ],
@@ -116,7 +116,7 @@ const Inventory: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">
-<BreadCrumbs />
+        <BreadCrumbs />
         {showConfirmDelete ? (
           <ConfirmDelete
             showModal={showConfirmDelete}
@@ -144,14 +144,7 @@ const Inventory: NextPage = () => {
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
-          <div>
-            <button
-              className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => setShowModal(true)}
-            >
-              Add Part
-            </button>
-          </div>
+          <Button onClick={() => setShowModal(true)}>Add Part</Button>
           <FilterInput
             filter={filter}
             setFilter={setFilter}

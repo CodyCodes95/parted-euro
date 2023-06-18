@@ -168,6 +168,7 @@ const Donors: NextPage = () => {
               setSelectedDonor(d);
               setShowDeleteModal(true);
             }}
+            variant="destructive"
           >
             Delete Donor
           </Button>
@@ -226,17 +227,14 @@ const Donors: NextPage = () => {
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
-          <div>
-            <button
-              className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => {
-                setSelectedDonor(null);
-                setShowModal(true);
-              }}
-            >
-              Add Donor
-            </button>
-          </div>
+          <Button
+            onClick={() => {
+              setSelectedDonor(null);
+              setShowModal(true);
+            }}
+          >
+            Add Donor
+          </Button>
           <label className="sr-only">Search</label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">

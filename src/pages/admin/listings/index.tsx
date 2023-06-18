@@ -117,6 +117,7 @@ const Listings: NextPage = () => {
               setSelected(d);
               setShowDeleteModal(true);
             }}
+            variant="destructive"
           >
             Delete
           </Button>
@@ -184,17 +185,14 @@ const Listings: NextPage = () => {
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
-          <div>
-            <button
-              className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => {
-                setSelected(null);
-                setShowModal(true);
-              }}
-            >
-              Add Listing
-            </button>
-          </div>
+          <Button
+            onClick={() => {
+              setSelected(null);
+              setShowModal(true);
+            }}
+          >
+            Add Listing
+          </Button>
           <FilterInput
             filter={filter}
             setFilter={setFilter}

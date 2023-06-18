@@ -62,7 +62,7 @@ const Nav = () => {
                 {generations.map((generation, i) => {
                   return (
                     <li className="flex flex-col" key={i}>
-                      <h4 className="rounded-md bg-gray-200 p-2">
+                      <h4 className="rounded-md bg-gray-100 shadow-md p-2">
                         {generation.generation} - {generation.series}
                       </h4>
                       <NavigationMenuLink asChild>
