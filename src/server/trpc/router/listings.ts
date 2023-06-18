@@ -86,7 +86,6 @@ export const listingRouter = router({
         search: z.string().optional(),
         category: z.string().optional(),
         subcat: z.string().optional(),
-        cursor: z.any().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -140,15 +139,8 @@ export const listingRouter = router({
               },
             ],
           },
-          cursor: input.cursor ? { id: input.cursor } : undefined,
-          take: 20,
         });
-        let nextCursor: typeof input.cursor | undefined = undefined;
-        if (listings.length > 19) {
-          const nextItem = listings.pop();
-          nextCursor = nextItem?.id;
-        }
-        return { listings, nextCursor };
+        return listings;
       } else {
         const listings = await ctx.prisma.listing.findMany({
           include: {
@@ -209,17 +201,154 @@ export const listingRouter = router({
               },
             },
           },
-          cursor: input.cursor ? { id: input.cursor } : undefined,
-          take: 20,
         });
-        let nextCursor: typeof input.cursor | undefined = undefined;
-        if (listings.length > 19) {
-          const nextItem = listings.pop();
-          nextCursor = nextItem?.id;
-        }
-        return { listings, nextCursor };
+        return listings;
       }
     }),
+  //For use with inf query
+  // getAllAvailable: publicProcedure
+  //   .input(
+  //     z.object({
+  //       generation: z.string().optional(),
+  //       model: z.string().optional(),
+  //       series: z.string().optional(),
+  //       search: z.string().optional(),
+  //       category: z.string().optional(),
+  //       subcat: z.string().optional(),
+  //       cursor: z.any().nullish(),
+  //     })
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     if (
+  //       !input.generation &&
+  //       !input.model &&
+  //       !input.series &&
+  //       !input.category
+  //     ) {
+  //       const listings = await ctx.prisma.listing.findMany({
+  //         include: {
+  //           images: {
+  //             orderBy: {
+  //               order: "asc",
+  //             },
+  //           },
+  //           // parts: true,
+  //           parts: {
+  //             include: {
+  //               partDetails: {
+  //                 include: {
+  //                   partTypes: true,
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //         where: {
+  //           active: true,
+  //           OR: [
+  //             {
+  //               description: {
+  //                 contains: input.search || "",
+  //               },
+  //             },
+  //             {
+  //               title: {
+  //                 contains: input.search || "",
+  //               },
+  //             },
+  //             {
+  //               parts: {
+  //                 some: {
+  //                   partDetails: {
+  //                     partNo: {
+  //                       contains: input.search || "",
+  //                     },
+  //                   },
+  //                 },
+  //               },
+  //             },
+  //           ],
+  //         },
+  //         cursor: input.cursor ? { id: input.cursor } : undefined,
+  //         take: 20,
+  //       });
+  //       let nextCursor: typeof input.cursor | undefined = undefined;
+  //       if (listings.length > 19) {
+  //         const nextItem = listings.pop();
+  //         nextCursor = nextItem?.id;
+  //       }
+  //       return { listings, nextCursor };
+  //     } else {
+  //       const listings = await ctx.prisma.listing.findMany({
+  //         include: {
+  //           images: {
+  //             orderBy: {
+  //               order: "asc",
+  //             },
+  //           },
+  //           parts: {
+  //             include: {
+  //               partDetails: {
+  //                 include: {
+  //                   partTypes: true,
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //         where: {
+  //           active: true,
+  //           OR: [
+  //             {
+  //               description: {
+  //                 contains: input.search || "",
+  //               },
+  //             },
+  //             {
+  //               title: {
+  //                 contains: input.search || "",
+  //               },
+  //             },
+  //           ],
+  //           parts: {
+  //             some: {
+  //               partDetails: {
+  //                 partTypes: {
+  //                   some: {
+  //                     parent: {
+  //                       name: {
+  //                         contains: input.category || "",
+  //                       },
+  //                     },
+  //                     name: {
+  //                       contains: input.subcat || "",
+  //                     },
+  //                   },
+  //                 },
+  //                 cars: {
+  //                   some: {
+  //                     generation: {
+  //                       contains: input.generation || "",
+  //                     },
+  //                     model: input.model,
+  //                     series: input.series,
+  //                   },
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //         cursor: input.cursor ? { id: input.cursor } : undefined,
+  //         take: 20,
+  //       });
+  //       let nextCursor: typeof input.cursor | undefined = undefined;
+  //       if (listings.length > 19) {
+  //         const nextItem = listings.pop();
+  //         nextCursor = nextItem?.id;
+  //       }
+  //       return { listings, nextCursor };
+  //     }
+  //   }),
   getSearchBar: publicProcedure
     .input(
       z.object({

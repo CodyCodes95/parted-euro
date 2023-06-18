@@ -34,36 +34,21 @@ const Listingss: NextPage = () => {
 
   const { ref, inView } = useInView();
 
-  const listings = trpc.listings.getAllAvailable.useInfiniteQuery(
-    {
-      series: series as string,
-      generation: generation as string,
-      model: model as string,
-      search: (debouncedSearch as string) || undefined,
-      category: category as string,
-      subcat: subcat as string,
-    },
-    {
-      getNextPageParam: (lastPage) =>
-        lastPage.nextCursor ? lastPage.nextCursor : undefined,
-    }
-  );
+  const listings = trpc.listings.getAllAvailable.useQuery({
+    series: series as string,
+    generation: generation as string,
+    model: model as string,
+    search: (debouncedSearch as string) || undefined,
+    category: category as string,
+    subcat: subcat as string,
+  });
 
   useEffect(() => {
-    if (inView && listings.hasNextPage) {
-      listings.fetchNextPage();
+    if (listings.data?.length) {
+      const uniquePartTypes = getUniquePartTypes(listings.data);
+      setAvailableSubcategories(uniquePartTypes);
     }
-  }, [inView, listings]);
-
-  useEffect(() => {
-    if (listings.data?.pages) {
-      const availableSubcategories = listings.data.pages.reduce((acc, page) => {
-        const pageSubcategories = getUniquePartTypes(page.listings);
-        return [...acc, ...pageSubcategories];
-      }, [] as string[]);
-      setAvailableSubcategories(availableSubcategories);
-    }
-  }, [listings.data?.pages]);
+  }, [listings.data]);
 
   const getUniquePartTypes = (
     listings: (Listing & {
@@ -133,15 +118,11 @@ const Listingss: NextPage = () => {
             </div>
           </div>
           <div className="p-4" />
-          {listings.data?.pages[0]?.listings.length ? (
+          {listings.data?.length ? (
             <>
               <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
-                {listings.data?.pages.map((page) => (
-                  <>
-                    {page.listings.map((listing) => (
-                      <ListingCard key={listing.id} listing={listing} />
-                    ))}
-                  </>
+                {listings.data.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
                 ))}
               </div>
             </>
@@ -157,18 +138,6 @@ const Listingss: NextPage = () => {
                   </p>
                 </span>
               </div>
-            </div>
-          )}
-          {listings.hasNextPage && (
-            <div
-              ref={ref}
-              className="flex w-full flex-col items-center justify-center p-24"
-            >
-              <img
-                className="h-80 w-80"
-                src={loader.src}
-                alt="Loading spinner"
-              />
             </div>
           )}
         </div>
