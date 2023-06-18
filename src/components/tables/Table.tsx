@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Column } from "react-table";
 import {
@@ -117,23 +118,11 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
           </span>
         </span>
         <ul className="inline-flex items-center -space-x-px">
-          <li onClick={previousPage}>
-            <a className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-              <span className="sr-only">Previous</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </a>
+          <li
+            className="cursor-pointer rounded-l-md border-2 p-2 hover:bg-gray-200"
+            onClick={previousPage}
+          >
+            <ChevronLeft />
           </li>
           {[
             pageIndex - 2,
@@ -141,42 +130,32 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
             pageIndex,
             pageIndex + 1,
             pageIndex + 2,
+            pageIndex + 3,
+            pageIndex + 4,
+            pageIndex + 5,
           ]
             .filter((pageNo) => pageNo > 0 && pageNo <= pageOptions.length)
-            .map((page) => {
+            .map((page, i) => {
+              if (i > 4) return null;
               return (
                 <li
                   key={page}
                   onClick={() => {
                     gotoPage(page - 1);
                   }}
+                  className={`cursor-pointer border-2 py-2 px-4 hover:bg-gray-200 ${
+                    pageIndex + 1 === page ? "bg-gray-200 font-semibold" : ""
+                  }`}
                 >
-                  <a className="border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    {page}
-                  </a>
+                  {page}
                 </li>
               );
             })}
-          <li onClick={nextPage}>
-            <a
-              href="#"
-              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              <span className="sr-only">Next</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </a>
+          <li
+            className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
+            onClick={nextPage}
+          >
+            <ChevronRight />
           </li>
         </ul>
       </nav>

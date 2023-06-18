@@ -17,7 +17,6 @@ import type {
   PartTypes,
 } from "@prisma/client";
 import { Badge } from "../../components/ui/badge";
-import { AiOutlineSearch } from "react-icons/ai";
 
 const Listingss: NextPage = () => {
   const router = useRouter();
@@ -87,6 +86,23 @@ const Listingss: NextPage = () => {
     return Array.from(partTypeSet);
   };
 
+  const updateQuery = (key: string, value: string) => {
+    const query = router.query;
+    if (query[key] === value) {
+      delete query[key];
+      router.push({
+        pathname: router.pathname,
+        query: query,
+      });
+      return;
+    }
+    query[key] = value;
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+  };
+
   return (
     <div className="flex w-full flex-col">
       <div className="flex w-full">
@@ -99,13 +115,7 @@ const Listingss: NextPage = () => {
                   key={subcat}
                   className="m-2 cursor-pointer p-2"
                   onClick={() => {
-                    router.push({
-                      pathname: router.pathname,
-                      query: {
-                        ...router.query,
-                        subcat,
-                      },
-                    });
+                    updateQuery("subcat", subcat);
                   }}
                 >
                   {subcat}
