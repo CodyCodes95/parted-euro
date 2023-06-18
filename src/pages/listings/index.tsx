@@ -46,6 +46,8 @@ const Listings: NextPage = () => {
     if (listings.data?.length) {
       const uniquePartTypes = getUniquePartTypes(listings.data);
       setAvailableSubcategories(uniquePartTypes);
+    } else {
+      setAvailableSubcategories([]);
     }
   }, [listings.data]);
 

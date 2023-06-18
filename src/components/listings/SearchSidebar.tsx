@@ -1,4 +1,5 @@
 import { Button } from "../../components/ui/button";
+import { trpc } from "../../utils/trpc";
 import {
   Accordion,
   AccordionContent,
@@ -10,8 +11,11 @@ import { useRouter } from "next/router";
 const SearchSidebar = () => {
   const router = useRouter();
 
+  const cars = trpc.cars.getAllData.useQuery();
+
   const updateQuery = (key: string, value: string) => {
     const query = router.query;
+    delete query.subcat;
     if (query[key] === value) {
       delete query[key];
       router.push({
@@ -28,21 +32,72 @@ const SearchSidebar = () => {
   };
 
   return (
-    <div className="w-1/6">
+    <div className="w-1/5">
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger>Generation</AccordionTrigger>
-              <AccordionContent></AccordionContent>
+              <AccordionTrigger>Series</AccordionTrigger>
+              <AccordionContent>
+                {cars.data?.series.map((series) => (
+                  <Button
+                    key={series}
+                    onClick={() => updateQuery("category", "engine")}
+                    variant="ghost"
+                    size="sm"
+                    className={`flex w-full justify-between ${
+                      router.query.category === "engine"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                  >
+                    <p>{series}</p>
+                    <input type="checkbox" className="h-4 w-4" />
+                  </Button>
+                ))}
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>Series</AccordionTrigger>
-              <AccordionContent></AccordionContent>
+              <AccordionTrigger>Generation</AccordionTrigger>
+              <AccordionContent>
+                {cars.data?.generations.map((generation) => (
+                  <Button
+                    key={generation}
+                    onClick={() => updateQuery("category", "engine")}
+                    variant="ghost"
+                    size="sm"
+                    className={`flex w-full justify-between ${
+                      router.query.category === "engine"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                  >
+                    <p>{generation}</p>
+                    <input type="checkbox" className="h-4 w-4" />
+                  </Button>
+                ))}
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
               <AccordionTrigger>Model</AccordionTrigger>
-              <AccordionContent></AccordionContent>
+              <AccordionContent>
+                {cars.data?.models.map((model) => (
+                  <Button
+                    key={model}
+                    onClick={() => updateQuery("category", "engine")}
+                    variant="ghost"
+                    size="sm"
+                    className={`flex w-full justify-between ${
+                      router.query.category === "engine"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                  >
+                    <p>{model}</p>
+                    <input type="checkbox" className="h-4 w-4" />
+                  </Button>
+                ))}
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>

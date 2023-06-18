@@ -15,23 +15,38 @@ export const carRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.car.create({ data: input });
     }),
-  getAllSearch: adminProcedure.input(z.object(
-    { search: z.string() }
-  )).query(({ ctx, input }) => {
-    return ctx.prisma.car.findMany({
-      where: {
-        OR: [
-          { model: { contains: input.search } },
-          { generation: { contains: input.search } },
-          { series: { contains: input.search } },
-        ],
-      },
-    });
-  }),
+  getAllSearch: adminProcedure
+    .input(z.object({ search: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.car.findMany({
+        where: {
+          OR: [
+            { model: { contains: input.search } },
+            { generation: { contains: input.search } },
+            { series: { contains: input.search } },
+          ],
+        },
+      });
+    }),
   getAll: adminProcedure.query(async ({ ctx }) => {
     return ctx.prisma.car.findMany();
   }),
-  // getAllSearch: 
+  getAllData: adminProcedure.query(async ({ ctx }) => {
+    const cars = await ctx.prisma.car.findMany({
+      where: {
+        make: "BMW",
+      },
+    });
+    const series = new Set(cars.map((car) => car.series));
+    const generations = new Set(cars.map((car) => car.generation));
+    const models = new Set(cars.map((car) => car.model));
+    return {
+      series: [...series],
+      generations: [...generations],
+      models: [...models],
+    };
+  }),
+  // getAllSearch:
   getAllSeries: publicProcedure.query(async ({ ctx }) => {
     const cars = await ctx.prisma.car.findMany({
       where: {
