@@ -1,4 +1,5 @@
 import { Dialog } from "@headlessui/react";
+import { X } from "lucide-react";
 import { type FC } from "react";
 
 type ModalProps = {
@@ -6,7 +7,7 @@ type ModalProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   children: React.ReactNode;
-  callback: () => void;
+  callback?: () => void;
 };
 
 const Modal: FC<ModalProps> = ({
@@ -20,7 +21,9 @@ const Modal: FC<ModalProps> = ({
     <Dialog
       open={isOpen}
       onClose={() => {
-        callback();
+        if (callback) {
+          callback();
+        }
         setIsOpen(false);
       }}
       className="relative z-50"
@@ -31,8 +34,16 @@ const Modal: FC<ModalProps> = ({
       {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
         {/* The actual dialog panel  */}
-        <Dialog.Panel className="mx-auto max-w-sm rounded bg-white">
-          <Dialog.Title>{title}</Dialog.Title>
+        <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white">
+          <div className="flex w-full items-center justify-between border-b-2 p-2">
+            <Dialog.Title className="p-2 text-xl font-medium">
+              {title}
+            </Dialog.Title>
+            <X
+              className="h-10 w-10 cursor-pointer rounded-md p-2 hover:bg-gray-200"
+              onClick={() => setIsOpen(false)}
+            />
+          </div>
           {children}
         </Dialog.Panel>
       </div>

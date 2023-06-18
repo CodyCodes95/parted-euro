@@ -32,7 +32,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   if (!listings?.length) {
     return (
       <div>
-        <div className="mt-12 flex h-96 w-full flex-col items-center">
+        <div className="mt-12 flex min-h-[50rem] w-full flex-col items-center">
           <Search className="h-48 w-48 opacity-20" />
           <p className="mt-4 text-3xl">No parts found</p>
           <span className="flex">
@@ -45,13 +45,13 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   }
 
   return (
-    <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid min-h-[50rem] w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
       {listings?.map((listing) => (
         <div
           key={listing.id}
           onMouseEnter={() => setHoveredListing(listing.id)}
           onMouseLeave={() => setHoveredListing("")}
-          className="rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
+          className="h-fit rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
         >
           <Link href={`/listings/listing?id=${listing.id}`}>
             <img
