@@ -5,7 +5,6 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useInView } from "react-intersection-observer";
 import { trpc } from "../../utils/trpc";
 import type {
   Image,
@@ -28,8 +27,6 @@ const Listings: NextPage = () => {
   >([]);
 
   const [debouncedSearch] = useDebounce(searchQuery, 500);
-
-  const { ref, inView } = useInView();
 
   const listings = trpc.listings.getAllAvailable.useQuery({
     series: series as string,
