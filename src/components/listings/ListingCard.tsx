@@ -1,32 +1,39 @@
 import type { Image, Listing } from "@prisma/client";
-import type { FC } from "react";
+import Link from "next/link";
+import { useState, type FC } from "react";
 
 type ListingCardProps = {
   listing: Listing & { images: Image[] };
 };
 
 const ListingCard: FC<ListingCardProps> = ({ listing }) => {
+  const [hoveredListing, setHoveredListing] = useState("");
+
   return (
-    <div className="w-72 rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl">
-      <a href="#">
+    <div
+      key={listing.id}
+      onMouseEnter={() => setHoveredListing(listing.id)}
+      onMouseLeave={() => setHoveredListing("")}
+      className="rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
+    >
+      <Link href={`/listings/listing?id=${listing.id}`}>
         <img
-          src={listing.images[0]?.url}
+          src={
+            hoveredListing === listing.id
+              ? listing.images[1]?.url
+              : listing.images[0]?.url
+          }
           alt="Product"
-          className="h-80 w-72 rounded-t-xl object-cover"
+          className="h-80 w-full rounded-t-xl object-cover"
         />
-        <div className="w-72 px-4 py-3">
+        <div className="w-full px-4 py-3">
           <p className="block truncate text-lg font-bold capitalize text-black">
             {listing.title}
           </p>
           <div className="flex items-center">
             <p className="my-3 cursor-auto text-lg font-semibold text-black">
-              {listing.price}
+              ${listing.price}
             </p>
-            <del>
-              <p className="ml-2 cursor-auto text-sm text-gray-600">
-                {listing.price}
-              </p>
-            </del>
             <div className="ml-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +52,7 @@ const ListingCard: FC<ListingCardProps> = ({ listing }) => {
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 };
