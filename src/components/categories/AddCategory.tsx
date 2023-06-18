@@ -10,9 +10,7 @@ interface AddCategoryProps {
   success: (message: string) => void;
   error: (message: string) => void;
   refetch: () => void;
-  selection:
-    | PartTypes 
-    | undefined;
+  selection: PartTypes | undefined;
 }
 
 const AddCategory: React.FC<AddCategoryProps> = ({
@@ -113,15 +111,13 @@ const AddCategory: React.FC<AddCategoryProps> = ({
                   placeholder={"Select a donor"}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={(e:any) => setParentCategoryId(e.value)}
-                  options={parentCategories.data?.map(
-                    (category: PartTypes) => {
-                      return {
-                        label: category.name,
-                        value: category.id,
-                      };
-                    }
-                  )}
+                  onChange={(e: any) => setParentCategoryId(e.value)}
+                  options={parentCategories.data?.map((category: PartTypes) => {
+                    return {
+                      label: category.name,
+                      value: category.id,
+                    };
+                  })}
                 />
               </div>
             )}
@@ -130,7 +126,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
                 if (selection) {
                   await onUpdate();
                 } else {
-                   await onSave();
+                  await onSave();
                 }
               }}
               data-modal-toggle="defaultModal"

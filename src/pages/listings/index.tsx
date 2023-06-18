@@ -12,15 +12,15 @@ import LoadingSpinner from "../../components/Loader";
 import { Info, Search } from "lucide-react";
 
 const Listings: NextPage = () => {
-  const router = useRouter();
-
-  const { series, generation, model, category, subcat } = router.query;
-
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "AUD",
     minimumFractionDigits: 2,
   });
+  const router = useRouter();
+
+  const { series, generation, model, category, subcat } = router.query;
+
 
   const [search, setSearch] = useState<string | string[]>(
     router.query.search || ""
