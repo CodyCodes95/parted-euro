@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import BreadCrumbs from "../../components/BreadCrumbs";
 
 const Admin: NextPage = () => {
   const { status } = useSession({
@@ -67,6 +68,7 @@ const Admin: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center justify-center">
+        <BreadCrumbs />
         <section className="w-full bg-white py-10 sm:py-16 lg:py-24">
           <div className="mx-auto w-[50%] px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-12 text-center sm:grid-cols-2 md:grid-cols-2 lg:gap-y-16">

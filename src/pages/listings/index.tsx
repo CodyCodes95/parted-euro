@@ -14,7 +14,7 @@ import { Info, Search } from "lucide-react";
 const Listings: NextPage = () => {
   const router = useRouter();
 
-  const { series, generation, model, category } = router.query;
+  const { series, generation, model, category, subcat } = router.query;
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -38,6 +38,7 @@ const Listings: NextPage = () => {
       model: model as string,
       search: (debouncedSearch as string) || undefined,
       category: category as string,
+      subcat: subcat as string,
     },
     {
       getNextPageParam: (lastPage) =>

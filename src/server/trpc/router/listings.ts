@@ -85,6 +85,7 @@ export const listingRouter = router({
         series: z.string().optional(),
         search: z.string().optional(),
         category: z.string().optional(),
+        subcat: z.string().optional(),
         cursor: z.any().nullish(),
       })
     )
@@ -189,6 +190,9 @@ export const listingRouter = router({
                         name: {
                           contains: input.category || "",
                         },
+                      },
+                      name: {
+                        contains: input.subcat || "",
                       },
                     },
                   },

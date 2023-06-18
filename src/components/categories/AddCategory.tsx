@@ -2,7 +2,7 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import ModalBackDrop from "../modals/ModalBackdrop";
 import Select from "react-select";
-import type { PartTypeParentCategory, PartTypes } from "@prisma/client";
+import type { PartTypes } from "@prisma/client";
 
 interface AddCategoryProps {
   showModal: boolean;
@@ -11,8 +11,7 @@ interface AddCategoryProps {
   error: (message: string) => void;
   refetch: () => void;
   selection:
-    | PartTypeParentCategory 
-    | (PartTypes & { parentCategory: PartTypeParentCategory })
+    | PartTypes 
     | undefined;
 }
 
@@ -27,7 +26,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
   const [name, setName] = useState<string>(selection?.name || "");
   const [parentCategoryId, setParentCategoryId] = useState<string>("");
 
-  const parentCategories = trpc.categories.getAllCategories.useQuery();
+  const parentCategories = trpc.categories.getParentCategories.useQuery();
   const saveCategory = trpc.categories.createSubCategory.useMutation();
   const updateCateogry = trpc.categories.editSubCategory.useMutation();
 
@@ -116,7 +115,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
                   classNamePrefix="select"
                   onChange={(e:any) => setParentCategoryId(e.value)}
                   options={parentCategories.data?.map(
-                    (category: PartTypeParentCategory) => {
+                    (category: PartTypes) => {
                       return {
                         label: category.name,
                         value: category.id,

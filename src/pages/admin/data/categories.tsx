@@ -6,7 +6,7 @@ import { trpc } from "../../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import { useSession } from "next-auth/react";
-import type { PartTypeParentCategory, PartTypes } from "@prisma/client";
+import type { PartTypes } from "@prisma/client";
 import AddCategory from "../../../components/categories/AddCategory";
 import { error, success } from "../../../utils/toast";
 import { Button } from "../../../components/ui/button";
@@ -21,8 +21,7 @@ const Categories: NextPage = () => {
   });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<
-    | PartTypeParentCategory
-    | (PartTypes & { parentCategory: PartTypeParentCategory })
+    | PartTypes
     | undefined
   >();
   const [filter, setFilter] = useState<string>("");
@@ -32,7 +31,7 @@ const Categories: NextPage = () => {
   const subData = useMemo(() => subCategories.data, [subCategories.data]);
 
   const subCols = useMemo<
-    Array<Column<PartTypes & { parentCategory: PartTypeParentCategory }>>
+    Array<Column<PartTypes & { parent: PartTypes }>>
   >(
     () => [
       {
@@ -41,7 +40,7 @@ const Categories: NextPage = () => {
       },
       {
         Header: "Parent Category",
-        accessor: (d) => d.parentCategory.name,
+        accessor: (d) => d.parent?.name,
       },
       {
         Header: "Edit",
