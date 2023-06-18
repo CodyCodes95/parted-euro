@@ -19,7 +19,7 @@ import SearchBar from "./Nav/SearchBar";
 import { FiLogIn } from "react-icons/fi";
 import CartContext from "../context/cartContext";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import { forwardRef, useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 const generations = [
   { generation: "F8X", series: "M2/M3/M4", param: "F8" },
@@ -62,7 +62,7 @@ const Nav = () => {
                 {generations.map((generation, i) => {
                   return (
                     <li className="flex flex-col" key={i}>
-                      <h4>
+                      <h4 className="rounded-md bg-gray-200 p-2">
                         {generation.generation} - {generation.series}
                       </h4>
                       <NavigationMenuLink asChild>
@@ -145,22 +145,6 @@ const Nav = () => {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          {/* <NavigationMenuItem>
-            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
-                    {component.description}
-                  </ListItem>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem> */}
           <NavigationMenuItem>
             <Link href="/wrecking" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -225,31 +209,5 @@ const Nav = () => {
     </div>
   );
 };
-
-const ListItem = forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
 
 export default Nav;
