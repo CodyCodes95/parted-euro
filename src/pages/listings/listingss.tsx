@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import SearchSidebar from "../../components/listings/SearchSidebar";
 import { Input } from "../../components/ui/input";
-import { Search } from "lucide-react";
+import { Info, Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -17,6 +17,7 @@ import type {
   PartTypes,
 } from "@prisma/client";
 import { Badge } from "../../components/ui/badge";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const Listingss: NextPage = () => {
   const router = useRouter();
@@ -91,12 +92,12 @@ const Listingss: NextPage = () => {
       <div className="flex w-full">
         <SearchSidebar />
         <div className="flex w-full flex-col items-center p-12">
-          <div className="flex w-full justify-between rounded-md bg-slate-50 p-6">
+          <div className="flex w-full items-center justify-between rounded-md bg-slate-50 p-6">
             <div className="w-3/4 overflow-x-scroll">
               {availableSubcategories.map((subcat) => (
                 <Badge
                   key={subcat}
-                  className="m-2 p-2 cursor-pointer"
+                  className="m-2 cursor-pointer p-2"
                   onClick={() => {
                     router.push({
                       pathname: router.pathname,
@@ -122,15 +123,32 @@ const Listingss: NextPage = () => {
             </div>
           </div>
           <div className="p-4" />
-          <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
-            {listings.data?.pages.map((page) => (
-              <>
-                {page.listings.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
+          {listings.data?.pages[0]?.listings.length ? (
+            <>
+              <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
+                {listings.data?.pages.map((page) => (
+                  <>
+                    {page.listings.map((listing) => (
+                      <ListingCard key={listing.id} listing={listing} />
+                    ))}
+                  </>
                 ))}
-              </>
-            ))}
-          </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div className="mt-12 flex h-96 w-full flex-col items-center">
+                <Search className="h-48 w-48 opacity-20" />
+                <p className="mt-4 text-3xl">No parts found</p>
+                <span className="flex">
+                  <Info />
+                  <p className="ml-2">
+                    Try adjusting your search and trying again
+                  </p>
+                </span>
+              </div>
+            </div>
+          )}
           {listings.hasNextPage && (
             <div
               ref={ref}
