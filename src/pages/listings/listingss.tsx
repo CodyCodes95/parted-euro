@@ -92,11 +92,11 @@ const Listingss: NextPage = () => {
         <SearchSidebar />
         <div className="flex w-full flex-col items-center p-12">
           <div className="flex w-full justify-between rounded-md bg-slate-50 p-6">
-            <div className="flex w-full">
+            <div className="w-3/4 overflow-x-scroll">
               {availableSubcategories.map((subcat) => (
                 <Badge
                   key={subcat}
-                  className="mr-2 cursor-pointer"
+                  className="m-2 p-2 cursor-pointer"
                   onClick={() => {
                     router.push({
                       pathname: router.pathname,

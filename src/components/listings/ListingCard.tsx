@@ -11,7 +11,6 @@ const ListingCard: FC<ListingCardProps> = ({ listing }) => {
 
   return (
     <div
-      key={listing.id}
       onMouseEnter={() => setHoveredListing(listing.id)}
       onMouseLeave={() => setHoveredListing("")}
       className="rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
