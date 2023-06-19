@@ -46,7 +46,7 @@ const SearchSidebar = () => {
       pathname: router.pathname,
       query: query,
     });
-  }
+  };
 
   const parameterExists = (key: string, value: string) => {
     if (Array.isArray(router.query[key])) {
