@@ -13,7 +13,7 @@ const SearchSidebar = () => {
 
   const cars = trpc.cars.getAllData.useQuery();
 
-  const updateQuery = (key: string, value: string) => {
+  const updateCategory = (key: string, value: string) => {
     const query = router.query;
     delete query.subcat;
     if (query[key] === value) {
@@ -31,6 +31,30 @@ const SearchSidebar = () => {
     });
   };
 
+  const updateQuery = (key: string, value: string) => {
+    const query = router.query;
+    if (query[key] === value) {
+      delete query[key];
+      router.push({
+        pathname: router.pathname,
+        query: query,
+      });
+      return;
+    }
+    query[key] = value;
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+  }
+
+  const parameterExists = (key: string, value: string) => {
+    if (Array.isArray(router.query[key])) {
+      return router.query[key]?.includes(value);
+    }
+    return router.query[key] === value;
+  };
+
   return (
     <div className="w-1/5">
       <div className="space-y-4 py-4">
@@ -42,17 +66,17 @@ const SearchSidebar = () => {
                 {cars.data?.series.map((series) => (
                   <Button
                     key={series}
-                    onClick={() => updateQuery("category", "engine")}
                     variant="ghost"
                     size="sm"
-                    className={`flex w-full justify-between ${
-                      router.query.category === "engine"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
+                    onClick={() => updateQuery("series", series)}
+                    className={`flex w-full justify-between hover:bg-accent hover:text-accent-foreground`}
                   >
                     <p>{series}</p>
-                    <input type="checkbox" className="h-4 w-4" />
+                    <input
+                      checked={parameterExists("series", series)}
+                      type="checkbox"
+                      className="h-4 w-4"
+                    />
                   </Button>
                 ))}
               </AccordionContent>
@@ -63,17 +87,19 @@ const SearchSidebar = () => {
                 {cars.data?.generations.map((generation) => (
                   <Button
                     key={generation}
-                    onClick={() => updateQuery("category", "engine")}
                     variant="ghost"
                     size="sm"
-                    className={`flex w-full justify-between ${
-                      router.query.category === "engine"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
+                    onClick={() => updateQuery("generation", generation)}
+                    className="flex w-full justify-between 
+                      hover:bg-accent hover:text-accent-foreground
+                    "
                   >
                     <p>{generation}</p>
-                    <input type="checkbox" className="h-4 w-4" />
+                    <input
+                      type="checkbox"
+                      checked={parameterExists("generation", generation)}
+                      className="h-4 w-4"
+                    />
                   </Button>
                 ))}
               </AccordionContent>
@@ -84,17 +110,19 @@ const SearchSidebar = () => {
                 {cars.data?.models.map((model) => (
                   <Button
                     key={model}
-                    onClick={() => updateQuery("category", "engine")}
                     variant="ghost"
                     size="sm"
-                    className={`flex w-full justify-between ${
-                      router.query.category === "engine"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
+                    onClick={() => updateQuery("model", model)}
+                    className="flex w-full justify-between 
+                      hover:bg-accent hover:text-accent-foreground
+                    "
                   >
                     <p>{model}</p>
-                    <input type="checkbox" className="h-4 w-4" />
+                    <input
+                      checked={parameterExists("model", model)}
+                      type="checkbox"
+                      className="h-4 w-4"
+                    />
                   </Button>
                 ))}
               </AccordionContent>
@@ -107,7 +135,7 @@ const SearchSidebar = () => {
           </h2>
           <div className="space-y-1">
             <Button
-              onClick={() => updateQuery("category", "engine")}
+              onClick={() => updateCategory("category", "engine")}
               variant="ghost"
               size="sm"
               className={`w-full justify-start ${
@@ -126,7 +154,7 @@ const SearchSidebar = () => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateQuery("category", "suspension")}
+              onClick={() => updateCategory("category", "suspension")}
             >
               Suspension & Brakes
             </Button>
@@ -138,7 +166,7 @@ const SearchSidebar = () => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateQuery("category", "interior")}
+              onClick={() => updateCategory("category", "interior")}
             >
               Interior
             </Button>
@@ -150,7 +178,7 @@ const SearchSidebar = () => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateQuery("category", "exterior")}
+              onClick={() => updateCategory("category", "exterior")}
             >
               Exterior
             </Button>
@@ -162,7 +190,7 @@ const SearchSidebar = () => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateQuery("category", "electrical")}
+              onClick={() => updateCategory("category", "electrical")}
             >
               Electrical
             </Button>
