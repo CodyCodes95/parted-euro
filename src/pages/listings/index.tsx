@@ -28,14 +28,19 @@ const Listings: NextPage = () => {
 
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
-  const listings = trpc.listings.getAllAvailable.useQuery({
-    series: series as string,
-    generation: generation as string,
-    model: model as string,
-    search: (debouncedSearch as string) || undefined,
-    category: category as string,
-    subcat: subcat as string,
-  });
+  const listings = trpc.listings.getAllAvailable.useQuery(
+    {
+      series: series as string,
+      generation: generation as string,
+      model: model as string,
+      search: (debouncedSearch as string) || undefined,
+      category: category as string,
+      subcat: subcat as string,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   useEffect(() => {
     if (listings.data?.length) {
@@ -93,7 +98,7 @@ const Listings: NextPage = () => {
   return (
     <div className="flex w-full flex-col">
       <div className="flex w-full">
-        <SearchSidebar />
+        <SearchSidebar listings={listings.data} />
         <div className="flex w-full flex-col items-center p-12">
           <div className="flex w-full items-center justify-between rounded-md bg-slate-50 p-6">
             <div className="w-3/4 overflow-x-scroll">

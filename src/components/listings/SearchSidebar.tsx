@@ -1,4 +1,7 @@
+import type { FC } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
+import type { ListingsSearchQuery } from "../../types/query-types";
 import { trpc } from "../../utils/trpc";
 import {
   Accordion,
@@ -7,11 +10,66 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { useRouter } from "next/router";
+import { Badge } from "../ui/badge";
 
-const SearchSidebar = () => {
+type SearchSidebarProps = {
+  listings: ListingsSearchQuery;
+};
+
+const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
+  const [carsCount, setCarsCount] = useState<{
+    series: { [key: string]: number };
+    generation: { [key: string]: number };
+    model: { [key: string]: number };
+  }>();
+
   const router = useRouter();
 
-  const cars = trpc.cars.getAllData.useQuery();
+  const cars = trpc.cars.getAllData.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (listings) {
+      setCarsCount(countCars(listings));
+    }
+  }, [listings]);
+
+  const countCars = (listings: ListingsSearchQuery) => {
+    const seriesMap = new Map<string, number>();
+    const generationMap = new Map<string, number>();
+    const modelMap = new Map<string, number>();
+
+    listings?.forEach((listing) => {
+      const seriesSet = new Set<string>();
+      const generationSet = new Set<string>();
+      const modelSet = new Set<string>();
+      listing.parts.forEach((part) => {
+        part.partDetails.cars.forEach((car) => {
+          seriesSet.add(car.series);
+          generationSet.add(car.generation);
+          modelSet.add(car.model);
+        });
+      });
+      seriesSet.forEach((series) => {
+        seriesMap.set(series, (seriesMap.get(series) || 0) + 1);
+      });
+      generationSet.forEach((generation) => {
+        generationMap.set(generation, (generationMap.get(generation) || 0) + 1);
+      });
+      modelSet.forEach((model) => {
+        modelMap.set(model, (modelMap.get(model) || 0) + 1);
+      });
+    });
+
+    const result = {
+      series: Object.fromEntries(seriesMap),
+      generation: Object.fromEntries(generationMap),
+      model: Object.fromEntries(modelMap),
+    };
+
+    return result;
+  };
 
   const updateCategory = (key: string, value: string) => {
     const query = router.query;
@@ -56,7 +114,7 @@ const SearchSidebar = () => {
   };
 
   return (
-    <div className="w-1/5">
+    <div className="w-1/4">
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
           <Accordion type="multiple" className="w-full">
@@ -64,20 +122,31 @@ const SearchSidebar = () => {
               <AccordionTrigger>Series</AccordionTrigger>
               <AccordionContent>
                 {cars.data?.series.map((series) => (
-                  <Button
-                    key={series}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => updateQuery("series", series)}
-                    className={`flex w-full justify-between hover:bg-accent hover:text-accent-foreground`}
-                  >
-                    <p>{series}</p>
-                    <input
-                      checked={parameterExists("series", series)}
-                      type="checkbox"
-                      className="h-4 w-4"
-                    />
-                  </Button>
+                  <>
+                    {carsCount?.series[series] ||
+                    parameterExists("series", series) ? (
+                      <Button
+                        key={series}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => updateQuery("series", series)}
+                        className={`flex w-full justify-between hover:bg-accent hover:text-accent-foreground`}
+                      >
+                        <p>{series}</p>
+                        <div>
+                          <Badge className="mr-2 text-xs">
+                            {carsCount?.series[series] || 0}
+                          </Badge>
+
+                          <input
+                            checked={parameterExists("series", series)}
+                            type="checkbox"
+                            className="h-4 w-4"
+                          />
+                        </div>
+                      </Button>
+                    ) : null}
+                  </>
                 ))}
               </AccordionContent>
             </AccordionItem>
@@ -85,22 +154,32 @@ const SearchSidebar = () => {
               <AccordionTrigger>Generation</AccordionTrigger>
               <AccordionContent>
                 {cars.data?.generations.map((generation) => (
-                  <Button
-                    key={generation}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => updateQuery("generation", generation)}
-                    className="flex w-full justify-between 
+                  <>
+                    {carsCount?.generation[generation] ||
+                    parameterExists("generation", generation) ? (
+                      <Button
+                        key={generation}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => updateQuery("generation", generation)}
+                        className="flex w-full justify-between 
                       hover:bg-accent hover:text-accent-foreground
                     "
-                  >
-                    <p>{generation}</p>
-                    <input
-                      type="checkbox"
-                      checked={parameterExists("generation", generation)}
-                      className="h-4 w-4"
-                    />
-                  </Button>
+                      >
+                        <p>{generation}</p>
+                        <div>
+                          <Badge className="mr-2 text-xs">
+                            {carsCount?.generation[generation] || 0}
+                          </Badge>
+                          <input
+                            type="checkbox"
+                            checked={parameterExists("generation", generation)}
+                            className="h-4 w-4"
+                          />
+                        </div>
+                      </Button>
+                    ) : null}
+                  </>
                 ))}
               </AccordionContent>
             </AccordionItem>
@@ -108,22 +187,32 @@ const SearchSidebar = () => {
               <AccordionTrigger>Model</AccordionTrigger>
               <AccordionContent>
                 {cars.data?.models.map((model) => (
-                  <Button
-                    key={model}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => updateQuery("model", model)}
-                    className="flex w-full justify-between 
+                  <>
+                    {carsCount?.model[model] ||
+                    parameterExists("model", model) ? (
+                      <Button
+                        key={model}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => updateQuery("model", model)}
+                        className="flex w-full justify-between 
                       hover:bg-accent hover:text-accent-foreground
                     "
-                  >
-                    <p>{model}</p>
-                    <input
-                      checked={parameterExists("model", model)}
-                      type="checkbox"
-                      className="h-4 w-4"
-                    />
-                  </Button>
+                      >
+                        <p className="whitespace-nowrap">{model}</p>
+                        <div>
+                          <Badge className="mr-2 text-xs">
+                            {carsCount?.model[model] || 0}
+                          </Badge>
+                          <input
+                            checked={parameterExists("model", model)}
+                            type="checkbox"
+                            className="h-4 w-4"
+                          />
+                        </div>
+                      </Button>
+                    ) : null}
+                  </>
                 ))}
               </AccordionContent>
             </AccordionItem>

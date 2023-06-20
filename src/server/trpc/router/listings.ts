@@ -108,6 +108,7 @@ export const listingRouter = router({
                 partDetails: {
                   include: {
                     partTypes: true,
+                    cars: true,
                   },
                 },
               },
@@ -154,6 +155,7 @@ export const listingRouter = router({
                 partDetails: {
                   include: {
                     partTypes: true,
+                    cars: true,
                   },
                 },
               },

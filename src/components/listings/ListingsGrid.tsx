@@ -5,10 +5,10 @@ import type {
   PartDetail,
   PartTypes,
 } from "@prisma/client";
-import Link from "next/link";
 import { useState, type FC } from "react";
 import LoadingSpinner from "../Loader";
-import { Info, Search } from "lucide-react";
+import { Info, Search, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/router";
 
 type ListingsGridProps = {
   listings:
@@ -24,6 +24,8 @@ type ListingsGridProps = {
 
 const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   const [hoveredListing, setHoveredListing] = useState("");
+
+  const router = useRouter();
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -45,7 +47,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   }
 
   return (
-    <div className="grid min-h-[50rem] w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid cursor-pointer min-h-[50rem] w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
       {listings?.map((listing) => (
         <div
           key={listing.id}
@@ -53,7 +55,9 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
           onMouseLeave={() => setHoveredListing("")}
           className="h-fit rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
         >
-          <Link href={`/listings/listing?id=${listing.id}`}>
+          <div
+            onClick={() => router.push(`/listings/listing?id=${listing.id}`)}
+          >
             <img
               src={
                 hoveredListing === listing.id
@@ -71,25 +75,15 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
                 <p className="my-3 cursor-auto text-lg font-semibold text-black">
                   ${listing.price}
                 </p>
-                <div className="ml-auto">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="bi bi-bag-plus"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"
-                    />
-                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />
-                  </svg>
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="z-50 ml-auto rounded-md p-2 hover:bg-gray-200"
+                >
+                  <ShoppingBag />
                 </div>
               </div>
             </div>
-          </Link>
+          </div>
         </div>
       ))}
     </div>
