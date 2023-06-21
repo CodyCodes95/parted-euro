@@ -79,6 +79,7 @@ export const partRouter = router({
       z.object({
         partDetailsId: z.string(),
         donorVin: z.string(),
+        quantity: z.number().min(1),
         inventoryLocationId: z.string(),
         variant: z.string().optional(),
       })

@@ -142,6 +142,7 @@ const AddPart: React.FC<AddPartProps> = ({
       partDetailsId,
       donorVin: donorVin || donor,
       inventoryLocationId: inventoryLocation,
+      quantity,
       variant: variant || undefined,
     });
     refetch();
@@ -216,6 +217,18 @@ const AddPart: React.FC<AddPartProps> = ({
             placeholder="Variant "
             value={variant}
             onChange={(e) => setVariant(e.target.value)}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Quantity
+          </label>
+          <input
+            className="w-[90%] border-2 p-2"
+            type="text"
+            placeholder="Variant "
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
         </div>
         <div className="mb-6">
@@ -343,17 +356,6 @@ const AddPart: React.FC<AddPartProps> = ({
                   <input
                     value={height || undefined}
                     onChange={(e) => setHeight(Number(e.target.value))}
-                    className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
-              dark:focus:ring-blue-500`}
-                  />
-                </div>
-                <div className="mb-6">
-                  <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                    Quantity
-                  </label>
-                  <input
-                    value={quantity || undefined}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
                     className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
                   />
