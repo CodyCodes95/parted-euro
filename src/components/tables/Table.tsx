@@ -19,7 +19,7 @@ type TableProps = {
 
 const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [previousPage, setPreviousPage] = useState<number>(0);
+  const [previousSetPage, setPreviousSetPage] = useState<number>(0);
   const {
     getTableProps,
     getTableBodyProps,
@@ -50,10 +50,10 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
 
   useEffect(() => {
     if (filter) {
-      setPreviousPage(pageIndex);
+      setPreviousSetPage(pageIndex);
       gotoPage(0);
-    } else if (previousPage !== pageIndex) {
-      gotoPage(previousPage);
+    } else if (previousSetPage !== pageIndex) {
+      gotoPage(previousSetPage);
     }
     setGlobalFilter(filter);
   }, [filter]);
