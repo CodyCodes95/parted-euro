@@ -108,7 +108,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [description, setDescription] = useState<string>(listing.description);
   const [condition, setCondition] = useState<string>(listing.condition);
   const [price, setPrice] = useState<number>(
-    listing.price * 0.1 + listing.price
+    listing.price * 0.15 + listing.price
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [ebayCondition, setEbayCondition] = useState<any>("");
