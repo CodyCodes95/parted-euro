@@ -74,6 +74,9 @@ export const listingRouter = router({
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return listings;
   }),
