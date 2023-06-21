@@ -26,6 +26,9 @@ export const carRouter = router({
             { series: { contains: input.search } },
           ],
         },
+        orderBy: {
+          model: "asc",
+        },
       });
     }),
   getAll: adminProcedure.query(async ({ ctx }) => {

@@ -64,7 +64,7 @@ const AddListing: React.FC<AddListingProps> = ({
           label: donor.vin,
           options: donor.parts.map((part: any) => {
             return {
-              label: `${part.partDetails.name} (${part.partDetails.partNo})`,
+              label: `${part.partDetails.name} (${part.partDetails.partNo}) - ${part.variant}`,
               value: part.id,
               tab: donor.vin,
             };
