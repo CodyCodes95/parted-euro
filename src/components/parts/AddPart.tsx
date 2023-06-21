@@ -56,6 +56,7 @@ const AddPart: React.FC<AddPartProps> = ({
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<string[] | null>(null);
   const [partNo, setPartNo] = useState<string>("");
+  const [alternatePartNos, setAlternatePartNos] = useState("");
   const [carSearchInput, setCarSearchInput] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
@@ -161,6 +162,7 @@ const AddPart: React.FC<AddPartProps> = ({
         partLength: length,
         width: width,
         height: height,
+        alternatePartNos: alternatePartNos
       },
       {
         onSuccess: (data) => {
@@ -312,6 +314,17 @@ const AddPart: React.FC<AddPartProps> = ({
                   <input
                     value={partNo}
                     onChange={(e) => setPartNo(e.target.value)}
+                    className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+                  />
+                </div>
+                <div className="mb-6">
+                  <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                    Alternate Part Numbers
+                  </label>
+                  <input
+                    value={alternatePartNos}
+                    onChange={(e) => setAlternatePartNos(e.target.value)}
                     className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
                   />

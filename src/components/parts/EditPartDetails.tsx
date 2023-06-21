@@ -41,6 +41,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>(selection.partNo);
+  const [alternatePartNos, setAlternatePartNos] = useState("");
   const [name, setName] = useState<string>(selection.name);
   const [weight, setWeight] = useState<string>(selection.weight.toString());
   const [length, setLength] = useState<string>(selection.length.toString());
@@ -104,12 +105,14 @@ const EditPartDetails: React.FC<EditPartProps> = ({
         width: Number(width),
         height: Number(height),
         partTypes: partTypeIds,
+        alternatePartNos: alternatePartNos,
       },
       {
         onSuccess: () => {
           success(`Part ${partNo} successfully updated`);
           setPartNo("");
           setName("");
+          setAlternatePartNos("");
           setCompatibleCars([]);
           refetch();
           if (exit) {
@@ -149,6 +152,17 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           <input
             value={partNo}
             onChange={(e) => setPartNo(e.target.value)}
+            className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Alternate Part Numbers
+          </label>
+          <input
+            value={alternatePartNos}
+            onChange={(e) => setAlternatePartNos(e.target.value)}
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
           />

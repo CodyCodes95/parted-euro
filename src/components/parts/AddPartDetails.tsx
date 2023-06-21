@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { useDebounce } from "use-debounce";
@@ -32,6 +32,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>("");
+  const [alternatePartNos, setAlternatePartNos] = useState("");
   const [name, setName] = useState<string>("");
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>([]);
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
@@ -44,10 +45,6 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
-
-  useEffect(() => {
-    console.log(compatibleCars);
-  }, [compatibleCars]);
 
   const cars = trpc.cars.getAllSearch.useQuery(
     { search: debouncedSearch },
@@ -104,6 +101,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         width: Number(width),
         height: Number(height),
         partTypes: partTypeIds as string[],
+        alternatePartNos: alternatePartNos,
       },
       {
         onSuccess: () => {
@@ -145,6 +143,17 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           <input
             value={partNo}
             onChange={(e) => setPartNo(e.target.value)}
+            className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Alternate Part Numbers
+          </label>
+          <input
+            value={alternatePartNos}
+            onChange={(e) => setAlternatePartNos(e.target.value)}
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
           />

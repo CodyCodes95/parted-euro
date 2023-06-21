@@ -13,6 +13,7 @@ export const partRouter = router({
         height: z.number(),
         weight: z.number(),
         partTypes: z.array(z.string()),
+        alternatePartNos: z.string().optional(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -48,6 +49,7 @@ export const partRouter = router({
         weight: z.number(),
         cars: z.array(z.string()),
         partTypes: z.array(z.string()),
+        alternatePartNos: z.string().optional(),
       })
     )
     .mutation(({ ctx, input }) => {
