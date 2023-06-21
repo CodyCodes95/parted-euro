@@ -1198,5 +1198,6 @@
 //     // process.exit(1);
 //   // });
 
-
-console.log("test")
+const main = () => {
+  console.log("test");
+};

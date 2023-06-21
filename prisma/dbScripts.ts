@@ -43,4 +43,7 @@
 //     await prisma.$disconnect();
 //   });
 
-console.log("test")
+const main = () => {
+  console.log("test");
+};
+
