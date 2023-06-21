@@ -121,6 +121,7 @@ model Part {
   Order               Order?              @relation(fields: [orderId], references: [id])
   orderId             String?
   variant             String?
+  quantity            Int?                 @default(1)
 }
 
 model PartDetail {
