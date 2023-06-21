@@ -186,16 +186,6 @@ model Order {
   updatedAt       DateTime @updatedAt
 }
 
-// model PartTypes {
-//   id             String                  @id @default(cuid())
-//   name           String
-//   createdAt      DateTime                @default(now())
-//   updatedAt      DateTime                @updatedAt
-//   parts          PartDetail[]
-//   parentCategory PartTypeParentCategory? @relation(fields: [parentId], references: [id])
-//   parentId       String?
-// }
-
 model PartTypes {
   id        String       @id @default(cuid())
   name      String

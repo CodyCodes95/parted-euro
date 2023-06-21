@@ -27,11 +27,11 @@ const Listings: NextPage = () => {
 
   const { code } = router.query;
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState<any>(null);
-  const [showEbayModal, setShowEbayModal] = useState<boolean>(false);
+  const [showEbayModal, setShowEbayModal] = useState(false);
   const [filter, setFilter] = useState<string>("");
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);

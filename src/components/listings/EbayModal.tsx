@@ -229,10 +229,14 @@ const EbayModal: React.FC<EbayModalProps> = ({
             value={ebayCondition}
             options={[
               { label: "New", value: "NEW" },
-              { label: "Used Excellent", value: "USED_EXCELLENT" },
-              { label: "Used Very Good", value: "USED_VERY_GOOD" },
-              { label: "Used Good", value: "USED_GOOD" },
-              { label: "Used Acceptable", value: "USED_ACCEPTABLE" },
+              { label: "Used", value: "USED_EXCELLENT" },
+              {
+                label: "For Parts Or Not Working",
+                value: "FOR_PARTS_OR_NOT_WORKING",
+              },
+              // { label: "Used Very Good", value: "USED_VERY_GOOD" },
+              // { label: "Used Good", value: "USED_GOOD" },
+              // { label: "Used Acceptable", value: "USED_ACCEPTABLE" },
             ]}
             onChange={(e: any) => setEbayCondition(e)}
           />
