@@ -131,7 +131,6 @@ const AddListing: React.FC<AddListingProps> = ({
           description: description,
           condition: condition,
           price: price,
-          quantity: quantity,
         },
         {
           onSuccess: (listing) => {
