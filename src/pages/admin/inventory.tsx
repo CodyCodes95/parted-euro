@@ -52,6 +52,10 @@ const Inventory: NextPage = () => {
         accessor: "inventoryLocation.name",
       },
       {
+        Header: "Quantity",
+        accessor: "quantity",
+      },
+      {
         Header: "Variant",
         accessor: "variant",
       },
