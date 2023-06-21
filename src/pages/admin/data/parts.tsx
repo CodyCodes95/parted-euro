@@ -51,6 +51,10 @@ const Inventory: NextPage = () => {
         accessor: "partNo",
       },
       {
+        Header: "Alternate Part Numbers",
+        accessor: "alternatePartNumbers"
+      },
+      {
         Header: "Weight",
         accessor: "weight",
       },
