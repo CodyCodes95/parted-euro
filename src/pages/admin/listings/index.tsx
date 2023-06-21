@@ -31,13 +31,14 @@ const Listings: NextPage = () => {
   const [selected, setSelected] = useState<any>(null);
   const [showEbayModal, setShowEbayModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(0);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
 
-  const listings = trpc.listings.getAllAdmin.useQuery();
+  const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
   const ebayLogin = trpc.ebay.authenticate.useMutation();
   const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
   const deleteListing = trpc.listings.deleteListing.useMutation();
