@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { useDebounce } from "use-debounce";
@@ -45,6 +45,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
+
+  useEffect(() => {
+    console.log(carOptions);
+  }, [carOptions]);
 
   const cars = trpc.cars.getAllSearch.useQuery(
     { search: debouncedSearch },
@@ -241,7 +245,14 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 }
               }}
               closeMenuOnSelect={false}
-              options={carOptions}
+              options={carOptions.map((group) => {
+                return {
+                  label: group.label,
+                  options: group.options.sort((a, b) =>
+                    a.label.localeCompare(b.label)
+                  ),
+                };
+              })}
               className="basic-multi-select w-full"
               classNamePrefix="select"
               value={compatibleCars as any}

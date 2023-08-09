@@ -1,11 +1,6 @@
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
-import type {
-  Car,
-  Part,
-  PartDetail,
-  PartTypes,
-} from "@prisma/client";
+import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
 import { useEffect, useState } from "react";
 import Modal from "../modals/Modal";
 
@@ -41,7 +36,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>(selection.partNo);
-  const [alternatePartNos, setAlternatePartNos] = useState(selection.alternatePartNumbers || "");
+  const [alternatePartNos, setAlternatePartNos] = useState(
+    selection.alternatePartNumbers || ""
+  );
   const [name, setName] = useState<string>(selection.name);
   const [weight, setWeight] = useState<string>(selection.weight.toString());
   const [length, setLength] = useState<string>(selection.length.toString());
@@ -259,7 +256,14 @@ const EditPartDetails: React.FC<EditPartProps> = ({
             )}
             isMulti
             closeMenuOnSelect={false}
-            options={carOptions}
+            options={carOptions.map((group) => {
+              return {
+                label: group.label,
+                options: group.options.sort((a, b) =>
+                  a.label.localeCompare(b.label)
+                ),
+              };
+            })}
             className="basic-multi-select"
             classNamePrefix="select"
           />
