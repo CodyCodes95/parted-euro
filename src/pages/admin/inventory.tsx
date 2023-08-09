@@ -80,6 +80,7 @@ const Inventory: NextPage = () => {
         Header: "Delete",
         accessor: (d: Part) => (
           <Button
+            variant={"destructive"}
             onClick={() => {
               setSelected(d);
               setShowDeleteModal(true);
