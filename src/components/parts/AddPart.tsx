@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { Car, Donor, InventoryLocations, Part } from "@prisma/client";
@@ -38,7 +38,9 @@ const AddPart: React.FC<AddPartProps> = ({
 }) => {
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
-  const [partDetailsId, setPartDetailsId] = useState<string>(part?.partDetailsId || "");
+  const [partDetailsId, setPartDetailsId] = useState<string>(
+    part?.partDetailsId || ""
+  );
   const [inventoryLocation, setInventoryLocation] = useState<string>(
     part?.inventoryLocationId || ""
   );
@@ -58,8 +60,12 @@ const AddPart: React.FC<AddPartProps> = ({
   const [partNo, setPartNo] = useState<string>("");
   const [alternatePartNos, setAlternatePartNos] = useState("");
   const [carSearchInput, setCarSearchInput] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(part?.quantity || 1);
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
+
+  useEffect(() => {
+    console.log(part);
+  }, []);
 
   const parts = trpc.partDetails.getAll.useQuery(undefined, {
     onSuccess: (data) => {
@@ -162,7 +168,7 @@ const AddPart: React.FC<AddPartProps> = ({
         partLength: length,
         width: width,
         height: height,
-        alternatePartNos: alternatePartNos
+        alternatePartNos: alternatePartNos,
       },
       {
         onSuccess: (data) => {
@@ -189,7 +195,11 @@ const AddPart: React.FC<AddPartProps> = ({
   };
 
   return (
-    <Modal isOpen={showModal} setIsOpen={setShowModal} title="Add Part">
+    <Modal
+      isOpen={showModal}
+      setIsOpen={setShowModal}
+      title={part ? "Edit Part" : "Add Part"}
+    >
       <div className="space-y-6 p-6">
         <div className="mb-6">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
@@ -386,7 +396,9 @@ const AddPart: React.FC<AddPartProps> = ({
                     isMulti={true}
                     options={partTypes.data?.map((partType) => {
                       return {
-                        label: `${partType.name} - ${partType.parent?.name || ""}`,
+                        label: `${partType.name} - ${
+                          partType.parent?.name || ""
+                        }`,
                         value: partType.id,
                       };
                     })}
