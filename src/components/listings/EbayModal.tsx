@@ -120,7 +120,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
     useState<boolean>(false);
   const [fulfillmentPolicy, setFulfillmentPolicy] =
     useState<FulfillmentPolicyType | null>(null);
-  const [quantity, setQuantity] = useState<number>(listing.quantity || 1);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
   const fulfillmentPolicies = trpc.ebay.getFulfillmentPolicies.useQuery();

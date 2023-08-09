@@ -52,7 +52,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
     if (filter) {
       setPreviousSetPage(pageIndex);
       gotoPage(0);
-    } else if (previousSetPage !== pageIndex) {
+    } else if (previousSetPage && !filter) {
       gotoPage(previousSetPage);
     }
     setGlobalFilter(filter);
