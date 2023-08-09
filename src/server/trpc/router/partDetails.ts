@@ -18,6 +18,11 @@ export const partDetailsRouter = router({
   }),
   getAllPartTypes: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.partTypes.findMany({
+      where: {
+        parent: {
+          isNot: null,
+        },
+      },
       include: {
         parent: true,
       },

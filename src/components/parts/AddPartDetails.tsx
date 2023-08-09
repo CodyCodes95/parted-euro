@@ -217,7 +217,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
             isMulti={true}
             options={partTypes.data?.map((partType) => {
               return {
-                label: `${partType.name} - ${partType.parent?.name}`,
+                label: `${partType.name} - ${partType.parent?.name || ""}`,
                 value: partType.id,
               };
             })}
