@@ -38,11 +38,11 @@ const AddPart: React.FC<AddPartProps> = ({
 }) => {
   const [name, setName] = useState<string>("");
   const [partOptions, setPartOptions] = useState<Array<Options>>([]);
-  const [partDetailsId, setPartDetailsId] = useState<string>("");
+  const [partDetailsId, setPartDetailsId] = useState<string>(part?.partDetailsId || "");
   const [inventoryLocation, setInventoryLocation] = useState<string>(
     part?.inventoryLocationId || ""
   );
-  const [donor, setDonor] = useState<string>(part?.donorVin || donorVin || "");
+  const [donor, setDonor] = useState<string>(part?.donorVin || "");
   const [weight, setWeight] = useState<number>(0);
   const [length, setLength] = useState<number>(0);
   const [width, setWidth] = useState<number>(0);
