@@ -24,6 +24,7 @@ export const carRouter = router({
             { model: { contains: input.search } },
             { generation: { contains: input.search } },
             { series: { contains: input.search } },
+            { body: { contains: input.search } },
           ],
         },
         orderBy: {
