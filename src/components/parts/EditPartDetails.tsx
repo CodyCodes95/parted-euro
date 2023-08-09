@@ -41,7 +41,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>(selection.partNo);
-  const [alternatePartNos, setAlternatePartNos] = useState("");
+  const [alternatePartNos, setAlternatePartNos] = useState(selection.alternatePartNumbers || "");
   const [name, setName] = useState<string>(selection.name);
   const [weight, setWeight] = useState<string>(selection.weight.toString());
   const [length, setLength] = useState<string>(selection.length.toString());
