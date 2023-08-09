@@ -25,6 +25,7 @@ export const partRouter = router({
           width: input.width,
           height: input.height,
           weight: input.weight,
+          alternatePartNumbers: input.alternatePartNos,
           partTypes: {
             connect: input.partTypes.map((id) => {
               return { id };
@@ -63,6 +64,7 @@ export const partRouter = router({
           width: input.width,
           height: input.height,
           weight: input.weight,
+          alternatePartNumbers: input.alternatePartNos,
           partTypes: {
             connect: input.partTypes.map((id) => {
               return { id };
