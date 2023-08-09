@@ -64,6 +64,19 @@ const Inventory: NextPage = () => {
         accessor: "donorVin",
       },
       {
+        Header: "Edit",
+        accessor: (d: Part) => (
+          <Button
+            onClick={() => {
+              setSelected(d);
+              setShowModal(true);
+            }}
+          >
+            Edit Part
+          </Button>
+        ),
+      },
+      {
         Header: "Delete",
         accessor: (d: Part) => (
           <Button
