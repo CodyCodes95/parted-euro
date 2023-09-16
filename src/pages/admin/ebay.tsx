@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { trpc } from "../../utils/trpc";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -102,11 +102,11 @@ const Ebay: NextPage = () => {
           Get Offer
         </button>
         <button
-          onClick={async() => {
+          onClick={async () => {
             const res = await publishOffer.mutateAsync({
               offerId: offer,
             });
-            console.log(res)
+            console.log(res);
           }}
           className="mr-2 mb-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800"
         >

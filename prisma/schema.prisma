@@ -101,7 +101,6 @@ model Listing {
   active       Boolean  @default(true)
   listedOnEbay Boolean  @default(false)
   quantity     Int      @default(1)
-  // quantity will simply be the amount of non unique parts in the same listing
 }
 
 model Part {
@@ -110,8 +109,6 @@ model Part {
   partDetailsId       String
   inventoryLocation   InventoryLocations? @relation(fields: [inventoryLocationId], references: [id])
   listing             Listing[]
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
   donorVin            String?
   donor               Donor?              @relation(fields: [donorVin], references: [vin])
   sold                Boolean             @default(false)
@@ -121,7 +118,9 @@ model Part {
   Order               Order?              @relation(fields: [orderId], references: [id])
   orderId             String?
   variant             String?
-  quantity            Int?                 @default(1)
+  quantity            Int                 @default(1)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
 
 model PartDetail {

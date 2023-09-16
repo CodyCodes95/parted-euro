@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import {  toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
@@ -116,10 +116,14 @@ const Donors: NextPage = () => {
         accessor: (d) => (
           <>
             <Progress
-              value={d.parts.reduce((acc: any, part: any) => {
-                if (part.soldPrice === null || !part.sold) return acc;
-                return part.soldPrice + acc;
-              }, 0) / d.cost * 100 || 0}
+              value={
+                (d.parts.reduce((acc: any, part: any) => {
+                  if (part.soldPrice === null || !part.sold) return acc;
+                  return part.soldPrice + acc;
+                }, 0) /
+                  d.cost) *
+                  100 || 0
+              }
               className="h-6 rounded-md"
             />
             <p>

@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLoadScript } from "@react-google-maps/api";
 import ShippingAddressField from "../components/checkout/ShippingAddressField";
 import Spacer from "../components/Spacer";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-hot-toast";
 import Select from "react-select";
 
 interface CartItem {
@@ -101,7 +101,7 @@ const Checkout: NextPage = () => {
       regular += regular * 0.1;
     }
     setExpressCost(Number(express.toFixed(2)));
-    setRegularCost(Number(regular.toFixed(2)))
+    setRegularCost(Number(regular.toFixed(2)));
   };
 
   useEffect(() => {
@@ -277,12 +277,17 @@ const Checkout: NextPage = () => {
             {shippingMethod.value ? (
               <div className="flex flex-col  justify-between border-b-2 px-6 py-12">
                 <p className="mr-4 text-xl text-gray-400">Shipping Postcode</p>
-                <input className="p-2 border-2" type="text" value={shippingAddress?.postCode} onChange={(e) => {
-                  setShippingAddress({
-                    ...shippingAddress,
-                    postCode: e.target.value
-                  })
-                }} />
+                <input
+                  className="border-2 p-2"
+                  type="text"
+                  value={shippingAddress?.postCode}
+                  onChange={(e) => {
+                    setShippingAddress({
+                      ...shippingAddress,
+                      postCode: e.target.value,
+                    });
+                  }}
+                />
               </div>
             ) : null}
             {/* {isLoaded && shippingMethod.value ? (

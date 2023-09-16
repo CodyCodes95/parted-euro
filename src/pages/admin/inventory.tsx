@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { trpc } from "../../utils/trpc";
 import AddPart from "../../components/parts/AddPart";
 import type { Column } from "react-table";
@@ -22,7 +22,6 @@ const Inventory: NextPage = () => {
     },
   });
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const [selected, setSelected] = useState<Part | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");

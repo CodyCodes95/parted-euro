@@ -1,18 +1,25 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import {IoShareOutline} from 'react-icons/io5'
+import { IoShareOutline } from "react-icons/io5";
 import { useContext, useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Tab } from "@headlessui/react";
 import Spacer from "../../components/Spacer";
 import { Button } from "../../components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -22,6 +29,30 @@ const Listing: NextPage = () => {
     currency: "AUD",
     minimumFractionDigits: 2,
   });
+
+  type ListingParts =
+    | {
+        donor: {
+          car: Car;
+          vin: string;
+          year: number;
+          mileage: number;
+        } | null;
+        partDetails: {
+          length: number;
+          cars: {
+            generation: string;
+            model: string;
+            body: string | null;
+            id: string;
+          }[];
+          partNo: string;
+          weight: number;
+          width: number;
+          height: number;
+        };
+      }[]
+    | undefined;
 
   type ListingType = {
     id: string;
@@ -66,6 +97,7 @@ const Listing: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -133,14 +165,17 @@ const Listing: NextPage = () => {
     });
   }, []);
 
-  const processParts = (parts: any) => {
+  const processParts = (parts: ListingParts) => {
     if (!parts) return;
-    const result: any = [];
+    const result = [] as {
+      generation: string;
+      models: { model: string; bodies: any }[];
+    }[];
 
-    parts.forEach((part: any) => {
-      part.partDetails.cars.forEach((car: Car) => {
+    parts.forEach((part) => {
+      part.partDetails.cars.forEach((car) => {
         let generationObj = result.find(
-          (obj: any) => obj.generation === car.generation
+          (obj) => obj.generation === car.generation
         );
 
         if (!generationObj) {
@@ -149,7 +184,7 @@ const Listing: NextPage = () => {
         }
 
         let modelObj = generationObj.models.find(
-          (obj: any) => obj.model === car.model
+          (obj) => obj.model === car.model
         );
 
         if (!modelObj) {
@@ -164,8 +199,8 @@ const Listing: NextPage = () => {
     });
 
     // Convert Set to Array
-    result.forEach((generationObj: any) => {
-      generationObj.models.forEach((modelObj: any) => {
+    result.forEach((generationObj) => {
+      generationObj.models.forEach((modelObj) => {
         modelObj.bodies = Array.from(modelObj.bodies);
       });
     });
@@ -195,7 +230,7 @@ const Listing: NextPage = () => {
               </Carousel>
             </div>
           </div>
-          <div className="flex w-full flex-col items-center md:w-[50%] md:place-items-start md:pl-[80px]">
+          <div className="flex w-full flex-col items-center gap-4 md:w-[50%] md:place-items-start md:pl-[80px]">
             <h1 className="text-6xl">{listing.data?.title}</h1>
             <h4 className="my-6 text-xl">
               {listing.data?.price
@@ -203,6 +238,27 @@ const Listing: NextPage = () => {
                 : null}{" "}
               AUD
             </h4>
+            <Select>
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder="Quantity" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from(
+                  Array(
+                    listing.data?.parts.reduce((acc, cur) => {
+                      acc += cur.quantity;
+                      return acc;
+                    }, 0)
+                  )
+                ).map((_, i) => {
+                  return (
+                    <SelectItem key={i} value={(i + 2).toString()}>
+                      {i + 1}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
             <div className="flex w-full flex-col items-center md:place-items-start">
               <Button
                 onClick={() => addToCart(listing.data as any)}
@@ -300,38 +356,17 @@ const Listing: NextPage = () => {
               <h4 className="text-xl font-bold">Condition</h4>
               {listing.data?.condition}
             </div>
-            <div className="my-6">
-              <h4 className="text-xl">Donor Car:</h4>
-              {listing.data?.parts
-                .reduce((acc, cur) => {
-                  if (!acc.some((part) => part.donor.vin === cur.donor?.vin)) {
-                    acc.push(cur);
-                  }
-                  return acc;
-                }, [] as any[])
-                .map((part) => {
-                  return (
-                    <p key={part.donor.vin}>
-                      {part.donor.year} {part.donor.car.generation}
-                      {part.donor.car.model} {"//"} VIN: {part.donor.vin} {"//"}{" "}
-                      Mileage:
-                      {part.donor.mileage}KM
-                    </p>
-                  );
-                })}
-            </div>
             <div className="my-6 text-[#4d4d4d]">
               <h4 className="text-xl font-bold">Shipping:</h4>
               <p>Shipping is available for this item.</p>
               <p>Available for pickup from our Knoxfield Warehouse. </p>
             </div>
             <div
-            
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
-                toast.info("Link copied");
+                toast.success("Link copied");
               }}
-              className="flex cursor-pointer items-center p-2 bg-gray-300 rounded-md"
+              className="flex cursor-pointer items-center rounded-md bg-gray-300 p-2"
             >
               <IoShareOutline />
               <span className="ml-2">Share</span>
@@ -344,7 +379,7 @@ const Listing: NextPage = () => {
           <div className="flex bg-gray-200">
             <Tab.Group>
               <Tab.List className="flex flex-col p-1">
-                {processParts(listing.data?.parts)?.map((generation: any) => (
+                {processParts(listing.data?.parts)?.map((generation) => (
                   <Tab
                     key={generation.generation}
                     className={({ selected }) =>
@@ -361,7 +396,7 @@ const Listing: NextPage = () => {
                 ))}
               </Tab.List>
               <Tab.Panels className="ml-2">
-                {processParts(listing.data?.parts)?.map((generation: any) => (
+                {processParts(listing.data?.parts)?.map((generation) => (
                   <Tab.Panel
                     key={generation.generation}
                     className={classNames(
@@ -377,14 +412,16 @@ const Listing: NextPage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {generation.models.map((model: any) => (
+                        {generation.models.map((model) => (
                           <tr
                             className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
                             key={model.model}
                           >
                             <td className="px-4 py-4">{model.model}</td>
                             <td className="px-4 py-4">
-                              {model.body ? model.body : "All"}
+                              {model.bodies.length
+                                ? model.bodies.join(",")
+                                : "All"}
                             </td>
                           </tr>
                         ))}

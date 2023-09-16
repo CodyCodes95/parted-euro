@@ -504,6 +504,7 @@ export const listingRouter = router({
                   },
                 },
               },
+              quantity: true,
             },
           },
         },

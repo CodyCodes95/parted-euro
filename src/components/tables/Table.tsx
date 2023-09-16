@@ -50,10 +50,10 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
 
   useEffect(() => {
     if (filter) {
-      setPreviousSetPage(pageIndex);
-      gotoPage(0);
+      setPreviousSetPage( pageIndex === 0 ? previousSetPage : pageIndex);
+      setCurrentPage(0);
     } else if (previousSetPage && !filter) {
-      gotoPage(previousSetPage);
+      setCurrentPage(previousSetPage);
     }
     setGlobalFilter(filter);
   }, [filter]);

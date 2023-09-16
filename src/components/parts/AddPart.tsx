@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { Car, Donor, InventoryLocations, Part } from "@prisma/client";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { Button } from "../ui/button";
 import { useDebounce } from "use-debounce";
 import Modal from "../modals/Modal";

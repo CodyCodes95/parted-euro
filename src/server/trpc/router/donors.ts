@@ -31,6 +31,7 @@ export const donorRouter = router({
           select: {
             id: true,
             partDetails: true,
+            variant: true,
           },
         },
       },

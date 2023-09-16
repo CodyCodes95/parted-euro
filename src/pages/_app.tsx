@@ -6,8 +6,7 @@ import "../styles/globals.css";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/cartContext";
 import Nav from "../components/Nav";
-import { ToastContainer } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -16,7 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <CartProvider>
       <SessionProvider session={session}>
-        <ToastContainer />
+        <Toaster  />
         <Nav />
         <Component {...pageProps} />
         <Footer />

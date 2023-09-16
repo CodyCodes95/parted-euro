@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { trpc } from "../../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
@@ -21,8 +21,7 @@ const Categories: NextPage = () => {
   });
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<
-    | PartTypes
-    | undefined
+    PartTypes | undefined
   >();
   const [filter, setFilter] = useState<string>("");
 
@@ -30,9 +29,7 @@ const Categories: NextPage = () => {
 
   const subData = useMemo(() => subCategories.data, [subCategories.data]);
 
-  const subCols = useMemo<
-    Array<Column<PartTypes & { parent: PartTypes }>>
-  >(
+  const subCols = useMemo<Array<Column<PartTypes & { parent: PartTypes }>>>(
     () => [
       {
         Header: "Category",

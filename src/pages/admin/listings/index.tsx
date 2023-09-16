@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { trpc } from "../../../utils/trpc";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
@@ -15,6 +15,17 @@ import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import { Button } from "../../../components/ui/button";
 import FilterInput from "../../../components/tables/FilterInput";
 import BreadCrumbs from "../../../components/BreadCrumbs";
+import type { Car, Image, Listing, Part, PartDetail } from "@prisma/client";
+import MarkAsSold from "../../../components/listings/MarkAsSold";
+
+type AdminListingQuery = Listing & {
+  parts: (Part & {
+    partDetails: PartDetail & {
+      cars: Car[];
+    };
+  })[];
+  images: Image[];
+};
 
 const Listings: NextPage = () => {
   const { status } = useSession({
@@ -32,6 +43,7 @@ const Listings: NextPage = () => {
   const [showEbayModal, setShowEbayModal] = useState(false);
   const [filter, setFilter] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMarkAsSold, setShowMarkAsSold] = useState(false);
 
   const success = (message: string) => toast.success(message);
   const error = (message: string) => toast.error(message);
@@ -44,12 +56,12 @@ const Listings: NextPage = () => {
   const deleteListing = trpc.listings.deleteListing.useMutation();
   const markAsNotListedEbay = trpc.listings.markAsNotListedEbay.useMutation();
 
-  const columns = useMemo<Array<Column<any>>>(
+  const columns = useMemo<Array<Column<AdminListingQuery>>>(
     () => [
       {
         Header: "Title",
         accessor: (d) => d.title,
-        Cell: ({ row }) => (
+        Cell: ({ row }: any) => (
           <Link href={`/listings/listing?id=${row.original.id}`}>
             <p className="text-blue-500 hover:text-blue-600">
               {row.original.title}
@@ -59,11 +71,25 @@ const Listings: NextPage = () => {
       },
       {
         Header: "Part Numbers",
-        accessor: (d) => d.parts.map((p: any) => p.partDetailsId).join(", "),
+        accessor: (d) => d.parts.map((p) => p.partDetailsId).join(", "),
       },
       {
         Header: "Price",
-        accessor: "price",
+        accessor: (d) => `$${d.price}`,
+      },
+      {
+        Header: "Quantity",
+        accessor: (d) =>
+          d.parts.length > 1
+            ? 1
+            : d.parts.reduce((acc, cur) => {
+                acc += cur.quantity;
+                return acc;
+              }, 0),
+      },
+      {
+        Header: "Listed On",
+        accessor: (d) => d.createdAt.toLocaleString(),
       },
       {
         Header: "Listed On Ebay",
@@ -75,6 +101,7 @@ const Listings: NextPage = () => {
                 setShowEbayModal(true);
                 setSelected(d);
               }}
+              variant="outline"
             >
               Relist
             </Button>
@@ -90,10 +117,6 @@ const Listings: NextPage = () => {
           ),
       },
       {
-        Header: "Listed On",
-        accessor: (d) => d.createdAt.toLocaleString(),
-      },
-      {
         Header: "Edit",
         accessor: (d) => (
           <Button
@@ -103,6 +126,20 @@ const Listings: NextPage = () => {
             }}
           >
             Edit
+          </Button>
+        ),
+      },
+      {
+        Header: "Mark As Sold",
+        accessor: (d) => (
+          <Button
+            onClick={() => {
+              setSelected(d);
+              setShowMarkAsSold(true);
+            }}
+            variant="outline"
+          >
+            Enter sale
           </Button>
         ),
       },
@@ -181,6 +218,14 @@ const Listings: NextPage = () => {
             refetch={listings.refetch}
           />
         ) : null}
+        {showMarkAsSold && (
+          <MarkAsSold
+            isOpen={showMarkAsSold}
+            onClose={() => setShowMarkAsSold(false)}
+            title="Mark as sold"
+            listing={selected}
+          />
+        )}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
             onClick={() => {

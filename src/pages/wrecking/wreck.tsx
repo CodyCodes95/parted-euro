@@ -5,7 +5,7 @@ import { IoShareOutline } from "react-icons/io5";
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const Listing: NextPage = () => {
   const router = useRouter();

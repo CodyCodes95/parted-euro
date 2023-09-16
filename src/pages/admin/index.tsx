@@ -8,7 +8,7 @@ import { trpc } from "../../utils/trpc";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import BreadCrumbs from "../../components/BreadCrumbs";
 
 const Admin: NextPage = () => {

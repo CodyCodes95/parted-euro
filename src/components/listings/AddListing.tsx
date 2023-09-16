@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { FaCamera } from "react-icons/fa";
@@ -59,10 +59,10 @@ const AddListing: React.FC<AddListingProps> = ({
   const donors = trpc.donors.getAllWithParts.useQuery(undefined, {
     onSuccess: (data) => {
       console.log(data);
-      const options = data.map((donor: any) => {
+      const options = data.map((donor) => {
         return {
           label: donor.vin,
-          options: donor.parts.map((part: any) => {
+          options: donor.parts.map((part) => {
             return {
               label: `${part.partDetails.name} (${part.partDetails.partNo}) ${
                 part.variant ? `- ${part.variant}` : ""
@@ -80,8 +80,6 @@ const AddListing: React.FC<AddListingProps> = ({
   const saveListing = trpc.listings.createListing.useMutation();
   const updateListing = trpc.listings.updateListing.useMutation();
   const uploadImage = trpc.images.uploadListingImage.useMutation();
-  const updateImageOrder = trpc.images.updateImageOrder.useMutation();
-  const deleteImage = trpc.images.deleteImage.useMutation();
 
   const handleImageAttach = (e: any) => {
     Array.from(e.target.files).forEach((file: any) => {
@@ -101,26 +99,6 @@ const AddListing: React.FC<AddListingProps> = ({
         },
       });
     });
-  };
-
-  const runUpdateImageOrder = async () => {
-    const imagePromises = uploadedImages.map(
-      async (image: Image, i: number) => {
-        return await updateImageOrder.mutateAsync({
-          id: image.id,
-          order: i,
-        });
-      }
-    );
-    await Promise.all([...imagePromises]);
-    setShowImageSorter(false);
-  };
-
-  const onImageDelete = async (image: Image) => {
-    await deleteImage.mutateAsync({ id: image.id });
-    setUploadedImages((uploadedImages) =>
-      uploadedImages.filter((img) => img.id !== image.id)
-    );
   };
 
   const onSave = async () => {
@@ -197,10 +175,6 @@ const AddListing: React.FC<AddListingProps> = ({
     setPrice(0);
     setImages([]);
   };
-
-  useEffect(() => {
-    console.log(images);
-  }, [images]);
 
   if (showImageSorter && listing) {
     return (

@@ -3,7 +3,7 @@ import Head from "next/head";
 import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
-import {BiArrowBack} from "react-icons/bi"
+import { BiArrowBack } from "react-icons/bi";
 import Select from "react-select";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -105,16 +105,16 @@ const Home: NextPage = () => {
                       Shop our wide range of second-hand parts from various
                       BMW&apos;s.
                     </p>
-                    <div className="mt-4 flex  justify-around ">
+                    <div className="mt-4 flex justify-around flex-col gap-4 md:flex-row">
                       <Button
-                        className="ml-28 border-white text-sm text-white"
+                        className="border-white text-sm text-white"
                         variant="outline"
                         onClick={() => setCarSelectOpen(!carSelectOpen)}
                       >
                         SHOP BY CAR
                       </Button>
                       <Button
-                        className="mr-28 border-white text-sm text-white"
+                        className="border-white text-sm text-white"
                         variant="outline"
                         onClick={() => router.push("/listings")}
                       >
@@ -139,7 +139,7 @@ const Home: NextPage = () => {
                           setModel("");
                         }}
                       >
-                        <BiArrowBack className="text-white text-4xl" />
+                        <BiArrowBack className="text-4xl text-white" />
                       </div>
                       <Select
                         instanceId="seriesSelect"

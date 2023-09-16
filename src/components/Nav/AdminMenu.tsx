@@ -3,6 +3,7 @@ import { signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { BsFillPersonFill } from "react-icons/bs";
 import Link from "next/link";
+import { User } from "lucide-react";
 
 const AdminMenu = () => {
 
@@ -11,7 +12,7 @@ const AdminMenu = () => {
       <Menu as="div" className="relative">
         <div className="flex items-center justify-center">
           <Menu.Button className="">
-            <BsFillPersonFill className="text-2xl" />
+            <User className="text-2xl" />
           </Menu.Button>
         </div>
         <Transition

@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import type { Column } from "react-table";
-import loader from "../../../public/loader.svg";
 import Table from "./Table";
+import LoadingSpinner from "../Loader";
 
 type AdminTableProps = {
   data: any;
@@ -19,7 +19,7 @@ const AdminTable: FC<AdminTableProps> = ({
   if (data.isLoading) {
     return (
       <div className="flex min-h-[30rem] w-full flex-col items-center justify-center p-24">
-        <img className="h-60 w-60" src={loader.src} alt="Loading spinner" />
+        <LoadingSpinner />
       </div>
     );
   }
