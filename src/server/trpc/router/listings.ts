@@ -76,6 +76,7 @@ export const listingRouter = router({
     });
     return listings;
   }),
+
   getAllAvailable: publicProcedure
     .input(
       z.object({
@@ -462,7 +463,7 @@ export const listingRouter = router({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.listing.findUnique({
+      const listing = ctx.prisma.listing.findUnique({
         where: {
           id: input.id,
         },
@@ -478,6 +479,11 @@ export const listingRouter = router({
             },
           },
           parts: {
+            where: {
+              quantity: {
+                gt: 0,
+              },
+            },
             select: {
               donor: {
                 select: {
@@ -509,6 +515,8 @@ export const listingRouter = router({
           },
         },
       });
+      if (!listing.parts.length) return null;
+      return listing;
     }),
   deleteListing: adminProcedure
     .input(

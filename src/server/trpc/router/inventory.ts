@@ -122,6 +122,23 @@ export const partRouter = router({
         },
       });
     }),
+  updateQuantity: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        quantity: z.number().min(1),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.part.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          quantity: input.quantity,
+        },
+      });
+    }),
   deletePart: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {

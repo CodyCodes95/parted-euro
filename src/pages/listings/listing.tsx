@@ -260,13 +260,15 @@ const Listing: NextPage = () => {
               </SelectContent>
             </Select>
             <div className="flex w-full flex-col items-center md:place-items-start">
-              <Button
-                onClick={() => addToCart(listing.data as any)}
-                className="mb-4 h-12 w-[50%] bg-[#1976d2]"
-                variant="ghost"
-              >
-                Add to Cart
-              </Button>
+              {listing.data?.parts.length ? (
+                <Button
+                  onClick={() => addToCart(listing.data as any)}
+                  className="mb-4 h-12 w-[50%] bg-[#1976d2]"
+                  variant="ghost"
+                >
+                  Add to Cart
+                </Button>
+              ) : null}
               <Button
                 onClick={() => console.log("clicked")}
                 className="mb-4 h-12 w-[50%] bg-[#3c3844] text-white hover:bg-black"

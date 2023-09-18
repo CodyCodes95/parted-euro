@@ -40,3 +40,5 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+// listings
+export type GetAllListingsAdminOutput = RouterOutputs["listings"]["getAllAdmin"][0]

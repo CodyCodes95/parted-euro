@@ -3,7 +3,7 @@ import { router } from "../trpc";
 import { authRouter } from "./auth";
 import { carRouter } from "./car";
 import { listingRouter } from "./listings";
-import { partRouter } from "./parts";
+import { partRouter } from "./inventory";
 import { imagesRouter } from "./images";
 import { partDetailsRouter } from "./partDetails";
 import { xeroRouter } from "./xero";
