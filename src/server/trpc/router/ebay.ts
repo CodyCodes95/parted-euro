@@ -371,10 +371,10 @@ export const ebayRouter = router({
       const offers = await ebay.sell.inventory.getOffers({
         sku: input.sku,
       });
-      offers[0].availableQuantity = input.quantity;
+      offers.offers[0].availableQuantity = input.quantity;
       const res = await ebay.sell.inventory.updateOffer(
         input.sku,
-        offers[0] as any
+        offers.offers[0] as any
       );
       return {
         sku: input.sku,
