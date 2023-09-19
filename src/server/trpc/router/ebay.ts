@@ -371,10 +371,25 @@ export const ebayRouter = router({
       const offers = await ebay.sell.inventory.getOffers({
         sku: input.sku,
       });
-      offers.data.offers[0].availableQuantity = input.quantity;
+      // const inventoryItem = await ebay.sell.inventory.getInventoryItem(
+      //   input.sku
+      // );
+      // return inventoryItem;
+      // inventoryItem.availability.shipToLocationAvailability.quantity =
+      //   input.quantity;
+
+      // delete inventoryItem.packageWeightAndSize;
+      // return inventoryItem;
+      // const inventory = await ebay.sell.inventory.createOrReplaceInventoryItem(
+      //   input.sku,
+      //   inventoryItem
+      // );
+      // return inventory;
+      offers.offers[0].availableQuantity = input.quantity;
+      return offers.offers[0];
       const res = await ebay.sell.inventory.updateOffer(
         input.sku,
-        offers.data.offers[0] as any
+        offers.offers[0]
       );
       return {
         sku: input.sku,

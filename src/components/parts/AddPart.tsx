@@ -451,8 +451,9 @@ const AddPart: React.FC<AddPartProps> = ({
             ) : (
               <>
                 <Select
-                  placeholder="Select a part"
-                  options={partOptions}
+                  placeholder="Select parts"
+                    options={partOptions}
+                    isMulti
                   defaultValue={
                     partDetailsId ? { value: partDetailsId, label: name } : ""
                   }

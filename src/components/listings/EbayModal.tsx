@@ -8,6 +8,7 @@ import type { Car } from "@prisma/client";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import Modal from "../modals/Modal";
+import { ChevronLeft } from "lucide-react";
 
 interface EbayModalProps {
   showModal: boolean;
@@ -267,6 +268,11 @@ const EbayModal: React.FC<EbayModalProps> = ({
         </div>
         {createNewFulfillmentPolicy ? (
           <>
+            <div className="cursor-auto bg-gray-200 p-2">
+              <ChevronLeft
+                onClick={() => setCreateNewFulfillmentPolicy(false)}
+              />
+            </div>
             <div className="flex">
               <Input
                 value={domesticShipping}
