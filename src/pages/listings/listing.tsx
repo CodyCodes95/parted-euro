@@ -97,7 +97,6 @@ const Listing: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
 
   const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -238,44 +237,48 @@ const Listing: NextPage = () => {
                 : null}{" "}
               AUD
             </h4>
-            <Select>
-              <SelectTrigger className="w-44">
-                <SelectValue placeholder="Quantity" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from(
-                  Array(
-                    listing.data?.parts.reduce((acc, cur) => {
-                      acc += cur.quantity;
-                      return acc;
-                    }, 0)
-                  )
-                ).map((_, i) => {
-                  return (
-                    <SelectItem key={i} value={(i + 2).toString()}>
-                      {i + 1}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
             <div className="flex w-full flex-col items-center md:place-items-start">
               {listing.data?.parts.length ? (
-                <Button
-                  onClick={() => addToCart(listing.data as any)}
-                  className="mb-4 h-12 w-[50%] bg-[#1976d2]"
-                  variant="ghost"
-                >
-                  Add to Cart
-                </Button>
-              ) : null}
-              <Button
-                onClick={() => console.log("clicked")}
-                className="mb-4 h-12 w-[50%] bg-[#3c3844] text-white hover:bg-black"
-                variant="ghost"
-              >
-                Buy Now
-              </Button>
+                <>
+                  <Select>
+                    <SelectTrigger className="w-44">
+                      <SelectValue placeholder="Quantity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from(
+                        Array(
+                          listing.data?.parts.reduce((acc, cur) => {
+                            acc += cur.quantity;
+                            return acc;
+                          }, 0)
+                        )
+                      ).map((_, i) => {
+                        return (
+                          <SelectItem key={i} value={(i + 2).toString()}>
+                            {i + 1}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => addToCart(listing.data as any)}
+                    className="mb-4 h-12 w-[50%] bg-[#1976d2]"
+                    variant="ghost"
+                  >
+                    Add to Cart
+                  </Button>
+                  <Button
+                    onClick={() => console.log("clicked")}
+                    className="mb-4 h-12 w-[50%] bg-[#3c3844] text-white hover:bg-black"
+                    variant="ghost"
+                  >
+                    Buy Now
+                  </Button>
+                </>
+              ) : (
+                <p>Out of stock</p>
+              )}
             </div>
             <div className="p-2 text-sm">
               <p>
