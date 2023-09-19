@@ -32,7 +32,7 @@ const libraries = ["places"];
 const Checkout: NextPage = () => {
   const { cart, setCart } = useContext(CartContext);
 
-  const error = (msg: string) => toast.info(msg);
+  const error = (msg: string) => toast.success(msg);
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
   const [shippingMethod, setShippingMethod] = useState<any>({

@@ -42,19 +42,19 @@ const Ebay: NextPage = () => {
     const res = await getReturn.mutateAsync();
     console.log(res);
     navigator.clipboard.writeText(res);
-    toast.info("Copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   const getPaymentId = async () => {
     const res = await getPayment.mutateAsync();
     navigator.clipboard.writeText(res);
-    toast.info("Copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   const getMerchantName = async () => {
     const res = await getMerchant.mutateAsync();
     navigator.clipboard.writeText(res);
-    toast.info("Copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   const getShippingPolicies = async () => {

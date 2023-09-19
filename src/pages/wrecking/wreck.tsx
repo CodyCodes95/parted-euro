@@ -79,7 +79,7 @@ const Listing: NextPage = () => {
               <div
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
-                  toast.info("Link copied");
+                  toast.success("Link copied");
                 }}
                 className="flex cursor-pointer items-center rounded-md bg-gray-300 p-2"
               >
