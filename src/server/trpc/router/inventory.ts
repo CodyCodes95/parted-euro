@@ -66,6 +66,13 @@ export const partRouter = router({
           weight: input.weight,
           alternatePartNumbers: input.alternatePartNos,
           partTypes: {
+            deleteMany: {
+              NOT: {
+                id: {
+                  in: input.partTypes,
+                },
+              },
+            },
             connect: input.partTypes.map((id) => {
               return { id };
             }),

@@ -35,7 +35,7 @@ const Modal: FC<ModalProps> = ({
       <div className="fixed inset-0 flex items-center justify-center p-4">
         {/* The actual dialog panel  */}
         {/* <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white p-2 max-h-[45rem] overflow-y-scroll"> */}
-        <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white p-2">
+        <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white p-2 max-h-[45rem] overflow-y-scroll">
           <div className="flex w-full items-center justify-between border-b-2 p-2 rounded-t-lg">
             <Dialog.Title className="text-xl font-medium">
               {title}

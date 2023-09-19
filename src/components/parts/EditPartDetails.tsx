@@ -129,7 +129,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
       setIsOpen={setShowModal}
       title="Edit Part Details"
     >
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-6 overflow-auto">
         <div className="mb-6">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Name
