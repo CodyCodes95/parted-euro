@@ -216,26 +216,31 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Part Category
           </label>
-          <Select
-            isMulti={true}
-            onChange={(e: any) => {
-              setPartTypeIds(e.map((partType: Options) => partType.value));
-            }}
-            defaultValue={selection.partTypes.map((partType: any) => {
-              return {
-                label: `${partType.name} - ${partType.parentCategory?.name}`,
-                value: partType.id,
-              };
-            })}
-            options={partTypes.data?.map((partType) => {
-              return {
-                label: `${partType.name} - ${partType.parent?.name || ""}`,
-                value: partType.id,
-              };
-            })}
-            className="basic-multi-select"
-            classNamePrefix="select"
-          />
+          {partTypes.data?.length ? (
+            <Select
+              isMulti={true}
+              onChange={(e: any) => {
+                setPartTypeIds(e.map((partType: Options) => partType.value));
+              }}
+              defaultValue={selection.partTypes.map((partType: any) => {
+                return {
+                  label: `${partType.name} - ${
+                    partTypes.data?.find((type) => type.name === partType.name)
+                      ?.parent?.name || ""
+                  }`,
+                  value: partType.id,
+                };
+              })}
+              options={partTypes.data?.map((partType) => {
+                return {
+                  label: `${partType.name} - ${partType.parent?.name || ""}`,
+                  value: partType.id,
+                };
+              })}
+              className="basic-multi-select"
+              classNamePrefix="select"
+            />
+          ) : null}
         </div>
         <div className="mb-6">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
