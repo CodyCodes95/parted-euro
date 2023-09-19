@@ -368,10 +368,18 @@ export const ebayRouter = router({
           },
         });
       });
-      const res = await ebay.sell.inventory.updateOffer(input.sku, {
-        availableQuantity: input.quantity,
-      } as any);
-      return res;
+      const offers = await ebay.sell.inventory.getOffers({
+        sku: input.sku,
+      });
+      offers[0].availableQuantity = input.quantity;
+      const res = await ebay.sell.inventory.updateOffer(
+        input.sku,
+        offers[0] as any
+      );
+      return {
+        sku: input.sku,
+        quantity: input.quantity,
+      };
     }),
 
   test: adminProcedure.mutation(async ({ ctx }) => {
