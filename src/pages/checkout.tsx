@@ -6,9 +6,8 @@ import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLoadScript } from "@react-google-maps/api";
-import ShippingAddressField from "../components/checkout/ShippingAddressField";
 import Spacer from "../components/Spacer";
-import { ToastContainer, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import Select from "react-select";
 
 interface CartItem {
