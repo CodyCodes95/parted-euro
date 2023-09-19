@@ -347,6 +347,33 @@ export const ebayRouter = router({
         };
       }
     }),
+  updateQuantity: adminProcedure
+    .input(
+      z.object({
+        sku: z.string(),
+        quantity: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const token = await ctx.prisma.ebayCreds.findFirst();
+      ebay.OAuth2.setCredentials(token?.refreshToken as any);
+      ebay.OAuth2.on("refreshAuthToken", async (token) => {
+        const creds = await ctx.prisma.ebayCreds.findFirst();
+        const updatedCreds = await ctx.prisma.ebayCreds.update({
+          where: {
+            id: creds?.id,
+          },
+          data: {
+            refreshToken: token,
+          },
+        });
+      });
+      const res = await ebay.sell.inventory.updateOffer(input.sku, {
+        availableQuantity: input.quantity,
+      } as any);
+      return res;
+    }),
+
   test: adminProcedure.mutation(async ({ ctx }) => {
     const token = await ctx.prisma.ebayCreds.findFirst();
     ebay.OAuth2.setCredentials(token?.refreshToken as any);

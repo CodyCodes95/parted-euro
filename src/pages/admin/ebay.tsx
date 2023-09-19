@@ -3,6 +3,7 @@ import { trpc } from "../../utils/trpc";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { Button } from "../../components/ui/button";
 
 const Ebay: NextPage = () => {
   const { status } = useSession({
@@ -14,6 +15,7 @@ const Ebay: NextPage = () => {
 
   const [offer, setOffer] = useState<string>("");
   const [sku, setSku] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(0);
   const getPayment = trpc.ebay.getPaymentPolicy.useMutation();
   const getReturn = trpc.ebay.getReturnPolicy.useMutation();
   const getMerchant = trpc.ebay.createInventoryLocation.useMutation();
@@ -61,6 +63,8 @@ const Ebay: NextPage = () => {
     // const res = await getFulfillment.mutateAsync();
     console.log("1");
   };
+
+  const updateQuantity = trpc.ebay.updateQuantity.useMutation();
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -120,12 +124,29 @@ const Ebay: NextPage = () => {
           placeholder="SKU"
           onChange={(e) => setSku(e.target.value)}
         />
+        <input
+          type="text"
+          value={quantity}
+          placeholder="QUANTITY"
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
         <button
           onClick={() => getOffers.refetch()}
           className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get Offer
         </button>
+        <Button
+          onClick={() => {
+            const res = updateQuantity.mutateAsync({
+              sku,
+              quantity,
+            });
+            console.log(res);
+          }}
+        >
+          Update Quantity
+        </Button>
       </div>
     </div>
   );
