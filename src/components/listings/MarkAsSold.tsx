@@ -29,7 +29,22 @@ const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
   >(null);
   const [salePrice, setSalePrice] = useState<string>("");
 
-  const updateInventoryQuantity = trpc.parts.updateQuantity.useMutation();
+  const updateInventoryQuantity = trpc.parts.decreaseQuantity.useMutation();
+
+  const markAsSold = async () => {
+    if (itemsToSell === null) {
+      return;
+    }
+    await Promise.all(
+      itemsToSell.map(async (item) => {
+        await updateInventoryQuantity.mutateAsync({
+          id: item.inventoryId,
+          quantity: item.quantity,
+        });
+      })
+    );
+    onClose();
+  };
 
   const onItemSelected = (quantity: string, inventoryId: string) => {
     setItemsToSell((prev) => {
@@ -80,7 +95,7 @@ const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
             value={salePrice}
             placeholder="Sale Price"
           />
-          <Button>Enter</Button>
+          <Button onClick={markAsSold}>Enter</Button>
         </div>
       </div>
     </Modal>

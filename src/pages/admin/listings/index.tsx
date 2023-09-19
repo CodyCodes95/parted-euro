@@ -221,7 +221,10 @@ const Listings: NextPage = () => {
         {showMarkAsSold && (
           <MarkAsSold
             isOpen={showMarkAsSold}
-            onClose={() => setShowMarkAsSold(false)}
+            onClose={() => {
+              listings.refetch()
+              setShowMarkAsSold(false)
+            }}
             title="Mark as sold"
             listing={selected}
           />

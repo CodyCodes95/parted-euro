@@ -101,7 +101,6 @@ model Listing {
   active       Boolean  @default(true)
   listedOnEbay Boolean  @default(false)
   ebaySku      String?
-  quantity     Int      @default(1)
 }
 
 model Part {
@@ -116,8 +115,7 @@ model Part {
   soldPrice           Int?
   soldParentPrice     Int?
   inventoryLocationId String?
-  Order               Order?              @relation(fields: [orderId], references: [id])
-  orderId             String?
+  Orders              Order[]
   variant             String?
   quantity            Int                 @default(1)
   createdAt           DateTime            @default(now())

@@ -122,7 +122,7 @@ export const partRouter = router({
         },
       });
     }),
-  updateQuantity: adminProcedure
+  decreaseQuantity: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -135,7 +135,9 @@ export const partRouter = router({
           id: input.id,
         },
         data: {
-          quantity: input.quantity,
+          quantity: {
+            decrement: input.quantity,
+          },
         },
       });
     }),
