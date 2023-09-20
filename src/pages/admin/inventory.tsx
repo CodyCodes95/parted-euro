@@ -122,7 +122,6 @@ const Inventory: NextPage = () => {
               setSelected(undefined);
               setShowModal(false);
             }}
-            inventoryItem={selected}
           />
         ) : null}
         {selectedPartToEdit && (
