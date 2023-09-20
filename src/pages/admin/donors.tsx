@@ -8,13 +8,14 @@ import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
 import { formatPrice } from "../../utils/formatPrice";
-import AddPart from "../../components/parts/AddPart";
+import AddPart from "../../components/parts/EditInventory";
 import type { Donor } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { Progress } from "../../components/ui/progress";
 import { Button } from "../../components/ui/button";
 import FilterInput from "../../components/tables/FilterInput";
+import AddInventory from "../../components/parts/AddInventory";
 
 const Donors: NextPage = () => {
   const { status } = useSession({
@@ -222,13 +223,14 @@ const Donors: NextPage = () => {
           />
         ) : null}
         {showPartModal ? (
-          <AddPart
-            refetch={donors.refetch}
-            donorVin={donorVin}
-            success={success}
-            error={error}
-            showModal={showPartModal}
-            setShowModal={setShowPartModal}
+          <AddInventory
+            existingDonor={donorVin}
+            isOpen={showPartModal}
+            onClose={() => {
+              donors.refetch();
+              setSelectedDonor(null);
+              setShowPartModal(false);
+            }}
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

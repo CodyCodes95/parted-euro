@@ -15,7 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <CartProvider>
       <SessionProvider session={session}>
-        <Toaster  />
+        <Toaster position="bottom-right" />
         <Nav />
         <Component {...pageProps} />
         <Footer />

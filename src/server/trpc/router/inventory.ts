@@ -17,6 +17,8 @@ export const partRouter = router({
       })
     )
     .mutation(({ ctx, input }) => {
+      console.log(`INPUT -----`);
+      console.log(input.partTypes);
       return ctx.prisma.partDetail.create({
         data: {
           name: input.name,
@@ -97,6 +99,31 @@ export const partRouter = router({
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.create({ data: input });
+    }),
+  updateInventory: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        quantity: z.number().min(1),
+        inventoryLocationId: z.string(),
+        variant: z.string().optional(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.part.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          quantity: input.quantity,
+          variant: input.variant,
+          inventoryLocation: {
+            connect: {
+              id: input.inventoryLocationId,
+            },
+          },
+        },
+      });
     }),
   getAll: adminProcedure
     .input(z.object({ vin: z.string().optional() }))
