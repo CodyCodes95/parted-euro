@@ -148,7 +148,7 @@ const AddInventory = ({
         </div>
         <div className="flex w-full justify-end gap-2">
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={() => onSave()}>Save</Button>
+          <Button onClick={onSave}>Save</Button>
         </div>
       </div>
     </ModalNew>
