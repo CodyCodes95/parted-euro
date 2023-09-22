@@ -147,8 +147,8 @@ const AddInventory = ({
           <Input value={variant} onChange={(e) => setVariant(e.target.value)} />
         </div>
         <div className="flex w-full justify-end gap-2">
-          <Button>Cancel</Button>
-          <Button>Save</Button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={() => onSave()}>Save</Button>
         </div>
       </div>
     </ModalNew>
