@@ -1,4 +1,3 @@
-import type { Part } from "@prisma/client";
 import ModalNew from "../modals/ModalNew";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
@@ -6,6 +5,7 @@ import ReactSelect from "react-select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
+import { Plus, Save } from "lucide-react";
 
 type AddInventoryProps = {
   existingDonor?: string;
@@ -23,14 +23,30 @@ const AddInventory = ({
   const [selectedParts, setSelectedParts] = useState<string[]>();
   const [inventoryLocation, setInventoryLocation] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [newInventoryLocation, setNewInventoryLocation] = useState<
+    string | undefined
+  >();
 
   const inventoryLocations = trpc.inventoryLocations.getAll.useQuery();
   const parts = trpc.partDetails.getAll.useQuery();
   const donors = trpc.donors.getAll.useQuery();
 
   const savePart = trpc.parts.createPart.useMutation();
-  const saveInventoryLocation =
+  const saveInventoryLocationMutation =
     trpc.inventoryLocations.createInventoryLocation.useMutation();
+
+  const saveInventoryLocation = async () => {
+    if (!newInventoryLocation) return toast.error("Please enter a location");
+    await saveInventoryLocationMutation.mutateAsync({
+      name: newInventoryLocation,
+    });
+    setInventoryLocation(
+      inventoryLocations.data?.find(
+        (location) => location.name === newInventoryLocation
+      )?.id || ""
+    );
+    setNewInventoryLocation(undefined);
+  };
 
   const onSave = async () => {
     if (!selectedParts?.length)
@@ -107,29 +123,52 @@ const AddInventory = ({
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Location
           </label>
-          <ReactSelect
-            placeholder={"Select a location"}
-            options={inventoryLocations.data?.map((location) => {
-              return {
-                label: location.name,
-                value: location.id,
-              };
-            })}
-            value={
-              inventoryLocation
-                ? {
-                    label:
-                      inventoryLocations.data?.find(
-                        (location) => location.id === inventoryLocation
-                      )?.name || "",
-                    value: inventoryLocation,
+          <div className="flex w-full items-center gap-2">
+            {typeof newInventoryLocation === "string" ? (
+              <>
+                <Input />
+                <div
+                  onClick={() => saveInventoryLocation()}
+                  className="rounded-md cursor-pointer bg-gray-100 p-2 hover:bg-gray-200"
+                >
+                  <Save />
+                </div>
+              </>
+            ) : (
+              <>
+                <ReactSelect
+                  className="w-full"
+                  placeholder={"Select a location"}
+                  options={inventoryLocations.data?.map((location) => {
+                    return {
+                      label: location.name,
+                      value: location.id,
+                    };
+                  })}
+                  value={
+                    inventoryLocation
+                      ? {
+                          label:
+                            inventoryLocations.data?.find(
+                              (location) => location.id === inventoryLocation
+                            )?.name || "",
+                          value: inventoryLocation,
+                        }
+                      : { lavbel: "", value: "" }
                   }
-                : { lavbel: "", value: "" }
-            }
-            onChange={(e) => {
-              setInventoryLocation(e?.value || "");
-            }}
-          />
+                  onChange={(e) => {
+                    setInventoryLocation(e?.value || "");
+                  }}
+                />
+                <div
+                  onClick={() => setNewInventoryLocation("")}
+                  className="rounded-md cursor-pointer bg-gray-100 p-2 hover:bg-gray-200"
+                >
+                  <Plus />
+                </div>
+              </>
+            )}
+          </div>
         </div>
         <div className="">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
