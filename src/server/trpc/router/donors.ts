@@ -29,6 +29,11 @@ export const donorRouter = router({
         vin: true,
         parts: {
           select: {
+            listing: {
+              select: {
+                id: true,
+              },
+            },
             id: true,
             partDetails: true,
             variant: true,
@@ -143,7 +148,7 @@ export const donorRouter = router({
             series: true,
             generation: true,
             model: true,
-            id: true
+            id: true,
           },
         },
         cost: true,
@@ -186,7 +191,7 @@ export const donorRouter = router({
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
       })
-  )
+    )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.donor.update({
         where: {
@@ -199,6 +204,5 @@ export const donorRouter = router({
           mileage: input.mileage,
         },
       });
-    }
-  ),
+    }),
 });

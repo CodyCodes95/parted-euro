@@ -69,6 +69,7 @@ const AddListing: React.FC<AddListingProps> = ({
               } `,
               value: part.id,
               tab: donor.vin,
+              listing: !!part.listing.length,
             };
           }),
         };
@@ -245,6 +246,12 @@ const AddListing: React.FC<AddListingProps> = ({
                 setParts(e.map((part: Options) => part.value));
               }}
               isMulti
+              styles={{
+                option: (styles, { data }) => ({
+                  ...styles,
+                  color: data.listing ? "green" : "black",
+                }),
+              }}
               options={partOptions}
               className="basic-multi-select"
               classNamePrefix="select"

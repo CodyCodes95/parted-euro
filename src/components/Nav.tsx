@@ -16,9 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
-import { FiLogIn } from "react-icons/fi";
 import CartContext from "../context/cartContext";
-import { FaShoppingCart } from "react-icons/fa";
 import { useContext, useEffect, useRef, useState } from "react";
 import { LogIn, Menu, Search, X } from "lucide-react";
 import {

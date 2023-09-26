@@ -52,7 +52,7 @@ const Inventory: NextPage = () => {
       },
       {
         Header: "Alternate Part Numbers",
-        accessor: "alternatePartNumbers",
+        accessor: (d) => d.alternatePartNumbers?.replaceAll(",", ", "),
       },
       {
         Header: "Weight",
@@ -102,7 +102,7 @@ const Inventory: NextPage = () => {
         ),
       },
     ],
-    []
+    [parts.data]
   );
 
   const deletePartDetailFunc = async () => {
