@@ -49,13 +49,12 @@ const Nav = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    }
     window.addEventListener("resize", () => {
       if (window.innerWidth < 768) {
+        console.log(window.innerWidth);
         setIsMobile(true);
       } else {
+        console.log(window.innerWidth);
         setIsMobile(false);
       }
     });
@@ -65,7 +64,7 @@ const Nav = () => {
 
   if (isMobile) {
     return (
-      <div className="flex w-full items-center justify-between border-b-2 pb-1 pt-2">
+      <div className="mb-4 flex w-full items-center justify-between border-b-2 pb-1 pt-2">
         <Link href="/">
           <img className="mr-6 inline h-10" src={logo.src} alt="" />
         </Link>
@@ -83,7 +82,7 @@ const Nav = () => {
           </div>
         )}
         {menuOpen && (
-          <nav className="absolute top-[50px] h-[calc(screen -5rem)] w-screen bg-white">
+          <nav className="h-[calc(screen -5rem)] absolute top-[50px] w-screen bg-white">
             <Accordion type="single" collapsible>
               <AccordionItem value="shop-generation">
                 <AccordionTrigger className="pl-4 duration-75 hover:bg-accent">
@@ -215,7 +214,7 @@ const Nav = () => {
   }
 
   return (
-    <div className="flex h-16 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
+    <div className="mb-4 flex h-16 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
       <button
         onClick={() => {
           if (session) return;
@@ -226,7 +225,7 @@ const Nav = () => {
         G
       </button>
       <Link href="/">
-        <img className="mr-6 inline h-8" src={logo.src} alt="" />
+        <img className="mr-6 inline h-8 min-w-[6rem]" src={logo.src} alt="" />
       </Link>
       <NavigationMenu>
         <NavigationMenuList>

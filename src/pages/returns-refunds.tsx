@@ -14,12 +14,13 @@ export const BoldPara = ({ children }: any) => {
 
 const Returns:NextPage = () => {
     return (
-      <div className="flex w-full flex-col items-center px-12 py-12">
-        <div className="flex w-[75%] flex-col">
-          <h1 className="mb-8 text-center text-6xl">
-            Warranty & Return Policy
-          </h1>
-          <div className="w-full flex flex-col items-center text-center">
+      <div className="flex w-full flex-col gap-4">
+          <div className="flex w-full justify-center">
+            <h1 className="text-center text-6xl">
+              Warranty & Return Policy
+            </h1>
+          </div>
+          <div className="flex w-full flex-col items-center text-center">
             <BoldPara>
               All items sold by Parted Euro for their listed price do not
               include any forms of warranty or insurance.
@@ -120,7 +121,6 @@ const Returns:NextPage = () => {
               freight of any item sent.{" "}
             </BoldPara>
           </div>
-        </div>
       </div>
     );
 }
