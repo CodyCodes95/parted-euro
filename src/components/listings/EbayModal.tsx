@@ -13,8 +13,6 @@ import { ChevronLeft } from "lucide-react";
 interface EbayModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   listing: any;
   refetch: () => void;
 }
@@ -98,8 +96,6 @@ type FulfillmentPolicyType = {
 const EbayModal: React.FC<EbayModalProps> = ({
   showModal,
   setShowModal,
-  success,
-  error,
   listing,
   refetch,
 }) => {

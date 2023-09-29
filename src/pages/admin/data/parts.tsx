@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { trpc } from "../../../utils/trpc";
 import AddPartDetails from "../../../components/partDetails/AddPartDetails";
 import type { Column } from "react-table";

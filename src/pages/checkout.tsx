@@ -7,7 +7,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLoadScript } from "@react-google-maps/api";
 import Spacer from "../components/Spacer";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import Select from "react-select";
 
 interface CartItem {

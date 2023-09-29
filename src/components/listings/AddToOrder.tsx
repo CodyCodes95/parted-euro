@@ -11,16 +11,25 @@ import { trpc } from "../../utils/trpc";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
+import type { Order } from "@prisma/client";
+import type { OrderItem } from "../../pages/admin/listings";
 
-type MarkAsSoldProps = {
+type AddToOrderProps = {
   isOpen: boolean;
   onClose: () => void;
   listing: GetAllListingsAdminOutput;
   title: string;
+  setOrder: React.Dispatch<React.SetStateAction<OrderItem[] | undefined>>;
 };
 
-const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
+const AddToOrder = ({
+  isOpen,
+  onClose,
+  listing,
+  title,
+  setOrder,
+}: AddToOrderProps) => {
   const [itemsToSell, setItemsToSell] = useState<
     | {
         inventoryId: string;
@@ -32,18 +41,16 @@ const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
 
   const updateInventoryQuantity = trpc.parts.decreaseQuantity.useMutation();
 
-  const markAsSold = async () => {
+  const addToOrder = () => {
     if (itemsToSell === null) {
       return toast.error("Please select items to sell");
     }
-    await Promise.all(
-      itemsToSell.map(async (item) => {
-        await updateInventoryQuantity.mutateAsync({
-          id: item.inventoryId,
-          quantity: item.quantity,
-        });
-      })
-    );
+    setOrder((prev) => {
+      if (prev === undefined) {
+        return itemsToSell;
+      }
+      return [...prev, ...itemsToSell];
+    });
     onClose();
   };
 
@@ -96,11 +103,11 @@ const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
             value={salePrice}
             placeholder="Sale Price"
           />
-          <Button onClick={markAsSold}>Enter</Button>
+          <Button onClick={addToOrder}>Enter</Button>
         </div>
       </div>
     </Modal>
   );
 };
 
-export default MarkAsSold;
+export default AddToOrder;

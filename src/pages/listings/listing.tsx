@@ -7,7 +7,7 @@ import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import CartContext from "../../context/cartContext";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Tab } from "@headlessui/react";
@@ -261,7 +261,7 @@ const Listing: NextPage = () => {
                       })}
                     </SelectContent>
                   </Select>
-                  <Select ></Select>
+                  <Select></Select>
                   <Button
                     onClick={() => addToCart(listing.data as any)}
                     className="mb-4 h-12 w-[50%] bg-[#1976d2]"

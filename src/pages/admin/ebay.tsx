@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { trpc } from "../../utils/trpc";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "../../components/ui/button";

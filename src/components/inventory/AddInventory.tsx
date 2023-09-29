@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import ReactSelect from "react-select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Plus, Save } from "lucide-react";
 
 type AddInventoryProps = {
@@ -129,7 +129,7 @@ const AddInventory = ({
                 <Input />
                 <div
                   onClick={() => saveInventoryLocation()}
-                  className="rounded-md cursor-pointer bg-gray-100 p-2 hover:bg-gray-200"
+                  className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
                 >
                   <Save />
                 </div>
@@ -162,7 +162,7 @@ const AddInventory = ({
                 />
                 <div
                   onClick={() => setNewInventoryLocation("")}
-                  className="rounded-md cursor-pointer bg-gray-100 p-2 hover:bg-gray-200"
+                  className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
                 >
                   <Plus />
                 </div>

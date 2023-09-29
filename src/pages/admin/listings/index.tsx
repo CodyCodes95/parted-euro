@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
 import { trpc } from "../../../utils/trpc";
 import AddListing from "../../../components/listings/AddListing";
 import { useRouter } from "next/router";
@@ -15,8 +14,16 @@ import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import { Button } from "../../../components/ui/button";
 import FilterInput from "../../../components/tables/FilterInput";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import type { Car, Image, Listing, Part, PartDetail } from "@prisma/client";
-import MarkAsSold from "../../../components/listings/MarkAsSold";
+import type {
+  Car,
+  Image,
+  Listing,
+  Order,
+  Part,
+  PartDetail,
+} from "@prisma/client";
+import { toast } from "sonner";
+import AddToOrder from "../../../components/listings/AddToOrder";
 
 type AdminListingQuery = Listing & {
   parts: (Part & {
@@ -25,6 +32,11 @@ type AdminListingQuery = Listing & {
     };
   })[];
   images: Image[];
+};
+
+export type OrderItem = {
+  inventoryId: string;
+  quantity: number;
 };
 
 const Listings: NextPage = () => {
@@ -44,9 +56,7 @@ const Listings: NextPage = () => {
   const [filter, setFilter] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMarkAsSold, setShowMarkAsSold] = useState(false);
-
-  const success = (message: string) => toast.success(message);
-  const error = (message: string) => toast.error(message);
+  const [order, setOrder] = useState<OrderItem[] | undefined>();
 
   const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -55,6 +65,17 @@ const Listings: NextPage = () => {
   const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
   const deleteListing = trpc.listings.deleteListing.useMutation();
   const markAsNotListedEbay = trpc.listings.markAsNotListedEbay.useMutation();
+
+  useEffect(() => {
+    if (order?.length) {
+      toast(`${order.length} items in current order`, {
+        action: {
+          label: "Finialise",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    }
+  }, [order])
 
   const columns = useMemo<Array<Column<AdminListingQuery>>>(
     () => [
@@ -130,7 +151,7 @@ const Listings: NextPage = () => {
         ),
       },
       {
-        Header: "Mark As Sold",
+        Header: order ? "Add to order" : "Create order",
         accessor: (d) => (
           <Button
             onClick={() => {
@@ -164,7 +185,7 @@ const Listings: NextPage = () => {
   const onDeleteListing = async () => {
     const res = deleteListing.mutateAsync({ id: selected.id });
     listings.refetch();
-    success("Listing deleted");
+    toast.success("Listing deleted");
   };
 
   const authenticateEbay = async () => {
@@ -200,8 +221,6 @@ const Listings: NextPage = () => {
         <Spacer amount="2" />
         {showModal ? (
           <AddListing
-            success={success}
-            error={error}
             showModal={showModal}
             setShowModal={setShowModal}
             listing={selected}
@@ -210,8 +229,6 @@ const Listings: NextPage = () => {
         ) : null}
         {showEbayModal ? (
           <EbayModal
-            success={success}
-            error={error}
             showModal={showEbayModal}
             setShowModal={setShowEbayModal}
             listing={selected}
@@ -219,11 +236,12 @@ const Listings: NextPage = () => {
           />
         ) : null}
         {showMarkAsSold && (
-          <MarkAsSold
+          <AddToOrder
+            setOrder={setOrder}
             isOpen={showMarkAsSold}
             onClose={() => {
-              listings.refetch()
-              setShowMarkAsSold(false)
+              listings.refetch();
+              setShowMarkAsSold(false);
             }}
             title="Mark as sold"
             listing={selected}

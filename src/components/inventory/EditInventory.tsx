@@ -5,7 +5,7 @@ import { trpc } from "../../utils/trpc";
 import ReactSelect from "react-select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 type EditInventoryModalProps = {
   existingDonor: string;

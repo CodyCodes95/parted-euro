@@ -9,12 +9,11 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import ImageSorter from "./ImageSorter";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
 
 interface AddListingProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   refetch: () => void;
   listing:
     | (Listing & {
@@ -34,8 +33,6 @@ interface Options {
 const AddListing: React.FC<AddListingProps> = ({
   showModal,
   setShowModal,
-  success,
-  error,
   listing,
   refetch,
 }) => {
@@ -118,7 +115,7 @@ const AddListing: React.FC<AddListingProps> = ({
             console.log(listing);
           },
           onError: (err) => {
-            error(err.message);
+            toast.error(err.message);
           },
         }
       );
@@ -130,7 +127,7 @@ const AddListing: React.FC<AddListingProps> = ({
         });
       });
       await Promise.all([...imagePromises]);
-      success("Listing updated successfully");
+      toast.success("Listing updated successfully");
       refetch();
       setShowModal(false);
       setLoading(false);
@@ -154,7 +151,7 @@ const AddListing: React.FC<AddListingProps> = ({
           console.log(listing);
         },
         onError: (err) => {
-          error(err.message);
+          toast.error(err.message);
         },
       }
     );
@@ -166,7 +163,7 @@ const AddListing: React.FC<AddListingProps> = ({
       });
     });
     await Promise.all([...imagePromises]);
-    success("Listing created successfully");
+    toast.success("Listing created successfully");
     refetch();
     setShowModal(false);
     setLoading(false);
