@@ -32,7 +32,7 @@ const ModalNew = ({
       open={isOpen}
       onClose={renderStatic ? () => null : onClose}
       // ^^ infering the open state from whatever type the selected is (pattern I like, is this right?)
-      className="relative z-[5001]"
+      className="relative z-50"
       static={renderStatic}
     >
       {/* The backdrop, rendered as a fixed sibling to the panel container */}

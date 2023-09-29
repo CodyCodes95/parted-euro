@@ -11,6 +11,7 @@ import { trpc } from "../../utils/trpc";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
+import toast from "react-hot-toast";
 
 type MarkAsSoldProps = {
   isOpen: boolean;
@@ -33,7 +34,7 @@ const MarkAsSold = ({ isOpen, onClose, listing, title }: MarkAsSoldProps) => {
 
   const markAsSold = async () => {
     if (itemsToSell === null) {
-      return;
+      return toast.error("Please select items to sell");
     }
     await Promise.all(
       itemsToSell.map(async (item) => {

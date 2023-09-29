@@ -214,7 +214,7 @@ const Nav = () => {
   }
 
   return (
-    <div className="mb-4 flex h-16 w-full items-center justify-between border-b-2 bg-white px-16 py-8">
+    <div className="mb-4 flex h-16 w-full items-center justify-between border-b-2 bg-white px-16 py-8 overflow-x-hidden">
       <button
         onClick={() => {
           if (session) return;
