@@ -8,14 +8,14 @@ import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
 import { formatPrice } from "../../utils/formatPrice";
-import AddPart from "../../components/parts/EditInventory";
+import AddPart from "../../components/inventory/EditInventory";
 import type { Donor } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { Progress } from "../../components/ui/progress";
 import { Button } from "../../components/ui/button";
 import FilterInput from "../../components/tables/FilterInput";
-import AddInventory from "../../components/parts/AddInventory";
+import AddInventory from "../../components/inventory/AddInventory";
 
 const Donors: NextPage = () => {
   const { status } = useSession({

@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { trpc } from "../../utils/trpc";
-import AddPart from "../../components/parts/EditInventory";
+import AddPart from "../../components/inventory/EditInventory";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import type { Part } from "@prisma/client";
@@ -13,8 +13,8 @@ import { useRouter } from "next/router";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import AddInventory from "../../components/parts/AddInventory";
-import EditInventoryModal from "../../components/parts/EditInventory";
+import AddInventory from "../../components/inventory/AddInventory";
+import EditInventoryModal from "../../components/inventory/EditInventory";
 
 const Inventory: NextPage = () => {
   const { status } = useSession({
