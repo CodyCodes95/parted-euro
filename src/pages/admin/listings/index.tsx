@@ -24,6 +24,7 @@ import type {
 } from "@prisma/client";
 import { toast } from "sonner";
 import AddToOrder from "../../../components/listings/AddToOrder";
+import FinialiseOrder from "../../../components/modals/FinialiseOrder";
 
 type AdminListingQuery = Listing & {
   parts: (Part & {
@@ -37,6 +38,7 @@ type AdminListingQuery = Listing & {
 export type OrderItem = {
   inventoryId: string;
   quantity: number;
+  price: number;
 };
 
 const Listings: NextPage = () => {
@@ -57,6 +59,7 @@ const Listings: NextPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMarkAsSold, setShowMarkAsSold] = useState(false);
   const [order, setOrder] = useState<OrderItem[] | undefined>();
+  const [showFinialiseOrder, setShowFinialiseOrder] = useState(false);
 
   const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -71,11 +74,13 @@ const Listings: NextPage = () => {
       toast(`${order.length} items in current order`, {
         action: {
           label: "Finialise",
-          onClick: () => console.log("Undo"),
+          onClick: () => setShowFinialiseOrder(true),
         },
+        duration: 50000,
+        id: "order"
       });
     }
-  }, [order])
+  }, [order]);
 
   const columns = useMemo<Array<Column<AdminListingQuery>>>(
     () => [
@@ -160,7 +165,7 @@ const Listings: NextPage = () => {
             }}
             variant="outline"
           >
-            Enter sale
+            {order ? "Add" : "Create order"}
           </Button>
         ),
       },
@@ -245,6 +250,13 @@ const Listings: NextPage = () => {
             }}
             title="Mark as sold"
             listing={selected}
+          />
+        )}
+        {showFinialiseOrder && order?.length && (
+          <FinialiseOrder
+            order={order}
+            isOpen={showFinialiseOrder}
+            onClose={() => setShowFinialiseOrder(false)}
           />
         )}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">

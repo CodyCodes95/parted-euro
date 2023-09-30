@@ -180,23 +180,24 @@ export const partRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.delete({ where: { id: input.id } });
     }),
-  // getAllWithCars: publicProcedure.query(async({ ctx }) => {
-  //   const parts = await ctx.prisma.part.findMany();
-  //   let promises = parts.map((part:any) => {
-  //     return ctx.prisma.partsOnCars.findMany({
-  //       where: {
-  //         partId: part.id
-  //       },
-  //       include: {
-  //         car: true
-  //       }
-  //     }).then(res => {
-  //       part.cars = res.map((r:any) => r.car)
-  //     })
-  //   })
-  //   return Promise.all(promises).then(() => {
-  //     return parts
-  //   })
-  // }
-  // )
+  getInventoryDetailsById: adminProcedure
+    .input(z.array(z.object({ id: z.string() })))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.part.findMany({
+        where: {
+          id: {
+            in: input.map((item) => item.id),
+          },
+        },
+        include: {
+          partDetails: true,
+          donor: {
+            include: {
+              car: true,
+            },
+          },
+          inventoryLocation: true,
+        },
+      });
+    }),
 });

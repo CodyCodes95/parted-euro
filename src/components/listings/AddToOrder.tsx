@@ -12,7 +12,6 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
-import type { Order } from "@prisma/client";
 import type { OrderItem } from "../../pages/admin/listings";
 
 type AddToOrderProps = {
@@ -30,16 +29,7 @@ const AddToOrder = ({
   title,
   setOrder,
 }: AddToOrderProps) => {
-  const [itemsToSell, setItemsToSell] = useState<
-    | {
-        inventoryId: string;
-        quantity: number;
-      }[]
-    | null
-  >(null);
-  const [salePrice, setSalePrice] = useState<string>("");
-
-  const updateInventoryQuantity = trpc.parts.decreaseQuantity.useMutation();
+  const [itemsToSell, setItemsToSell] = useState<OrderItem[] | null>(null);
 
   const addToOrder = () => {
     if (itemsToSell === null) {
@@ -57,13 +47,34 @@ const AddToOrder = ({
   const onItemSelected = (quantity: string, inventoryId: string) => {
     setItemsToSell((prev) => {
       if (prev === null) {
-        return [{ inventoryId, quantity: parseInt(quantity) }];
+        return [{ inventoryId, quantity: parseInt(quantity), price: 0 }];
       }
       const index = prev.findIndex((item) => item.inventoryId === inventoryId);
       if (index === -1) {
-        return [...prev, { inventoryId, quantity: parseInt(quantity) }];
+        return [
+          ...prev,
+          {
+            inventoryId,
+            quantity: parseInt(quantity),
+            price: 0,
+          },
+        ];
       }
       prev[index]!.quantity = parseInt(quantity);
+      return prev;
+    });
+  };
+
+  const setItemPrice = (price: number, inventoryId: string) => {
+    setItemsToSell((prev) => {
+      if (prev === null) {
+        return [{ inventoryId, price, quantity: 0 }];
+      }
+      const index = prev.findIndex((item) => item.inventoryId === inventoryId);
+      if (index === -1) {
+        return [...prev, { inventoryId, price, quantity: 0  }];
+      }
+      prev[index]!.price = price;
       return prev;
     });
   };
@@ -74,8 +85,8 @@ const AddToOrder = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-4 p-4">
+      <div className="flex flex-col gap-4 p-4">
+        <div className="grid grid-cols-3 gap-4 p-4">
           {listing.parts.map((part) => (
             <>
               <p>
@@ -93,17 +104,23 @@ const AddToOrder = ({
                   ))}
                 </SelectContent>
               </Select>
+              <Input
+                className="w-44"
+                placeholder="Price"
+                type="number"
+                value={
+                  itemsToSell?.find((item) => item.inventoryId === part.id)
+                    ?.price
+                }
+                onChange={(e) =>
+                  setItemPrice(parseInt(e.target.value), part.id)
+                }
+              />
             </>
           ))}
         </div>
         <div className="flex w-full justify-end gap-2">
-          <Input
-            className="w-44"
-            onChange={(e) => setSalePrice(e.target.value)}
-            value={salePrice}
-            placeholder="Sale Price"
-          />
-          <Button onClick={addToOrder}>Enter</Button>
+          <Button onClick={addToOrder}>Add</Button>
         </div>
       </div>
     </Modal>
