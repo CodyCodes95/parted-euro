@@ -181,12 +181,12 @@ export const partRouter = router({
       return ctx.prisma.part.delete({ where: { id: input.id } });
     }),
   getInventoryDetailsById: adminProcedure
-    .input(z.array(z.object({ id: z.string() })))
+    .input(z.array(z.string()))
     .query(({ ctx, input }) => {
       return ctx.prisma.part.findMany({
         where: {
           id: {
-            in: input.map((item) => item.id),
+            in: input.map((item) => item),
           },
         },
         include: {

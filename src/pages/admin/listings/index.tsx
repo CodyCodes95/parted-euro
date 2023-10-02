@@ -25,6 +25,7 @@ import type {
 import { toast } from "sonner";
 import AddToOrder from "../../../components/listings/AddToOrder";
 import FinialiseOrder from "../../../components/modals/FinialiseOrder";
+import FinialiseOrderToast from "./FinialiseOrderToast";
 
 type AdminListingQuery = Listing & {
   parts: (Part & {
@@ -71,13 +72,9 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (order?.length) {
-      toast(`${order.length} items in current order`, {
-        action: {
-          label: "Finialise",
-          onClick: () => setShowFinialiseOrder(true),
-        },
-        duration: 50000,
-        id: "order"
+      toast(<FinialiseOrderToast order={order} />, {
+        duration: 5000000,
+        id: "order",
       });
     }
   }, [order]);
@@ -184,7 +181,7 @@ const Listings: NextPage = () => {
         ),
       },
     ],
-    []
+    [order]
   );
 
   const onDeleteListing = async () => {
@@ -252,13 +249,13 @@ const Listings: NextPage = () => {
             listing={selected}
           />
         )}
-        {showFinialiseOrder && order?.length && (
+        {/* {showFinialiseOrder && order?.length && (
           <FinialiseOrder
             order={order}
             isOpen={showFinialiseOrder}
             onClose={() => setShowFinialiseOrder(false)}
           />
-        )}
+        )} */}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
             onClick={() => {

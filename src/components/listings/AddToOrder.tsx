@@ -74,6 +74,7 @@ const AddToOrder = ({
       if (index === -1) {
         return [...prev, { inventoryId, price, quantity: 0  }];
       }
+      console.log(price)
       prev[index]!.price = price;
       return prev;
     });
@@ -108,10 +109,6 @@ const AddToOrder = ({
                 className="w-44"
                 placeholder="Price"
                 type="number"
-                value={
-                  itemsToSell?.find((item) => item.inventoryId === part.id)
-                    ?.price
-                }
                 onChange={(e) =>
                   setItemPrice(parseInt(e.target.value), part.id)
                 }

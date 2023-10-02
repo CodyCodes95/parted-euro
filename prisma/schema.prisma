@@ -175,12 +175,12 @@ model InventoryLocations {
 model Order {
   id              String   @id @default(cuid())
   items           Part[]
-  shipping        Float
   shippingMethod  String
   subtotal        Float
+  shipping        Float
   email           String
   name            String
-  shippingAddress String
+  shippingAddress String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

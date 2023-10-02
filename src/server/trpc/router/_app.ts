@@ -10,6 +10,7 @@ import { xeroRouter } from "./xero";
 import { ebayRouter } from "./ebay";
 import { inventoryLocationRouter } from "./inventoryLocations";
 import { categoryRouter } from "./categories";
+import { orderRouter } from "./order";
 
 export const appRouter = router({
   cars: carRouter,
@@ -22,7 +23,8 @@ export const appRouter = router({
   xero: xeroRouter,
   ebay: ebayRouter,
   inventoryLocations: inventoryLocationRouter,
-  categories: categoryRouter
+  categories: categoryRouter,
+  order: orderRouter,
 });
 
 // export type definition of API
