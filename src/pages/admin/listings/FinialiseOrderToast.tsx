@@ -16,11 +16,11 @@ type FinialiseOrderToastProps = {
 };
 
 const FinialiseOrderToast = ({ order }: FinialiseOrderToastProps) => {
-  if (!order.length) return null;
+  if (!order?.length) return null;
 
   return (
     <div className="flex w-full items-center justify-between">
-      <p>{order.length} items in order</p>
+      <p>{order?.length} items in order</p>
       <Dialog>
         <DialogTrigger>
           <Button>Finialise</Button>
