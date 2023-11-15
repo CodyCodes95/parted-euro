@@ -1,19 +1,11 @@
-import { NextPage } from "next";
-import { useContext, useEffect, useState } from "react";
+import type { NextPage } from "next";
+import { useEffect, useState } from "react";
 import Spacer from "../../components/Spacer";
-import CartContext from "../../context/cartContext";
-
-type CartItem = {
-  listingId: string;
-  listingTitle: string;
-  listingPrice: number;
-  listingImage: string | undefined;
-  quantity: number;
-};
+import { useCart } from "../../context/cartContext";
 
 const Confirmation: NextPage = () => {
-  const { cart, setCart } = useContext(CartContext);
-  const [tempCart, setTempCart] = useState<any[]>([]);
+  const { cart, setCart } = useCart();
+  const [tempCart, setTempCart] = useState<typeof cart>([]);
 
   useEffect(() => {
     if (cart.length) {
@@ -43,7 +35,7 @@ const Confirmation: NextPage = () => {
               Your Order
             </p>
             <Spacer amount="3" />
-            {tempCart.map((item: CartItem) => (
+            {tempCart.map((item) => (
               <div
                 key={item.listingTitle}
                 className="mt-6 flex w-full flex-col items-start justify-start  space-y-4 md:mt-0 md:flex-row  md:items-center md:space-x-6 xl:space-x-8 "

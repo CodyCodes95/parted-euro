@@ -2,25 +2,14 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
-import CartContext from "../context/cartContext";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLoadScript } from "@react-google-maps/api";
 import Spacer from "../components/Spacer";
 import { toast } from "sonner";
 import Select from "react-select";
+import { CartItem, useCart } from "../context/cartContext";
 
-interface CartItem {
-  listingId: string;
-  listingTitle: string;
-  listingPrice: number;
-  listingImage: string | undefined;
-  quantity: number;
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-}
 
 type ShippingAddress = {
   postCode: string;
@@ -29,20 +18,19 @@ type ShippingAddress = {
 const libraries = ["places"];
 
 const Checkout: NextPage = () => {
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, setCart } = useCart();
 
-  const error = (msg: string) => toast.success(msg);
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
   const [shippingMethod, setShippingMethod] = useState<any>({
     label: "Pickup",
     value: 0,
   });
-  const [expressCost, setExpressCost] = useState<number>(0);
-  const [regularCost, setRegularCost] = useState<number>(0);
-  const [validated, setValidated] = useState<boolean>(false);
+  const [expressCost, setExpressCost] = useState(0);
+  const [regularCost, setRegularCost] = useState(0);
+  const [validated, setValidated] = useState(false);
 
-  const [parent] = useAutoAnimate(/* optional config */);
+  const [parent] = useAutoAnimate();
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
@@ -91,7 +79,7 @@ const Checkout: NextPage = () => {
       }) as any,
     });
     const data = await res.json();
-    if (!res.ok) return error(data.error);
+    if (!res.ok) return toast.error(data.error);
     let express = Number(data.express);
     let regular = Number(data.regular);
     const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);

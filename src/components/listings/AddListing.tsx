@@ -1,28 +1,22 @@
 import { useRef, useState } from "react";
+import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { FaCamera } from "react-icons/fa";
-import LoadingButton from "../LoadingButton";
 import Compressor from "compressorjs";
-import type { Image, Listing, Part, PartDetail } from "@prisma/client";
+import type { Image } from "@prisma/client";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import ImageSorter from "./ImageSorter";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface AddListingProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
-  listing:
-    | (Listing & {
-        images: Image[];
-        parts: (Part & {
-          partDetails: PartDetail;
-        })[];
-      })
-    | null;
+  listing: QueryListingsGetAllAdmin | null;
 }
 
 interface Options {
@@ -45,7 +39,6 @@ const AddListing: React.FC<AddListingProps> = ({
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>([]);
   const [partOptions, setPartOptions] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     listing?.images || []
   );
@@ -100,7 +93,6 @@ const AddListing: React.FC<AddListingProps> = ({
   };
 
   const onSave = async () => {
-    setLoading(true);
     if (listing) {
       const result = await updateListing.mutateAsync(
         {
@@ -130,7 +122,6 @@ const AddListing: React.FC<AddListingProps> = ({
       toast.success("Listing updated successfully");
       refetch();
       setShowModal(false);
-      setLoading(false);
       setTitle("");
       setDescription("");
       setCondition("");
@@ -166,7 +157,6 @@ const AddListing: React.FC<AddListingProps> = ({
     toast.success("Listing created successfully");
     refetch();
     setShowModal(false);
-    setLoading(false);
     setTitle("");
     setDescription("");
     setCondition("");
@@ -276,11 +266,9 @@ const AddListing: React.FC<AddListingProps> = ({
             Sort Order
           </a>
         </div>
-        <LoadingButton
+        <Button
           onClick={onSave}
-          loading={loading}
-          text="Create Listing"
-        />
+  >Create Listing</Button>
       </div>
     </Modal>
   );

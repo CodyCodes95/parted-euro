@@ -1,54 +1,71 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import Link from "next/link";
-import CartContext from "../../context/cartContext";
+import  { useCart } from "../../context/cartContext";
 import Spacer from "../Spacer";
-
-type CartItem = {
-  listingId: string;
-  listingTitle: string;
-  listingPrice: number;
-  listingImage: string | undefined;
-  quantity: number;
-};
+import { Button } from "../ui/button";
 
 const CartPopover = () => {
   const [shipping, setShipping] = useState<number>(0);
 
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, setCart } = useCart()
 
-  const updateQuantity = (e: any, item: CartItem) => {
-    const updatedCart = cart.map((listing) => {
-      // handle updating qnt to 0, exceeding available qnt on listings etc
-      // if (listing.listingId === item.listingId) {
-      //     if (listing.quantity)
-      // } else {
-      //   return listing;
-      // }
-      return listing.listingId === item.listingId
-        ? {
-            ...listing,
-            quantity:
-              e.target.textContent === "+"
-                ? (item.quantity += 1)
-                : (item.quantity -= 1),
-          }
-        : listing;
-    });
-    setCart(updatedCart);
-  };
+  const increaseQty = (index: number) => {
+    const item = cart[index]
+    if (!item) return
+    item.quantity += 1
+    cart[index] = item
+    setCart([...cart])
+  }
+
+  const decrementQty = (index: number) => {
+    const item = cart[index]
+    if (!item) return
+    item.quantity -= 1
+    cart[index] = item
+    setCart([...cart])
+}
 
   const removeItemFromCart = (id: string) => {
     const updatedCart = cart.filter((i) => i.listingId !== id);
     setCart(updatedCart);
   };
 
-  if (cart.length) {
+  if (!cart.length) {
+    return (
+          <div className="flex w-full flex-col items-center justify-center">
+      <p className="text-lg">No items in your cart</p>
+      <Spacer amount="3" />
+      <Link
+        href="/listings"
+        type="button"
+        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
+      >
+        Start shopping
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="ml-4 h-6 w-6 transition-all group-hover:ml-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13 7l5 5m0 0l-5 5m5-5H6"
+          />
+        </svg>
+      </Link>
+    </div>
+    )
+  }
+
     return (
       <>
         <div className="flow-root">
           <ul className="-my-8">
-            {cart.map((item: CartItem) => (
+            {cart.map((item, index) => (
               <li
                 key={item.listingId}
                 className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
@@ -67,33 +84,19 @@ const CartPopover = () => {
                       <p className="text-lg font-semibold text-gray-900">
                         {item.listingTitle}
                       </p>
-                      <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">
-                        {/* {item.quantity} */}
-                      </p>
                     </div>
-
                     <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
                       <p className="w-20 shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
                         {formatPrice(item.listingPrice * item.quantity)}
                       </p>
-
                       <div className="sm:order-1">
                         <div className="mx-auto flex h-8 items-stretch text-gray-600">
-                          <button
-                            onClick={(e) => updateQuantity(e, item)}
-                            className="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white"
-                          >
-                            -
-                          </button>
+              <Button onClick={() => decrementQty(index)}>-</Button>
                           <div className="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">
                             {item.quantity}
                           </div>
-                          <button
-                            onClick={(e) => updateQuantity(e, item)}
-                            className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white"
-                          >
-                            +
-                          </button>
+                          <Button onClick={() => increaseQty(index)}>+</Button>
+      
                         </div>
                       </div>
                     </div>
@@ -134,7 +137,7 @@ const CartPopover = () => {
             <span className="text-xs font-normal text-gray-400">AUD</span>{" "}
             {formatPrice(
               cart?.reduce(
-                (acc: number, item: CartItem) =>
+                (acc: number, item) =>
                   acc + item.listingPrice * item.quantity,
                 0
               ) + shipping
@@ -167,35 +170,6 @@ const CartPopover = () => {
         </div>
       </>
     );
-  }
-
-  return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <p className="text-lg">No items in your cart</p>
-      <Spacer amount="3" />
-      <Link
-        href="/listings"
-        type="button"
-        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
-      >
-        Start shopping
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="ml-4 h-6 w-6 transition-all group-hover:ml-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
-      </Link>
-    </div>
-  );
 };
 
 export default CartPopover;

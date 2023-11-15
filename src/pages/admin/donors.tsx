@@ -2,16 +2,15 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import type { QueryDonorGetAllDashboard} from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import AddDonor from "../../components/donors/AddDonor";
 import { formatPrice } from "../../utils/formatPrice";
-import AddPart from "../../components/inventory/EditInventory";
-import type { Donor } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import BreadCrumbs from "../../components/BreadCrumbs";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import { Progress } from "../../components/ui/progress";
 import { Button } from "../../components/ui/button";
 import FilterInput from "../../components/tables/FilterInput";
@@ -24,20 +23,18 @@ const Donors: NextPage = () => {
       window.location.href = "/";
     },
   });
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showPartModal, setShowPartModal] = useState<boolean>(false);
-  const [donorVin, setDonorVin] = useState<string>("");
-  const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [showPartModal, setShowPartModal] = useState(false);
+  const [donorVin, setDonorVin] = useState("");
+  const [selectedDonor, setSelectedDonor] = useState<QueryDonorGetAllDashboard | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [filter, setFilter] = useState("");
 
-  const success = (message: string) => toast.success(message);
-  const error = (message: string) => toast.error(message);
 
   const donors = trpc.donors.getAllDashboard.useQuery();
   const deleteDonor = trpc.donors.deleteDonor.useMutation();
 
-  const columns = useMemo<Array<Column<any>>>(
+  const columns = useMemo<Array<Column<QueryDonorGetAllDashboard>>>(
     () => [
       {
         Header: "VIN",
@@ -53,14 +50,18 @@ const Donors: NextPage = () => {
       },
       {
         Header: "Model",
+             // TODO: Ts ignoring, I think new Tanstack table allows for types like this?
+        // @ts-ignore
         accessor: "car.model",
       },
       {
         Header: "Generation",
+        // @ts-ignore
         accessor: "car.generation",
       },
       {
         Header: "Series",
+        // @ts-ignore
         accessor: "car.series",
       },
       {
@@ -190,11 +191,11 @@ const Donors: NextPage = () => {
         { vin: selectedDonor.vin },
         {
           onError: (err) => {
-            error(err.message);
+            toast.error(err.message);
           },
         }
       );
-      success("Donor deleted successfully");
+      toast.success("Donor deleted successfully");
     }
   };
 
@@ -214,8 +215,6 @@ const Donors: NextPage = () => {
         ) : null}
         {showModal ? (
           <AddDonor
-            success={success}
-            error={error}
             showModal={showModal}
             setShowModal={setShowModal}
             donor={selectedDonor}

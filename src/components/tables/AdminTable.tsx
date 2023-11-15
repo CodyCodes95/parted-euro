@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import type { Column } from "react-table";
 import Table from "./Table";
-import LoadingSpinner from "../Loader";
+import LoadingSpinner from "../ui/Loader";
 
 type AdminTableProps = {
   data: any;

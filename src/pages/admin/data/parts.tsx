@@ -2,16 +2,15 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { trpc } from "../../../utils/trpc";
+import { AllPartDetailsQuery, trpc } from "../../../utils/trpc";
 import AddPartDetails from "../../../components/partDetails/AddPartDetails";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import ConfirmDelete from "../../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../../components/partDetails/EditPartDetails";
 import { useSession } from "next-auth/react";
-import type { PartDetailWithRelations } from "../../../types/prisma-query-types";
 import FilterInput from "../../../components/tables/FilterInput";
-import BreadCrumbs from "../../../components/BreadCrumbs";
+import BreadCrumbs from "../../../components/admin/BreadCrumbs";
 import { Button } from "../../../components/ui/button";
 
 const Inventory: NextPage = () => {
@@ -25,22 +24,18 @@ const Inventory: NextPage = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedPart, setSelectedPart] =
-    useState<PartDetailWithRelations | null>(null);
+    useState<AllPartDetailsQuery | null>(null);
   const [filter, setFilter] = useState<string>("");
 
-  const success = (message: string) => toast.success(message);
-  const error = (message: string) => toast.error(message);
 
   const parts = trpc.partDetails.getAll.useQuery();
   const deletePart = trpc.partDetails.deletePartDetail.useMutation({
     onError: (err: any) => {
-      error(err.message);
+      toast.error(err.message);
     },
   });
 
-  const tableData = useMemo(() => parts.data, [parts.data]);
-
-  const columns = useMemo<Array<Column<PartDetailWithRelations>>>(
+  const columns = useMemo<Array<Column<AllPartDetailsQuery>>>(
     () => [
       {
         Header: "Part",
@@ -130,8 +125,6 @@ const Inventory: NextPage = () => {
         ) : null}
         {showModal ? (
           <AddPartDetails
-            success={success}
-            error={error}
             showModal={showModal}
             setShowModal={setShowModal}
             refetch={parts.refetch}
@@ -139,8 +132,6 @@ const Inventory: NextPage = () => {
         ) : null}
         {showEditModal && selectedPart ? (
           <EditPartDetails
-            success={success}
-            error={error}
             showModal={showEditModal}
             setShowModal={setShowEditModal}
             selection={selectedPart}

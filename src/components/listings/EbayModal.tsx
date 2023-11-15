@@ -1,19 +1,20 @@
 import { useEffect, useState, Fragment } from "react";
+import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
-import LoadingButton from "../LoadingButton";
 import { Combobox, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
-import type { Car } from "@prisma/client";
+import type { Car, Part, PartDetail } from "@prisma/client";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import Modal from "../modals/Modal";
 import { ChevronLeft } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface EbayModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  listing: any;
+  listing: QueryListingsGetAllAdmin;
   refetch: () => void;
 }
 
@@ -107,7 +108,6 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [price, setPrice] = useState<number>(
     Math.ceil(listing.price * 0.15 + listing.price)
   );
-  const [loading, setLoading] = useState<boolean>(false);
   const [ebayCondition, setEbayCondition] = useState<any>("");
   const [validated, setValidated] = useState<boolean>(false);
   const [categoryId, setCategoryId] = useState<string>("");
@@ -125,27 +125,28 @@ const EbayModal: React.FC<EbayModalProps> = ({
     {
       title: title,
     },
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
   );
+
+  type ListingParts = Part & {
+    partDetails: PartDetail & {
+        cars: Car[];
+    };
+}
 
   const makeTableHTML = () => {
     return listing.parts
-      .reduce((acc: any, cur: any) => {
+      .reduce((acc, cur) => {
         if (
           !acc.some(
-            (part: any) =>
-              part.partDetails.cars[0].id === cur.partDetails.cars[0]?.id
+            (part) =>
+              part.partDetails.cars[0]!.id === cur.partDetails.cars[0]?.id
           )
         ) {
           acc.push(cur);
         }
         return acc;
-      }, [] as any[])
-      .map((part: any) => {
+      }, [] as ListingParts[])
+      .map((part) => {
         return part.partDetails.cars.map((car: Car) => {
           return `<tr style="padding:1rem; border-bottom: 1px solid #ddd"><td>${car.series}</td><td>${car.generation}</td><td>${car.model}</td></tr>`;
         });
@@ -163,13 +164,12 @@ const EbayModal: React.FC<EbayModalProps> = ({
 
   const onSubmit = async () => {
     if (!validated) return;
-    setLoading(true);
     const result = await createEbayListing.mutateAsync({
       listingId: listing.id,
       title: title,
       price: price,
       description: description,
-      images: listing.images.map((image: any) => image.url),
+      images: listing.images.map((image) => image.url),
       condition: condition,
       conditionDescription: ebayCondition.value,
       quantity: quantity,
@@ -180,11 +180,8 @@ const EbayModal: React.FC<EbayModalProps> = ({
       fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
       partsTable: `<table style="padding:1rem; text-align:center; max-width:40rem;"><thead><tr style="border-bottom: 1px solid #ddd"><th style="padding:1rem;">Series</th><th>Generation</th><th>Model</th></tr></thead><tbody>${makeTableHTML()}</tbody></table>`,
     });
-    if (result) {
-    }
     refetch();
     setShowModal(false);
-    setLoading(false);
   };
 
   return (
@@ -231,19 +228,16 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 label: "For Parts Or Not Working",
                 value: "FOR_PARTS_OR_NOT_WORKING",
               },
-              // { label: "Used Very Good", value: "USED_VERY_GOOD" },
-              // { label: "Used Good", value: "USED_GOOD" },
-              // { label: "Used Acceptable", value: "USED_ACCEPTABLE" },
             ]}
-            onChange={(e: any) => setEbayCondition(e)}
+            onChange={(e) => setEbayCondition(e)}
           />
         </div>
         <div className="">
           <Select
             placeholder="Ebay Category"
-            value={categoryIds.data?.find((c: any) => c.value === categoryId)}
+            value={categoryIds.data?.find((c:any) => c.value === categoryId)}
             options={categoryIds.data}
-            onChange={(e: any) => setCategoryId(e.value)}
+            onChange={(e) => setCategoryId(e.value)}
           />
         </div>
         <div className="">
@@ -293,7 +287,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                   <Combobox.Input
                     className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                    displayValue={(policy: FulfillmentPolicyType) =>
+                    displayValue={() =>
                       fulfillmentPolicy?.name || "Select a fulfillment policy"
                     }
                   />
@@ -368,7 +362,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
             </a>
           </>
         )}
-        <LoadingButton onClick={onSubmit} loading={loading} text="List" />
+        <Button onClick={onSubmit}>List</Button>
       </div>
     </Modal>
   );

@@ -1,5 +1,4 @@
 import {  useState } from "react";
-import NavBackdrop from "./NavBackdrop";
 import { useRouter } from "next/router";
 import { useDebounce } from "use-debounce";
 import { trpc } from "../../utils/trpc";
@@ -36,9 +35,9 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
 
   return (
     <>
-      {showSearch ? (
-        <NavBackdrop showSearch={showSearch} setShowSearch={setShowSearch} />
-      ) : null}
+      {showSearch && (
+        <div onClick={() => setShowSearch(!showSearch)} className="fixed top-20 left-0 z-[51] h-screen w-full bg-[#00000063]" />
+      )}
       <div
         className={`absolute top-[-5rem] left-0 z-[55] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
           showSearch ? "translate-y-[5rem]" : ""

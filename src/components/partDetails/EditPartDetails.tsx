@@ -1,14 +1,13 @@
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
-import type { Car, Part, PartDetail, PartTypes } from "@prisma/client";
-import { useEffect, useState } from "react";
+import type { Car, Part, PartDetail } from "@prisma/client";
+import {  useState } from "react";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
 
 interface EditPartProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   refetch: () => void;
   selection: PartDetail & {
     partTypes: any;
@@ -30,8 +29,6 @@ interface NestedOptions {
 const EditPartDetails: React.FC<EditPartProps> = ({
   showModal,
   setShowModal,
-  error,
-  success,
   selection,
   refetch,
 }) => {
@@ -106,7 +103,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
       },
       {
         onSuccess: () => {
-          success(`Part ${partNo} successfully updated`);
+          toast.success(`Part ${partNo} successfully updated`);
           setPartNo("");
           setName("");
           setAlternatePartNos("");
@@ -117,7 +114,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           }
         },
         onError: (err) => {
-          error(err.message);
+          toast.error(err.message);
         },
       }
     );

@@ -80,9 +80,6 @@ const AddToOrder = ({
     });
   };
 
-  useEffect(() => {
-    console.log(itemsToSell);
-  }, [itemsToSell]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>

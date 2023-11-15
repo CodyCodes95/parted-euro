@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { QueryDonorGetAllDashboard} from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { Car, Image } from "@prisma/client";
@@ -7,13 +8,12 @@ import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
 import Compressor from "compressorjs";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
 
 interface AddDonorProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
-  donor: any | null;
+  donor: QueryDonorGetAllDashboard | null;
   refetch: () => void;
 }
 
@@ -25,8 +25,6 @@ interface ISelectOptions {
 const AddDonor: React.FC<AddDonorProps> = ({
   showModal,
   setShowModal,
-  success,
-  error,
   donor,
   refetch,
 }) => {
@@ -46,9 +44,9 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
       setOptions([]);
-      data.forEach((car: Car) => {
-        setOptions((prevState: any) => {
-          if (prevState.some((group: any) => group.label === car.series)) {
+      data.forEach((car) => {
+        setOptions((prevState) => {
+          if (prevState.some((group) => group.label === car.series)) {
             return prevState.map((group: any) => {
               if (group.label === car.series) {
                 group.options.push({
@@ -76,7 +74,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       });
     },
     onError: (err: any) => {
-      error(err.message);
+      toast.error(err.message);
     },
   });
   const saveDonor = trpc.donors.createDonor.useMutation();
@@ -87,7 +85,6 @@ const AddDonor: React.FC<AddDonorProps> = ({
 
   const onSave = async () => {
     if (donor) {
-      console.log(donor);
       const result = await updateDonor.mutateAsync(
         {
           vin: vin,
@@ -98,11 +95,11 @@ const AddDonor: React.FC<AddDonorProps> = ({
         },
         {
           onError: (err: any) => {
-            error(err.message);
+            toast.error(err.message);
           },
         }
       );
-      success(`Donor ${vin} successfully updated`);
+      toast.success(`Donor ${vin} successfully updated`);
       setMileage(0);
       setVin("");
       setCost(0);
@@ -124,7 +121,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       },
       {
         onError: (err: any) => {
-          error(err.message);
+          toast.error(err.message);
         },
       }
     );
@@ -136,7 +133,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       });
     });
     await Promise.all(imagePromises);
-    success(`Donor ${vin} successfully created`);
+    toast.success(`Donor ${vin} successfully created`);
     setMileage(0);
     setVin("");
     setCost(0);

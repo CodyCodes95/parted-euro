@@ -3,12 +3,11 @@ import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { PartTypes } from "@prisma/client";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
 
-interface AddCategoryProps {
+type AddCategoryProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   refetch: () => void;
   selection: PartTypes | undefined;
 }
@@ -16,8 +15,6 @@ interface AddCategoryProps {
 const AddCategory: React.FC<AddCategoryProps> = ({
   showModal,
   setShowModal,
-  success,
-  error,
   refetch,
   selection,
 }) => {
@@ -30,16 +27,16 @@ const AddCategory: React.FC<AddCategoryProps> = ({
 
   const onSave = async () => {
     if (!parentCategoryId) {
-      return error("Please select a parent category");
+      return toast.error("Please select a parent category");
     }
     if (!name) {
-      return error("Please enter a name for the category");
+      return toast.error("Please enter a name for the category");
     }
     await saveCategory.mutateAsync({
       name,
       parentCategoryId,
     });
-    success(`${name} Category created`);
+    toast.success(`${name} Category created`);
     refetch();
     setName("");
     setShowModal(false);
@@ -50,7 +47,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
       id: selection?.id as string,
       name,
     });
-    success(`${name} Category updated`);
+    toast.success(`${name} Category updated`);
     refetch();
     setName("");
     setShowModal(false);
@@ -84,7 +81,10 @@ const AddCategory: React.FC<AddCategoryProps> = ({
               placeholder={"Select a donor"}
               className="basic-multi-select"
               classNamePrefix="select"
-              onChange={(e: any) => setParentCategoryId(e.value)}
+              onChange={(e) => {
+                if (!e?.value) return
+                setParentCategoryId(e.value)
+              }}
               options={parentCategories.data?.map((category: PartTypes) => {
                 return {
                   label: category.name,

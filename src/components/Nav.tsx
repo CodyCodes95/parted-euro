@@ -16,8 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
-import CartContext from "../context/cartContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import {  useEffect,  useState } from "react";
 import { LogIn, Menu, Search, X } from "lucide-react";
 import {
   Accordion,
@@ -26,6 +25,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import { ShoppingCart } from "lucide-react";
+import { useCart } from "../context/cartContext";
 
 const generations = [
   { generation: "F8X", series: "M2/M3/M4", param: "F8" },
@@ -39,25 +39,18 @@ const generations = [
 ];
 
 const Nav = () => {
-  const { cart, setCart } = useContext(CartContext);
+  const { cart } = useCart()
   const [showLogin, setShowLogin] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const adminRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      if (window.innerWidth < 768) {
-        console.log(window.innerWidth);
-        setIsMobile(true);
-      } else {
-        console.log(window.innerWidth);
-        setIsMobile(false);
-      }
-    });
+    setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", () => setIsMobile(window.innerWidth < 768)
+    );
   }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);

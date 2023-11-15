@@ -2,8 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { trpc } from "../../utils/trpc";
-import AddPart from "../../components/inventory/EditInventory";
+import { AllPartsQuery, trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import type { Part } from "@prisma/client";
@@ -12,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
-import BreadCrumbs from "../../components/BreadCrumbs";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import AddInventory from "../../components/inventory/AddInventory";
 import EditInventoryModal from "../../components/inventory/EditInventory";
 
@@ -35,24 +34,26 @@ const Inventory: NextPage = () => {
 
   const { vin } = router.query;
 
-  const success = (message: string) => toast.success(message);
-  const error = (message: string) => toast.error(message);
 
   const parts = trpc.parts.getAll.useQuery({ vin: (vin as string) || "" });
   const deletePart = trpc.parts.deletePart.useMutation();
 
-  const columns = useMemo<Array<Column<any>>>(
+  const columns = useMemo<Array<Column<AllPartsQuery>>>(
     () => [
       {
         Header: "Part",
+        // TODO: Ts ignoring, I think new Tanstack table allows for types like this?
+        // @ts-ignore
         accessor: "partDetails.name",
       },
       {
         Header: "Partno",
+        // @ts-ignore
         accessor: "partDetails.partNo",
       },
       {
         Header: "Location",
+        // @ts-ignore
         accessor: "inventoryLocation.name",
       },
       {
@@ -100,7 +101,7 @@ const Inventory: NextPage = () => {
   const deletePartFunc = async () => {
     if (!selected) return;
     await deletePart.mutateAsync({ id: selected.id });
-    success("Part deleted successfully");
+    toast.success("Part deleted successfully");
     parts.refetch();
     setShowDeleteModal(false);
     setSelected(undefined);

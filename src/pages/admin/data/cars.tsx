@@ -12,7 +12,7 @@ import Spacer from "../../../components/Spacer";
 import { useSession } from "next-auth/react";
 import FilterInput from "../../../components/tables/FilterInput";
 import { Button } from "../../../components/ui/button";
-import BreadCrumbs from "../../../components/BreadCrumbs";
+import BreadCrumbs from "../../../components/admin/BreadCrumbs";
 
 const Cars: NextPage = () => {
   const { status } = useSession({
@@ -26,8 +26,6 @@ const Cars: NextPage = () => {
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [filter, setFilter] = useState<string>("");
 
-  const success = (message: string) => toast.success(message);
-  const error = (message: string) => toast.error(message);
 
   const cars = trpc.cars.getAll.useQuery();
   const deleteCar = trpc.cars.deleteCar.useMutation();
@@ -39,7 +37,7 @@ const Cars: NextPage = () => {
     }
   };
 
-  const columns = useMemo<Array<Column<any>>>(
+  const columns = useMemo<Array<Column<Car>>>(
     () => [
       {
         Header: "Series",
@@ -59,7 +57,7 @@ const Cars: NextPage = () => {
       },
       {
         Header: "Edit Car",
-        accessor: (d: Car) => (
+        accessor: (d) => (
           <Button
             onClick={() => {
               setSelectedCar(d);
@@ -72,7 +70,7 @@ const Cars: NextPage = () => {
       },
       {
         Header: "Delete Car",
-        accessor: (d: Car) => (
+        accessor: (d) => (
           <Button
             onClick={() => {
               setSelectedCar(d);
@@ -98,19 +96,16 @@ const Cars: NextPage = () => {
         setShowModal={setShowDeleteModal}
         showModal={showDeleteModal}
       />
-      <main className="m-20 flex min-h-screen flex-col bg-white">
+      <main className="m-20 flex min-h-screen flex-col bg-white gap-2">
         <BreadCrumbs />
-        <Spacer amount="2" />
-        {showModal ? (
+        {showModal && (
           <AddCar
             car={selectedCar}
-            success={success}
-            error={error}
             showModal={showModal}
             setShowModal={setShowModal}
             refetch={cars.refetch}
           />
-        ) : null}
+        )}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
             <Button

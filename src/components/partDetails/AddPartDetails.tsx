@@ -5,12 +5,11 @@ import { useDebounce } from "use-debounce";
 import type { Car } from "@prisma/client";
 import { Button } from "../ui/button";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
 
-interface AddPartProps {
+type AddPartProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   refetch: () => void;
 }
 
@@ -27,8 +26,6 @@ interface NestedOptions {
 const AddPartDetails: React.FC<AddPartProps> = ({
   showModal,
   setShowModal,
-  error,
-  success,
   refetch,
 }) => {
   const [partNo, setPartNo] = useState<string>("");
@@ -109,7 +106,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       },
       {
         onSuccess: () => {
-          success(`Part ${partNo} successfully created`);
+          toast.success(`Part ${partNo} successfully created`);
           setPartNo("");
           setName("");
           setCompatibleCars([]);
@@ -119,7 +116,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           }
         },
         onError: (err) => {
-          error(err.message);
+          toast.error(err.message);
         },
       }
     );

@@ -1,16 +1,15 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
+import type { GetAllSubCategoriesQuery} from "../../../utils/trpc";
 import { trpc } from "../../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
 import { useSession } from "next-auth/react";
 import type { PartTypes } from "@prisma/client";
 import AddCategory from "../../../components/categories/AddCategory";
-import { error, success } from "../../../utils/toast";
 import { Button } from "../../../components/ui/button";
-import BreadCrumbs from "../../../components/BreadCrumbs";
+import BreadCrumbs from "../../../components/admin/BreadCrumbs";
 
 const Categories: NextPage = () => {
   const { status } = useSession({
@@ -23,13 +22,10 @@ const Categories: NextPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<
     PartTypes | undefined
   >();
-  const [filter, setFilter] = useState<string>("");
 
   const subCategories = trpc.categories.getAllSubCategories.useQuery();
 
-  const subData = useMemo(() => subCategories.data, [subCategories.data]);
-
-  const subCols = useMemo<Array<Column<PartTypes & { parent: PartTypes }>>>(
+  const subCols = useMemo<Array<Column<GetAllSubCategoriesQuery>>>(
     () => [
       {
         Header: "Category",
@@ -62,16 +58,14 @@ const Categories: NextPage = () => {
         <title>Categories</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {showModal ? (
+      {showModal && (
         <AddCategory
           refetch={subCategories.refetch}
-          success={success}
-          error={error}
           setShowModal={setShowModal}
           showModal={showModal}
           selection={selectedCategory}
         />
-      ) : null}
+      )}
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs />
         <div className="py-4">

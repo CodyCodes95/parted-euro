@@ -1,15 +1,14 @@
-import type { OrderItem } from ".";
-import FinialiseOrder from "../../../components/modals/FinialiseOrder";
-import { Button } from "../../../components/ui/button";
+import type { OrderItem } from "../../pages/admin/listings";
+import FinialiseOrder from "../modals/FinialiseOrder";
+import { Button } from "../ui/button";
 import {
   DialogContent,
   Dialog,
   DialogDescription,
   DialogHeader,
-  DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "../ui/dialog";
 
 type FinialiseOrderToastProps = {
   order: OrderItem[];

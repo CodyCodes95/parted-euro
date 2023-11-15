@@ -3,12 +3,12 @@ import { trpc } from "../../utils/trpc";
 import FormSection from "../FormSection";
 import type { Car } from "@prisma/client";
 import Modal from "../modals/Modal";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
-interface AddCarProps {
+type AddCarProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  success: (message: string) => void;
-  error: (message: string) => void;
   car?: Car | null;
   refetch: () => void;
 }
@@ -16,8 +16,6 @@ interface AddCarProps {
 const AddCar: React.FC<AddCarProps> = ({
   showModal,
   setShowModal,
-  success,
-  error,
   car,
   refetch,
 }) => {
@@ -42,7 +40,7 @@ const AddCar: React.FC<AddCarProps> = ({
       },
       {
         onSuccess: (data) => {
-          success(`${generation} ${model} added successfully`);
+          toast.success(`${generation} ${model} added successfully`);
           refetch();
           if (exit) {
             setShowModal(false);
@@ -53,7 +51,7 @@ const AddCar: React.FC<AddCarProps> = ({
           setBody("");
         },
         onError: (err) => {
-          error(err.message);
+          toast.error(err.message);
         },
       }
     );
@@ -97,7 +95,7 @@ const AddCar: React.FC<AddCarProps> = ({
         >
           There are multiple bodies for this model
         </p>
-        {showBody ? (
+        {showBody && (
           <FormSection
             title="Body"
             data={[
@@ -110,25 +108,11 @@ const AddCar: React.FC<AddCarProps> = ({
             value={body}
             setValue={setBody}
           />
-        ) : null}
+        )}
       </div>
       <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-        <button
-          onClick={() => onSave(true)}
-          data-modal-toggle="defaultModal"
-          type="button"
-          className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Save and Exit
-        </button>
-        <button
-          onClick={() => onSave(false)}
-          data-modal-toggle="defaultModal"
-          type="button"
-          className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Save
-        </button>
+        <Button onClick={() => onSave(true)}>Save and Exit</Button>
+        <Button onClick={() => onSave(false)}>Save</Button>
       </div>
     </Modal>
   );

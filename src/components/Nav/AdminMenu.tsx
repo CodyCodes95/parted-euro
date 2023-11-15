@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
-import { BsFillPersonFill } from "react-icons/bs";
 import Link from "next/link";
 import { User } from "lucide-react";
 

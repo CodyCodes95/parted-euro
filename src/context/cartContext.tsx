@@ -1,41 +1,47 @@
-import { createContext } from "react";
+import type { PropsWithChildren} from "react";
+import { createContext, useContext, useEffect } from "react";
+import  { useState } from "react";
 
 interface CartContextType {
-    cart: any[]
-    setCart: React.Dispatch<React.SetStateAction<any[]>>
+    cart: CartItem[]
+    setCart: React.Dispatch<React.SetStateAction<CartItem[]>>
 }
+
+export type CartItem = {
+  listingId: string;
+  listingTitle: string;
+  listingPrice: number;
+  listingImage: string | undefined;
+  quantity: number;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+};
 
 const CartContext = createContext<CartContextType>({
   cart: [],
-  setCart: (newCart) => void 0
+  setCart: () => void 0
 });
 
-export default CartContext;
+export const useCart = () => {
+  return useContext(CartContext)
+}
 
-import React, { useState } from "react";
 
-const CartProvider: React.FC<any> = ({ children }) => {
+
+const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // Initialize an empty cart
-  const [cart, setCart] = useState([]);
-
-  // Retrieve the cart data from local storage on load
-  React.useEffect(() => {
-    const cartInStorage = localStorage.getItem("cart");
-    if (cartInStorage) {
-      setCart(JSON.parse(cartInStorage));
-    }
-  }, []);
+  const [cart, setCart] = useState(localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")!) : []);
 
   //Add the cart data to localstorage
-  React.useEffect(() => {
-      if (cart.length > 0) {
+  useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
-      }
   }, [cart]);
 
 
   return (
-    <CartContext.Provider value={{ cart, setCart } as any}>
+    <CartContext.Provider value={{ cart, setCart }}>
       {children}
     </CartContext.Provider>
   );

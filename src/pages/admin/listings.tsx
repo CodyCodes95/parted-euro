@@ -1,40 +1,23 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
-import { trpc } from "../../../utils/trpc";
-import AddListing from "../../../components/listings/AddListing";
+import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
+import { trpc } from "../../utils/trpc";
+import AddListing from "../../components/listings/AddListing";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import AdminTable from "../../../components/tables/AdminTable";
+import AdminTable from "../../components/tables/AdminTable";
 import type { Column } from "react-table";
-import EbayModal from "../../../components/listings/EbayModal";
-import Spacer from "../../../components/Spacer";
+import EbayModal from "../../components/listings/EbayModal";
+import Spacer from "../../components/Spacer";
 import { useSession } from "next-auth/react";
-import ConfirmDelete from "../../../components/modals/ConfirmDelete";
-import { Button } from "../../../components/ui/button";
-import FilterInput from "../../../components/tables/FilterInput";
-import BreadCrumbs from "../../../components/BreadCrumbs";
-import type {
-  Car,
-  Image,
-  Listing,
-  Order,
-  Part,
-  PartDetail,
-} from "@prisma/client";
+import ConfirmDelete from "../../components/modals/ConfirmDelete";
+import { Button } from "../../components/ui/button";
+import FilterInput from "../../components/tables/FilterInput";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import { toast } from "sonner";
-import AddToOrder from "../../../components/listings/AddToOrder";
-import FinialiseOrder from "../../../components/modals/FinialiseOrder";
-import FinialiseOrderToast from "./FinialiseOrderToast";
-
-type AdminListingQuery = Listing & {
-  parts: (Part & {
-    partDetails: PartDetail & {
-      cars: Car[];
-    };
-  })[];
-  images: Image[];
-};
+import AddToOrder from "../../components/listings/AddToOrder";
+import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
 
 export type OrderItem = {
   inventoryId: string;
@@ -54,13 +37,12 @@ const Listings: NextPage = () => {
   const { code } = router.query;
 
   const [showModal, setShowModal] = useState(false);
-  const [selected, setSelected] = useState<any>(null);
+  const [selected, setSelected] = useState<QueryListingsGetAllAdmin>();
   const [showEbayModal, setShowEbayModal] = useState(false);
   const [filter, setFilter] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMarkAsSold, setShowMarkAsSold] = useState(false);
   const [order, setOrder] = useState<OrderItem[] | undefined>();
-  const [showFinialiseOrder, setShowFinialiseOrder] = useState(false);
 
   const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -79,7 +61,7 @@ const Listings: NextPage = () => {
     }
   }, [order]);
 
-  const columns = useMemo<Array<Column<AdminListingQuery>>>(
+  const columns = useMemo<Array<Column<QueryListingsGetAllAdmin>>>(
     () => [
       {
         Header: "Title",
@@ -185,7 +167,7 @@ const Listings: NextPage = () => {
   );
 
   const onDeleteListing = async () => {
-    const res = deleteListing.mutateAsync({ id: selected.id });
+    const res = deleteListing.mutateAsync({ id: selected!.id });
     listings.refetch();
     toast.success("Listing deleted");
   };
@@ -221,22 +203,22 @@ const Listings: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs />
         <Spacer amount="2" />
-        {showModal ? (
+        {showModal && selected && (
           <AddListing
             showModal={showModal}
             setShowModal={setShowModal}
             listing={selected}
             refetch={listings.refetch}
           />
-        ) : null}
-        {showEbayModal ? (
+        ) }
+        {showEbayModal && selected &&  (
           <EbayModal
             showModal={showEbayModal}
             setShowModal={setShowEbayModal}
             listing={selected}
             refetch={listings.refetch}
           />
-        ) : null}
+        )}
         {showMarkAsSold && (
           <AddToOrder
             setOrder={setOrder}
@@ -246,20 +228,13 @@ const Listings: NextPage = () => {
               setShowMarkAsSold(false);
             }}
             title="Mark as sold"
-            listing={selected}
+            listing={selected!}
           />
         )}
-        {/* {showFinialiseOrder && order?.length && (
-          <FinialiseOrder
-            order={order}
-            isOpen={showFinialiseOrder}
-            onClose={() => setShowFinialiseOrder(false)}
-          />
-        )} */}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
             onClick={() => {
-              setSelected(null);
+              setSelected(undefined);
               setShowModal(true);
             }}
           >

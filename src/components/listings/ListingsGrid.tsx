@@ -6,7 +6,7 @@ import type {
   PartTypes,
 } from "@prisma/client";
 import { useState, type FC } from "react";
-import LoadingSpinner from "../Loader";
+import LoadingSpinner from "../ui/Loader";
 import { Info, Search, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/router";
 

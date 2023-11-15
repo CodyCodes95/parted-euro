@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import BreadCrumbs from "../../components/BreadCrumbs";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 
 const Admin: NextPage = () => {
   const { status } = useSession({

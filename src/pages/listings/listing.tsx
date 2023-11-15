@@ -2,11 +2,11 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { IoShareOutline } from "react-icons/io5";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
-import CartContext from "../../context/cartContext";
+import  { useCart } from "../../context/cartContext";
 import { toast } from "sonner";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -94,7 +94,7 @@ const Listing: NextPage = () => {
     weight: number;
   }
 
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, setCart } = useCart();
 
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
 

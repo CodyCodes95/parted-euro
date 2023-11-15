@@ -4,7 +4,7 @@ import Link from "next/link";
 import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { MdCategory } from "react-icons/md";
-import BreadCrumbs from "../../../components/BreadCrumbs";
+import BreadCrumbs from "../../../components/admin/BreadCrumbs";
 
 const Data: NextPage = () => {
   const { status } = useSession({

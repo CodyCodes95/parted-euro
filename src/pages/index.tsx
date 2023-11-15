@@ -10,37 +10,21 @@ import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface IOptions {
-  label: string;
-  value: string;
-}
-
 const Home: NextPage = () => {
   const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
   const [series, setSeries] = useState<string>("");
   const [generation, setGeneration] = useState<string>("");
   const [model, setModel] = useState<string>("");
-  const [seriesOptions, setSeriesOptions] = useState<Array<IOptions>>([]);
-  const [generationOptions, setGenerationOptions] = useState<Array<IOptions>>(
-    []
-  );
-  const [modelOptions, setModelOptions] = useState<Array<IOptions>>([]);
 
   const router = useRouter();
 
   const cars = trpc.cars.getAllSeries.useQuery(undefined, {
-    onSuccess: (data) => {
-      setSeriesOptions(data.series);
-    },
   });
 
   const generations = trpc.cars.getMatchingGenerations.useQuery(
     { series },
     {
       enabled: series !== "",
-      onSuccess: (data) => {
-        setGenerationOptions(data.generations);
-      },
     }
   );
 
@@ -48,9 +32,6 @@ const Home: NextPage = () => {
     { series, generation },
     {
       enabled: generation !== "",
-      onSuccess: (data) => {
-        setModelOptions(data.models);
-      },
     }
   );
 
@@ -97,7 +78,6 @@ const Home: NextPage = () => {
                     initial={{ x: 300, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: -300, opacity: 0 }}
-                    // transition={{ duration: 1 }}
                     className={`absolute w-full duration-150 ease-linear`}
                   >
                     <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
@@ -145,24 +125,24 @@ const Home: NextPage = () => {
                         instanceId="seriesSelect"
                         className="mx-4 w-36"
                         placeholder="Series"
-                        options={seriesOptions}
+                        options={cars.data?.series}
                         onChange={(e) => setSeries(e?.value || "")}
                       />
                       <Select
                         className="mx-4 w-36"
                         instanceId="generationSelect"
                         placeholder="Generation"
-                        options={generationOptions}
+                        options={generations.data?.generations}
                         onChange={(e) => setGeneration(e?.value || "")}
-                        isDisabled={generationOptions.length === 0}
+                        isDisabled={!generations.data?.generations.length}
                       />
                       <Select
                         className="mx-4 w-36"
                         instanceId="modelSelect"
                         placeholder="Model"
-                        options={modelOptions}
+                        options={models.data?.models}
                         onChange={(e) => setModel(e?.value || "")}
-                        isDisabled={modelOptions.length === 0}
+                        isDisabled={!models.data?.models.length}
                       />
                       <Button
                         onClick={() =>
