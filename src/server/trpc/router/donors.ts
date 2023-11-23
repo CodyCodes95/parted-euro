@@ -23,8 +23,8 @@ export const donorRouter = router({
   getAllWithCars: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({ include: { car: true } });
   }),
-  getAllWithParts: adminProcedure.query(({ ctx }) => {
-    return ctx.prisma.donor.findMany({
+  getAllWithParts: adminProcedure.query(async ({ ctx }) => {
+    const donors = await ctx.prisma.donor.findMany({
       select: {
         vin: true,
         parts: {
@@ -41,6 +41,21 @@ export const donorRouter = router({
         },
       },
     });
+    return donors.map((donor) => {
+        return {
+          label: donor.vin,
+          options: donor.parts.map((part) => {
+            return {
+              label: `${part.partDetails.name} (${part.partDetails.partNo}) ${
+                part.variant ? `- ${part.variant}` : ""
+              } `,
+              value: part.id,
+              tab: donor.vin,
+              listing: !!part.listing.length,
+            };
+          }),
+        };
+      })
   }),
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({

@@ -36,8 +36,6 @@ const EditInventoryModal = ({
   const donors = trpc.donors.getAll.useQuery();
 
   const savePart = trpc.parts.updateInventory.useMutation();
-  const saveInventoryLocation =
-    trpc.inventoryLocations.createInventoryLocation.useMutation();
 
   const onSave = async () => {
     await savePart.mutateAsync({

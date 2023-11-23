@@ -71,27 +71,6 @@ const ShippingAddressField: React.FC<ShippingAddressFieldProps> = ({
   return (
     <div className="flex items-center justify-between border-b-2 px-6 py-12">
       <p className="mr-4 text-xl text-gray-400">Ship to Suburb</p>
-      {/* <Autocomplete
-        sx={{ width: 500 }}
-        loading={data.length < 1 && value !== ""}
-        filterOptions={(x) => x}
-        options={options}
-        value={selection}
-        onInputChange={(event, newInputValue) => {
-          setValue(newInputValue);
-        }}
-        noOptionsText={value !== "" ? "Address not found" : "Enter a location"}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.description
-        }
-        onChange={(event: any, newValue: PlaceType | null) => {
-          setOptions(newValue ? [newValue, ...options] : options);
-          setSelection(newValue as PlaceType);
-        }}
-        renderInput={(params) => (
-          <Input {...params} label="Enter Your Suburb" fullWidth />
-        )}
-      /> */}
       <Combobox value={selection} onChange={setSelection}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">

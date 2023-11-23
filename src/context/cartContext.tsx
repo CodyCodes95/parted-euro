@@ -32,10 +32,17 @@ export const useCart = () => {
 
 const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // Initialize an empty cart
-  const [cart, setCart] = useState(localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")!) : []);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartSet, setCartSet] = useState(false);
+
+  useEffect(() => {
+    setCart(localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")!) : [])
+    setCartSet(true)
+  }, [])
 
   //Add the cart data to localstorage
   useEffect(() => {
+    if (!cartSet) return;
         localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 

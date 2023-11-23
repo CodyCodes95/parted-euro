@@ -38,7 +38,6 @@ const AddListing: React.FC<AddListingProps> = ({
   const [price, setPrice] = useState<number>(listing?.price || 0);
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>([]);
-  const [partOptions, setPartOptions] = useState<any>([]);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     listing?.images || []
   );
@@ -46,27 +45,7 @@ const AddListing: React.FC<AddListingProps> = ({
 
   const photoUploadRef = useRef<HTMLInputElement>(null);
 
-  const donors = trpc.donors.getAllWithParts.useQuery(undefined, {
-    onSuccess: (data) => {
-      console.log(data);
-      const options = data.map((donor) => {
-        return {
-          label: donor.vin,
-          options: donor.parts.map((part) => {
-            return {
-              label: `${part.partDetails.name} (${part.partDetails.partNo}) ${
-                part.variant ? `- ${part.variant}` : ""
-              } `,
-              value: part.id,
-              tab: donor.vin,
-              listing: !!part.listing.length,
-            };
-          }),
-        };
-      });
-      setPartOptions(options);
-    },
-  });
+  const partOptions = trpc.donors.getAllWithParts.useQuery();
 
   const saveListing = trpc.listings.createListing.useMutation();
   const updateListing = trpc.listings.updateListing.useMutation();
@@ -239,7 +218,7 @@ const AddListing: React.FC<AddListingProps> = ({
                   color: data.listing ? "green" : "black",
                 }),
               }}
-              options={partOptions}
+              options={partOptions.data}
               className="basic-multi-select"
               classNamePrefix="select"
               closeMenuOnSelect={false}
