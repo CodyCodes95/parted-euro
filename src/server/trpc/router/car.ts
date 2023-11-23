@@ -35,7 +35,7 @@ export const carRouter = router({
   getAll: adminProcedure.query(async ({ ctx }) => {
     return ctx.prisma.car.findMany();
   }),
-  getAllData: adminProcedure.query(async ({ ctx }) => {
+  getAllData: publicProcedure.query(async ({ ctx }) => {
     const cars = await ctx.prisma.car.findMany({
       where: {
         make: "BMW",

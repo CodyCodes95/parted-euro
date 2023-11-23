@@ -184,7 +184,7 @@ const Nav = () => {
             </Link>
             <Link className="group" href="/returns-refunds">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
-                Warrenty & Return Policy
+                Warranty & Return Policy
               </p>
             </Link>
             <Link className="group" href="/contact">
@@ -322,7 +322,7 @@ const Nav = () => {
           <NavigationMenuItem>
             <Link href="/returns-refunds" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Warrenty & Return Policy
+                Warranty & Return Policy
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
