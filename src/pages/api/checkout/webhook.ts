@@ -133,7 +133,9 @@ export default async function stripeWebhook(req: any, res: any) {
   console.log("WE RUNNING =====================================");
 
   if (req.method === "POST") {
-    const buf = await buffer(req);
+   const rawBody = await buffer(req);
+  const body = JSON.parse(rawBody.toString());
+    console.log("Yay, we got the body back", {body})
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -142,7 +144,7 @@ export default async function stripeWebhook(req: any, res: any) {
     try {
       console.log("BODY")
       console.log(req.body)
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret as string);
+      event = stripe.webhooks.constructEvent(body, sig, webhookSecret as string);
       console.log("Webhook verified");
     } catch (err: any) {
       console.log(`Webhook failed ${err.message}`);
