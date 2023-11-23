@@ -29,6 +29,7 @@ export const donorRouter = router({
         vin: true,
         parts: {
           select: {
+            donorVin: true,
             listing: {
               select: {
                 id: true,
@@ -46,7 +47,7 @@ export const donorRouter = router({
           label: donor.vin,
           options: donor.parts.map((part) => {
             return {
-              label: `${part.partDetails.name} (${part.partDetails.partNo}) ${
+              label: `${part.donorVin} - ${part.partDetails.name} (${part.partDetails.partNo}) ${
                 part.variant ? `- ${part.variant}` : ""
               } `,
               value: part.id,

@@ -202,7 +202,6 @@ const AddListing: React.FC<AddListingProps> = ({
             onChange={(e) => setPrice(Number(e.target.value))}
           />
         </div>
-        {listing ? null : (
           <div className="mb-6">
             <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Parts
@@ -219,13 +218,30 @@ const AddListing: React.FC<AddListingProps> = ({
                   color: data.listing ? "green" : "black",
                 }),
               }}
-              options={partOptions.data}
+            options={partOptions.data}
+            value={listing ? partOptions.data?.reduce((acc:any[], part) => {
+              part.options.forEach((option) => {
+                if (listing?.parts.some(part => part.id.includes(option.value))) {
+                  acc.push(option)
+                }
+              }
+              )
+              return acc
+            }, []) : partOptions.data?.reduce((acc: any[], part) => {
+              part.options.forEach((option) => {
+                if (parts.includes(option.value)) {
+                  acc.push(option);
+                }
+              }
+              )
+              return acc
+            }
+            , [])}
               className="basic-multi-select"
               classNamePrefix="select"
               closeMenuOnSelect={false}
             />
           </div>
-        )}
         <div className="flex items-center justify-between">
           <div onClick={() => photoUploadRef.current?.click()}>
             <input
