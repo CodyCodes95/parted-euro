@@ -55,6 +55,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       unitAmount: item.amount_total / 100,
       accountCode: "200",
       taxType: "Inclusive",
+      tracking: [{name: "VIN", option: "R32"}],
       // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
     } as LineItem;
