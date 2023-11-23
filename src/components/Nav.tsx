@@ -26,6 +26,7 @@ import {
 } from "./ui/accordion";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../context/cartContext";
+import { useRouter } from "next/router";
 
 const generations = [
   { generation: "F8X", series: "M2/M3/M4", param: "F8" },
@@ -39,19 +40,33 @@ const generations = [
 ];
 
 const Nav = () => {
-  const { cart } = useCart()
+  
   const [showLogin, setShowLogin] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  
+  const { cart } = useCart()
 
   const { data: session } = useSession();
+
+    const router = useRouter();
+
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
     window.addEventListener("resize", () => setIsMobile(window.innerWidth < 768)
     );
   }, []);
+
+    useEffect(() => {
+      setMenuOpen(false)
+      setShowSearch(false)
+      setCartOpen(false)
+  }, [router]);
+
+
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -352,7 +367,7 @@ const Nav = () => {
             </Badge>
           ) : null}
         </div>
-        <Popover>
+        <Popover onOpenChange={(open) => setCartOpen(open)} open={cartOpen}>
           <PopoverTrigger>
             <ShoppingCart className="h-5 w-5" />
           </PopoverTrigger>
