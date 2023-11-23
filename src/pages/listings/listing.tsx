@@ -127,7 +127,12 @@ const Listing: NextPage = () => {
           .map((part) => part.partDetails.weight)
           .reduce((a, b) => a + b, 0),
       };
-      toast.success("Added to cart");
+      toast('Added to cart', {
+  action: {
+    label: 'Checkout',
+    onClick: () => router.push('/checkout'),
+  },
+})
       setCart([...cart, cartItem]);
     }
   };

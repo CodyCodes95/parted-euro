@@ -8,7 +8,8 @@ import { useLoadScript } from "@react-google-maps/api";
 import Spacer from "../components/Spacer";
 import { toast } from "sonner";
 import Select from "react-select";
-import { CartItem, useCart } from "../context/cartContext";
+import type { CartItem} from "../context/cartContext";
+import { useCart } from "../context/cartContext";
 
 
 type ShippingAddress = {
@@ -42,20 +43,26 @@ const Checkout: NextPage = () => {
     setCart(updatedCart);
   };
 
-  const updateQuantity = (e: any, item: CartItem) => {
-    const updatedCart = cart.map((cartItem: CartItem) => {
-      return cartItem.listingId === item.listingId
-        ? {
-            ...cartItem,
-            quantity:
-              e.target.textContent === "+"
-                ? (item.quantity += 1)
-                : (item.quantity -= 1),
-          }
-        : cartItem;
-    });
-    setCart(updatedCart);
-  };
+
+  const increaseQty = (index: number) => {
+    const item = cart[index]
+    if (!item) return
+    item.quantity += 1
+    cart[index] = item
+    setCart([...cart])
+  }
+
+  const decrementQty = (index: number) => {
+    const item = cart[index]
+    if (!item) return
+    item.quantity -= 1
+    if (item.quantity < 1) {
+      removeItemFromCart(item.listingId)
+      return
+    }
+    cart[index] = item
+    setCart([...cart])
+  }
 
   const calculateAuspostShipping = async () => {
     const largestItem = cart.reduce((prev, current) =>
@@ -134,6 +141,16 @@ const Checkout: NextPage = () => {
     }
   }, [cart]);
 
+  if (!cart.length) {
+    return (
+          <div className="flex flex-col items-center justify-center h-screen">
+      <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
+      <p className="text-gray-500 mb-8">You have no items in your shopping cart</p>
+      <Link href="/listings" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Go to Shop</Link>
+    </div>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -145,7 +162,7 @@ const Checkout: NextPage = () => {
           {cart.length > 0 ? (
             <>
               <ul ref={parent as any} className="my-8">
-                {cart.map((item: CartItem) => (
+                {cart.map((item: CartItem, index) => (
                   <li
                     key={item.listingId}
                     className="flex flex-col space-y-3 border-b-2 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
@@ -177,7 +194,7 @@ const Checkout: NextPage = () => {
                           <div className="">
                             <div className="mx-auto flex h-8 items-stretch text-gray-600">
                               <button
-                                onClick={(e) => updateQuantity(e, item)}
+                                onClick={(e) => decrementQty(index)}
                                 className="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white"
                               >
                                 -
@@ -186,7 +203,7 @@ const Checkout: NextPage = () => {
                                 {item.quantity}
                               </div>
                               <button
-                                onClick={(e) => updateQuantity(e, item)}
+                                onClick={(e) => increaseQty(index)}
                                 className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white"
                               >
                                 +

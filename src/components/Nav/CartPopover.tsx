@@ -22,6 +22,10 @@ const CartPopover = () => {
     const item = cart[index]
     if (!item) return
     item.quantity -= 1
+    if (item.quantity < 1) {
+      removeItemFromCart(item.listingId)
+      return
+    }
     cart[index] = item
     setCart([...cart])
 }
@@ -42,20 +46,6 @@ const CartPopover = () => {
         className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
       >
         Start shopping
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="ml-4 h-6 w-6 transition-all group-hover:ml-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
       </Link>
     </div>
     )
@@ -152,20 +142,7 @@ const CartPopover = () => {
             className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
           >
             Checkout
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-4 h-6 w-6 transition-all group-hover:ml-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+
           </Link>
         </div>
       </>

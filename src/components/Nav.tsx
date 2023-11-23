@@ -240,7 +240,7 @@ const Nav = () => {
           <NavigationMenuItem>
             <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-screen gap-y-8 gap-x-5 p-6 lg:grid-cols-6">
+              <ul className="grid w-screen gap-y-8 gap-x-5 p-6 lg:grid-cols-6 right-0">
                 {generations.map((generation, i) => {
                   return (
                     <li className="flex flex-col" key={i}>

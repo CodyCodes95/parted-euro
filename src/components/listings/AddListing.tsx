@@ -209,12 +209,13 @@ const AddListing: React.FC<AddListingProps> = ({
             </label>
             <Select
               onChange={(e: any) => {
-                setParts(e.map((part: Options) => part.value));
+                setParts(e.map((part: any) => part.value));
               }}
               isMulti
               styles={{
                 option: (styles, { data }) => ({
                   ...styles,
+                  // @ts-ignore
                   color: data.listing ? "green" : "black",
                 }),
               }}
