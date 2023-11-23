@@ -37,7 +37,7 @@ const AddListing: React.FC<AddListingProps> = ({
   const [condition, setCondition] = useState<string>(listing?.condition || "");
   const [price, setPrice] = useState<number>(listing?.price || 0);
   const [images, setImages] = useState<Array<string>>([]);
-  const [parts, setParts] = useState<Array<string>>([]);
+  const [parts, setParts] = useState<Array<string>>(listing ? listing.parts.map((part) => part.id) : [] || []);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     listing?.images || []
   );
@@ -219,15 +219,7 @@ const AddListing: React.FC<AddListingProps> = ({
                 }),
               }}
             options={partOptions.data}
-            value={listing ? partOptions.data?.reduce((acc:any[], part) => {
-              part.options.forEach((option) => {
-                if (listing?.parts.some(part => part.id.includes(option.value))) {
-                  acc.push(option)
-                }
-              }
-              )
-              return acc
-            }, []) : partOptions.data?.reduce((acc: any[], part) => {
+            value={partOptions.data?.reduce((acc: any[], part) => {
               part.options.forEach((option) => {
                 if (parts.includes(option.value)) {
                   acc.push(option);
