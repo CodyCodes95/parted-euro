@@ -55,19 +55,21 @@ const createInvoice = async (event: any, lineItems: any) => {
       unitAmount: item.amount_total / 100,
       accountCode: "200",
       taxType: "Inclusive",
+      VIN: "test",
       // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
     } as LineItem;
   });
-
-  lineItemsFormatted.push({
-    description: "Shipping",
-    quantity: 1,
-    unitAmount: event.shipping_cost.amount_total / 100,
-    accountCode: "210",
-    taxType: "Inclusive",
-    lineAmount: event.shipping_cost.amount_total / 100,
-  });
+  if (event.shipping_cost.amount_total) {
+    lineItemsFormatted.push({
+      description: "Shipping",
+      quantity: 1,
+      unitAmount: event.shipping_cost.amount_total / 100,
+      accountCode: "210",
+      taxType: "Inclusive",
+      lineAmount: event.shipping_cost.amount_total / 100,
+    });
+}
 
   const createInvoiceResponse = await xero.accountingApi.createInvoices(
     activeTenantId,
@@ -85,6 +87,7 @@ const createInvoice = async (event: any, lineItems: any) => {
           // status: Invoice.StatusEnum.PAID,
           status: Invoice.StatusEnum.PAID,
           lineItems: lineItemsFormatted,
+          
         },
       ],
     }
