@@ -82,8 +82,8 @@ const createInvoice = async (event: any, lineItems: any) => {
           date: new Date().toISOString().split("T")[0],
           dueDate: new Date().toISOString().split("T")[0],
           reference: event.payment_intent,
-          // status: Invoice.StatusEnum.PAID, //can this be done?
-          status: Invoice.StatusEnum.AUTHORISED,
+          // status: Invoice.StatusEnum.PAID,
+          status: Invoice.StatusEnum.PAID,
           lineItems: lineItemsFormatted,
         },
       ],
