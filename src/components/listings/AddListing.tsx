@@ -80,6 +80,7 @@ const AddListing: React.FC<AddListingProps> = ({
           description: description,
           condition: condition,
           price: price,
+          parts: parts,
         },
         {
           onSuccess: (listing) => {
