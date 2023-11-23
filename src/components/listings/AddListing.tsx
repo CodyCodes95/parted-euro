@@ -16,7 +16,7 @@ interface AddListingProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
-  listing: QueryListingsGetAllAdmin | null;
+  listing: QueryListingsGetAllAdmin | undefined;
 }
 
 interface Options {

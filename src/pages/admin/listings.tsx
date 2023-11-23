@@ -203,7 +203,7 @@ const Listings: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs />
         <Spacer amount="2" />
-        {showModal && selected && (
+        {showModal && (
           <AddListing
             showModal={showModal}
             setShowModal={setShowModal}
