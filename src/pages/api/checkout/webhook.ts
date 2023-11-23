@@ -1,11 +1,12 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import {
-  XeroClient,
-  Invoice,
+import type {
   RequestEmpty,
   TokenSet,
-  LineItem,
+  LineItem} from "xero-node";
+import {
+  XeroClient,
+  Invoice
 } from "xero-node";
 import { prisma } from "../../../server/db/client";
 
@@ -139,7 +140,9 @@ export default async function stripeWebhook(req: any, res: any) {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(buf, sig, webhookSecret as string);
+      console.log("BODY")
+      console.log(req.body)
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret as string);
       console.log("Webhook verified");
     } catch (err: any) {
       console.log(`Webhook failed ${err.message}`);
