@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Select from "react-select";
 import type { CartItem} from "../context/cartContext";
 import { useCart } from "../context/cartContext";
+import ShippingAddressField from "../components/checkout/ShippingAddressField";
 
 
 type ShippingAddress = {
@@ -294,9 +295,9 @@ const Checkout: NextPage = () => {
                 />
               </div>
             ) : null}
-            {/* {isLoaded && shippingMethod.value ? (
+            {isLoaded && shippingMethod.value ? (
               <ShippingAddressField setShippingAddress={setShippingAddress} />
-            ) : null} */}
+            ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between px-6 py-12">
             <p className="text-xl font-bold text-gray-900">Subtotal</p>
