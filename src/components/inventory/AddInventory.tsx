@@ -40,6 +40,7 @@ const AddInventory = ({
     await saveInventoryLocationMutation.mutateAsync({
       name: newInventoryLocation,
     });
+    await inventoryLocations.refetch();
     setInventoryLocation(
       inventoryLocations.data?.find(
         (location) => location.name === newInventoryLocation
@@ -126,7 +127,7 @@ const AddInventory = ({
           <div className="flex w-full items-center gap-2">
             {typeof newInventoryLocation === "string" ? (
               <>
-                <Input />
+                <Input value={newInventoryLocation} onChange={(e) => setNewInventoryLocation(e.target.value)} />
                 <div
                   onClick={() => saveInventoryLocation()}
                   className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
