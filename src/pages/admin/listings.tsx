@@ -85,12 +85,15 @@ const Listings: NextPage = () => {
       {
         Header: "Quantity",
         accessor: (d) =>
-          d.parts.length > 1
-            ? 1
-            : d.parts.reduce((acc, cur) => {
+          d.parts.every(part => {
+            const partNumber = d.parts[0]?.partDetailsId
+            return part.partDetailsId === partNumber
+          })
+            ? d.parts.reduce((acc, cur) => {
                 acc += cur.quantity;
                 return acc;
-              }, 0),
+              }, 0)
+            : 1,
       },
       {
         Header: "Listed On",
