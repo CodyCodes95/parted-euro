@@ -87,7 +87,7 @@ const Home: NextPage = () => {
                     </p>
                     <div className="mt-4 flex justify-around flex-col gap-4 md:flex-row">
                       <Button
-                        className="border-white text-sm text-white"
+                        className="border-white text-sm text-white hidden md:visible"
                         variant="outline"
                         onClick={() => setCarSelectOpen(!carSelectOpen)}
                       >

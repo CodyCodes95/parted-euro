@@ -56,7 +56,11 @@ const Nav = () => {
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
-    window.addEventListener("resize", () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", () => {
+      console.log("resize")
+      console.log(window.innerWidth)
+      setIsMobile(window.innerWidth < 768)
+    }
     );
   }, []);
 
@@ -72,7 +76,7 @@ const Nav = () => {
 
   if (isMobile) {
     return (
-      <div className="mb-4 flex w-full items-center justify-between border-b-2 pb-1 pt-2">
+      <div className="mb-4 flex w-full items-center justify-between border-b-2 pb-1 pt-2 overflow-x-hidden">
         <Link href="/">
           <img className="mr-6 inline h-10" src={logo.src} alt="" />
         </Link>
@@ -351,12 +355,12 @@ const Nav = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex items-center">
-        <div
+        <button
           onClick={() => setShowSearch(!showSearch)}
-          className="cursor-pointer p-2"
+          className="p-2"
         >
           <Search className="text-xl" />
-        </div>
+        </button>
         <div className="relative">
           {cart.length ? (
             <Badge

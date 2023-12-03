@@ -5,7 +5,7 @@ import { FiInstagram } from "react-icons/fi";
 const Footer: React.FC = () => {
   return (
     <div className="flex w-full flex-col items-center justify-around border-t-2 bg-white p-6">
-      <div className="flex justify-between">
+      <div className="flex flex-col md:flex-row justify-between">
         <div className="text-md flex flex-col justify-center p-4 text-[#4d4d4d]">
           <h4 className="text-xl font-bold">
             Looking for something we don&apos;t have listed?
