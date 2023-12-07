@@ -25,6 +25,21 @@ export type OrderItem = {
   price: number;
 };
 
+const calculateQty = (listing:QueryListingsGetAllAdmin) => {
+    // Group parts by partDetailsId and sum their quantities
+    const groupedParts = listing.parts.reduce((acc, part) => {
+        if (!acc[part.partDetailsId]) {
+            acc[part.partDetailsId] = 0;
+        }
+        acc[part.partDetailsId] += part.quantity;
+        return acc;
+    }, {} as Record<string, number> );
+
+    // Find the maximum sum of quantities for any part number
+    const maxQuantity = Math.max(...Object.values(groupedParts));
+    return maxQuantity;
+};
+
 const Listings: NextPage = () => {
   const { status } = useSession({
     required: true,
@@ -64,6 +79,10 @@ const Listings: NextPage = () => {
   const columns = useMemo<Array<Column<QueryListingsGetAllAdmin>>>(
     () => [
       {
+        Header: "ID",
+        accessor: (d) => d.id,
+    },
+      {
         Header: "Title",
         accessor: (d) => d.title,
         Cell: ({ row }: any) => (
@@ -85,15 +104,7 @@ const Listings: NextPage = () => {
       {
         Header: "Quantity",
         accessor: (d) =>
-          d.parts.every(part => {
-            const partNumber = d.parts[0]?.partDetailsId
-            return part.partDetailsId === partNumber
-          })
-            ? d.parts.reduce((acc, cur) => {
-                acc += cur.quantity;
-                return acc;
-              }, 0)
-            : 1,
+       calculateQty(d)
       },
       {
         Header: "Listed On",
