@@ -3,58 +3,48 @@ import { signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { User } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../ui/popover"
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 const AdminMenu = () => {
 
   return (
-    <div className="">
-      <Menu as="div" className="relative">
-        <div className="flex items-center justify-center">
-          <Menu.Button className="">
-            <User className="text-2xl" />
-          </Menu.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="absolute right-[-1.75rem] z-50 mt-2 w-20 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="px-1 py-1 ">
-              <Menu.Item>
-                {({ active }) => (
-                  <Link
+    <Popover >
+      <PopoverTrigger  asChild>
+        <button className="flex items-center">
+        <User className="text-2xl" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-24 p-0">
+        <PopoverClose asChild>
+                    <Link
                     href="/admin"
-                    className={`${
-                      active ? "bg-[#d03b36] text-white" : "text-gray-900"
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    className={`
+                     group flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-[#d03b36] hover:text-white`}
                   >
                     Admin
                   </Link>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
+        </PopoverClose>
+        <PopoverClose asChild>
+              <button
                     onClick={() => signOut()}
-                    className={`${
-                      active ? "bg-[#d03b36] text-white" : "text-gray-900"
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    className={`
+                     group flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-[#d03b36] hover:text-white`}
                   >
                     Logout
                   </button>
-                )}
-              </Menu.Item>
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu>
-    </div>
+                  </PopoverClose>
+      </PopoverContent>
+    </Popover>
   );
 };
 
 export default AdminMenu;
+
+

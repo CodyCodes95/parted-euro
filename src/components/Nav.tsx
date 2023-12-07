@@ -57,8 +57,6 @@ const Nav = () => {
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
     window.addEventListener("resize", () => {
-      console.log("resize")
-      console.log(window.innerWidth)
       setIsMobile(window.innerWidth < 768)
     }
     );
@@ -226,7 +224,7 @@ const Nav = () => {
   }
 
   return (
-    <div className="flex w-full items-center justify-between border-b-2 bg-white px-8 py-4">
+    <div className="flex w-full items-center justify-between border-b-2 bg-white px-8 py-4 overflow-x-hidden">
       <button
         onClick={() => {
           if (session) return;

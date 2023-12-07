@@ -15,9 +15,12 @@ import type {
 } from "@prisma/client";
 import { Badge } from "../../components/ui/badge";
 import ListingsGrid from "../../components/listings/ListingsGrid";
+import { useIsMobile } from "../../hooks/isMobile";
 
 const Listings: NextPage = () => {
   const router = useRouter();
+
+  const isMobile = useIsMobile();
 
   const { series, generation, model, category, subcat, search } = router.query;
 
@@ -96,10 +99,14 @@ const Listings: NextPage = () => {
   };
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex w-full">
-        <SearchSidebar listings={listings.data} />
+        {!isMobile && (
+          <SearchSidebar listings={listings.data} />
+
+        )}
         <div className="flex w-full flex-col items-center p-12">
+          {!isMobile && (
           <div className="flex w-full items-center justify-between rounded-md bg-slate-50 p-6">
             <div className="w-3/4 overflow-x-scroll">
               {availableSubcategories.map((subcat) => (
@@ -124,7 +131,7 @@ const Listings: NextPage = () => {
               />
             </div>
           </div>
-          <div className="p-4" />
+          )}
           <ListingsGrid
             listings={listings.data}
             isLoading={listings.isLoading}

@@ -9,6 +9,8 @@ import { useState, type FC } from "react";
 import LoadingSpinner from "../ui/Loader";
 import { Info, Search, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/router";
+import { useIsMobile } from "../../hooks/isMobile";
+import { Drawer } from "../ui/Drawer";
 
 type ListingsGridProps = {
   listings:
@@ -24,8 +26,11 @@ type ListingsGridProps = {
 
 const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   const [hoveredListing, setHoveredListing] = useState("");
+  const [selectedCar, setSelectedCar] = useState();
 
   const router = useRouter();
+
+  const isMobile = useIsMobile()
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -46,8 +51,26 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
     );
   }
 
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4">
+        <Drawer open={!selectedCar} />
+        {listings.map((listing) => (
+ <div key={listing.id} className="max-w-sm mx-auto bg-white rounded-lg border border-gray-200 shadow-md overflow-hidden mb-5">
+    <img className="lg:h-48 md:h-36 w-full object-cover object-center" src={listing.images[0]?.url} alt="product" />
+    <div className="p-4">
+      <h5 className="text-gray-900 font-bold text-2xl tracking-tight mb-2">{listing.title}</h5>
+      <p className="font-normal text-gray-700 mb-3">{listing.description}</p>
+      <p className="text-gray-900 font-semibold text-xl">${listing.price}</p>
+    </div>
+  </div>
+        ))}
+        </div>
+    )
+  }
+
   return (
-    <div className="grid cursor-pointer min-h-[50rem] w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid w-full gap-8 md:grid-cols-3 lg:grid-cols-4">
       {listings?.map((listing) => (
         <div
           key={listing.id}
