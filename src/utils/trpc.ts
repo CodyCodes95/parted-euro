@@ -52,3 +52,5 @@ export type AllPartsQuery = RouterOutputs["parts"]["getAll"][0]
 export type QueryDonorGetAllDashboard = RouterOutputs["donors"]["getAllDashboard"][0]
 
 export type QueryListingsGetAllAdmin = RouterOutputs["listings"]["getAllAdmin"][0]
+
+export type QueryListingsGetAllAvailable = RouterOutputs["listings"]["getAllAvailable"]

@@ -16,6 +16,7 @@ import type {
 import { Badge } from "../../components/ui/badge";
 import ListingsGrid from "../../components/listings/ListingsGrid";
 import { useIsMobile } from "../../hooks/isMobile";
+import ReactPaginate from "react-paginate";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -27,7 +28,9 @@ const Listings: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [availableSubcategories, setAvailableSubcategories] = useState<
     string[]
-  >([]);
+    >([]);
+  
+  const page = router.query.page ?? 0
 
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
@@ -39,26 +42,29 @@ const Listings: NextPage = () => {
       search: (debouncedSearch as string) || undefined,
       category: category as string,
       subcat: subcat as string,
+      page: Number(page)
     },
     {
       refetchOnWindowFocus: false,
     }
   );
 
-  useEffect(() => {
-    if (listings.data?.length) {
-      const uniquePartTypes = getUniquePartTypes(listings.data);
-      setAvailableSubcategories(uniquePartTypes);
-    } else {
-      setAvailableSubcategories([]);
-    }
-  }, [listings.data]);
+  // useEffect(() => {
+  //   if (listings.data?.length) {
+  //     const uniquePartTypes = getUniquePartTypes(listings.data);
+  //     setAvailableSubcategories(uniquePartTypes);
+  //   } else {
+  //     setAvailableSubcategories([]);
+  //   }
+  // }, [listings.data]);
 
   useEffect(() => {
     if (search) {
       setSearchQuery(search);
     }
   }, [search]);
+
+  const handlePageClick = (page:{selected:number}) => router.push(`?page=${page.selected}`)
 
   const getUniquePartTypes = (
     listings: (Listing & {
@@ -101,11 +107,10 @@ const Listings: NextPage = () => {
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="flex w-full">
-        {!isMobile && (
+        {/* {!isMobile && (
           <SearchSidebar listings={listings.data} />
-
-        )}
-        <div className="flex w-full flex-col items-center p-12">
+        )} */}
+        <div className="flex w-full flex-col items-center p-12 gap-4">
           {!isMobile && (
           <div className="flex w-full items-center justify-between rounded-md bg-slate-50 p-6">
             <div className="w-3/4 overflow-x-scroll">
@@ -133,10 +138,32 @@ const Listings: NextPage = () => {
           </div>
           )}
           <ListingsGrid
-            listings={listings.data}
+            listings={listings.data?.listings}
             isLoading={listings.isLoading}
           />
         </div>
+      </div>
+      <div className="p-2">
+  <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={(listings.data?.count ?? 0) / 20}
+        previousLabel="<"
+            renderOnZeroPageCount={null}
+          containerClassName="flex w-full justify-center"
+          pageClassName="flex"
+          previousClassName="flex"
+          nextClassName="flex"
+          breakClassName="flex"
+        pageLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        activeLinkClassName="text-red-500 bg-slate-200"
+       previousLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        nextLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        breakLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        disabledClassName="hidden"
+      />
       </div>
     </div>
   );

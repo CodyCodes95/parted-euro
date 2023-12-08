@@ -92,6 +92,7 @@ export const listingRouter = router({
         search: z.string().optional(),
         category: z.string().optional(),
         subcat: z.string().optional(),
+        page: z.number()
       })
     )
     .query(async ({ ctx, input }) => {
@@ -101,26 +102,7 @@ export const listingRouter = router({
         !input.series &&
         !input.category
       ) {
-        const listings = await ctx.prisma.listing.findMany({
-          include: {
-            images: {
-              orderBy: {
-                order: "asc",
-              },
-            },
-            // parts: true,
-            parts: {
-              include: {
-                partDetails: {
-                  include: {
-                    partTypes: true,
-                    cars: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
+        const queryWhere = {
             active: true,
             OR: [
               {
@@ -145,17 +127,17 @@ export const listingRouter = router({
                 },
               },
             ],
-          },
-        });
-        return listings;
-      } else {
+        }
         const listings = await ctx.prisma.listing.findMany({
+          take: 20,
+          skip: input.page * 20,
           include: {
             images: {
               orderBy: {
                 order: "asc",
               },
             },
+            // parts: true,
             parts: {
               include: {
                 partDetails: {
@@ -167,7 +149,12 @@ export const listingRouter = router({
               },
             },
           },
-          where: {
+      where: queryWhere
+        });
+        const count = await prisma?.listing.count({where: queryWhere})
+        return {listings, count};
+      } else {
+        const queryWhere = {
             active: true,
             OR: [
               {
@@ -208,12 +195,32 @@ export const listingRouter = router({
                 },
               },
             },
+          }
+        const listings = await ctx.prisma.listing.findMany({
+          skip: input.page * 20,
+          include: {
+            images: {
+              orderBy: {
+                order: "asc",
+              },
+            },
+            parts: {
+              include: {
+                partDetails: {
+                  include: {
+                    partTypes: true,
+                    cars: true,
+                  },
+                },
+              },
+            },
           },
+          where: queryWhere,
         });
-        return listings;
+        const count = await prisma?.listing.count({where: queryWhere})
+        return {listings, count};
       }
     }),
-  //For use with inf query
   // getAllAvailable: publicProcedure
   //   .input(
   //     z.object({
