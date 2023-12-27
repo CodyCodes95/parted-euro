@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { router, adminProcedure } from "../trpc";
+import { router, adminProcedure, publicProcedure } from "../trpc";
 
 export const categoryRouter = router({
-  getParentCategories: adminProcedure.query(async ({ ctx }) => {
+  getParentCategories: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.partTypes.findMany({
       where: {
         parent: null,
@@ -18,15 +18,30 @@ export const categoryRouter = router({
       },
       include: {
         parent: true,
-      }
+      },
     });
   }),
+  getSubCategoriesByParent: publicProcedure
+    .input(
+      z.object({
+        parentCategoryId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.partTypes.findMany({
+        where: {
+          parent: {
+            name: input.parentCategoryId,
+          },
+        },
+      });
+    }),
   createSubCategory: adminProcedure
     .input(
       z.object({
         name: z.string(),
         parentCategoryId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.partTypes.create({
@@ -35,8 +50,8 @@ export const categoryRouter = router({
           parent: {
             connect: {
               id: input.parentCategoryId,
-            }
-          }
+            },
+          },
         },
       });
     }),
@@ -45,7 +60,7 @@ export const categoryRouter = router({
       z.object({
         id: z.string(),
         name: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.partTypes.update({

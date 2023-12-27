@@ -513,10 +513,12 @@ export const listingRouter = router({
                   height: true,
                   weight: true,
                   partNo: true,
+                  alternatePartNumbers: true,
                   cars: {
                     select: {
                       id: true,
                       generation: true,
+                      series: true,
                       model: true,
                       body: true,
                     },

@@ -16,7 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
-import {  useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import { LogIn, Menu, Search, X } from "lucide-react";
 import {
   Accordion,
@@ -40,41 +40,36 @@ const generations = [
 ];
 
 const Nav = () => {
-  
   const [showLogin, setShowLogin] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  
-  const { cart } = useCart()
+
+  const { cart } = useCart();
 
   const { data: session } = useSession();
 
-    const router = useRouter();
-
+  const router = useRouter();
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
+    setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    );
+      setIsMobile(window.innerWidth < 768);
+    });
   }, []);
 
-    useEffect(() => {
-      setMenuOpen(false)
-      setShowSearch(false)
-      setCartOpen(false)
+  useEffect(() => {
+    setMenuOpen(false);
+    setShowSearch(false);
+    setCartOpen(false);
   }, [router]);
-
-
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   if (isMobile) {
     return (
-      <div className="mb-4 flex w-full items-center justify-between border-b-2 pb-1 pt-2 overflow-x-hidden">
+      <div className="z-50 mb-4 flex w-full items-center justify-between overflow-x-hidden border-b-2 pb-1 pt-2">
         <Link href="/">
           <img className="mr-6 inline h-10" src={logo.src} alt="" />
         </Link>
@@ -92,7 +87,7 @@ const Nav = () => {
           </div>
         )}
         {menuOpen && (
-          <nav className="h-[calc(screen -5rem)] absolute top-[50px] w-screen bg-white">
+          <nav className="h-[calc(screen -5rem)] absolute top-[50px] w-screen bg-white z-50">
             <Accordion type="single" collapsible>
               <AccordionItem value="shop-generation">
                 <AccordionTrigger className="pl-4 duration-75 hover:bg-accent">
@@ -119,7 +114,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -130,7 +125,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?category=engine&generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -142,7 +137,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?category=suspension&generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -154,7 +149,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?category=interior&generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -165,7 +160,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?category=exterior&generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -176,7 +171,7 @@ const Nav = () => {
                                 <Link
                                   href={`/listings?category=electrical&generation=${generation.param}`}
                                   className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
@@ -224,7 +219,7 @@ const Nav = () => {
   }
 
   return (
-    <div className="flex w-full items-center justify-between border-b-2 bg-white px-8 py-4 overflow-x-clip">
+    <div className="flex w-full items-center justify-between overflow-x-clip border-b-2 bg-white px-8 py-4">
       <button
         onClick={() => {
           if (session) return;
@@ -242,7 +237,7 @@ const Nav = () => {
           <NavigationMenuItem>
             <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-screen gap-y-8 gap-x-5 p-6 lg:grid-cols-6 right-0">
+              <ul className="right-0 grid w-screen gap-x-5 gap-y-8 p-6 lg:grid-cols-6">
                 {generations.map((generation, i) => {
                   return (
                     <li className="flex flex-col" key={i}>
@@ -253,7 +248,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -265,7 +260,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?category=engine&generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -278,7 +273,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?category=suspension&generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -290,7 +285,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?category=interior&generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -302,7 +297,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?category=exterior&generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -314,7 +309,7 @@ const Nav = () => {
                         <Link
                           href={`/listings?category=electrical&generation=${generation.param}`}
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
@@ -353,16 +348,13 @@ const Nav = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex items-center">
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className="p-2"
-        >
+        <button onClick={() => setShowSearch(!showSearch)} className="p-2">
           <Search className="text-xl" />
         </button>
         <div className="relative">
           {cart.length ? (
             <Badge
-              className="absolute top-[-1.5rem] left-3 text-xs"
+              className="absolute left-3 top-[-1.5rem] text-xs"
               variant={"destructive"}
             >
               {cart.length}
