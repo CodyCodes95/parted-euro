@@ -119,7 +119,7 @@ const Listings: NextPage = () => {
                 type="search"
               />
             </div>
-            <div className="flex w-full gap-4 flex-wrap">
+            <div className="flex w-full flex-wrap gap-4">
               <Button
                 onClick={(e) => {
                   e.preventDefault();
@@ -218,7 +218,7 @@ const Listings: NextPage = () => {
         </div>
       </div>
       {showCarSelection || (isMobile && !router.query.model) ? (
-        <Drawer onClose={() => setSelectedCar(undefined)} open={true}>
+        <Drawer onClose={() => setShowCarSelection(false)} open={true}>
           <CarSelection />
         </Drawer>
       ) : null}
