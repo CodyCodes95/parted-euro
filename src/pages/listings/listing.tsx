@@ -236,10 +236,8 @@ const Listing: NextPage = () => {
                 ${listing.data?.price}
               </span>
             </div>
-
-            <p>
-              <p>{listing.data?.description}</p>
-            </p>
+            <p className="text-xl font-bold pt-8">Description</p>
+            <p>{listing.data?.description}</p>
           </div>
           <div className="flex items-center justify-center gap-4 md:justify-normal">
             <Button
@@ -278,10 +276,6 @@ const Listing: NextPage = () => {
           <div className="p-4" />
         </div>
         <div className="flex flex-col gap-4">
-          <div className="text-sm">
-            <p className="font-bold">DESCRIPTION</p>
-            <p>{listing.data?.description}</p>
-          </div>
           <div className="flex flex-col gap-4 text-sm">
             <p className="font-bold">PARTS</p>
             <table className="w-full text-left text-sm text-gray-700">
