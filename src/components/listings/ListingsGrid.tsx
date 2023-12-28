@@ -54,7 +54,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
-        <Drawer open={!selectedCar} />
+        <Drawer onClose={() => console.log("close")} open={!selectedCar} />
         {listings.map((listing) => (
  <div key={listing.id} className="max-w-sm mx-auto bg-white rounded-lg border border-gray-200 shadow-md overflow-hidden mb-5">
     <img className="lg:h-48 md:h-36 w-full object-cover object-center" src={listing.images[0]?.url} alt="product" />
