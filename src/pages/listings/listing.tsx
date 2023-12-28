@@ -177,11 +177,11 @@ const Listing: NextPage = () => {
     generations: string[];
   };
 
-  const processParts = (parts) => {
+  const processParts = (parts: any) => {
     // Group by series and then by generation
     if (!parts) return;
     const groupedBySeries = parts[0]?.partDetails?.cars.reduce(
-      (seriesAcc, car) => {
+      (seriesAcc: any, car: any) => {
         // Initialize the series if not already done
         if (!seriesAcc[car.series]) {
           seriesAcc[car.series] = {};
@@ -348,12 +348,14 @@ const Listing: NextPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(cars).map(([generation, models]) => (
-                        <tr className="border-b bg-white" key={generation}>
-                          <td className="px-4 py-4">{generation}</td>
-                          <td className="px-4 py-4">{models.join(", ")}</td>
-                        </tr>
-                      ))}
+                      {Object.entries(cars as any).map(
+                        ([generation, models]: any[]) => (
+                          <tr className="border-b bg-white" key={generation}>
+                            <td className="px-4 py-4">{generation}</td>
+                            <td className="px-4 py-4">{models.join(", ")}</td>
+                          </tr>
+                        ),
+                      )}
                     </tbody>
                   </table>
                 </TabsContent>
