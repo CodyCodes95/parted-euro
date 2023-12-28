@@ -30,12 +30,11 @@ const Listings: NextPage = () => {
 
   const { series, generation, model, category, subcat, search } = router.query;
 
+  const [showCarSelection, setShowCarSelection] = useState<boolean>(false);
+  const [showCategorySelection, setShowCategorySelection] =
+    useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [selectedCar, setSelectedCar] = useState("");
-  const categories = trpc.categories.getParentCategories.useQuery();
-  const subCategories = trpc.categories.getSubCategoriesByParent.useQuery({
-    parentCategoryId: category as string,
-  });
 
   const page = router.query.page ?? 0;
 
@@ -63,10 +62,20 @@ const Listings: NextPage = () => {
   }, [search]);
 
   useEffect(() => {
+    if (subcat) {
+      setShowCategorySelection(false);
+    }
+  }, [subcat]);
+
+  useEffect(() => {
     if (series && generation && model) {
       setSelectedCar(`${series} ${generation} ${model}`);
     }
   }, [series, generation, model]);
+
+  useEffect(() => {
+    if (model) setShowCarSelection(false);
+  }, [model]);
 
   const handlePageClick = (page: { selected: number }) =>
     router.push(`?page=${page.selected}`);
@@ -92,72 +101,11 @@ const Listings: NextPage = () => {
     return Array.from(partTypeSet);
   };
 
-  const updateCategory = (key: string, value: string) => {
-    const query = router.query;
-    delete query.subcat;
-    if (query[key] === value) {
-      delete query[key];
-      router.push({
-        pathname: router.pathname,
-        query: query,
-      });
-      return;
-    }
-    query[key] = value;
-    router.push({
-      pathname: router.pathname,
-      query: query,
-    });
-  };
-
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="grid min-h-screen w-full lg:grid-cols-[300px_1fr]">
         <div className="hidden border-r bg-gray-100/40 dark:bg-gray-800/40 lg:block">
-          <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex-1 overflow-auto py-2">
-              <nav className="grid items-start px-4 text-sm font-medium">
-                {categories.data?.map((category) => (
-                  <div key={category.id}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`w-full justify-start ${
-                        router.query.category === "exterior"
-                          ? "bg-accent text-accent-foreground"
-                          : ""
-                      }`}
-                      onClick={() => updateCategory("category", category.name)}
-                    >
-                      {category.name}
-                    </Button>
-                    {category.name === router.query.category &&
-                      subCategories && (
-                        <div className="ml-4">
-                          {subCategories.data?.map((subCategory) => (
-                            <Button
-                              key={subCategory.id}
-                              variant="ghost"
-                              size="sm"
-                              className={`w-full justify-start ${
-                                router.query.subcat === subCategory.name
-                                  ? "bg-accent text-accent-foreground"
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                updateCategory("subcat", subCategory.name)
-                              }
-                            >
-                              {subCategory.name}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-                  </div>
-                ))}
-              </nav>
-            </div>
-          </div>
+          <CategoryFilters />
         </div>
         <div className="flex flex-col p-4">
           <form className="flex flex-col gap-4 md:flex-row">
@@ -171,15 +119,42 @@ const Listings: NextPage = () => {
                 type="search"
               />
             </div>
-            <Button
-              onClick={() => {
-                router.push("/listings");
-              }}
-              className="flex items-center gap-2"
-            >
-              <BsCarFront />
-              {selectedCar || "Select car"}
-            </Button>
+            <div className="flex w-full gap-4 flex-wrap">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  // const query = router.query;
+                  // delete query.series;
+                  // delete query.generation;
+                  // delete query.model;
+                  // router.push(
+                  //   {
+                  //     pathname: router.pathname,
+                  //     query: query,
+                  //   },
+                  //   undefined,
+                  //   {
+                  //     shallow: true,
+                  //   },
+                  // );
+                  setSelectedCar("");
+                  setShowCarSelection(true);
+                }}
+                className="flex items-center gap-2"
+              >
+                <BsCarFront />
+                {selectedCar || "Select car"}
+              </Button>
+              <Button
+                className="md:hidden"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowCategorySelection(true);
+                }}
+              >
+                Categories
+              </Button>
+            </div>
           </form>
           {/* <p>
             Shopping{" "}
@@ -242,9 +217,18 @@ const Listings: NextPage = () => {
           />
         </div>
       </div>
-      {isMobile && !router.query.model && (
-        <Drawer open={true}>
+      {showCarSelection || (isMobile && !router.query.model) ? (
+        <Drawer onClose={() => setSelectedCar(undefined)} open={true}>
           <CarSelection />
+        </Drawer>
+      ) : null}
+      {showCategorySelection && (
+        <Drawer
+          onClose={() => setShowCategorySelection(false)}
+          height="h-[90%]"
+          open={true}
+        >
+          <CategoryFilters />
         </Drawer>
       )}
     </div>
@@ -252,6 +236,90 @@ const Listings: NextPage = () => {
 };
 
 export default Listings;
+
+const CategoryFilters = () => {
+  const router = useRouter();
+  const { category } = router.query;
+  const categories = trpc.categories.getParentCategories.useQuery();
+  const subCategories = trpc.categories.getSubCategoriesByParent.useQuery(
+    {
+      parentCategoryId: category as string,
+    },
+    {
+      enabled: !!category,
+    },
+  );
+
+  const updateCategory = (key: string, value: string) => {
+    const query = router.query;
+    if (query[key] === value && key === "subcat") {
+      delete query.subcat;
+      return router.push({
+        pathname: router.pathname,
+        query: query,
+      });
+    }
+    delete query.subcat;
+    if (query[key] === value) {
+      delete query[key];
+      router.push({
+        pathname: router.pathname,
+        query: query,
+      });
+      return;
+    }
+    query[key] = value;
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <h2 className="p-2 text-2xl">Categories</h2>
+      <div className="flex-1 overflow-clip py-2">
+        <nav className="grid items-start px-4 text-sm font-medium">
+          {categories.data?.map((category) => (
+            <div key={category.id}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`w-full justify-start ${
+                  router.query.category === category.name
+                    ? "bg-accent text-accent-foreground"
+                    : ""
+                }`}
+                onClick={() => updateCategory("category", category.name)}
+              >
+                {category.name}
+              </Button>
+              {category.name === router.query.category && subCategories && (
+                <div className="ml-4">
+                  {subCategories.data?.map((subCategory) => (
+                    <Button
+                      key={subCategory.id}
+                      variant="ghost"
+                      size="sm"
+                      className={`w-full justify-start ${
+                        router.query.subcat === subCategory.name
+                          ? "bg-accent text-accent-foreground"
+                          : ""
+                      }`}
+                      onClick={() => updateCategory("subcat", subCategory.name)}
+                    >
+                      {subCategory.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+};
 
 const CarSelection = () => {
   const router = useRouter();

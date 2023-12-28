@@ -11,7 +11,7 @@ export const listingRouter = router({
         condition: z.string().min(3),
         price: z.number().min(1).max(1000000),
         parts: z.array(z.string()),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.listing.create({
@@ -37,7 +37,7 @@ export const listingRouter = router({
         condition: z.string().min(3),
         price: z.number().min(1).max(1000000),
         parts: z.array(z.string()),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const listing = await ctx.prisma.listing.update({
@@ -49,7 +49,7 @@ export const listingRouter = router({
           description: input.description,
           condition: input.condition,
           price: input.price,
-             parts: {
+          parts: {
             connect: input.parts.map((part) => {
               return { id: part };
             }),
@@ -92,8 +92,8 @@ export const listingRouter = router({
         search: z.string().optional(),
         category: z.string().optional(),
         subcat: z.string().optional(),
-        page: z.number()
-      })
+        page: z.number(),
+      }),
     )
     .query(async ({ ctx, input }) => {
       if (
@@ -103,31 +103,31 @@ export const listingRouter = router({
         !input.category
       ) {
         const queryWhere = {
-            active: true,
-            OR: [
-              {
-                description: {
-                  contains: input.search || "",
-                },
+          active: true,
+          OR: [
+            {
+              description: {
+                contains: input.search || "",
               },
-              {
-                title: {
-                  contains: input.search || "",
-                },
+            },
+            {
+              title: {
+                contains: input.search || "",
               },
-              {
-                parts: {
-                  some: {
-                    partDetails: {
-                      partNo: {
-                        contains: input.search || "",
-                      },
+            },
+            {
+              parts: {
+                some: {
+                  partDetails: {
+                    partNo: {
+                      contains: input.search || "",
                     },
                   },
                 },
               },
-            ],
-        }
+            },
+          ],
+        };
         const listings = await ctx.prisma.listing.findMany({
           take: 20,
           skip: input.page * 20,
@@ -149,55 +149,55 @@ export const listingRouter = router({
               },
             },
           },
-      where: queryWhere
+          where: queryWhere,
         });
-        const count = await prisma?.listing.count({where: queryWhere})
-        return {listings, count};
+        const count = await prisma?.listing.count({ where: queryWhere });
+        return { listings, count };
       } else {
         const queryWhere = {
-            active: true,
-            OR: [
-              {
-                description: {
-                  contains: input.search || "",
-                },
+          active: true,
+          OR: [
+            {
+              description: {
+                contains: input.search || "",
               },
-              {
-                title: {
-                  contains: input.search || "",
-                },
+            },
+            {
+              title: {
+                contains: input.search || "",
               },
-            ],
-            parts: {
-              some: {
-                partDetails: {
-                  partTypes: {
-                    some: {
-                      parent: {
-                        name: {
-                          contains: input.category || "",
-                        },
-                      },
+            },
+          ],
+          parts: {
+            some: {
+              partDetails: {
+                partTypes: {
+                  some: {
+                    parent: {
                       name: {
-                        contains: input.subcat || "",
+                        contains: input.category || "",
                       },
+                    },
+                    name: {
+                      contains: input.subcat || "",
                     },
                   },
-                  cars: {
-                    some: {
-                      generation: {
-                        contains: input.generation || "",
-                      },
-                      model: input.model,
-                      series: input.series,
+                },
+                cars: {
+                  some: {
+                    generation: {
+                      contains: input.generation || "",
                     },
+                    model: input.model,
+                    series: input.series,
                   },
                 },
               },
             },
-          }
+          },
+        };
         const listings = await ctx.prisma.listing.findMany({
-          skip: input.page * 20,
+          take: 20,
           include: {
             images: {
               orderBy: {
@@ -217,8 +217,8 @@ export const listingRouter = router({
           },
           where: queryWhere,
         });
-        const count = await prisma?.listing.count({where: queryWhere})
-        return {listings, count};
+        const count = await prisma?.listing.count({ where: queryWhere });
+        return { listings, count };
       }
     }),
   // getAllAvailable: publicProcedure
@@ -368,7 +368,7 @@ export const listingRouter = router({
     .input(
       z.object({
         search: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const listings = await ctx.prisma.listing.findMany({
@@ -418,7 +418,7 @@ export const listingRouter = router({
         generation: z.string(),
         model: z.string(),
         id: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const listings = await ctx.prisma.listing.findMany({
@@ -473,7 +473,7 @@ export const listingRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(({ ctx, input }) => {
       const listing = ctx.prisma.listing.findUnique({
@@ -509,6 +509,7 @@ export const listingRouter = router({
               partDetails: {
                 select: {
                   length: true,
+                  name: true,
                   width: true,
                   height: true,
                   weight: true,
@@ -537,7 +538,7 @@ export const listingRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.listing.delete({
@@ -550,7 +551,7 @@ export const listingRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.listing.update({

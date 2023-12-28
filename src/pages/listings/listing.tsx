@@ -1,32 +1,34 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import { IoShareOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import { useCart } from "../../context/cartContext";
 import { toast } from "sonner";
-import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Tab } from "@headlessui/react";
-import Spacer from "../../components/Spacer";
 import { Button } from "../../components/ui/button";
+import Autoplay from "embla-carousel-autoplay";
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
-import { lstat } from "fs";
-import { list } from "postcss";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../components/ui/carousel";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
 import Link from "next/link";
-import { cn } from "../../lib/utils";
 
 const Listing: NextPage = () => {
   const router = useRouter();
+  const [parts, setParts] = useState<any>(undefined);
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -103,6 +105,33 @@ const Listing: NextPage = () => {
 
   const [quantity, setQuantity] = useState(1);
 
+  const listing = trpc.listings.getListing.useQuery(
+    {
+      id: router.query.id as string,
+    },
+    {
+      enabled: !!router.query.id,
+    },
+  );
+
+  const relatedListings = trpc.listings.getRelatedListings.useQuery(
+    {
+      generation: listing.data?.parts[0]?.partDetails.cars[0]
+        ?.generation as string,
+      model: listing.data?.parts[0]?.partDetails.cars[0]?.model as string,
+      id: listing.data?.id as string,
+    },
+    {
+      enabled: listing.data !== undefined,
+    },
+  );
+
+  useEffect(() => {
+    if (listing.data?.parts.length) {
+      processParts(listing.data?.parts);
+    }
+  }, [listing.data]);
+
   const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
 
@@ -142,27 +171,6 @@ const Listing: NextPage = () => {
     }
   };
 
-  const listing = trpc.listings.getListing.useQuery(
-    {
-      id: router.query.id as string,
-    },
-    {
-      enabled: !!router.query.id,
-    },
-  );
-
-  const relatedListings = trpc.listings.getRelatedListings.useQuery(
-    {
-      generation: listing.data?.parts[0]?.partDetails.cars[0]
-        ?.generation as string,
-      model: listing.data?.parts[0]?.partDetails.cars[0]?.model as string,
-      id: listing.data?.id as string,
-    },
-    {
-      enabled: listing.data !== undefined,
-    },
-  );
-
   type Series = string;
   type GroupedParts = {
     models: string[];
@@ -192,10 +200,8 @@ const Listing: NextPage = () => {
       {},
     );
 
-    return groupedBySeries;
+    setParts(groupedBySeries);
   };
-
-  console.log(processParts(listing.data?.parts));
 
   const quantityAvailable = listing.data?.parts.reduce((acc, cur) => {
     acc += cur.quantity;
@@ -207,9 +213,10 @@ const Listing: NextPage = () => {
       <Head>
         <title>{listing.data?.title}</title>
       </Head>
-      <div className="grid grid-cols-2 gap-8 p-8">
-        <div className="space-y-4">
-          <img
+      <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2">
+        <div className="flex justify-center">
+          <ImageCarousel images={listing.data?.images ?? []} />
+          {/* <img
             alt={listing.data?.title}
             className="h-auto w-full"
             height="300"
@@ -219,32 +226,7 @@ const Listing: NextPage = () => {
               objectFit: "cover",
             }}
             width="300"
-          />
-          <div className="text-sm">
-            <p className="font-bold">DESCRIPTION</p>
-            <p>{listing.data?.description}</p>
-          </div>
-          <div className="text-sm">
-            <p className="font-bold">PART NUMBERS</p>
-            <p>
-              OEM Part Number:{" "}
-              {Array.from(
-                new Set(
-                  listing.data?.parts.map((part) => part.partDetails.partNo),
-                ),
-              ).join(",")}
-            </p>
-            {listing.data?.parts.some(
-              (part) =>
-                part.partDetails.alternatePartNumbers && (
-                  <p>
-                    {Array.from(
-                      new Set(part.partDetails.alternatePartNumbers),
-                    ).join(",")}
-                  </p>
-                ),
-            )}
-          </div>
+          /> */}
         </div>
         <div className="space-y-6">
           <div className="space-y-2">
@@ -259,7 +241,7 @@ const Listing: NextPage = () => {
               <p>{listing.data?.description}</p>
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center gap-4 md:justify-normal">
             <Button
               onClick={() => {
                 if (quantity > 1) {
@@ -283,122 +265,113 @@ const Listing: NextPage = () => {
             >
               +
             </Button>
-            <span className="text-sm">In stock</span>
+            <span className="text-sm">{quantityAvailable} In stock</span>
+            {quantityAvailable === 0 ? (
+              <Button disabled>Out of stock</Button>
+            ) : (
+              <Button onClick={() => addToCart(listing.data as ListingType)}>
+                Add {quantity} for ${quantity * (listing.data?.price ?? 0)} to
+                cart
+              </Button>
+            )}
           </div>
-          {quantityAvailable === 0 ? (
-            <Button disabled>Out of stock</Button>
-          ) : (
-            <Button onClick={() => addToCart(listing.data as ListingType)}>
-              Add {quantity} for ${quantity * (listing.data?.price ?? 0)} to
-              cart
-            </Button>
-          )}
           <div className="p-4" />
-          <p className="font-bold">Fits the following cars:</p>
-          <div className="flex w-full">
-            <Tab.Group>
-              <Tab.List>
-                {Object.entries(processParts(listing.data?.parts) ?? {}).map(
-                  ([series, cars]) => (
-                    <Tab
-                      key={series}
-                      className={({ selected }) =>
-                        cn(
-                          "w-full px-4 py-3 text-left text-sm font-medium leading-5 transition duration-150 ease-in-out",
-                          "focus:outline-none focus-visible:ring focus-visible:ring-opacity-75",
-                          selected
-                            ? "rounded-md bg-white text-blue-600 shadow-lg"
-                            : "text-gray-600 hover:bg-white hover:text-blue-500",
-                        )
-                      }
-                    >
-                      {series}
-                    </Tab>
-                  ),
-                )}
-              </Tab.List>
-              <Tab.Panels>
-                {Object.entries(processParts(listing.data?.parts) ?? {}).map(
-                  ([series, cars]) => (
-                    <Tab.Panel key={series} className="rounded-xl p-3">
-                      <table className="w-full text-left text-sm text-gray-700">
-                        <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                          <tr>
-                            <th className="px-4 py-3">Generation</th>
-                            <th className="px-4 py-3">Models</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {Object.entries(cars).map(([generation, models]) => (
-                            <tr className="border-b bg-white" key={generation}>
-                              <td className="px-4 py-4">{generation}</td>
-                              <td className="px-4 py-4">{models.join(", ")}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </Tab.Panel>
-                  ),
-                )}
-              </Tab.Panels>
-            </Tab.Group>
-            {/* <Tab.Group>
-              <Tab.List className="flex flex-col space-y-1 rounded-lg bg-gray-100 p-1 shadow">
-                {processParts(listing.data?.parts)?.map((generation) => (
-                  <Tab
-                    key={generation.generation}
-                    className={({ selected }) =>
-                      cn(
-                        "w-full px-4 py-3 text-left text-sm font-medium leading-5 transition duration-150 ease-in-out",
-                        "focus:outline-none focus-visible:ring focus-visible:ring-opacity-75",
-                        selected
-                          ? "rounded-md bg-white text-blue-600 shadow-lg"
-                          : "text-gray-600 hover:bg-white hover:text-blue-500",
-                      )
-                    }
-                  >
-                    {generation.generation}
-                  </Tab>
-                ))}
-              </Tab.List>
-              <Tab.Panels className="ml-2 mt-3 h-fit rounded-lg bg-white p-4 shadow-md">
-                {processParts(listing.data?.parts)?.map((generation) => (
-                  <Tab.Panel
-                    key={generation.generation}
-                    className="rounded-xl p-3"
-                  >
-                    <table className="w-full text-left text-sm text-gray-700">
-                      <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                        <tr>
-                          <th className="px-4 py-3">Model</th>
-                          <th className="px-4 py-3">Body</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {generation.models.map((model) => (
-                          <tr className="border-b bg-white" key={model.model}>
-                            <td className="px-4 py-4">{model.model}</td>
-                            <td className="px-4 py-4">
-                              {model.bodies.length
-                                ? model.bodies.join(", ")
-                                : "All"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </Tab.Panel>
-                ))}
-              </Tab.Panels>
-            </Tab.Group> */}
-          </div>
-          <div></div>
         </div>
-        <div className="col-span-2 space-y-4">
+        <div className="flex flex-col gap-4">
+          <div className="text-sm">
+            <p className="font-bold">DESCRIPTION</p>
+            <p>{listing.data?.description}</p>
+          </div>
+          <div className="flex flex-col gap-4 text-sm">
+            <p className="font-bold">PARTS</p>
+            <table className="w-full text-left text-sm text-gray-700">
+              <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+                <tr>
+                  <th className="px-4 py-3">Part</th>
+                  <th className="px-4 py-3">Part No.</th>
+                  <th className="px-4 py-3">Alternate part no.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from(
+                  new Set(
+                    listing.data?.parts.map((part) => (
+                      <tr key={part.partDetails.partNo}>
+                        <td className="px-4 py-3">{part.partDetails.name}</td>
+                        <td className="px-4 py-3">{part.partDetails.partNo}</td>
+                        <td className="px-4 py-3">
+                          {part.partDetails.alternatePartNumbers ?? "NA"}
+                        </td>
+                      </tr>
+                    )),
+                  ),
+                )}
+              </tbody>
+            </table>
+            {listing.data?.parts.some(
+              (part) =>
+                part.partDetails.alternatePartNumbers && (
+                  <p>
+                    {Array.from(
+                      new Set(part.partDetails.alternatePartNumbers),
+                    ).join(",")}
+                  </p>
+                ),
+            )}
+          </div>
+        </div>
+        <div className="flex w-full flex-col">
+          <p className="font-bold">Fits the following cars:</p>
+          {parts && (
+            <Tabs
+              defaultValue={Object.keys(parts ?? {})[0]}
+              className="grid w-full gap-4 md:grid-cols-2"
+            >
+              <TabsList className="h-fit w-full flex-row md:flex-col">
+                {Object.entries(parts).map(([series, cars]) => (
+                  <TabsTrigger key={series} value={series}>
+                    {series}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {Object.entries(parts).map(([series, cars]) => (
+                <TabsContent
+                  className="max-h-80 w-full overflow-y-scroll"
+                  key={series}
+                  value={series}
+                >
+                  <table className="w-full text-left text-sm text-gray-700">
+                    <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+                      <tr>
+                        <th className="px-4 py-3">Generation</th>
+                        <th className="px-4 py-3">Models</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(cars).map(([generation, models]) => (
+                        <tr className="border-b bg-white" key={generation}>
+                          <td className="px-4 py-4">{generation}</td>
+                          <td className="px-4 py-4">{models.join(", ")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </TabsContent>
+              ))}
+            </Tabs>
+          )}
+        </div>
+        <div className="order-2 space-y-4 md:col-span-2">
           <h2 className="text-xl font-bold">Related Products</h2>
           <div className="grid grid-cols-3 gap-4">
             {relatedListings.data?.map((listing) => (
-              <div key={listing.id} className="space-y-2">
+              <Link
+                href={`
+              /listings/listing?id=${listing.id}
+                `}
+                key={listing.id}
+                className="space-y-2"
+              >
                 <img
                   alt={listing.title}
                   className="h-auto w-full"
@@ -410,10 +383,11 @@ const Listing: NextPage = () => {
                   }}
                   width="200"
                 />
-                <h3 className="text-lg font-bold">{listing.title}</h3>
-                <p className="text-sm">{listing.description}</p>
-                <Button>Add to Cart</Button>
-              </div>
+                <h3 className="line-clamp-1 text-lg font-bold">
+                  {listing.title}
+                </h3>
+                <p className="line-clamp-3 text-sm">{listing.description}</p>
+              </Link>
             ))}
           </div>
         </div>
@@ -423,3 +397,42 @@ const Listing: NextPage = () => {
 };
 
 export default Listing;
+
+type ImageCarouselProps = {
+  images: Image[];
+};
+
+const ImageCarousel = ({ images }: ImageCarouselProps) => {
+  return (
+    <Carousel
+      plugins={[
+        Autoplay({
+          delay: 2000,
+        }),
+      ]}
+      className="w-10/12"
+    >
+      <CarouselContent>
+        {images.map((image) => (
+          <CarouselItem key={image.id}>
+            <div className="p-1">
+              <img
+                alt=""
+                className="h-auto w-full"
+                height="300"
+                src={image.url}
+                style={{
+                  aspectRatio: "300/300",
+                  objectFit: "cover",
+                }}
+                width="300"
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  );
+};

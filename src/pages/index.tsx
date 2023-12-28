@@ -18,21 +18,20 @@ const Home: NextPage = () => {
 
   const router = useRouter();
 
-  const cars = trpc.cars.getAllSeries.useQuery(undefined, {
-  });
+  const cars = trpc.cars.getAllSeries.useQuery(undefined, {});
 
   const generations = trpc.cars.getMatchingGenerations.useQuery(
     { series },
     {
       enabled: series !== "",
-    }
+    },
   );
 
   const models = trpc.cars.getMatchingModels.useQuery(
     { series, generation },
     {
       enabled: generation !== "",
-    }
+    },
   );
 
   return (
@@ -85,16 +84,16 @@ const Home: NextPage = () => {
                       Shop our wide range of second-hand parts from various
                       BMW&apos;s.
                     </p>
-                    <div className="mt-4 flex justify-around flex-col gap-4 md:flex-row">
+                    <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
                       <Button
-                        className="border-white text-sm text-white hidden md:block"
+                        className="hidden border-white bg-transparent text-sm text-white md:block"
                         variant="outline"
                         onClick={() => setCarSelectOpen(!carSelectOpen)}
                       >
                         SHOP BY CAR
                       </Button>
                       <Button
-                        className="border-white text-sm text-white"
+                        className="border-white bg-transparent text-sm text-white"
                         variant="outline"
                         onClick={() => router.push("/listings")}
                       >
@@ -147,10 +146,10 @@ const Home: NextPage = () => {
                       <Button
                         onClick={() =>
                           router.push(
-                            `/listings?series=${series}&generation=${generation}&model=${model}`
+                            `/listings?series=${series}&generation=${generation}&model=${model}`,
                           )
                         }
-                        className="border-white text-sm text-white"
+                        className="border-white bg-transparent text-sm text-white"
                         variant="outline"
                       >
                         Search
