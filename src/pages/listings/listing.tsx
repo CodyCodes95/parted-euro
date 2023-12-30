@@ -316,7 +316,7 @@ const Listing: NextPage = () => {
         </div>
         <div className="flex w-full flex-col">
           <p className="font-bold">Fits the following cars:</p>
-          {parts && (
+          {/* {parts && (
             <Tabs
               defaultValue={Object.keys(parts ?? {})[0]}
               className="grid w-full gap-4 md:grid-cols-2"
@@ -355,7 +355,7 @@ const Listing: NextPage = () => {
                 </TabsContent>
               ))}
             </Tabs>
-          )}
+          )} */}
         </div>
         <div className="order-2 space-y-4 md:col-span-2">
           <h2 className="text-xl font-bold">Related Products</h2>
