@@ -151,7 +151,7 @@ export const listingRouter = router({
           },
           where: queryWhere,
         });
-        const count = await prisma?.listing.count({ where: queryWhere });
+        const count = await ctx.prisma.listing.count({ where: queryWhere });
         return { listings, count };
       } else {
         const queryWhere = {
@@ -217,7 +217,7 @@ export const listingRouter = router({
           },
           where: queryWhere,
         });
-        const count = await prisma?.listing.count({ where: queryWhere });
+        const count = await ctx.prisma.listing.count({ where: queryWhere });
         return { listings, count };
       }
     }),
