@@ -13,8 +13,6 @@ import type {
   PartDetail,
   PartTypes,
 } from "@prisma/client";
-import { Badge } from "../../components/ui/badge";
-import ListingsGrid from "../../components/listings/ListingsGrid";
 import { useIsMobile } from "../../hooks/isMobile";
 import ReactPaginate from "react-paginate";
 import Link from "next/link";
@@ -22,10 +20,6 @@ import { Card, CardContent } from "../../components/ui/card";
 import { BsCarFront } from "react-icons/bs";
 import { Button } from "../../components/ui/button";
 import { Drawer } from "../../components/ui/Drawer";
-import {
-  CarSelection,
-  CategoryFilters,
-} from "../../components/listings/ListingsComponents";
 
 const Listings: NextPage = () => {
   const router = useRouter();
