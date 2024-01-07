@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import SearchSidebar from "../../components/listings/SearchSidebar";
 import { Input } from "../../components/ui/input";
 import { Car, Search, Share } from "lucide-react";
+import type { NextRouter } from "next/router";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -20,6 +21,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { BsCarFront } from "react-icons/bs";
 import { Button } from "../../components/ui/button";
 import { Drawer } from "../../components/ui/Drawer";
+import type { ParsedUrlQuery } from "querystring";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -37,21 +39,6 @@ const Listings: NextPage = () => {
   const page = router.query.page ?? 0;
 
   const [debouncedSearch] = useDebounce(searchQuery, 500);
-
-  const listings = trpc.listings.getAllAvailable.useQuery(
-    {
-      series: series as string,
-      generation: generation as string,
-      model: model as string,
-      search: (debouncedSearch as string) || undefined,
-      category: category as string,
-      subcat: subcat as string,
-      page: Number(page),
-    },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
 
   useEffect(() => {
     if (search) {
@@ -74,9 +61,6 @@ const Listings: NextPage = () => {
   useEffect(() => {
     if (model) setShowCarSelection(false);
   }, [model]);
-
-  const handlePageClick = (page: { selected: number }) =>
-    router.push(`?page=${page.selected}`);
 
   const getUniquePartTypes = (
     listings: (Listing & {
@@ -160,59 +144,12 @@ const Listings: NextPage = () => {
               ? `for ${series} ${generation} ${model}`
               : ""}
           </p> */}
-          {listings.data?.count === 0 && (
-            <div className="mt-16 flex flex-col items-center justify-center">
-              <Search className="h-20 w-20 text-gray-400" />
-              <h2 className="mt-6 text-xl font-bold">No Results Found</h2>
-              <p className="text-md mt-2 text-gray-500">
-                Try adjusting your search to find what you{"'"}re looking for.
-              </p>
-            </div>
-          )}
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {listings.data?.listings.map((listing) => (
-              <Card key={listing.id}>
-                <Link href={`/listings/listing?id=${listing.id}`}>
-                  <CardContent className="p-0">
-                    <img
-                      alt="Product image"
-                      className="max-h-80 w-full rounded-md object-cover"
-                      src={listing.images[0]?.url}
-                    />
-                    <div className="p-2">
-                      <div className="mt-2 text-sm font-medium">
-                        {listing.title}
-                      </div>
-                      <div className="mt-1 text-lg font-bold">
-                        ${listing.price}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-            ))}
-          </div>
-          <div className="p-2" />
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel=">"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={1}
-            pageCount={(listings.data?.count ?? 0) / 20}
-            previousLabel="<"
-            renderOnZeroPageCount={null}
-            containerClassName="flex w-full justify-center flex-wrap"
-            pageClassName="flex"
-            previousClassName="flex"
-            nextClassName="flex"
-            breakClassName="flex"
-            pageLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-            activeLinkClassName="text-red-500 bg-slate-200"
-            previousLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-            nextLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-            breakLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-            disabledClassName="hidden"
+          <ListingsResults
+            router={router}
+            query={router.query}
+            debouncedSearch={debouncedSearch}
           />
+          <div className="p-2" />
         </div>
       </div>
       {showCarSelection || (isMobile && !router.query.model) ? (
@@ -234,6 +171,121 @@ const Listings: NextPage = () => {
 };
 
 export default Listings;
+
+type ListingsResultsProps = {
+  query: ParsedUrlQuery;
+  debouncedSearch: string | string[];
+  router: NextRouter;
+};
+
+const ListingsResults = ({
+  query,
+  debouncedSearch,
+  router,
+}: ListingsResultsProps) => {
+  const { series, generation, model, category, subcat, page } = query;
+
+  const listings = trpc.listings.getAllAvailable.useQuery(
+    {
+      series: series as string,
+      generation: generation as string,
+      model: model as string,
+      search: (debouncedSearch as string) || undefined,
+      category: category as string,
+      subcat: subcat as string,
+      page: Number(page ?? 0),
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  const handlePageClick = (page: { selected: number }) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    router.push(`?page=${page.selected}`, undefined, {
+      shallow: true,
+    });
+  };
+
+  if (listings.isLoading) {
+    return (
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {[...Array(20)].map((_, i) => (
+          <Card key={i}>
+            <CardContent className="p-0">
+              <div className="h-80 w-full animate-pulse rounded-md bg-gray-200" />
+              <div className="p-2">
+                <div className="mt-2 h-4 w-1/2 animate-pulse bg-gray-200 text-sm font-medium" />
+                <div className="mt-1 h-4 w-1/4 animate-pulse bg-gray-200 text-lg font-bold" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (listings.data?.listings.length === 0) {
+    return (
+      <div className="mt-16 flex flex-col items-center justify-center">
+        <Search className="h-20 w-20 text-gray-400" />
+        <h2 className="mt-6 text-xl font-bold">No Results Found</h2>
+        <p className="text-md mt-2 text-gray-500">
+          Try adjusting your search to find what you{"'"}re looking for.
+        </p>
+      </div>
+    );
+  }
+  return (
+    <>
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {listings.data?.listings.map((listing) => (
+          <Card key={listing.id}>
+            <Link href={`/listings/listing?id=${listing.id}`}>
+              <CardContent className="p-0">
+                <img
+                  alt="Product image"
+                  className="max-h-80 w-full rounded-md object-cover"
+                  src={listing.images[0]?.url}
+                />
+                <div className="p-2">
+                  <div className="mt-2 text-sm font-medium">
+                    {listing.title}
+                  </div>
+                  <div className="mt-1 text-lg font-bold">${listing.price}</div>
+                </div>
+              </CardContent>
+            </Link>
+          </Card>
+        ))}
+      </div>
+      <div className="p-4" />
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={1}
+        pageCount={(listings.data?.count ?? 0) / 20}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        containerClassName="flex w-full justify-center flex-wrap"
+        pageClassName="flex"
+        previousClassName="flex"
+        nextClassName="flex"
+        breakClassName="flex"
+        pageLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        activeLinkClassName="text-red-500 bg-slate-200"
+        previousLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        nextLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        breakLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
+        disabledClassName="hidden"
+      />
+    </>
+  );
+};
 
 const CategoryFilters = () => {
   const router = useRouter();
