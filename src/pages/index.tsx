@@ -72,84 +72,27 @@ const Home: NextPage = () => {
           <div className="absolute w-[50%] text-center text-white">
             <div className="flex w-full flex-col items-center">
               <AnimatePresence>
-                {!carSelectOpen ? (
-                  <motion.div
-                    initial={{ x: 300, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -300, opacity: 0 }}
-                    className={`absolute w-full duration-150 ease-linear`}
-                  >
-                    <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
-                    <p className="mt-2 text-xl">
-                      Shop our wide range of second-hand parts from various
-                      BMW&apos;s.
-                    </p>
-                    <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
-                      <Button
-                        className="border-white bg-transparent text-sm text-white"
-                        variant="outline"
-                        onClick={() => router.push("/listings?page=1")}
-                      >
-                        BROWSE STORE
-                      </Button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ x: 300, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -300, opacity: 0 }}
-                    className={` absolute duration-150 ease-linear`}
-                  >
-                    <div className="mt-4 flex items-center justify-center text-black">
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setCarSelectOpen(!carSelectOpen);
-                          setSeries("");
-                          setGeneration("");
-                          setModel("");
-                        }}
-                      >
-                        <BiArrowBack className="text-4xl text-white" />
-                      </div>
-                      <Select
-                        instanceId="seriesSelect"
-                        className="mx-4 w-36"
-                        placeholder="Series"
-                        options={cars.data?.series}
-                        onChange={(e) => setSeries(e?.value || "")}
-                      />
-                      <Select
-                        className="mx-4 w-36"
-                        instanceId="generationSelect"
-                        placeholder="Generation"
-                        options={generations.data?.generations}
-                        onChange={(e) => setGeneration(e?.value || "")}
-                        isDisabled={!generations.data?.generations.length}
-                      />
-                      <Select
-                        className="mx-4 w-36"
-                        instanceId="modelSelect"
-                        placeholder="Model"
-                        options={models.data?.models}
-                        onChange={(e) => setModel(e?.value || "")}
-                        isDisabled={!models.data?.models.length}
-                      />
-                      <Button
-                        onClick={() =>
-                          router.push(
-                            `/listings?series=${series}&generation=${generation}&model=${model}`,
-                          )
-                        }
-                        className="border-white bg-transparent text-sm text-white"
-                        variant="outline"
-                      >
-                        Search
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
+                <motion.div
+                  initial={{ x: 300, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -300, opacity: 0 }}
+                  className={`absolute w-full duration-150 ease-linear`}
+                >
+                  <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
+                  <p className="mt-2 text-xl">
+                    Shop our wide range of second-hand parts from various
+                    BMW&apos;s.
+                  </p>
+                  <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
+                    <Button
+                      className="border-white bg-transparent text-sm text-white"
+                      variant="outline"
+                      onClick={() => router.push("/listings?page=1")}
+                    >
+                      BROWSE STORE
+                    </Button>
+                  </div>
+                </motion.div>
               </AnimatePresence>
             </div>
           </div>
