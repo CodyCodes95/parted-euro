@@ -14,6 +14,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import {
   Carousel,
@@ -427,7 +428,7 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
         <CarouselNext />
       </Carousel>
       <Lightbox
-        plugins={[Thumbnails]}
+        plugins={[Thumbnails, Zoom]}
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
         slides={images.map((image) => ({ src: image.url }))}
