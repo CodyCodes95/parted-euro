@@ -77,7 +77,7 @@ const Home: NextPage = () => {
           <Carousel
             plugins={[
               Autoplay({
-                delay: 2000,
+                delay: 5000,
               }),
             ]}
             className="w-full"

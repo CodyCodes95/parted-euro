@@ -399,7 +399,7 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
       <Carousel
         plugins={[
           Autoplay({
-            delay: 2000,
+            delay: 5000,
           }),
         ]}
         className="w-10/12"
