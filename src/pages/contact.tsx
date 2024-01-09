@@ -31,7 +31,7 @@ const contact: NextPage = () => {
         </p>
         <p className="mb-2">
           <span className="font-semibold">Phone: </span>
-          0412 371 588
+          0431 133 764
         </p>
         <p className="mb-1 font-bold">Hours:</p>
         <p className="mb-2">Open via Appointment only.</p>
