@@ -252,9 +252,19 @@ const ListingsResults = ({
       top: 0,
       behavior: "smooth",
     });
-    router.push(`?page=${page}`, undefined, {
-      shallow: true,
-    });
+    router.push(
+      {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          page: page + 1,
+        },
+      },
+      undefined,
+      {
+        shallow: true,
+      },
+    );
   };
 
   if (listings.isLoading) {
