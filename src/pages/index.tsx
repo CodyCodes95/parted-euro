@@ -1,14 +1,28 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import carImg from "../../public/car.jpg";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
-import { BiArrowBack } from "react-icons/bi";
-import Select from "react-select";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "../components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import carImg from "../../public/car.jpg";
+import two from "../../public/2.jpg";
+import three from "../../public/3.jpg";
+import four from "../../public/4.jpg";
+import five from "../../public/5.jpg";
+import six from "../../public/6.jpg";
+import seven from "../../public/7.jpg";
+import eight from "../../public/8.jpg";
+import nine from "../../public/9.jpg";
+
+const carImages = [carImg, two, three, four, five, six, seven, eight, nine];
 
 const Home: NextPage = () => {
   const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
@@ -61,14 +75,37 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col bg-white">
         <div className="flex w-full items-center justify-center">
-          <Image
+          <Carousel
+            plugins={[
+              Autoplay({
+                delay: 2000,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent>
+              {carImages.map((image, index) => (
+                <CarouselItem key={index}>
+                  <Image
+                    src={image.src}
+                    alt="hero"
+                    className="h-[calc(100vh-5rem)] w-full object-cover"
+                    width={image.width}
+                    height={image.height}
+                    priority
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+          {/* <Image
             src={carImg.src}
             alt="hero"
             className="h-[calc(100vh-5rem)] w-full object-cover"
             width={carImg.width}
             height={carImg.height}
             priority
-          />
+          /> */}
           <div className="absolute w-[50%] text-center text-white">
             <div className="flex w-full flex-col items-center">
               <AnimatePresence>
