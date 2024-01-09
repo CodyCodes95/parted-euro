@@ -10,6 +10,10 @@ import { toast } from "sonner";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Button } from "../../components/ui/button";
 import Autoplay from "embla-carousel-autoplay";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import {
   Carousel,
@@ -225,7 +229,7 @@ const Listing: NextPage = () => {
                 ${listing.data?.price}
               </span>
             </div>
-            <p className="text-xl font-bold pt-8">Description</p>
+            <p className="pt-8 text-xl font-bold">Description</p>
             <p>{listing.data?.description}</p>
           </div>
           <div className="flex items-center justify-center gap-4 md:justify-normal">
@@ -348,7 +352,7 @@ const Listing: NextPage = () => {
         </div>
         <div className="order-2 space-y-4 md:col-span-2">
           <h2 className="text-xl font-bold">Related Products</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {relatedListings.data?.map((listing) => (
               <Link
                 href={`
@@ -388,36 +392,46 @@ type ImageCarouselProps = {
 };
 
 const ImageCarousel = ({ images }: ImageCarouselProps) => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   return (
-    <Carousel
-      plugins={[
-        Autoplay({
-          delay: 2000,
-        }),
-      ]}
-      className="w-10/12"
-    >
-      <CarouselContent>
-        {images.map((image) => (
-          <CarouselItem key={image.id}>
-            <div className="p-1">
-              <img
-                alt=""
-                className="h-auto w-full"
-                height="300"
-                src={image.url}
-                style={{
-                  aspectRatio: "300/300",
-                  objectFit: "cover",
-                }}
-                width="300"
-              />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+    <>
+      <Carousel
+        plugins={[
+          Autoplay({
+            delay: 2000,
+          }),
+        ]}
+        className="w-10/12"
+      >
+        <CarouselContent>
+          {images.map((image) => (
+            <CarouselItem key={image.id}>
+              <div className="p-1">
+                <img
+                  onClick={() => setLightboxOpen(true)}
+                  alt=""
+                  className="h-auto w-full"
+                  height="300"
+                  src={image.url}
+                  style={{
+                    aspectRatio: "300/300",
+                    objectFit: "cover",
+                  }}
+                  width="300"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+      <Lightbox
+        plugins={[Thumbnails]}
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={images.map((image) => ({ src: image.url }))}
+      />
+    </>
   );
 };
