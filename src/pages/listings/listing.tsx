@@ -213,20 +213,9 @@ const Listing: NextPage = () => {
       <Head>
         <title>{listing.data?.title}</title>
       </Head>
-      <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-40">
         <div className="flex justify-center">
           <ImageCarousel images={listing.data?.images ?? []} />
-          {/* <img
-            alt={listing.data?.title}
-            className="h-auto w-full"
-            height="300"
-            src={listing.data?.images[0]?.url}
-            style={{
-              aspectRatio: "300/300",
-              objectFit: "cover",
-            }}
-            width="300"
-          /> */}
         </div>
         <div className="space-y-6">
           <div className="space-y-2">
