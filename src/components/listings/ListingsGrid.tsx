@@ -30,7 +30,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
 
   const router = useRouter();
 
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -56,17 +56,30 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
       <div className="flex flex-col gap-4">
         <Drawer onClose={() => console.log("close")} open={!selectedCar} />
         {listings.map((listing) => (
- <div key={listing.id} className="max-w-sm mx-auto bg-white rounded-lg border border-gray-200 shadow-md overflow-hidden mb-5">
-    <img className="lg:h-48 md:h-36 w-full object-cover object-center" src={listing.images[0]?.url} alt="product" />
-    <div className="p-4">
-      <h5 className="text-gray-900 font-bold text-2xl tracking-tight mb-2">{listing.title}</h5>
-      <p className="font-normal text-gray-700 mb-3">{listing.description}</p>
-      <p className="text-gray-900 font-semibold text-xl">${listing.price}</p>
-    </div>
-  </div>
+          <div
+            key={listing.id}
+            className="mx-auto mb-5 max-w-sm overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md"
+          >
+            <img
+              className="w-full object-cover object-center md:h-36 lg:h-48"
+              src={listing.images[0]?.url}
+              alt="product"
+            />
+            <div className="p-4">
+              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                {listing.title}
+              </h5>
+              <p className="mb-3 font-normal text-gray-700">
+                {listing.description}
+              </p>
+              <p className="text-xl font-semibold text-gray-900">
+                ${listing.price}
+              </p>
+            </div>
+          </div>
         ))}
-        </div>
-    )
+      </div>
+    );
   }
 
   return (

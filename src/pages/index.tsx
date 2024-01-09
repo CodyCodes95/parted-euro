@@ -86,18 +86,11 @@ const Home: NextPage = () => {
                     </p>
                     <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
                       <Button
-                        className="hidden border-white bg-transparent text-sm text-white md:block"
-                        variant="outline"
-                        onClick={() => setCarSelectOpen(!carSelectOpen)}
-                      >
-                        SHOP BY CAR
-                      </Button>
-                      <Button
                         className="border-white bg-transparent text-sm text-white"
                         variant="outline"
                         onClick={() => router.push("/listings?page=1")}
                       >
-                        SHOP ALL
+                        BROWSE STORE
                       </Button>
                     </div>
                   </motion.div>

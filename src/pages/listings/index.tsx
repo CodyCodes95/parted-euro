@@ -460,6 +460,24 @@ const CarSelection = () => {
     },
   );
 
+  if (!cars.isLoading) {
+    return (
+      <div className="flex flex-col gap-2">
+        <p className="text-xl">Select your series</p>
+        <div className="flex flex-wrap gap-2">
+          {[...Array(10)].map((_, i) => (
+            <Button variant={"outline"} className="animate-pulse
+            border p-2 w-36 bg-gray-200
+
+            " key={i} disabled>
+              
+            </Button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (!series) {
     return (
       <div className="flex flex-col gap-2">
