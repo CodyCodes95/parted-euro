@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import SearchSidebar from "../../components/listings/SearchSidebar";
 import { Input } from "../../components/ui/input";
-import { Car, Search, Share } from "lucide-react";
+import { Car, Search, Share, X } from "lucide-react";
 import type { NextRouter } from "next/router";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,6 +22,15 @@ import { BsCarFront } from "react-icons/bs";
 import { Button } from "../../components/ui/button";
 import { Drawer } from "../../components/ui/Drawer";
 import type { ParsedUrlQuery } from "querystring";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../components/ui/pagination";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -101,24 +110,24 @@ const Listings: NextPage = () => {
                 type="search"
               />
             </div>
-            <div className="flex w-full flex-wrap gap-4">
+            <div className="flex w-full flex-wrap items-center gap-4">
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  // const query = router.query;
-                  // delete query.series;
-                  // delete query.generation;
-                  // delete query.model;
-                  // router.push(
-                  //   {
-                  //     pathname: router.pathname,
-                  //     query: query,
-                  //   },
-                  //   undefined,
-                  //   {
-                  //     shallow: true,
-                  //   },
-                  // );
+                  const query = router.query;
+                  delete query.series;
+                  delete query.generation;
+                  delete query.model;
+                  router.push(
+                    {
+                      pathname: router.pathname,
+                      query: query,
+                    },
+                    undefined,
+                    {
+                      shallow: true,
+                    },
+                  );
                   setSelectedCar("");
                   setShowCarSelection(true);
                 }}
@@ -127,6 +136,28 @@ const Listings: NextPage = () => {
                 <BsCarFront />
                 {selectedCar || "Select car"}
               </Button>
+              {selectedCar && (
+                <X
+                  onClick={() => {
+                    const query = router.query;
+                    delete query.series;
+                    delete query.generation;
+                    delete query.model;
+                    router.push(
+                      {
+                        pathname: router.pathname,
+                        query: query,
+                      },
+                      undefined,
+                      {
+                        shallow: true,
+                      },
+                    );
+                    setSelectedCar("");
+                  }}
+                  className="cursor-pointer hover:text-red-500"
+                />
+              )}
               <Button
                 className="md:hidden"
                 onClick={(e) => {
@@ -193,19 +224,19 @@ const ListingsResults = ({
       search: (debouncedSearch as string) || undefined,
       category: category as string,
       subcat: subcat as string,
-      page: Number(page ?? 0),
+      page: Number(page ?? 1) - 1,
     },
     {
       refetchOnWindowFocus: false,
     },
   );
 
-  const handlePageClick = (page: { selected: number }) => {
+  const handlePageClick = (page: number) => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-    router.push(`?page=${page.selected}`, undefined, {
+    router.push(`?page=${page}`, undefined, {
       shallow: true,
     });
   };
@@ -263,7 +294,7 @@ const ListingsResults = ({
         ))}
       </div>
       <div className="p-4" />
-      <ReactPaginate
+      {/* <ReactPaginate
         breakLabel="..."
         nextLabel=">"
         onPageChange={handlePageClick}
@@ -282,7 +313,45 @@ const ListingsResults = ({
         nextLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
         breakLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
         disabledClassName="hidden"
-      />
+      /> */}
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() =>
+                handlePageClick(Number(router.query.page ?? 0) - 1)
+              }
+            />
+          </PaginationItem>
+          {[
+            Number(router.query.page ?? 0) - 1,
+            Number(router.query.page ?? 0),
+            Number(router.query.page ?? 0) + 1,
+          ]
+            .filter((page) => page > 0)
+            .map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  key={page}
+                  onClick={() => handlePageClick(page)}
+                  isActive={Number(router.query.page ?? 0) === page}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                handlePageClick(Number(router.query.page ?? 0) + 1)
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   );
 };

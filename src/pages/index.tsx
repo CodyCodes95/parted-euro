@@ -95,7 +95,7 @@ const Home: NextPage = () => {
                       <Button
                         className="border-white bg-transparent text-sm text-white"
                         variant="outline"
-                        onClick={() => router.push("/listings")}
+                        onClick={() => router.push("/listings?page=1")}
                       >
                         SHOP ALL
                       </Button>
