@@ -45,9 +45,25 @@ const Listings: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [selectedCar, setSelectedCar] = useState("");
 
-  const page = router.query.page ?? 0;
-
   const [debouncedSearch] = useDebounce(searchQuery, 500);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      router.push(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            page: 1,
+          },
+        },
+        undefined,
+        {
+          shallow: true,
+        },
+      );
+    }
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (search) {
@@ -460,18 +476,21 @@ const CarSelection = () => {
     },
   );
 
-  if (!cars.isLoading) {
+  if (cars.isLoading) {
     return (
       <div className="flex flex-col gap-2">
         <p className="text-xl">Select your series</p>
         <div className="flex flex-wrap gap-2">
           {[...Array(10)].map((_, i) => (
-            <Button variant={"outline"} className="animate-pulse
-            border p-2 w-36 bg-gray-200
+            <Button
+              variant={"outline"}
+              className="w-36
+            animate-pulse border bg-gray-200 p-2
 
-            " key={i} disabled>
-              
-            </Button>
+            "
+              key={i}
+              disabled
+            ></Button>
           ))}
         </div>
       </div>
