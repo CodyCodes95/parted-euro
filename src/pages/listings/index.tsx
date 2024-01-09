@@ -310,26 +310,7 @@ const ListingsResults = ({
         ))}
       </div>
       <div className="p-4" />
-      {/* <ReactPaginate
-        breakLabel="..."
-        nextLabel=">"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={1}
-        pageCount={(listings.data?.count ?? 0) / 20}
-        previousLabel="<"
-        renderOnZeroPageCount={null}
-        containerClassName="flex w-full justify-center flex-wrap"
-        pageClassName="flex"
-        previousClassName="flex"
-        nextClassName="flex"
-        breakClassName="flex"
-        pageLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-        activeLinkClassName="text-red-500 bg-slate-200"
-        previousLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-        nextLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-        breakLinkClassName="px-4 py-2 hover:bg-slate-200 duration-75 rounded-md cursor-pointer"
-        disabledClassName="hidden"
-      /> */}
+      {}
       <Pagination>
         <PaginationContent>
           <PaginationItem>

@@ -10,7 +10,7 @@ export const carRouter = router({
         generation: z.string().min(2),
         model: z.string().min(2),
         body: z.string().nullish(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.car.create({ data: input });
@@ -55,6 +55,9 @@ export const carRouter = router({
     const cars = await ctx.prisma.car.findMany({
       where: {
         make: "BMW",
+        NOT: {
+          series: "PE000",
+        },
       },
       select: {
         series: true,
@@ -75,7 +78,7 @@ export const carRouter = router({
     .input(
       z.object({
         series: z.string().min(2),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const cars = await ctx.prisma.car.findMany({
@@ -101,7 +104,7 @@ export const carRouter = router({
       z.object({
         series: z.string().min(2),
         generation: z.string().min(2),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const cars = await ctx.prisma.car.findMany({
@@ -125,7 +128,7 @@ export const carRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.car.delete({
