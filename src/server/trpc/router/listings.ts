@@ -150,6 +150,9 @@ export const listingRouter = router({
             },
           },
           where: queryWhere,
+          orderBy: {
+            title: "asc",
+          },
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         return { listings, count };
@@ -216,6 +219,9 @@ export const listingRouter = router({
             },
           },
           where: queryWhere,
+          orderBy: {
+            title: "asc",
+          },
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         return { listings, count };
