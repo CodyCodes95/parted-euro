@@ -18,11 +18,10 @@ import three from "../../public/3.jpg";
 import four from "../../public/4.jpg";
 import five from "../../public/5.jpg";
 import six from "../../public/6.jpg";
-import seven from "../../public/7.jpg";
 import eight from "../../public/8.jpg";
 import nine from "../../public/9.jpg";
 
-const carImages = [carImg, two, three, four, five, six, seven, eight, nine];
+const carImages = [carImg, two, three, four, five, six, eight, nine];
 
 const Home: NextPage = () => {
   const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
