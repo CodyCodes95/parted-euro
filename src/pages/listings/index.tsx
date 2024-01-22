@@ -242,7 +242,7 @@ const ListingsResults = ({
         pathname: router.pathname,
         query: {
           ...router.query,
-          page: page + 1,
+          page: page,
         },
       },
       undefined,
