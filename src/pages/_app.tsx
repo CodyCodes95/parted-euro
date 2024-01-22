@@ -20,7 +20,7 @@ const geist = localFont({
   ],
   display: "swap",
   variable: "--font-geist-sans",
-fallback: ["inter"],
+fallback: ["sans-serif"],
 });
 
 const MyApp: AppType<{ session: Session | null }> = ({
