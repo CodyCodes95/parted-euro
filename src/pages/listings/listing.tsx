@@ -431,6 +431,7 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
         styles={{
           container: { backgroundColor: "rgba(0, 0, 0, .8)" },
           thumbnailsContainer: { backgroundColor: "rgba(0, 0, 0, .8)" },
+          thumbnail: { width: "fit" },
         }}
         plugins={[Thumbnails, Zoom]}
         open={lightboxOpen}
