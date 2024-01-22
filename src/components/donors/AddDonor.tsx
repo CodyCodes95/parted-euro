@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { QueryDonorGetAllDashboard} from "../../utils/trpc";
+import type { QueryDonorGetAllDashboard } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { Car, Image } from "@prisma/client";
@@ -36,7 +36,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const [options, setOptions] = useState<ISelectOptions[]>([]);
   const [images, setImages] = useState<Array<string>>([]);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
-    donor?.images || []
+    donor?.images || [],
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
   const photoUploadRef = useRef<HTMLInputElement>(null);
@@ -97,8 +97,16 @@ const AddDonor: React.FC<AddDonorProps> = ({
           onError: (err: any) => {
             toast.error(err.message);
           },
-        }
+        },
       );
+      const imagePromises = images.map(async (image: string, i: number) => {
+        return await uploadImage.mutateAsync({
+          image: image,
+          donorVin: vin,
+          order: i,
+        });
+      });
+      await Promise.all(imagePromises);
       toast.success(`Donor ${vin} successfully updated`);
       setMileage(0);
       setVin("");
@@ -123,7 +131,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         onError: (err: any) => {
           toast.error(err.message);
         },
-      }
+      },
     );
     const imagePromises = images.map(async (image: string, i: number) => {
       return await uploadImage.mutateAsync({
@@ -170,7 +178,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           id: image.id,
           order: i,
         });
-      }
+      },
     );
     await Promise.all([...imagePromises]);
     setShowImageSorter(false);
@@ -188,7 +196,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const onImageDelete = async (image: Image) => {
     await deleteImage.mutateAsync({ id: image.id });
     setUploadedImages((uploadedImages) =>
-      uploadedImages.filter((img) => img.id !== image.id)
+      uploadedImages.filter((img) => img.id !== image.id),
     );
   };
 
@@ -213,7 +221,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           ))}
         </SortableList>
         <button
-          className="mr-2 mt-4 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="mb-2 mr-2 mt-4 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           onClick={() => {
             runUpdateImageOrder();
           }}
