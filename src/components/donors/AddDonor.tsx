@@ -315,7 +315,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
             />
             <FaCamera className="text-xl text-blue-500" />
           </div>
-          <p>{uploadedImages.length} Photos attached</p>
+          <p>{images.length || uploadedImages.length} Photos attached</p>
           <a
             onClick={() => setShowImageSorter(true)}
             className="cursor-pointer text-blue-500"
