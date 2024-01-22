@@ -96,6 +96,7 @@ export const listingRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
+      console.log(`page: ${input.page}`);
       if (
         !input.generation &&
         !input.model &&
@@ -202,6 +203,7 @@ export const listingRouter = router({
         };
         const listings = await ctx.prisma.listing.findMany({
           take: 20,
+          skip: input.page * 20,
           include: {
             images: {
               orderBy: {

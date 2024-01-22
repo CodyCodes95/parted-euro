@@ -42,7 +42,7 @@ const Wrecking: NextPage = () => {
       <div className="flex w-full items-center p-4">
         {donors.data?.map((donor) => (
           <Link
-            key={donor.vin}
+          key={donor.vin}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
             href={`wrecking/wreck?vin=${donor.vin}`}
           >

@@ -188,11 +188,11 @@ const Nav = () => {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-            {/* <Link className="group" href="/wrecking">
+            <Link className="group" href="/wrecking">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
                 Cars Wrecking Now
               </p>
-            </Link> */}
+            </Link>
             <Link className="group" href="/returns-refunds">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
                 Warranty & Return Policy
@@ -323,13 +323,13 @@ const Nav = () => {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          {/* <NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/wrecking" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Cars Wrecking Now
               </NavigationMenuLink>
             </Link>
-          </NavigationMenuItem> */}
+          </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/returns-refunds" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
