@@ -305,7 +305,7 @@ const ListingsResults = ({
         ))}
       </div>
       <div className="p-4" />
-      {listings.data?.count > 20 && (
+      {listings.data?.hasNextPage && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>

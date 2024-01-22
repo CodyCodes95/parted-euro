@@ -155,7 +155,8 @@ export const listingRouter = router({
           },
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
-        return { listings, count };
+        const hasNextPage = count > input.page * 20 + 20;
+        return { listings, count, hasNextPage };
       } else {
         const queryWhere = {
           active: true,
@@ -224,7 +225,8 @@ export const listingRouter = router({
           },
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
-        return { listings, count };
+        const hasNextPage = count > input.page * 20 + 20;
+        return { listings, count, hasNextPage };
       }
     }),
   getSearchBar: publicProcedure
