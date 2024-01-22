@@ -428,6 +428,10 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
         <CarouselNext />
       </Carousel>
       <Lightbox
+        styles={{
+          container: { backgroundColor: "rgba(0, 0, 0, .8)" },
+          thumbnailsContainer: { backgroundColor: "rgba(0, 0, 0, .8)" },
+        }}
         plugins={[Thumbnails, Zoom]}
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
