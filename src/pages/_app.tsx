@@ -7,6 +7,21 @@ import Footer from "../components/Footer";
 import { CartProvider } from "../context/cartContext";
 import Nav from "../components/Nav";
 import { Toaster } from "sonner";
+import localFont from "next/font/local";
+import { cn } from "../lib/utils";
+
+const geist = localFont({
+  src: [
+    { path: "../../public/fonts/Geist/Geist-Regular.otf", weight: "500" },
+    { path: "../../public/fonts/Geist/Geist-Medium.otf", weight: "600" },
+    { path: "../../public/fonts/Geist/Geist-SemiBold.otf", weight: "700" },
+    { path: "../../public/fonts/Geist/Geist-Bold.otf", weight: "800" },
+    { path: "../../public/fonts/Geist/Geist-Black.otf", weight: "900" },
+  ],
+  display: "swap",
+  variable: "--font-geist-sans",
+fallback: ["inter"],
+});
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,13 +29,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-        <CartProvider>
+      <CartProvider>
         <Toaster position="bottom-right" richColors />
-        <Nav />
-        <Component {...pageProps} />
-        <Footer />
-    </CartProvider>
-      </SessionProvider>
+        <main className={cn(geist.variable, "font-sans")}>
+          <Nav />
+          <Component {...pageProps} />
+          <Footer />
+        </main>
+      </CartProvider>
+    </SessionProvider>
   );
 };
 

@@ -115,7 +115,7 @@ const Listings: NextPage = () => {
           <CategoryFilters />
         </div>
         <div className="flex flex-col p-4">
-          <form className="flex flex-col gap-4 md:flex-row">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="relative w-full  md:w-1/2">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
@@ -130,21 +130,6 @@ const Listings: NextPage = () => {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  const query = router.query;
-                  delete query.series;
-                  delete query.generation;
-                  delete query.model;
-                  router.push(
-                    {
-                      pathname: router.pathname,
-                      query: query,
-                    },
-                    undefined,
-                    {
-                      shallow: true,
-                    },
-                  );
-                  setSelectedCar("");
                   setShowCarSelection(true);
                 }}
                 className="flex items-center gap-2"
@@ -184,7 +169,7 @@ const Listings: NextPage = () => {
                 Categories
               </Button>
             </div>
-          </form>
+          </div>
           {/* <p>
             Shopping{" "}
             {series && generation && model
@@ -325,6 +310,7 @@ const ListingsResults = ({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
+              className="cursor-pointer"
               onClick={() =>
                 handlePageClick(Number(router.query.page ?? 0) - 1)
               }
@@ -339,6 +325,7 @@ const ListingsResults = ({
             .map((page) => (
               <PaginationItem key={page}>
                 <PaginationLink
+                  className="cursor-pointer"
                   key={page}
                   onClick={() => handlePageClick(page)}
                   isActive={Number(router.query.page ?? 0) === page}
@@ -350,7 +337,7 @@ const ListingsResults = ({
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
-          <PaginationItem>
+          <PaginationItem className="cursor-pointer">
             <PaginationNext
               onClick={() =>
                 handlePageClick(Number(router.query.page ?? 0) + 1)

@@ -141,8 +141,7 @@ const Nav = () => {
                                   )}
                                 >
                                   <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Suspension and &
-                                    Brakes
+                                    {generation.generation} Suspension & Brakes
                                   </div>
                                 </Link>
 
@@ -277,7 +276,7 @@ const Nav = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none">
-                            {generation.generation} Suspension and & Brakes
+                            {generation.generation} Suspension & Brakes
                           </div>
                         </Link>
                       </NavigationMenuLink>
