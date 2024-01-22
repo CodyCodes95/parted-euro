@@ -305,47 +305,48 @@ const ListingsResults = ({
         ))}
       </div>
       <div className="p-4" />
-      {}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              className="cursor-pointer"
-              onClick={() =>
-                handlePageClick(Number(router.query.page ?? 0) - 1)
-              }
-            />
-          </PaginationItem>
-          {[
-            Number(router.query.page ?? 0) - 1,
-            Number(router.query.page ?? 0),
-            Number(router.query.page ?? 0) + 1,
-          ]
-            .filter((page) => page > 0)
-            .map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  className="cursor-pointer"
-                  key={page}
-                  onClick={() => handlePageClick(page)}
-                  isActive={Number(router.query.page ?? 0) === page}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem className="cursor-pointer">
-            <PaginationNext
-              onClick={() =>
-                handlePageClick(Number(router.query.page ?? 0) + 1)
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {listings.data?.count > 20 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                className="cursor-pointer"
+                onClick={() =>
+                  handlePageClick(Number(router.query.page ?? 0) - 1)
+                }
+              />
+            </PaginationItem>
+            {[
+              Number(router.query.page ?? 0) - 1,
+              Number(router.query.page ?? 0),
+              Number(router.query.page ?? 0) + 1,
+            ]
+              .filter((page) => page > 0)
+              .map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    className="cursor-pointer"
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    isActive={Number(router.query.page ?? 0) === page}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem className="cursor-pointer">
+              <PaginationNext
+                onClick={() =>
+                  handlePageClick(Number(router.query.page ?? 0) + 1)
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   );
 };
