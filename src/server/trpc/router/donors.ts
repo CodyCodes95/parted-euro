@@ -12,7 +12,7 @@ export const donorRouter = router({
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.donor.create({ data: input });
@@ -43,20 +43,20 @@ export const donorRouter = router({
       },
     });
     return donors.map((donor) => {
-        return {
-          label: donor.vin,
-          options: donor.parts.map((part) => {
-            return {
-              label: `${part.donorVin} - ${part.partDetails.name} (${part.partDetails.partNo}) ${
-                part.variant ? `- ${part.variant}` : ""
-              } `,
-              value: part.id,
-              tab: donor.vin,
-              listing: !!part.listing.length,
-            };
-          }),
-        };
-      })
+      return {
+        label: donor.vin,
+        options: donor.parts.map((part) => {
+          return {
+            label: `${part.donorVin} - ${part.partDetails.name} (${
+              part.partDetails.partNo
+            }) ${part.variant ? `- ${part.variant}` : ""} `,
+            value: part.id,
+            tab: donor.vin,
+            listing: !!part.listing.length,
+          };
+        }),
+      };
+    });
   }),
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
@@ -93,7 +93,7 @@ export const donorRouter = router({
     .input(
       z.object({
         vin: z.string(),
-      })
+      }),
     )
     .query(({ ctx, input }) => {
       return ctx.prisma.donor.findUnique({
@@ -159,7 +159,11 @@ export const donorRouter = router({
         vin: true,
         year: true,
         mileage: true,
-        images: true,
+        images: {
+          orderBy: {
+            order: "asc",
+          },
+        },
         car: {
           select: {
             series: true,
@@ -190,7 +194,7 @@ export const donorRouter = router({
     .input(
       z.object({
         vin: z.string(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.donor.delete({
@@ -207,7 +211,7 @@ export const donorRouter = router({
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.donor.update({
