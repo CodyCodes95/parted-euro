@@ -1,13 +1,7 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import type {
-  RequestEmpty,
-  TokenSet,
-  LineItem} from "xero-node";
-import {
-  XeroClient,
-  Invoice
-} from "xero-node";
+import type { RequestEmpty, TokenSet, LineItem } from "xero-node";
+import { XeroClient, Invoice } from "xero-node";
 import { prisma } from "../../../server/db/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
@@ -35,7 +29,7 @@ const createInvoice = async (event: any, lineItems: any) => {
   if (xeroTokenSet.expired()) {
     const validTokenSet = (await xero.refreshToken()) as any;
     const creds = await prisma.xeroCreds.findFirst();
-    const updatedCreds = await prisma.xeroCreds.update({
+    await prisma.xeroCreds.update({
       where: {
         id: creds?.id,
       },
@@ -69,7 +63,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       taxType: "Inclusive",
       lineAmount: event.shipping_cost.amount_total / 100,
     });
-}
+  }
 
   const createInvoiceResponse = await xero.accountingApi.createInvoices(
     activeTenantId,
@@ -87,10 +81,9 @@ const createInvoice = async (event: any, lineItems: any) => {
           // status: Invoice.StatusEnum.PAID,
           status: Invoice.StatusEnum.AUTHORISED,
           lineItems: lineItemsFormatted,
-          
         },
       ],
-    }
+    },
   );
   if (createInvoiceResponse?.body?.invoices) {
     const paymentResponse = await xero.accountingApi.createPayments(
@@ -108,13 +101,13 @@ const createInvoice = async (event: any, lineItems: any) => {
             amount: event.amount_total / 100,
           },
         ],
-      }
+      },
     );
     const requestEmpty: RequestEmpty = {};
     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
       activeTenantId,
       createInvoiceResponse?.body?.invoices[0]?.invoiceID as string,
-      requestEmpty
+      requestEmpty,
     );
     return paymentResponse;
   }
@@ -136,14 +129,18 @@ export default async function stripeWebhook(req: any, res: any) {
   console.log("WE RUNNING =====================================");
 
   if (req.method === "POST") {
-   const rawBody = await buffer(req);
+    const rawBody = await buffer(req);
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret as string);
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        sig,
+        webhookSecret as string,
+      );
       console.log("Webhook verified");
     } catch (err: any) {
       console.log(`Webhook failed ${err.message}`);

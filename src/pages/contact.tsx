@@ -18,9 +18,7 @@ const contact: NextPage = () => {
         <p className="mb-1 font-bold">Hours:</p>
         <p className="mb-2">Open via Appointment only.</p>
         <p className="mb-2">Monday to Friday</p>
-        <p className="mb-4">8:30am - 5:30pm</p>
         <p className="mb-1 font-bold">Address:</p>
-        <p className="mb-2">Rushdale Park</p>
         <p className="mb-2">Unit 2/26 Rushdale Street,</p>
         <p className="mb-2">Knoxfield, 3180</p>
         <p className="mb-4">Victoria, Australia</p>
