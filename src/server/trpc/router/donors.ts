@@ -62,9 +62,7 @@ export const donorRouter = router({
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       where: {
-        vin: {
-          not: "PE000",
-        },
+        hideFromSearch: false,
         parts: {
           some: {
             listing: {
