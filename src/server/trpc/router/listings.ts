@@ -93,10 +93,14 @@ export const listingRouter = router({
         category: z.string().optional(),
         subcat: z.string().optional(),
         page: z.number(),
+        sortBy: z.string(),
+        sortOrder: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      console.log(`page: ${input.page}`);
+      const orderBy = {};
+      // @ts-ignore
+      orderBy[input.sortBy] = input.sortOrder;
       if (
         !input.generation &&
         !input.model &&
@@ -151,9 +155,7 @@ export const listingRouter = router({
             },
           },
           where: queryWhere,
-          orderBy: {
-            title: "asc",
-          },
+          orderBy,
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
@@ -222,9 +224,7 @@ export const listingRouter = router({
             },
           },
           where: queryWhere,
-          orderBy: {
-            title: "asc",
-          },
+          orderBy,
         });
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;

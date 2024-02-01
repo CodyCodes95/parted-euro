@@ -20,7 +20,7 @@ export const trpc = createTRPCNext<AppRouter>({
             refetchOnWindowFocus: false,
           }
         }
-      }
+      },
       transformer: superjson,
       links: [
         loggerLink({

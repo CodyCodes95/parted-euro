@@ -1,7 +1,14 @@
 import type { NextPage } from "next";
-import SearchSidebar from "../../components/listings/SearchSidebar";
 import { Input } from "../../components/ui/input";
-import { Car, Search, Share, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Car,
+  Search,
+  Share,
+  X,
+} from "lucide-react";
 import type { NextRouter } from "next/router";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -15,7 +22,6 @@ import type {
   PartTypes,
 } from "@prisma/client";
 import { useIsMobile } from "../../hooks/isMobile";
-import ReactPaginate from "react-paginate";
 import Link from "next/link";
 import { Card, CardContent } from "../../components/ui/card";
 import { BsCarFront } from "react-icons/bs";
@@ -31,6 +37,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/ui/pagination";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../components/ui/popover";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -44,7 +56,13 @@ const Listings: NextPage = () => {
     useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [selectedCar, setSelectedCar] = useState("");
-
+  const [sortBy, setSortBy] = useState<"price" | "title" | "updatedAt">(
+    (sessionStorage.getItem("sortBy") as "title" | "updatedAt" | "price") ||
+      "title",
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    (sessionStorage.getItem("sortOrder") as "asc" | "desc") || "asc",
+  );
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -87,25 +105,29 @@ const Listings: NextPage = () => {
     if (model) setShowCarSelection(false);
   }, [model]);
 
-  const getUniquePartTypes = (
-    listings: (Listing & {
-      parts: (Part & {
-        partDetails: PartDetail & {
-          partTypes: PartTypes[];
-        };
-      })[];
-      images: Image[];
-    })[],
-  ) => {
-    const partTypeSet = new Set<string>();
-    for (const listing of listings) {
-      for (const part of listing.parts) {
-        for (const partType of part.partDetails.partTypes) {
-          partTypeSet.add(partType.name);
-        }
+  const changeSort = (newSort: "price" | "title" | "updatedAt") => {
+    if (sortBy === newSort) {
+      if (sortOrder === "asc") {
+        setSortOrder("desc");
+      } else {
+        setSortOrder("asc");
       }
     }
-    return Array.from(partTypeSet);
+    setSortBy(newSort);
+  };
+
+  useEffect(() => {
+    sessionStorage.setItem("sortBy", sortBy);
+  }, [sortBy]);
+
+  useEffect(() => {
+    sessionStorage.setItem("sortOrder", sortOrder);
+  }, [sortOrder]);
+
+  const sortChoices = {
+    price: "Price",
+    title: "Title",
+    updatedAt: "Updated",
   };
 
   return (
@@ -116,7 +138,7 @@ const Listings: NextPage = () => {
         </div>
         <div className="flex flex-col p-4">
           <div className="flex flex-col gap-4 md:flex-row">
-            <div className="relative w-full  md:w-1/2">
+            <div className="relative w-full md:w-1/2">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
                 value={searchQuery}
@@ -126,8 +148,9 @@ const Listings: NextPage = () => {
                 type="search"
               />
             </div>
-            <div className="flex w-full flex-wrap items-center gap-4">
+            <div className="flex w-full flex-wrap items-center gap-2">
               <Button
+                variant={"outline"}
                 onClick={(e) => {
                   e.preventDefault();
                   setShowCarSelection(true);
@@ -160,6 +183,7 @@ const Listings: NextPage = () => {
                 />
               )}
               <Button
+                variant={"outline"}
                 className="md:hidden"
                 onClick={(e) => {
                   e.preventDefault();
@@ -168,15 +192,119 @@ const Listings: NextPage = () => {
               >
                 Categories
               </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="ml-0 flex items-center gap-4 md:ml-auto"
+                    variant="outline"
+                  >
+                    {sortChoices[sortBy]}
+                    {sortOrder === "asc" ? <ArrowUp /> : <ArrowDown />}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-32 p-0">
+                  <div className="flex flex-col">
+                    <PopoverClose asChild>
+                      <button
+                        onClick={() => changeSort("title")}
+                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                      >
+                        <span>Title</span>
+                        {sortBy == "title" && sortOrder === "asc" ? (
+                          <ArrowUp />
+                        ) : sortBy == "title" && sortOrder === "desc" ? (
+                          <ArrowDown />
+                        ) : null}
+                      </button>
+                    </PopoverClose>
+                    <PopoverClose asChild>
+                      <button
+                        onClick={() => changeSort("price")}
+                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                      >
+                        <span>Price</span>
+                        {sortBy == "price" && sortOrder === "asc" ? (
+                          <ArrowUp />
+                        ) : sortBy == "price" && sortOrder === "desc" ? (
+                          <ArrowDown />
+                        ) : null}
+                      </button>
+                    </PopoverClose>
+                    <PopoverClose asChild>
+                      <button
+                        onClick={() => changeSort("updatedAt")}
+                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                      >
+                        <span>Updated</span>
+                        {sortBy == "updatedAt" && sortOrder === "asc" ? (
+                          <ArrowUp />
+                        ) : sortBy == "updatedAt" && sortOrder === "desc" ? (
+                          <ArrowDown />
+                        ) : null}
+                      </button>
+                    </PopoverClose>
+                    {/* <Button
+                    className={`${
+                      sortBy === "price"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                    onClick={() => setSortBy("price")}
+                  >
+                    Price
+                  </Button> */}
+
+                    {/* <Button
+                    className={`${
+                      sortBy === "title"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                    onClick={() => setSortBy("title")}
+                  >
+                    Title
+                  </Button>
+
+                  <Button
+                    className={`${
+                      sortBy === "updatedAt"
+                        ? "bg-accent text-accent-foreground"
+                        : ""
+                    }`}
+                    onClick={() => setSortBy("updatedAt")}
+                  >
+                    Updated At
+                  </Button> */}
+
+                    {/* <Button
+                  className={`${
+                    sortOrder === "asc"
+                      ? "bg-accent text-accent-foreground"
+                      : ""
+                  }`}
+                  onClick={() => setSortOrder("asc")}
+                >
+                  Ascending
+                </Button>
+
+                <Button
+                  className={`${
+                    sortOrder === "desc"
+                      ? "bg-accent text-accent-foreground"
+                      : ""
+                  }`}
+                  onClick={() => setSortOrder("desc")}
+                >
+                  Descending
+                </Button> */}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
-          {/* <p>
-            Shopping{" "}
-            {series && generation && model
-              ? `for ${series} ${generation} ${model}`
-              : ""}
-          </p> */}
           <ListingsResults
+            sortBy={sortBy}
+            sortOrder={sortOrder}
             router={router}
             query={router.query}
             debouncedSearch={debouncedSearch}
@@ -208,29 +336,30 @@ type ListingsResultsProps = {
   query: ParsedUrlQuery;
   debouncedSearch: string | string[];
   router: NextRouter;
+  sortBy: "price" | "updatedAt" | "title";
+  sortOrder: "asc" | "desc";
 };
 
 const ListingsResults = ({
   query,
   debouncedSearch,
   router,
+  sortBy,
+  sortOrder,
 }: ListingsResultsProps) => {
   const { series, generation, model, category, subcat, page } = query;
 
-  const listings = trpc.listings.getAllAvailable.useQuery(
-    {
-      series: series as string,
-      generation: generation as string,
-      model: model as string,
-      search: (debouncedSearch as string) || undefined,
-      category: category as string,
-      subcat: subcat as string,
-      page: Number(page ?? 1) - 1,
-    },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  const listings = trpc.listings.getAllAvailable.useQuery({
+    series: series as string,
+    generation: generation as string,
+    model: model as string,
+    search: (debouncedSearch as string) || undefined,
+    category: category as string,
+    subcat: subcat as string,
+    page: Number(page ?? 1) - 1,
+    sortBy: sortBy,
+    sortOrder: sortOrder,
+  });
 
   const handlePageClick = (page: number) => {
     window.scrollTo({
