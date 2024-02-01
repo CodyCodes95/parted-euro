@@ -16,6 +16,12 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        "3xl": "1600px",
+        "4xl": "1800px",
+        "5xl": "2000px",
+        "6xl": "2200px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
