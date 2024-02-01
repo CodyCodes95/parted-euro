@@ -312,6 +312,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           </label>
           <input
             type="checkbox"
+            value={hideFromSearch}
             onChange={() => setHideFromSearch((prev) => !prev)}
           />
         </div>
