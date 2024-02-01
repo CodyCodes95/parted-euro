@@ -306,8 +306,8 @@ const AddDonor: React.FC<AddDonorProps> = ({
               dark:focus:ring-blue-500`}
           />
         </div>
-        <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+        <div className="mb-6 flex items-center gap-4">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Hide from search
           </label>
           <input
