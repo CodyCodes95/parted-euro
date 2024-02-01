@@ -14,6 +14,13 @@ const getBaseUrl = () => {
 export const trpc = createTRPCNext<AppRouter>({
   config() {
     return {
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          }
+        }
+      }
       transformer: superjson,
       links: [
         loggerLink({
