@@ -427,7 +427,7 @@ const ListingsResults = ({
   }
   return (
     <>
-      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9 7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {listings.data?.listings.map((listing) => (
           <Card key={listing.id}>
             <Link href={`/listings/listing?id=${listing.id}`}>
