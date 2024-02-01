@@ -12,6 +12,7 @@ export const donorRouter = router({
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
+        hideFromSearch: z.boolean(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -215,6 +216,7 @@ export const donorRouter = router({
         carId: z.string().min(3),
         year: z.number().min(1930).max(currentYear),
         mileage: z.number().min(0).max(100000000),
+        hideFromSearch: z.boolean(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -227,6 +229,7 @@ export const donorRouter = router({
           carId: input.carId,
           year: input.year,
           mileage: input.mileage,
+          hideFromSearch: input.hideFromSearch,
         },
       });
     }),

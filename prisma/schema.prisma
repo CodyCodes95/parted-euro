@@ -75,17 +75,18 @@ model Car {
 }
 
 model Donor {
-  vin       String   @id @unique
-  cost      Float
-  car       Car      @relation(fields: [carId], references: [id])
-  year      Int
-  mileage   Int
-  carId     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  parts     Part[]
-  imageUrl  String?
-  images    Image[]
+  vin            String   @id @unique
+  cost           Float
+  car            Car      @relation(fields: [carId], references: [id])
+  year           Int
+  mileage        Int
+  carId          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  parts          Part[]
+  imageUrl       String?
+  images         Image[]
+  hideFromSearch Boolean  @default(false)
 }
 
 model Listing {

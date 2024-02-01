@@ -35,6 +35,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const [mileage, setMileage] = useState<number>(donor?.mileage || 0);
   const [options, setOptions] = useState<ISelectOptions[]>([]);
   const [images, setImages] = useState<Array<string>>([]);
+  const [hideFromSearch, setHideFromSearch] = useState<boolean>(false);
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     donor?.images || [],
   );
@@ -92,6 +93,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           carId: carId,
           year: year,
           mileage: mileage,
+          hideFromSearch: hideFromSearch,
         },
         {
           onError: (err: any) => {
@@ -126,6 +128,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         carId: carId,
         year: year,
         mileage: mileage,
+        hideFromSearch,
       },
       {
         onError: (err: any) => {
@@ -301,6 +304,15 @@ const AddDonor: React.FC<AddDonorProps> = ({
             onChange={(e) => setMileage(Number(e.target.value))}
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Hide from search
+          </label>
+          <input
+            type="checkbox"
+            onChange={() => setHideFromSearch((prev) => !prev)}
           />
         </div>
         <div className="flex items-center justify-between">
