@@ -57,12 +57,10 @@ const Listings: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [selectedCar, setSelectedCar] = useState("");
   const [sortBy, setSortBy] = useState<"price" | "title" | "updatedAt">(
-    (sessionStorage.getItem("sortBy") as "title" | "updatedAt" | "price") ||
-      "title",
+    "title",
   );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
-    (sessionStorage.getItem("sortOrder") as "asc" | "desc") || "asc",
-  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sessionStorageSet, setSessionStorageSet] = useState(false);
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -117,12 +115,27 @@ const Listings: NextPage = () => {
   };
 
   useEffect(() => {
-    sessionStorage.setItem("sortBy", sortBy);
-  }, [sortBy]);
+    if (!window) return;
+    const sortBy = sessionStorage.getItem("sortBy");
+    const sortOrder = sessionStorage.getItem("sortOrder");
+    if (sortBy) {
+      setSortBy(sortBy as "price" | "title" | "updatedAt");
+    }
+    if (sortOrder) {
+      setSortOrder(sortOrder as "asc" | "desc");
+    }
+    setSessionStorageSet(true);
+  }, []);
 
   useEffect(() => {
+    if (!window || !sessionStorageSet) return;
+    sessionStorage.setItem("sortBy", sortBy);
+  }, [sortBy, sessionStorageSet]);
+
+  useEffect(() => {
+    if (!window || !sessionStorageSet) return;
     sessionStorage.setItem("sortOrder", sortOrder);
-  }, [sortOrder]);
+  }, [sortOrder, sessionStorageSet]);
 
   const sortChoices = {
     price: "Price",

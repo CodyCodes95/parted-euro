@@ -61,9 +61,6 @@ export const donorRouter = router({
   getAllCurrentlyWrecking: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.donor.findMany({
       where: {
-        imageUrl: {
-          not: undefined,
-        },
         parts: {
           some: {
             listing: {
@@ -78,7 +75,11 @@ export const donorRouter = router({
         vin: true,
         year: true,
         mileage: true,
-        imageUrl: true,
+        images: {
+          orderBy: {
+            order: "asc",
+          },
+        },
         car: {
           select: {
             series: true,

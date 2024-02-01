@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -19,7 +19,7 @@ const Wrecking: NextPage = () => {
   });
 
   const [search, setSearch] = useState<string | string[]>(
-    router.query.search || ""
+    router.query.search || "",
   );
 
   const [debouncedSearch] = useDebounce(search, 500);
@@ -42,13 +42,13 @@ const Wrecking: NextPage = () => {
       <div className="flex w-full items-center p-4">
         {donors.data?.map((donor) => (
           <Link
-          key={donor.vin}
+            key={donor.vin}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
             href={`wrecking/wreck?vin=${donor.vin}`}
           >
             <div className="max-h-[634px]">
               <img
-                src={donor.imageUrl || ""}
+                src={donor.images[0]?.url || ""}
                 className="h-full duration-100 ease-linear group-hover:scale-105"
                 alt=""
               />
