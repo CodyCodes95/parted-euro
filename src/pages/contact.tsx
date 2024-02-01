@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 const contact: NextPage = () => {
   return (
-    <div className="flex min-h-screen gap-8 p-20">
+    <div className="flex min-h-screen flex-col gap-4 p-20">
       <h1 className="py-8 text-3xl">Contact Details</h1>
       <p className="mb-2">
         <span className="font-semibold">Email: </span>

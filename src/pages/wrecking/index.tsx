@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "../../components/ui/input";
+import { Card, CardContent } from "../../components/ui/card";
 
 const Wrecking: NextPage = () => {
   const router = useRouter();
@@ -27,40 +28,25 @@ const Wrecking: NextPage = () => {
   const donors = trpc.donors.getAllCurrentlyWrecking.useQuery();
 
   return (
-    <div className="flex min-h-screen w-full flex-col p-24">
-      <div className="flex w-full items-center justify-center">
-        <div className="relative flex w-1/2 items-center justify-center">
-          <AiOutlineSearch className="absolute left-0 ml-1 text-xl" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-7"
-            placeholder="Search..."
-          />
-        </div>
-      </div>
-      <div className="flex w-full items-center p-4">
-        {donors.data?.map((donor) => (
-          <Link
-            key={donor.vin}
-            className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-            href={`wrecking/wreck?vin=${donor.vin}`}
-          >
-            <div className="max-h-[634px]">
+    <div className="3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9 7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      {donors.data?.map((donor) => (
+        <Card key={donor.vin}>
+          <Link href={`/donors/donor?id=${donor.vin}`}>
+            <CardContent className="p-0">
               <img
-                src={donor.images[0]?.url || ""}
-                className="h-full duration-100 ease-linear group-hover:scale-105"
-                alt=""
+                alt="Product image"
+                className="max-h-80 w-full rounded-md object-cover"
+                src={donor.images[0]?.url}
               />
-            </div>
-            <div className="flex flex-col">
-              <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
-                {donor.year} {donor.car.generation} {donor.car.model}
-              </p>
-            </div>
+              <div className="p-2">
+                <div className="mt-2 text-sm font-medium">
+                  {donor.car.model }
+                </div>
+              </div>
+            </CardContent>
           </Link>
-        ))}
-      </div>
+        </Card>
+      ))}
     </div>
   );
 };
