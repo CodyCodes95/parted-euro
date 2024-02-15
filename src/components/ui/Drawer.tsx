@@ -1,44 +1,46 @@
 "use client";
 
-import { useState } from "react";
 import { Drawer as VaulDrawer } from "vaul";
-import { trpc } from "../../utils/trpc";
-import { cn } from "../../lib/utils";
+import { useIsMobile } from "../../hooks/isMobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./dialog";
 
 type DrawerProps = {
   open: boolean;
   onClose: () => void;
+  onOpenChange: (open: boolean) => void;
   children?: React.ReactNode;
   trigger?: React.ReactNode;
-  height?: string;
+  title: string;
 };
 
 export function Drawer({
   open,
   children,
   trigger,
-  height,
   onClose,
+  onOpenChange,
+  title,
 }: DrawerProps) {
-  const [series, setSeries] = useState<string>("");
-  const [generation, setGeneration] = useState<string>("");
-  const [model, setModel] = useState<string>("");
+  const isMobile = useIsMobile();
 
-  const cars = trpc.cars.getAllSeries.useQuery(undefined, {});
-
-  const generations = trpc.cars.getMatchingGenerations.useQuery(
-    { series },
-    {
-      enabled: series !== "",
-    },
-  );
-
-  const models = trpc.cars.getMatchingModels.useQuery(
-    { series, generation },
-    {
-      enabled: generation !== "",
-    },
-  );
+  if (!isMobile) {
+    return (
+      <Dialog onOpenChange={onOpenChange} open={true}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>{children}</DialogDescription>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <VaulDrawer.Root onClose={onClose} open={open}>

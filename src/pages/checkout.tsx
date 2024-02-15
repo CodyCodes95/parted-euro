@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { formatPrice } from "../utils/formatPrice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLoadScript } from "@react-google-maps/api";
@@ -34,7 +34,7 @@ const Checkout: NextPage = () => {
 
   const [parent] = useAutoAnimate();
 
-  const { isLoaded, loadError } = useLoadScript({
+  const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
     libraries: libraries as any,
   });
@@ -110,11 +110,11 @@ const Checkout: NextPage = () => {
       method: "POST",
       body: JSON.stringify({
         items: cart,
+        regularShipping: regularCost,
+        expressShipping: expressCost,
         // email: email,
         // address: shippingAddress,
         // name: `${firstName} ${lastName}`,
-        regularShipping: regularCost,
-        expressShipping: expressCost,
       }),
     });
     const response = await res.json();

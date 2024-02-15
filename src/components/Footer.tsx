@@ -4,9 +4,9 @@ import { FiInstagram } from "react-icons/fi";
 
 const Footer: React.FC = () => {
   return (
-    <div className="flex w-full flex-col items-center justify-around border-t-2 bg-white p-6">
-      <div className="flex flex-col md:flex-row items-center  justify-between">
-        <div className="text-md flex flex-col justify-center p-4 text-[#4d4d4d]">
+    <div className="flex w-full flex-col items-center justify-around border-t-2 bg-zinc-100 p-6">
+      <div className="flex flex-col items-center justify-between  md:flex-row">
+        <div className="text-md flex flex-col justify-center p-4 text-[#4d4d4d] items-center">
           <h4 className="text-xl font-bold">
             Looking for something we don&apos;t have listed?
           </h4>
@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
           <p>Mobile: 0431 133 764</p>
           <p>Email: contact@partedeuro.com</p>
         </div>
-        <div className="text-md flex w-full md:w-[50%] flex-col p-4 text-[#4d4d4d]">
+        <div className="text-md flex w-full flex-col p-4 text-[#4d4d4d] md:w-[50%]">
           <p className="p-1">
             All products listed are available for pickup, as well as road
             freight Australia-wide (with very few products exempt from freight).
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
           </p>
         </div>
       </div>
-      <div className="flex gap-4 justify-between">
+      <div className="flex justify-between gap-4">
         <Link href="https://www.facebook.com/partedeuro">
           <FaFacebookSquare className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998]" />
         </Link>

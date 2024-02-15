@@ -262,8 +262,7 @@ const Listing: NextPage = () => {
               <Button disabled>Out of stock</Button>
             ) : (
               <Button onClick={() => addToCart(listing.data as ListingType)}>
-                Add {quantity} for ${quantity * (listing.data?.price ?? 0)} to
-                cart
+       Add to cart
               </Button>
             )}
           </div>

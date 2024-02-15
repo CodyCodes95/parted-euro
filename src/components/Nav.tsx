@@ -88,6 +88,11 @@ const Nav = () => {
         )}
         {menuOpen && (
           <nav className="h-[calc(screen -5rem)] absolute top-[50px] z-50 w-screen bg-white">
+            <Link className="group" href="/listings">
+              <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+                Browse Store
+              </p>
+            </Link>
             <Accordion type="single" collapsible>
               <AccordionItem value="shop-generation">
                 <AccordionTrigger className="pl-4 duration-75 hover:bg-accent">
@@ -233,6 +238,13 @@ const Nav = () => {
       </Link>
       <NavigationMenu>
         <NavigationMenuList>
+          <NavigationMenuItem>
+            <Link href="/listings" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Browse Store
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
             <NavigationMenuContent>

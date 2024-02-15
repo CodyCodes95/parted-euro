@@ -256,60 +256,6 @@ const Listings: NextPage = () => {
                         ) : null}
                       </button>
                     </PopoverClose>
-                    {/* <Button
-                    className={`${
-                      sortBy === "price"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
-                    onClick={() => setSortBy("price")}
-                  >
-                    Price
-                  </Button> */}
-
-                    {/* <Button
-                    className={`${
-                      sortBy === "title"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
-                    onClick={() => setSortBy("title")}
-                  >
-                    Title
-                  </Button>
-
-                  <Button
-                    className={`${
-                      sortBy === "updatedAt"
-                        ? "bg-accent text-accent-foreground"
-                        : ""
-                    }`}
-                    onClick={() => setSortBy("updatedAt")}
-                  >
-                    Updated At
-                  </Button> */}
-
-                    {/* <Button
-                  className={`${
-                    sortOrder === "asc"
-                      ? "bg-accent text-accent-foreground"
-                      : ""
-                  }`}
-                  onClick={() => setSortOrder("asc")}
-                >
-                  Ascending
-                </Button>
-
-                <Button
-                  className={`${
-                    sortOrder === "desc"
-                      ? "bg-accent text-accent-foreground"
-                      : ""
-                  }`}
-                  onClick={() => setSortOrder("desc")}
-                >
-                  Descending
-                </Button> */}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -326,14 +272,20 @@ const Listings: NextPage = () => {
         </div>
       </div>
       {showCarSelection || (isMobile && !router.query.model) ? (
-        <Drawer onClose={() => setShowCarSelection(false)} open={true}>
+        <Drawer
+          title="Find your car"
+          onOpenChange={(open) => setShowCarSelection(open)}
+          onClose={() => setShowCarSelection(false)}
+          open={true}
+        >
           <CarSelection />
         </Drawer>
       ) : null}
       {showCategorySelection && (
         <Drawer
+          title="Select category"
+          onOpenChange={(open) => setShowCarSelection(open)}
           onClose={() => setShowCategorySelection(false)}
-          height="h-[90%]"
           open={true}
         >
           <CategoryFilters />
@@ -396,9 +348,7 @@ const ListingsResults = ({
 
   if (listings.isLoading) {
     return (
-      <div
-        className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9 7xl:grid-cols-10"
-      >
+      <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
         {[...Array(20)].map((_, i) => (
           <Card key={i}>
             <CardContent className="p-0">
@@ -427,7 +377,7 @@ const ListingsResults = ({
   }
   return (
     <>
-      <div className="3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9 7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
         {listings.data?.listings.map((listing) => (
           <Card key={listing.id}>
             <Link href={`/listings/listing?id=${listing.id}`}>
@@ -600,6 +550,8 @@ const CarSelection = () => {
       enabled: !!generation,
     },
   );
+
+  // Change this to tabs which can be navigated forwards and back (sliding)
 
   if (cars.isLoading) {
     return (
