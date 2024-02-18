@@ -262,7 +262,7 @@ const Listing: NextPage = () => {
               <Button disabled>Out of stock</Button>
             ) : (
               <Button onClick={() => addToCart(listing.data as ListingType)}>
-       Add to cart
+                Add to cart
               </Button>
             )}
           </div>
@@ -351,8 +351,8 @@ const Listing: NextPage = () => {
           )}
         </div>
         <div className="order-2 space-y-4 md:col-span-2">
-          <h2 className="text-xl font-bold">Related Products</h2>
-          <div className="grid gap-4 md:grid-cols-3">
+          <h2 className="text-2xl font-bold">Related Products</h2>
+          <div className="grid gap-4 md:grid-cols-8">
             {relatedListings.data?.map((listing) => (
               <Link
                 href={`

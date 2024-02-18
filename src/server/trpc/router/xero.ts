@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
-import { XeroClient, Invoice, RequestEmpty } from "xero-node";
+import { XeroClient } from "xero-node";
 
 const xero = new XeroClient({
   clientId: process.env.XERO_CLIENT_ID as string,
@@ -15,10 +15,10 @@ export const xeroRouter = router({
     const today = new Date();
     const tokenDate = new Date(creds?.updatedAt as Date);
     const expirationDate = new Date(
-      tokenDate.getTime() + 59 * 24 * 60 * 60 * 1000
+      tokenDate.getTime() + 59 * 24 * 60 * 60 * 1000,
     );
     const daysTillExpiry = Math.ceil(
-      (expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      (expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
     return {
       daysTillExpiry: daysTillExpiry,
@@ -34,11 +34,11 @@ export const xeroRouter = router({
     .input(
       z.object({
         code: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const tokenSet = await xero.apiCallback(input.code) as any
+        const tokenSet = (await xero.apiCallback(input.code)) as any;
         const creds = await ctx.prisma.xeroCreds.findFirst();
         const updatedCreds = await ctx.prisma.xeroCreds.update({
           where: {
