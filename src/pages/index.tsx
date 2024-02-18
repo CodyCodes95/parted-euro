@@ -132,7 +132,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         {/* <div className="flex w-full flex-wrap items-center p-4"> */}
-          {/* {listings.data?.map((listing) => (
+        {/* {listings.data?.map((listing) => (
             <Link
             key={listing.id}
             className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
