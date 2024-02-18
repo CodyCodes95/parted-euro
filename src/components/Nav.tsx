@@ -68,7 +68,7 @@ const Nav = () => {
 
   if (isMobile) {
     return (
-      <div className="z-50 mb-4 flex w-full items-center justify-between overflow-x-clip border-b-2 pb-1 pt-2">
+      <div className="z-50 flex w-full items-center justify-between overflow-x-clip border-b-2 pb-1 pt-2">
         <Link href="/">
           <img className="mr-6 inline h-10" src={logo.src} alt="" />
         </Link>
