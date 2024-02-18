@@ -63,7 +63,7 @@ const Listings: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
   const [selectedCar, setSelectedCar] = useState("");
   const [sortBy, setSortBy] = useState<"price" | "title" | "updatedAt">(
-    "title",
+    "updatedAt",
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sessionStorageSet, setSessionStorageSet] = useState(false);
