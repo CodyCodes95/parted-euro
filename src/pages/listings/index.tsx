@@ -503,6 +503,16 @@ const CategoryFilters = () => {
       <h2 className="p-2 text-2xl">Categories</h2>
       <div className="flex-1 overflow-clip py-2">
         <nav className="grid items-start px-4 text-sm font-medium">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`w-full justify-start ${
+              !router.query.category ? "bg-accent text-accent-foreground" : ""
+            }`}
+            onClick={() => updateCategory("category", "")}
+          >
+            All
+          </Button>
           {categories.data?.map((category) => (
             <div key={category.id}>
               <Button
