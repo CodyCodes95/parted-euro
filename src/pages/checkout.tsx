@@ -202,7 +202,7 @@ export default function CheckoutPage() {
             {cart?.map((item) => {
               return (
                 <Link
-                  href={`/listing/${item.listingId}`}
+                  href={`/listings/listing?id=${item.listingId}`}
                   key={item.listingId}
                   className="grid grid-cols-[60px_1fr] items-start gap-4"
                 >
@@ -246,9 +246,7 @@ export default function CheckoutPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label className="text-sm" htmlFor="address">
-                Email Address
-              </Label>
+              <Label className="text-sm">Email Address</Label>
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
