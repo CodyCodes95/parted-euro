@@ -352,7 +352,7 @@ const Listing: NextPage = () => {
         </div>
         <div className="order-2 space-y-4 md:col-span-2">
           <h2 className="text-2xl font-bold">Related Products</h2>
-          <div className="grid gap-4 md:grid-cols-8">
+          <div className="grid gap-4 md:grid-cols-4">
             {relatedListings.data?.map((listing) => (
               <Link
                 href={`
