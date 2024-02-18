@@ -50,7 +50,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       accountCode: "200",
       taxType: "Inclusive",
       // tracking: [{name: "VIN", option: "R32"}],
-      // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
+      itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
     } as LineItem;
   });
@@ -78,8 +78,7 @@ const createInvoice = async (event: any, lineItems: any) => {
           date: new Date().toISOString().split("T")[0],
           dueDate: new Date().toISOString().split("T")[0],
           reference: event.payment_intent,
-          // status: Invoice.StatusEnum.PAID,
-          status: Invoice.StatusEnum.AUTHORISED,
+          status: Invoice.StatusEnum.PAID,
           lineItems: lineItemsFormatted,
         },
       ],
