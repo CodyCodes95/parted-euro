@@ -54,7 +54,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
-        <Drawer onClose={() => console.log("close")} open={!selectedCar} />
+        <Drawer title="" onOpenChange={() => console.log("open change")} onClose={() => console.log("close")} open={!selectedCar} />
         {listings.map((listing) => (
           <div
             key={listing.id}
