@@ -6,7 +6,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
 });
 
 async function CreateStripeSession(req: any, res: any) {
-  const { items, regularShipping, expressShipping } = JSON.parse(req.body);
+  const { items, regularShipping, expressShipping, email, name } = JSON.parse(
+    req.body,
+  );
 
   const shippingOptions = [];
 
@@ -31,7 +33,7 @@ async function CreateStripeSession(req: any, res: any) {
           },
           display_name: "AusPost Express",
         },
-      }
+      },
     );
   }
 
@@ -59,6 +61,7 @@ async function CreateStripeSession(req: any, res: any) {
 
   const session = await stripe.checkout.sessions.create({
     // customer: customer.id,
+    customer_email: email,
     payment_method_types: ["card"],
     shipping_address_collection: {
       allowed_countries: ["AU"],

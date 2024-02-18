@@ -43,6 +43,12 @@ import {
   PopoverTrigger,
 } from "../../components/ui/popover";
 import { PopoverClose } from "@radix-ui/react-popover";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -402,22 +408,31 @@ const ListingsResults = ({
 
       <Pagination>
         <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              className="cursor-pointer"
-              onClick={() =>
-                handlePageClick(Number(router.query.page ?? 0) - 1)
-              }
-            />
-          </PaginationItem>
+          {Number(router.query.page ?? 0) > 1 && (
+            <PaginationItem>
+              <PaginationPrevious
+                className="cursor-pointer"
+                onClick={() =>
+                  handlePageClick(Number(router.query.page ?? 0) - 1)
+                }
+              />
+            </PaginationItem>
+          )}
           {[
+            Number(router.query.page ?? 0) - 2,
             Number(router.query.page ?? 0) - 1,
             Number(router.query.page ?? 0),
             Number(router.query.page ?? 0) + 1,
             Number(router.query.page ?? 0) + 2,
-          ]
-            .filter((page) => page > 0)
-            .map((page) => (
+          ].map((page, i) => {
+            if (page < 1) return null;
+            if (i > 3) return null;
+            if (
+              (!listings.data?.hasNextPage && i === 3) ||
+              (!listings.data?.hasNextPage && i === 3)
+            )
+              return null;
+            return (
               <PaginationItem key={page}>
                 <PaginationLink
                   className="cursor-pointer"
@@ -428,10 +443,8 @@ const ListingsResults = ({
                   {page}
                 </PaginationLink>
               </PaginationItem>
-            ))}
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
+            );
+          })}
           {listings.data?.hasNextPage && (
             <PaginationItem className="cursor-pointer">
               <PaginationNext
@@ -534,6 +547,9 @@ const CategoryFilters = () => {
 const CarSelection = () => {
   const router = useRouter();
   const { series, generation } = router.query;
+  const [currentTab, setCurrentTab] = useState(
+    "series" as "series" | "generation" | "model",
+  );
 
   const cars = trpc.cars.getAllSeries.useQuery();
 
@@ -550,6 +566,18 @@ const CarSelection = () => {
       enabled: !!generation,
     },
   );
+
+  useEffect(() => {
+    if (!series) {
+      setCurrentTab("series");
+    }
+    if (series && !generation) {
+      setCurrentTab("generation");
+    }
+    if (series && generation) {
+      setCurrentTab("model");
+    }
+  }, [series, generation]);
 
   // Change this to tabs which can be navigated forwards and back (sliding)
 
@@ -574,70 +602,149 @@ const CarSelection = () => {
     );
   }
 
-  if (!series) {
-    return (
-      <div className="flex flex-col gap-2">
-        <p className="text-xl">Select your series</p>
-        <div className="flex flex-wrap gap-2">
-          {cars.data?.series.map((series) => (
-            <Button
-              variant={"outline"}
-              className="border p-2"
-              key={series.value}
-              onClick={() => {
-                router.query.series = series.value;
-                router.push(router);
-              }}
-            >
-              {series.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  // if (!series) {
+  //   return (
+  //     <div className="flex flex-col gap-2">
+  //       <p className="text-xl">Select your series</p>
+  //       <div className="flex flex-wrap gap-2">
+  //         {cars.data?.series.map((series) => (
+  //           <Button
+  //             variant={"outline"}
+  //             className="border p-2"
+  //             key={series.value}
+  //             onClick={() => {
+  //               router.query.series = series.value;
+  //               router.push(router);
+  //             }}
+  //           >
+  //             {series.label}
+  //           </Button>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!generation) {
-    return (
-      <div className="flex flex-col gap-2">
-        <p className="text-xl">Select generation</p>
-        <div className="flex flex-wrap gap-2">
-          {generations.data?.generations.map((generation) => (
-            <Button
-              variant={"outline"}
-              className="border p-2"
-              key={generation.value}
-              onClick={() => {
-                router.query.generation = generation.value;
-                router.push(router);
-              }}
-            >
-              {generation.label.split("(")[0]}
-            </Button>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  // if (!generation) {
+  //   return (
+  //     <div className="flex flex-col gap-2">
+  //       <p className="text-xl">Select generation</p>
+  //       <div className="flex flex-wrap gap-2">
+  //         {generations.data?.generations.map((generation) => (
+  //           <Button
+  //             variant={"outline"}
+  //             className="border p-2"
+  //             key={generation.value}
+  //             onClick={() => {
+  //               router.query.generation = generation.value;
+  //               router.push(router);
+  //             }}
+  //           >
+  //             {generation.label.split("(")[0]}
+  //           </Button>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xl">Select model</p>
-      <div className="flex flex-wrap gap-2">
-        {models.data?.models.map((model) => (
-          <Button
-            variant={"outline"}
-            className="border p-2"
-            key={model.value}
-            onClick={() => {
-              router.query.model = model.value;
-              router.push(router);
-            }}
-          >
-            {model.label}
-          </Button>
-        ))}
-      </div>
+    <div className="flex w-full flex-col gap-4">
+      <Tabs
+        value={currentTab}
+        onValueChange={(tab) => {
+          if (tab === "series") {
+            delete router.query.generation;
+            delete router.query.model;
+            delete router.query.series;
+          }
+          setCurrentTab(tab as any);
+        }}
+        defaultValue="series"
+        className="flex flex-col gap-4"
+      >
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger disabled={!series} value="series">
+            Series
+          </TabsTrigger>
+          <TabsTrigger disabled={!generation} value="generation">
+            Generation
+          </TabsTrigger>
+          <TabsTrigger disabled value="model">
+            Model
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="series" className="flex">
+          <div className="flex flex-wrap gap-2">
+            {cars.data?.series.map((series) => (
+              <Button
+                variant={"outline"}
+                className="border p-2"
+                key={series.value}
+                onClick={() => {
+                  router.query.series = series.value;
+                  router.push(router);
+                  router.query.generation = undefined;
+                }}
+              >
+                {series.label}
+              </Button>
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="generation">
+          <div className="flex flex-wrap gap-2">
+            {generations.data?.generations.map((generation) => (
+              <Button
+                variant={"outline"}
+                className="border p-2"
+                key={generation.value}
+                onClick={() => {
+                  router.query.generation = generation.value;
+                  router.push(router);
+                }}
+              >
+                {generation.label.split("(")[0]}
+              </Button>
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="model">
+          <div className="flex flex-wrap gap-2">
+            {models.data?.models.map((model) => (
+              <Button
+                variant={"outline"}
+                className="border p-2"
+                key={model.value}
+                onClick={() => {
+                  router.query.model = model.value;
+                  router.push(router);
+                }}
+              >
+                {model.label}
+              </Button>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
+    // <div className="flex flex-col gap-2">
+    //   <p className="text-xl">Select model</p>
+    //   <div className="flex flex-wrap gap-2">
+    //     {models.data?.models.map((model) => (
+    //       <Button
+    //         variant={"outline"}
+    //         className="border p-2"
+    //         key={model.value}
+    //         onClick={() => {
+    //           router.query.model = model.value;
+    //           router.push(router);
+    //         }}
+    //       >
+    //         {model.label}
+    //       </Button>
+    //     ))}
+    //   </div>
+    // </div>
   );
 };

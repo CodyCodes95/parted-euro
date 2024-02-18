@@ -27,6 +27,7 @@ import {
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../context/cartContext";
 import { useRouter } from "next/router";
+import { Button } from "./ui/button";
 
 const generations = [
   { generation: "F8X", series: "M2/M3/M4", param: "F8" },
@@ -44,7 +45,6 @@ const Nav = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
 
   const { cart } = useCart();
 
@@ -62,7 +62,6 @@ const Nav = () => {
   useEffect(() => {
     setMenuOpen(false);
     setShowSearch(false);
-    setCartOpen(false);
   }, [router]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -359,27 +358,32 @@ const Nav = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex items-center">
-        <button onClick={() => setShowSearch(!showSearch)} className="p-2">
+        <Button
+          onClick={() => setShowSearch(!showSearch)}
+          className="h-10 w-10 rounded-full p-1"
+          variant="ghost"
+        >
           <Search className="text-xl" />
-        </button>
+        </Button>
         <div className="relative">
           {cart.length ? (
             <Badge
-              className="absolute left-3 top-[-1.5rem] text-xs"
+              className="absolute -top-6 left-5 text-xs"
               variant={"destructive"}
             >
               {cart.length}
             </Badge>
           ) : null}
         </div>
-        <Popover onOpenChange={(open) => setCartOpen(open)} open={cartOpen}>
+        <CartPopover />
+        {/* <Popover onOpenChange={(open) => setCartOpen(open)} open={cartOpen}>
           <PopoverTrigger>
             <ShoppingCart className="h-5 w-5" />
           </PopoverTrigger>
           <PopoverContent className="mt-5 w-[40rem] bg-white">
             <CartPopover />
           </PopoverContent>
-        </Popover>
+        </Popover> */}
         <div
           className={`p-2 ${!session && !showLogin ? "invisible" : ""} ${
             showLogin && !session ? "visible" : ""
