@@ -92,7 +92,7 @@ const Nav = () => {
                 Browse Store
               </p>
             </Link>
-            <Accordion type="single" collapsible>
+            {/* <Accordion type="single" collapsible>
               <AccordionItem value="shop-generation">
                 <AccordionTrigger className="pl-4 duration-75 hover:bg-accent">
                   Shop by Generation
@@ -191,7 +191,7 @@ const Nav = () => {
                   })}
                 </AccordionContent>
               </AccordionItem>
-            </Accordion>
+            </Accordion> */}
             <Link className="group" href="/wrecking">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
                 Cars Wrecking Now
@@ -244,7 +244,7 @@ const Nav = () => {
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="right-0 grid w-screen gap-x-5 gap-y-8 p-6 lg:grid-cols-6">
@@ -333,7 +333,7 @@ const Nav = () => {
                 })}
               </ul>
             </NavigationMenuContent>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
           <NavigationMenuItem>
             <Link href="/wrecking" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
