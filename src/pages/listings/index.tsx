@@ -57,7 +57,7 @@ const Listings: NextPage = () => {
 
   const { series, generation, model, category, subcat, search } = router.query;
 
-  const [showCarSelection, setShowCarSelection] = useState<boolean>(false);
+  const [showCarSelection, setShowCarSelection] = useState<boolean>(isMobile);
   const [showCategorySelection, setShowCategorySelection] =
     useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string | string[]>("");
@@ -65,7 +65,7 @@ const Listings: NextPage = () => {
   const [sortBy, setSortBy] = useState<"price" | "title" | "updatedAt">(
     "updatedAt",
   );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sessionStorageSet, setSessionStorageSet] = useState(false);
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
@@ -277,12 +277,12 @@ const Listings: NextPage = () => {
           <div className="p-2" />
         </div>
       </div>
-      {showCarSelection || (isMobile && !router.query.model) ? (
+      {showCarSelection ? (
         <Drawer
           title="Find your car"
           onOpenChange={(open) => setShowCarSelection(open)}
           onClose={() => setShowCarSelection(false)}
-          open={true}
+          open={showCarSelection}
         >
           <CarSelection />
         </Drawer>
