@@ -37,17 +37,22 @@ const CartPopover = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 translate-y-2">
-        <div className="flex  flex-col gap-4 overflow-auto p-4">
+        <div className="flex flex-col gap-4 overflow-auto rounded-md">
+          <h4 className="text-xl">Cart</h4>
+          <div className="w-full border" />
           {cart.map((item, index) => (
             <Link
               href={`/listings/listing?id=${item.listingId}`}
               key={item.listingId}
-              className="flex items-center gap-4"
+              className="flex items-center gap-4 p-2 hover:bg-zinc-100"
             >
               <div className="relative">
                 <button
                   className="group absolute -left-4 -top-4 rounded-full bg-white p-1 hover:bg-zinc-100"
-                  onClick={() => removeItemFromCart(item.listingId)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeItemFromCart(item.listingId);
+                  }}
                 >
                   <X className="h-4 w-4 group-hover:text-red-500" />
                 </button>
