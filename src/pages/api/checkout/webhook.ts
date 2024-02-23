@@ -39,8 +39,10 @@ const createInvoice = async (event: any, lineItems: any) => {
       },
     });
   }
+  console.log("Xero creds");
   await xero.updateTenants();
   const activeTenantId = xero.tenants[0].tenantId;
+  console.log(`Active tenant id: ${activeTenantId}`);
 
   const lineItemsFormatted = lineItems.map((item: any) => {
     return {
@@ -48,7 +50,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       quantity: item.quantity,
       unitAmount: item.amount_total / 100,
       accountCode: "200",
-      taxType: "NONE",
+      taxType: "Inclusive",
       // tracking: [{name: "VIN", option: "R32"}],
       // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
@@ -59,8 +61,8 @@ const createInvoice = async (event: any, lineItems: any) => {
       description: "Shipping",
       quantity: 1,
       unitAmount: event.shipping_cost.amount_total / 100,
-      accountCode: "200",
-      taxType: "NONE",
+      accountCode: "210",
+      taxType: "Inclusive",
       lineAmount: event.shipping_cost.amount_total / 100,
     });
   }
@@ -78,11 +80,18 @@ const createInvoice = async (event: any, lineItems: any) => {
           date: new Date().toISOString().split("T")[0],
           dueDate: new Date().toISOString().split("T")[0],
           reference: event.payment_intent,
-          status: Invoice.StatusEnum.PAID,
+          status: Invoice.StatusEnum.AUTHORISED,
           lineItems: lineItemsFormatted,
         },
       ],
     },
+  );
+  console.log(
+    `Create invoice response: ${JSON.stringify(
+      createInvoiceResponse,
+      null,
+      2,
+    )}`,
   );
   if (createInvoiceResponse?.body?.invoices) {
     const paymentResponse = await xero.accountingApi.createPayments(
@@ -102,6 +111,7 @@ const createInvoice = async (event: any, lineItems: any) => {
         ],
       },
     );
+    console.log(`Payment response: ${JSON.stringify(paymentResponse, null, 2)}`)
     const requestEmpty: RequestEmpty = {};
     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
       activeTenantId,
@@ -111,17 +121,6 @@ const createInvoice = async (event: any, lineItems: any) => {
     return paymentResponse;
   }
   return { error: "no invoice created" };
-
-  // const res = await saveInvoice.mutateAsync({
-  //   email: event.customer_details.email,
-  //   name: event.customer_details.name,
-  //   orderNo: event.payment_intent,
-  //   items: lineItems.map((item: any) => {
-  //     title: item.description,
-  //       quantity: item.quantity,
-  //       price: item.amount_total,
-  //         inventoryLocation: JSON.parse(event.metadata.inventoryLocations)[item.description],
-  // });
 };
 
 export default async function stripeWebhook(req: any, res: any) {
