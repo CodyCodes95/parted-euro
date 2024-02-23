@@ -22,6 +22,7 @@ export const config = {
 };
 
 const createInvoice = async (event: any, lineItems: any) => {
+  console.log(`CREATE INVOICE EVENT: ${JSON.stringify(event, null, 2)}`)
   await xero.initialize();
   const xeroCreds = await prisma.xeroCreds.findFirst();
   xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
@@ -148,10 +149,11 @@ export default async function stripeWebhook(req: any, res: any) {
       return;
     }
     const data = event.data.object as any;
-    console.log(`DATA!!!!!!!! ${JSON.stringify(data, null, 2)}`);
     const eventType = event.type;
     if (eventType === "checkout.session.completed") {
+      console.log(`DATA!!!!!!!! ${JSON.stringify(data, null, 2)}`);
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
+      console.log(`LINE ITEMS!!!!!!!! ${JSON.stringify(lineItems, null, 2)}`);
       const invoiceRes = await createInvoice(data, lineItems.data);
       res.status(200).send(invoiceRes);
     }
