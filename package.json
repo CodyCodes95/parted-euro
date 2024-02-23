@@ -62,7 +62,7 @@
     "use-debounce": "^9.0.2",
     "use-places-autocomplete": "^4.0.0",
     "vaul": "^0.7.9",
-    "xero-node": "^4.32.0",
+    "xero-node": "^5.1.0",
     "yet-another-react-lightbox": "^3.15.6",
     "zod": "^3.21.4"
   },

@@ -22,7 +22,6 @@ export const config = {
 };
 
 const createInvoice = async (event: any, lineItems: any) => {
-  console.log(`CREATE INVOICE EVENT: ${JSON.stringify(event, null, 2)}`)
   await xero.initialize();
   const xeroCreds = await prisma.xeroCreds.findFirst();
   xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
@@ -40,10 +39,8 @@ const createInvoice = async (event: any, lineItems: any) => {
       },
     });
   }
-  console.log("Xero creds");
   await xero.updateTenants();
   const activeTenantId = xero.tenants[0].tenantId;
-  console.log(`Active tenant id: ${activeTenantId}`);
 
   const lineItemsFormatted = lineItems.map((item: any) => {
     return {
@@ -51,7 +48,7 @@ const createInvoice = async (event: any, lineItems: any) => {
       quantity: item.quantity,
       unitAmount: item.amount_total / 100,
       accountCode: "200",
-      taxType: "Inclusive",
+        
       // tracking: [{name: "VIN", option: "R32"}],
       // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
       lineAmount: (item.amount_total / 100) * item.quantity,
@@ -81,39 +78,32 @@ const createInvoice = async (event: any, lineItems: any) => {
           date: new Date().toISOString().split("T")[0],
           dueDate: new Date().toISOString().split("T")[0],
           reference: event.payment_intent,
-          status: Invoice.StatusEnum.AUTHORISED,
+          status: Invoice.StatusEnum.DRAFT,
           lineItems: lineItemsFormatted,
         },
       ],
     },
   );
-  console.log(
-    `Create invoice response: ${JSON.stringify(
-      createInvoiceResponse,
-      null,
-      2,
-    )}`,
-  );
+
+  const payment = {
+    payments: [
+      {
+        invoice: {
+          invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
+        },
+        account: {
+          code: process.env.XERO_BANK_ACCOUNT,
+        },
+        date: new Date().toISOString().split("T")[0],
+        amount: event.amount_total / 100,
+      },
+    ],
+  };
+  console.log(JSON.stringify(payment, null, 2));
   if (createInvoiceResponse?.body?.invoices) {
     const paymentResponse = await xero.accountingApi.createPayments(
       activeTenantId,
-      {
-        payments: [
-          {
-            invoice: {
-              invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
-            },
-            account: {
-              code: process.env.XERO_BANK_ACCOUNT,
-            },
-            date: new Date().toISOString().split("T")[0],
-            amount: event.amount_total / 100,
-          },
-        ],
-      },
-    );
-    console.log(
-      `Payment response: ${JSON.stringify(paymentResponse, null, 2)}`,
+      payment,
     );
     const requestEmpty: RequestEmpty = {};
     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
@@ -127,8 +117,6 @@ const createInvoice = async (event: any, lineItems: any) => {
 };
 
 export default async function stripeWebhook(req: any, res: any) {
-  console.log("WE RUNNING =====================================");
-
   if (req.method === "POST") {
     const rawBody = await buffer(req);
     const sig = req.headers["stripe-signature"];
@@ -142,7 +130,6 @@ export default async function stripeWebhook(req: any, res: any) {
         sig,
         webhookSecret as string,
       );
-      console.log("Webhook verified");
     } catch (err: any) {
       console.log(`Webhook failed ${err.message}`);
       res.status(400).send(`Webhook Error: ${err.message}`);
@@ -151,9 +138,7 @@ export default async function stripeWebhook(req: any, res: any) {
     const data = event.data.object as any;
     const eventType = event.type;
     if (eventType === "checkout.session.completed") {
-      console.log(`DATA!!!!!!!! ${JSON.stringify(data, null, 2)}`);
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
-      console.log(`LINE ITEMS!!!!!!!! ${JSON.stringify(lineItems, null, 2)}`);
       const invoiceRes = await createInvoice(data, lineItems.data);
       res.status(200).send(invoiceRes);
     }
