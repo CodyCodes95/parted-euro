@@ -111,7 +111,9 @@ const createInvoice = async (event: any, lineItems: any) => {
         ],
       },
     );
-    console.log(`Payment response: ${JSON.stringify(paymentResponse, null, 2)}`)
+    console.log(
+      `Payment response: ${JSON.stringify(paymentResponse, null, 2)}`,
+    );
     const requestEmpty: RequestEmpty = {};
     const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
       activeTenantId,
@@ -146,6 +148,7 @@ export default async function stripeWebhook(req: any, res: any) {
       return;
     }
     const data = event.data.object as any;
+    console.log(`DATA!!!!!!!! ${JSON.stringify(data, null, 2)}`);
     const eventType = event.type;
     if (eventType === "checkout.session.completed") {
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
