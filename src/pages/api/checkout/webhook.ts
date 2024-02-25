@@ -1,18 +1,10 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import type { RequestEmpty, TokenSet, LineItem } from "xero-node";
-import { XeroClient, Invoice } from "xero-node";
-import { prisma } from "../../../server/db/client";
+import { createInvoice } from "../../../server/xero/createInvoice";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
-});
-
-const xero = new XeroClient({
-  clientId: process.env.XERO_CLIENT_ID as string,
-  clientSecret: process.env.XERO_CLIENT_SECRET as string,
-  redirectUris: [process.env.XERO_REDIRECT_URI as string],
-  scopes: process.env.XERO_SCOPES?.split(" "),
 });
 
 export const config = {
@@ -21,128 +13,44 @@ export const config = {
   },
 };
 
-const createInvoice = async (event: any, lineItems: any) => {
-  await xero.initialize();
-  const xeroCreds = await prisma.xeroCreds.findFirst();
-  xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
-  const xeroTokenSet = xero.readTokenSet();
-  if (xeroTokenSet.expired()) {
-    const validTokenSet = (await xero.refreshToken()) as any;
-    const creds = await prisma.xeroCreds.findFirst();
-    await prisma.xeroCreds.update({
-      where: {
-        id: creds?.id,
-      },
-      data: {
-        tokenSet: validTokenSet,
-        refreshToken: validTokenSet.refresh_token,
-      },
-    });
-  }
-  await xero.updateTenants();
-  const activeTenantId = xero.tenants[0].tenantId;
+export default async function stripeWebhook(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const lineItemsFormatted = lineItems.map((item: any) => {
-    return {
-      description: item.description,
-      quantity: item.quantity,
-      unitAmount: item.amount_total / 100,
-      accountCode: "200",
-        
-      // tracking: [{name: "VIN", option: "R32"}],
-      // itemCode: JSON.parse(event.metadata.inventoryLocations)[item.description],
-      lineAmount: (item.amount_total / 100) * item.quantity,
-    } as LineItem;
-  });
-  if (event.shipping_cost.amount_total) {
-    lineItemsFormatted.push({
-      description: "Shipping",
-      quantity: 1,
-      unitAmount: event.shipping_cost.amount_total / 100,
-      accountCode: "210",
-      taxType: "Inclusive",
-      lineAmount: event.shipping_cost.amount_total / 100,
-    });
-  }
+  const rawBody = await buffer(req);
+  const stripeSignature = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  const createInvoiceResponse = await xero.accountingApi.createInvoices(
-    activeTenantId,
-    {
-      invoices: [
-        {
-          type: Invoice.TypeEnum.ACCREC,
-          contact: {
-            emailAddress: event.customer_details.email,
-            name: event.customer_details.name,
-          },
-          date: new Date().toISOString().split("T")[0],
-          dueDate: new Date().toISOString().split("T")[0],
-          reference: event.payment_intent,
-          status: Invoice.StatusEnum.DRAFT,
-          lineItems: lineItemsFormatted,
-        },
-      ],
-    },
-  );
-
-  const payment = {
-    payments: [
-      {
-        invoice: {
-          invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
-        },
-        account: {
-          code: process.env.XERO_BANK_ACCOUNT,
-        },
-        date: new Date().toISOString().split("T")[0],
-        amount: event.amount_total / 100,
-      },
-    ],
-  };
-  console.log(JSON.stringify(payment, null, 2));
-  if (createInvoiceResponse?.body?.invoices) {
-    const paymentResponse = await xero.accountingApi.createPayments(
-      activeTenantId,
-      payment,
+  try {
+    const stripeEvent = stripe.webhooks.constructEvent(
+      rawBody,
+      stripeSignature as string,
+      webhookSecret as string,
     );
-    const requestEmpty: RequestEmpty = {};
-    const emailInvoiceResponse = await xero.accountingApi.emailInvoice(
-      activeTenantId,
-      createInvoiceResponse?.body?.invoices[0]?.invoiceID as string,
-      requestEmpty,
-    );
-    return paymentResponse;
-  }
-  return { error: "no invoice created" };
-};
-
-export default async function stripeWebhook(req: any, res: any) {
-  if (req.method === "POST") {
-    const rawBody = await buffer(req);
-    const sig = req.headers["stripe-signature"];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        rawBody,
-        sig,
-        webhookSecret as string,
-      );
-    } catch (err: any) {
-      console.log(`Webhook failed ${err.message}`);
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
+    if (stripeEvent.type === "checkout.session.completed") {
+      const data = stripeEvent.data.object;
+      // unsure why we need to ignore here. Stripe doesn't seem to change the type of data based on the event type above
+      // @ts-ignore
+      const lineItems = await stripe.checkout.sessions.listLineItems(data.id, {
+        expand: ["data.price.product"],
+      });
+      try {
+        console.log(JSON.stringify(lineItems.data, null, 2));
+        await createInvoice(data, lineItems.data);
+        res.status(200).send(`Invoice created`);
+      } catch (err: any) {
+        console.log(err);
+        return res
+          .status(500)
+          .send(`Error while trying to create Xero invoice: ${err.message}`);
+      }
     }
-    const data = event.data.object as any;
-    const eventType = event.type;
-    if (eventType === "checkout.session.completed") {
-      const lineItems = await stripe.checkout.sessions.listLineItems(data.id);
-      const invoiceRes = await createInvoice(data, lineItems.data);
-      res.status(200).send(invoiceRes);
-    }
-    console.log(`Webhook received: ${event.type}`);
-    res.status(200).send();
+    console.log(`Webhook received: ${stripeEvent.type}`);
+    res.status(200).send(`Webhook received: ${stripeEvent.type}`);
+  } catch (err: any) {
+    console.log(`Webhook failed ${err.message}`);
+    res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
+import type { CartItem } from "../../context/cartContext";
 import { useCart } from "../../context/cartContext";
 import { toast } from "sonner";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -94,18 +95,6 @@ const Listing: NextPage = () => {
     }[];
   };
 
-  interface CartItem {
-    listingId: string;
-    listingTitle: string;
-    listingPrice: number;
-    listingImage: string | undefined;
-    quantity: number;
-    length: number;
-    width: number;
-    height: number;
-    weight: number;
-  }
-
   const { cart, setCart } = useCart();
 
   const [quantity, setQuantity] = useState(1);
@@ -165,6 +154,7 @@ const Listing: NextPage = () => {
         weight: listing.parts
           .map((part) => part.partDetails.weight)
           .reduce((a, b) => a + b, 0),
+        itemVin: listing.parts[0]?.donor?.vin.slice(-7) ?? "",
       };
       toast("Added to cart", {
         action: {
