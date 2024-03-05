@@ -98,6 +98,29 @@ async function CreateStripeSession(req: NextApiRequest, res: NextApiResponse) {
     };
   });
 
+  const order = await prisma?.order.create({
+    data: {
+      email,
+      name,
+      status: "PENDING",
+      subtotal: stripeLineItems.reduce(
+        (acc, cur) => acc + cur.price_data.unit_amount * cur.quantity,
+        0,
+      ),
+      items: {
+        connect: items.reduce(
+          (acc, cur) => {
+            for (let i = 0; i < cur.quantity; i++) {
+              acc.push({ id: cur.listingId });
+            }
+            return acc;
+          },
+          [] as { id: string }[],
+        ),
+      },
+    },
+  });
+
   const session = await stripe.checkout.sessions.create({
     customer: customer.id,
     payment_method_types: ["card", "afterpay_clearpay"],
@@ -107,11 +130,10 @@ async function CreateStripeSession(req: NextApiRequest, res: NextApiResponse) {
     shipping_options: shippingOptions,
     line_items: stripeLineItems,
     mode: "payment",
-    success_url: `${redirectURL}/orders/confirmation`,
+    success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
     cancel_url: `${redirectURL}/checkout`,
     metadata: {
-      // images: items.image,
-      // inventoryLocations: JSON.stringify(inventoryLocations),
+      orderId: order?.id ?? "",
     },
   });
 

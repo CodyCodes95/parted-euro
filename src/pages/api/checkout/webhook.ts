@@ -37,7 +37,6 @@ export default async function stripeWebhook(
         expand: ["data.price.product"],
       });
       try {
-        console.log(JSON.stringify(lineItems.data, null, 2));
         await createInvoice(data, lineItems.data);
         res.status(200).send(`Invoice created`);
       } catch (err: any) {
@@ -47,6 +46,7 @@ export default async function stripeWebhook(
           .send(`Error while trying to create Xero invoice: ${err.message}`);
       }
     }
+
     console.log(`Webhook received: ${stripeEvent.type}`);
     res.status(200).send(`Webhook received: ${stripeEvent.type}`);
   } catch (err: any) {

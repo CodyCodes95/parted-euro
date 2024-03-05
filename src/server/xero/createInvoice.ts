@@ -1,5 +1,5 @@
 import type { TokenSet, LineItem } from "xero-node";
-import { XeroClient, Invoice } from "xero-node";
+import { XeroClient, Invoice, LineAmountTypes } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
 
@@ -57,7 +57,10 @@ export const createInvoice = async (
     } as LineItem;
   });
 
+  let shipping;
+
   if (event.shipping_cost.amount_total) {
+    shipping = event.shipping_cost.amount_total / 100;
     lineItemsFormatted.push({
       description: "Shipping",
       quantity: 1,
@@ -78,6 +81,7 @@ export const createInvoice = async (
     reference: event.payment_intent,
     status: Invoice.StatusEnum.AUTHORISED,
     lineItems: lineItemsFormatted,
+    lineAmountTypes: LineAmountTypes.Inclusive,
   };
 
   const createInvoiceResponse = await xero.accountingApi.createInvoices(
@@ -115,5 +119,14 @@ export const createInvoice = async (
     createInvoiceResponse?.body?.invoices[0]?.invoiceID as string,
     {},
   );
+  await prisma.order.update({
+    where: {
+      id: event.metadata.id,
+    },
+    data: {
+      status: "Paid",
+      shipping,
+    },
+  });
   return paymentResponse.body;
 };

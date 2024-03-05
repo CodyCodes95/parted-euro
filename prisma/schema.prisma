@@ -101,6 +101,7 @@ model Listing {
   images       Image[]
   active       Boolean  @default(true)
   listedOnEbay Boolean  @default(false)
+  Orders       Order[]
   // ebaySku      String?
 }
 
@@ -116,7 +117,6 @@ model Part {
   soldPrice           Int?
   soldParentPrice     Int?
   inventoryLocationId String?
-  Orders              Order[]
   variant             String?
   quantity            Int                 @default(1)
   createdAt           DateTime            @default(now())
@@ -174,16 +174,17 @@ model InventoryLocations {
 }
 
 model Order {
-  id              String   @id @default(cuid())
-  items           Part[]
-  shippingMethod  String
-  subtotal        Float
-  shipping        Float
-  email           String
+  id              String    @id @default(cuid())
   name            String
+  items           Listing[]
+  email           String
+  subtotal        Float
+  shipping        Float?
+  status          String
+  shippingMethod  String?
   shippingAddress String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model PartTypes {
