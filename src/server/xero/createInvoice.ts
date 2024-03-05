@@ -110,15 +110,14 @@ export const createInvoice = async (
     ],
   };
 
+  const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]
+    ?.invoiceID as string;
+
   const paymentResponse = await xero.accountingApi.createPayments(
     activeTenantId,
     payment,
   );
-  await xero.accountingApi.emailInvoice(
-    activeTenantId,
-    createInvoiceResponse?.body?.invoices[0]?.invoiceID as string,
-    {},
-  );
+  await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
   await prisma.order.update({
     where: {
       id: event.metadata.id,
@@ -126,6 +125,7 @@ export const createInvoice = async (
     data: {
       status: "Paid",
       shipping,
+      xeroInvoiceId,
     },
   });
   return paymentResponse.body;

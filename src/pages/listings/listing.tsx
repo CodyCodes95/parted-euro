@@ -36,36 +36,6 @@ const Listing: NextPage = () => {
   const router = useRouter();
   const [parts, setParts] = useState<any>(undefined);
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "AUD",
-    minimumFractionDigits: 2,
-  });
-
-  type ListingParts =
-    | {
-        donor: {
-          car: Car;
-          vin: string;
-          year: number;
-          mileage: number;
-        } | null;
-        partDetails: {
-          length: number;
-          cars: {
-            generation: string;
-            model: string;
-            series: string;
-            body: string | null;
-            id: string;
-          }[];
-          partNo: string;
-          weight: number;
-          width: number;
-          height: number;
-        };
-      }[]
-    | undefined;
 
   type ListingType = {
     id: string;
@@ -164,12 +134,6 @@ const Listing: NextPage = () => {
       });
       setCart([...cart, cartItem]);
     }
-  };
-
-  type Series = string;
-  type GroupedParts = {
-    models: string[];
-    generations: string[];
   };
 
   const processParts = (parts: any) => {
