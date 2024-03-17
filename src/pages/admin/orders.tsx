@@ -41,7 +41,7 @@ const Orders = () => {
       },
       {
         Header: "Order date",
-        accessor: "createdAt",
+        accessor: (d) => new Date(d.createdAt).toLocaleDateString(),
       },
       {
         Header: "Name",
