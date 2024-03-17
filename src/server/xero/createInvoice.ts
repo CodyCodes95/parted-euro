@@ -112,6 +112,7 @@ export const createInvoice = async (
       },
     ],
   };
+  
 
   const invoice = createInvoiceResponse?.body?.invoices[0];
 

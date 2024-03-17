@@ -49,6 +49,6 @@ export default async function stripeWebhook(
     res.status(200).send(`Webhook received: ${stripeEvent.type}`);
   } catch (err: any) {
     console.log(`Webhook failed ${err.message}`);
-    res.status(400).send(`Webhook Error: ${err.message}`);
+  res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }
