@@ -130,6 +130,7 @@ export const createInvoice = async (
       status: "Paid",
       shipping,
       xeroInvoiceId: invoice?.invoiceNumber,
+      xeroInvoiceRef: invoice?.invoiceID,
     },
   });
   const orderItems = await prisma.orderItem.findMany({

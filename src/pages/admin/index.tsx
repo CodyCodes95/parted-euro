@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
-import { FaDatabase, FaTag } from "react-icons/fa";
+import { FaDatabase, FaFileInvoice, FaTag } from "react-icons/fa";
 import xero from "../../../public/xero.png";
 import { trpc } from "../../utils/trpc";
 import { useEffect } from "react";
@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import { ListOrdered } from "lucide-react";
 
 const Admin: NextPage = () => {
   const { status } = useSession({
@@ -109,6 +110,17 @@ const Admin: NextPage = () => {
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Listings
+                </h3>
+              </Link>
+              <Link
+                href="/admin/orders"
+                className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
+              >
+                <div className="relative mx-auto flex items-center justify-center">
+                  <FaFileInvoice className="text-5xl" />
+                </div>
+                <h3 className="mt-8 text-lg font-semibold text-black">
+                  Orders
                 </h3>
               </Link>
             </div>

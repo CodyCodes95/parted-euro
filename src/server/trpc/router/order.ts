@@ -57,4 +57,19 @@ export const orderRouter = router({
         },
       });
     }),
+  getAllAdmin: adminProcedure.query(({ ctx }) => {
+    return ctx.prisma.order.findMany({
+      include: {
+        orderItems: {
+          include: {
+            listing: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }),
 });

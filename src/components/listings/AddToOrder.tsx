@@ -7,9 +7,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import type { GetAllListingsAdminOutput } from "../../utils/trpc";
-import { trpc } from "../../utils/trpc";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import type { OrderItem } from "../../pages/admin/listings";

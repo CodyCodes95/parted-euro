@@ -175,6 +175,7 @@ model InventoryLocations {
 
 model Order {
   id              String      @id @default(cuid())
+  xeroInvoiceRef  String? 
   xeroInvoiceId   String?     @unique
   name            String
   email           String
