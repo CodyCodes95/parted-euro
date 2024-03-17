@@ -14,7 +14,7 @@ type StripeSessionRequest = {
   items: CartItem[];
 };
 
-async function CreateStripeSession(req: NextApiRequest, res: NextApiResponse) {
+async function POST(req: NextApiRequest, res: NextApiResponse) {
   const redirectURL =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
@@ -151,4 +151,4 @@ async function CreateStripeSession(req: NextApiRequest, res: NextApiResponse) {
   res.json({ url: session.url });
 }
 
-export default CreateStripeSession;
+export default POST;
