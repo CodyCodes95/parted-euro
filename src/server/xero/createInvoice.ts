@@ -81,11 +81,11 @@ export const createInvoice = async (
       name: event.customer_details.name,
       addresses: [
         {
-          addressLine1: event.shipping_details.address.line1,
-          addressLine2: event.shipping_details.address.line2,
-          city: event.shipping_details.address.city,
-          postalCode: event.shipping_details.address.postal_code,
-          country: event.shipping_details.address.country,
+          addressLine1: event.customer_details.address.line1,
+          addressLine2: event.customer_details.address.line2,
+          city: event.customer_details.address.city,
+          postalCode: event.customer_details.address.postal_code,
+          country: event.customer_details.address.country,
         },
       ],
     },
