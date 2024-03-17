@@ -59,6 +59,9 @@ export const orderRouter = router({
     }),
   getAllAdmin: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         orderItems: {
           include: {
