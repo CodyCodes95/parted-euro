@@ -54,7 +54,7 @@ const Orders = () => {
       {
         Header: "Total",
         accessor: (d) =>
-          ((Number(d.subtotal) + Number(d.shipping)) / 100).toLocaleString(
+          (Number(d.subtotal / 100) + Number(d.shipping)).toLocaleString(
             "en-AU",
             {
               style: "currency",

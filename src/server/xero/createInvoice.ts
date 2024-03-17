@@ -138,7 +138,7 @@ export const createInvoice = async (
     },
     data: {
       status: "Paid",
-      shipping,
+      shipping: shipping ?? 0,
       xeroInvoiceId: invoice?.invoiceNumber,
       xeroInvoiceRef: invoice?.invoiceID,
     },
