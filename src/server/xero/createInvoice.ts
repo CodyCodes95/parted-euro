@@ -72,12 +72,22 @@ export const createInvoice = async (
       lineAmount: event.shipping_cost.amount_total / 100,
     });
   }
+  console.log(JSON.stringify(event, null, 2));
 
   const invoiceToCreate: Invoice = {
     type: Invoice.TypeEnum.ACCREC,
     contact: {
       emailAddress: event.customer_details.email,
       name: event.customer_details.name,
+      addresses: [
+        {
+          addressLine1: event.shipping._details.address.line1,
+          addressLine2: event.shipping._details.address.line2,
+          city: event.shipping._details.address.city,
+          postalCode: event.shipping._details.address.postal_code,
+          country: event.shipping._details.address.country,
+        },
+      ],
     },
     date: invoiceDate,
     dueDate: invoiceDate,
@@ -112,7 +122,6 @@ export const createInvoice = async (
       },
     ],
   };
-  
 
   const invoice = createInvoiceResponse?.body?.invoices[0];
 
