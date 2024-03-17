@@ -36,7 +36,6 @@ const Listing: NextPage = () => {
   const router = useRouter();
   const [parts, setParts] = useState<any>(undefined);
 
-
   type ListingType = {
     id: string;
     title: string;
@@ -111,7 +110,7 @@ const Listing: NextPage = () => {
         listingTitle: listing.title,
         listingPrice: listing.price,
         listingImage: listing.images[0]?.url,
-        quantity: 1,
+        quantity: quantity,
         length: listing.parts
           .map((part) => part.partDetails.length)
           .reduce((a, b) => a + b, 0),

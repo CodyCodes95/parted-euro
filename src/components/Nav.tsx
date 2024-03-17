@@ -368,22 +368,14 @@ const Nav = () => {
         <div className="relative">
           {cart.length ? (
             <Badge
-              className="absolute -top-6 left-5 text-xs"
+              className="absolute -top-2 left-5 text-xs"
               variant={"destructive"}
             >
               {cart.length}
             </Badge>
           ) : null}
+          <CartPopover />
         </div>
-        <CartPopover />
-        {/* <Popover onOpenChange={(open) => setCartOpen(open)} open={cartOpen}>
-          <PopoverTrigger>
-            <ShoppingCart className="h-5 w-5" />
-          </PopoverTrigger>
-          <PopoverContent className="mt-5 w-[40rem] bg-white">
-            <CartPopover />
-          </PopoverContent>
-        </Popover> */}
         <div
           className={`p-2 ${!session && !showLogin ? "invisible" : ""} ${
             showLogin && !session ? "visible" : ""

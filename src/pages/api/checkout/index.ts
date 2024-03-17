@@ -107,19 +107,30 @@ async function CreateStripeSession(req: NextApiRequest, res: NextApiResponse) {
         (acc, cur) => acc + cur.price_data.unit_amount * cur.quantity,
         0,
       ),
-      items: {
-        connect: items.reduce(
-          (acc, cur) => {
-            for (let i = 0; i < cur.quantity; i++) {
-              acc.push({ id: cur.listingId });
-            }
-            return acc;
-          },
-          [] as { id: string }[],
-        ),
-      },
     },
   });
+
+  for (const item of items) {
+    const orderItem = await prisma?.orderItem.create({
+      data: {
+        listingId: item.listingId,
+        quantity: item.quantity,
+        orderId: order?.id as string,
+      },
+    });
+    await prisma?.order.update({
+      where: {
+        id: order?.id as string,
+      },
+      data: {
+        orderItems: {
+          connect: {
+            id: orderItem?.id as string,
+          },
+        },
+      },
+    });
+  }
 
   const session = await stripe.checkout.sessions.create({
     customer: customer.id,

@@ -90,19 +90,19 @@ model Donor {
 }
 
 model Listing {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   title        String
-  description  String   @db.Text
+  description  String      @db.Text
   condition    String
   price        Float
   parts        Part[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   images       Image[]
-  active       Boolean  @default(true)
-  listedOnEbay Boolean  @default(false)
-  Orders       Order[]
+  active       Boolean     @default(true)
+  listedOnEbay Boolean     @default(false)
   // ebaySku      String?
+  OrderItem    OrderItem[]
 }
 
 model Part {
@@ -174,18 +174,29 @@ model InventoryLocations {
 }
 
 model Order {
-  id              String    @id @default(cuid())
-  xeroInvoiceId   String?    @unique
+  id              String      @id @default(cuid())
+  xeroInvoiceId   String?     @unique
   name            String
-  items           Listing[]
   email           String
   subtotal        Float
   shipping        Float?
   status          String
   shippingMethod  String?
   shippingAddress String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PartTypes {

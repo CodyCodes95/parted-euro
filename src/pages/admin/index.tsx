@@ -43,7 +43,7 @@ const Admin: NextPage = () => {
     if (renewXeroRes.error) {
       toast.error(
         "Error renewing Xero token. Please try again. Error:",
-        renewXeroRes.error
+        renewXeroRes.error,
       );
     } else {
       toast.success("Xero token renewed");

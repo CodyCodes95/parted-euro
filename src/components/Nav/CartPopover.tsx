@@ -76,11 +76,14 @@ const CartPopover = () => {
                   {item.listingVariant}
                 </p> */}
               </div>
-              <div className="font-medium">
-                {item.listingPrice.toLocaleString("en-AU", {
-                  style: "currency",
-                  currency: "AUD",
-                })}
+              <div className="flex flex-col gap-1">
+                <div className="font-medium">
+                  {item.listingPrice.toLocaleString("en-AU", {
+                    style: "currency",
+                    currency: "AUD",
+                  })}
+                </div>
+                <p className="text-sm ">Qty: {item.quantity}</p>
               </div>
             </Link>
           ))}
