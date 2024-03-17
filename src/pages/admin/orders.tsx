@@ -52,6 +52,14 @@ const Orders = () => {
         accessor: "status",
       },
       {
+        Header: "Type",
+        accessor: (d) => (d.shipping ? "Shipped" : "Pickup"),
+      },
+      {
+        Header: "Shipping Address",
+        accessor: "shippingAddress",
+      },
+      {
         Header: "Total",
         accessor: (d) =>
           (Number(d.subtotal / 100) + Number(d.shipping)).toLocaleString(

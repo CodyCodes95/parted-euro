@@ -140,6 +140,7 @@ export const createInvoice = async (
       status: "Paid",
       shipping: shipping ?? 0,
       xeroInvoiceId: invoice?.invoiceNumber,
+      shippingAddress: `${event.shipping_details.address.line1}, ${event.shipping_details.address.line2}, ${event.shipping_details.address.city}, ${event.shipping_details.address.postal_code}, ${event.shipping_details.address.country}`,
       xeroInvoiceRef: invoice?.invoiceID,
     },
   });
