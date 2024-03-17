@@ -17,8 +17,6 @@ export default async function stripeWebhook(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST") return res.status(405).end();
-
   const rawBody = await buffer(req);
   const stripeSignature = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
