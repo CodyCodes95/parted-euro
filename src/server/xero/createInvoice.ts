@@ -41,7 +41,6 @@ export const createInvoice = async (
 
   const invoiceDate = new Date().toISOString().split("T")[0];
 
-  console.log(console.log(JSON.stringify(lineItems, null, 2)));
 
   const lineItemsFormatted = lineItems.map((item) => {
     return {
@@ -72,8 +71,6 @@ export const createInvoice = async (
       lineAmount: event.shipping_cost.amount_total / 100,
     });
   }
-  console.log(JSON.stringify(event, null, 2));
-  // const xeroContact = xero.accountingApi
   const invoiceToCreate: Invoice = {
     type: Invoice.TypeEnum.ACCREC,
     contact: {

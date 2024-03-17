@@ -40,6 +40,10 @@ const Orders = () => {
         },
       },
       {
+        Header: "Order date",
+        accessor: "createdAt",
+      },
+      {
         Header: "Name",
         accessor: "name",
       },
