@@ -29,11 +29,6 @@ export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  // const { isLoaded } = useLoadScript({
-  //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
-  //   libraries: libraries as any,
-  // });
-
   const calculateAuspostShipping = async () => {
     const largestItem = cart.reduce((prev, current) =>
       prev.length * prev.width * prev.height >
