@@ -1,10 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
+import { PrismaClient } from "@prisma/client";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
 });
+
+const prisma = new PrismaClient();
 
 type StripeSessionRequest = {
   regularShipping: string;
