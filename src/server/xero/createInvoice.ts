@@ -1,4 +1,3 @@
-import { OrderItem } from "./../../pages/admin/listings";
 import type { TokenSet, LineItem } from "xero-node";
 import { XeroClient, Invoice, LineAmountTypes } from "xero-node";
 import { prisma } from "../db/client";
@@ -41,6 +40,7 @@ export const createInvoice = async (
 
   const invoiceDate = new Date().toISOString().split("T")[0];
 
+
   const lineItemsFormatted = lineItems.map((item) => {
     return {
       description: item.description,
@@ -75,15 +75,15 @@ export const createInvoice = async (
     contact: {
       emailAddress: event.customer_details.email,
       name: event.customer_details.name,
-      addresses: [
-        {
-          addressLine1: event.customer_details.address.line1,
-          addressLine2: event.customer_details.address.line2,
-          city: event.customer_details.address.city,
-          postalCode: event.customer_details.address.postal_code,
-          country: event.customer_details.address.country,
-        },
-      ],
+      // addresses: [
+      //   {
+      //     addressLine1: event.customer_details.address.line1,
+      //     addressLine2: event.customer_details.address.line2,
+      //     city: event.customer_details.address.city,
+      //     postalCode: event.customer_details.address.postal_code,
+      //     country: event.customer_details.address.country,
+      //   },
+      // ],
     },
     date: invoiceDate,
     dueDate: invoiceDate,
@@ -93,96 +93,95 @@ export const createInvoice = async (
     lineAmountTypes: LineAmountTypes.Inclusive,
   };
 
-  // const createInvoiceResponse = await xero.accountingApi.createInvoices(
-  //   activeTenantId,
-  //   {
-  //     invoices: [invoiceToCreate],
-  //   },
-  // );
+  const createInvoiceResponse = await xero.accountingApi.createInvoices(
+    activeTenantId,
+    {
+      invoices: [invoiceToCreate],
+    },
+  );
 
-  // if (!createInvoiceResponse?.body?.invoices) {
-  //   throw new Error("No invoice created");
-  // }
+  if (!createInvoiceResponse?.body?.invoices) {
+    throw new Error("No invoice created");
+  }
 
-  // const payment = {
-  //   payments: [
-  //     {
-  //       invoice: {
-  //         invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
-  //       },
-  //       account: {
-  //         code: process.env.XERO_BANK_ACCOUNT,
-  //       },
-  //       date: invoiceDate,
-  //       amount: event.amount_total / 100,
-  //     },
-  //   ],
-  // };
+  const payment = {
+    payments: [
+      {
+        invoice: {
+          invoiceID: createInvoiceResponse?.body?.invoices[0]?.invoiceID,
+        },
+        account: {
+          code: process.env.XERO_BANK_ACCOUNT,
+        },
+        date: invoiceDate,
+        amount: event.amount_total / 100,
+      },
+    ],
+  };
 
-  // const invoice = createInvoiceResponse?.body?.invoices[0];
+  const invoice = createInvoiceResponse?.body?.invoices[0];
 
-  // const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]
-  //   ?.invoiceID as string;
+  const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]
+    ?.invoiceID as string;
 
-  // const paymentResponse = await xero.accountingApi.createPayments(
-  //   activeTenantId,
-  //   payment,
-  // );
-  // const order = await prisma.order.update({
-  //   where: {
-  //     id: event.metadata.orderId,
-  //   },
-  //   data: {
-  //     status: "Paid",
-  //     shipping: shipping ?? 0,
-  //     xeroInvoiceId: invoice?.invoiceNumber,
-  //     shippingAddress: `${event.shipping_details.address.line1}, ${
-  //       event.shipping_details.address.line2 ?? " "
-  //     }, ${event.shipping_details.address.city}, ${
-  //       event.shipping_details.address.postal_code
-  //     }, ${event.shipping_details.address.country}`,
-  //     xeroInvoiceRef: invoice?.invoiceID,
-  //   },
-  // });
-  // const orderItems = await prisma.orderItem.findMany({
-  //   where: {
-  //     orderId: event.metadata.orderId,
-  //   },
-  //   include: {
-  //     listing: true,
-  //   },
-  // });
-  // for (const item of orderItems) {
-  //   const listing = item.listing.id;
-  //   const listingItems = await prisma.listing.findUnique({
-  //     where: {
-  //       id: listing,
-  //     },
-  //     include: {
-  //       parts: true,
-  //     },
-  //   });
-  //   for (const part of listingItems!.parts) {
-  //     await prisma.listing.update({
-  //       where: {
-  //         id: listing,
-  //       },
-  //       data: {
-  //         parts: {
-  //           update: {
-  //             where: {
-  //               id: part.id,
-  //             },
-  //             data: {
-  //               quantity: part.quantity - item.quantity,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     });
-  //   }
-  // }
-  // // await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
-  // return paymentResponse.body;
-  return "";
+  const paymentResponse = await xero.accountingApi.createPayments(
+    activeTenantId,
+    payment,
+  );
+  const order = await prisma.order.update({
+    where: {
+      id: event.metadata.orderId,
+    },
+    data: {
+      status: "Paid",
+      shipping: shipping ?? 0,
+      xeroInvoiceId: invoice?.invoiceNumber,
+      shippingAddress: `${event.shipping_details.address.line1}, ${
+        event.shipping_details.address.line2 ?? " "
+      }, ${event.shipping_details.address.city}, ${
+        event.shipping_details.address.postal_code
+      }, ${event.shipping_details.address.country}`,
+      xeroInvoiceRef: invoice?.invoiceID,
+    },
+  });
+  const orderItems = await prisma.orderItem.findMany({
+    where: {
+      orderId: event.metadata.orderId,
+    },
+    include: {
+      listing: true,
+    },
+  });
+  for (const item of orderItems) {
+    const listing = item.listing.id;
+    const listingItems = await prisma.listing.findUnique({
+      where: {
+        id: listing,
+      },
+      include: {
+        parts: true,
+      },
+    });
+    for (const part of listingItems!.parts) {
+      await prisma.listing.update({
+        where: {
+          id: listing,
+        },
+        data: {
+          parts: {
+            update: {
+              where: {
+                id: part.id,
+              },
+              data: {
+                quantity: part.quantity - item.quantity,
+              },
+            },
+          },
+        },
+      });
+    }
+  }
+  await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
+  return paymentResponse.body;
 };
