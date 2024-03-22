@@ -38,7 +38,7 @@ export default async function stripeWebhook(
         expand: ["data.price.product"],
       });
       try {
-        await createInvoice(data, lineItems.data);
+        createInvoice(data, lineItems.data);
         res.status(200).send(`Invoice created`);
       } catch (err: any) {
         console.log(err);
