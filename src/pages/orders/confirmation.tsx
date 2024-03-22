@@ -13,6 +13,7 @@ import { trpc } from "../../utils/trpc";
 export default function OrderConfirmation() {
   const { cart, setCart } = useCart();
   const router = useRouter();
+  const updateOrder = trpc.orderItems.updateOrderItems.useMutation();
 
   const { data } = trpc.order.getOrder.useQuery({
     id: router.query.orderId as string,
@@ -22,6 +23,7 @@ export default function OrderConfirmation() {
     if (cart.length) {
       setCart([]);
     }
+    updateOrder.mutate({ orderId: router.query.orderId as string });
   }, []);
 
   if (!data) return null;
