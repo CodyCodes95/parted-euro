@@ -9,24 +9,41 @@ import { useEffect } from "react";
 import { useCart } from "../../context/cartContext";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
+import LoadingSpinner from "../../components/ui/Loader";
 
 export default function OrderConfirmation() {
   const { cart, setCart } = useCart();
   const router = useRouter();
   const updateOrder = trpc.orderItems.updateOrderItems.useMutation();
 
-  const { data } = trpc.order.getOrder.useQuery({
-    id: router.query.orderId as string,
-  });
+  const order = trpc.order.getOrder.useQuery(
+    {
+      id: router.query.orderId as string,
+    },
+    {
+      enabled: false,
+    },
+  );
 
   useEffect(() => {
     if (cart.length) {
       setCart([]);
     }
-    updateOrder.mutate({ orderId: router.query.orderId as string });
+    updateOrderAndFetch();
   }, []);
 
-  if (!data) return null;
+  const updateOrderAndFetch = async () => {
+    await updateOrder.mutateAsync({ orderId: router.query.orderId as string });
+    order.refetch();
+  };
+
+  if (updateOrder.isLoading || order.isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -44,15 +61,17 @@ export default function OrderConfirmation() {
         <CardContent className="grid gap-4">
           <div className="grid gap-2 text-sm">
             <div>Name</div>
-            <div className="font-medium">{data.name}</div>
+            <div className="font-medium">{order.data?.name}</div>
           </div>
           <div className="grid gap-2 text-sm">
             <div>Order number</div>
-            <div className="font-medium">{data.xeroInvoiceId}</div>
+            <div className="font-medium">{order.data?.xeroInvoiceId}</div>
           </div>
           <div className="grid gap-2 text-sm">
             <div>Order date</div>
-            <div className="font-medium">{data.createdAt.toLocaleString()}</div>
+            <div className="font-medium">
+              {order.data?.createdAt.toLocaleString()}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -61,7 +80,7 @@ export default function OrderConfirmation() {
           <CardTitle>Items</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4">
-          {data.orderItems.map((item) => (
+          {order.data?.orderItems.map((item) => (
             <div key={item.listing.title} className="flex items-center gap-4">
               <img
                 alt="Thumbnail"
@@ -100,7 +119,7 @@ export default function OrderConfirmation() {
             </div>
             <div>Please check your email for your invoice</div>
             <div className="font-medium">
-              Order reference: #{data.xeroInvoiceId}
+              Order reference: #{order.data?.xeroInvoiceId}
             </div>
             {/* <div className="font-medium">
               Estimated delivery: February 18, 2023

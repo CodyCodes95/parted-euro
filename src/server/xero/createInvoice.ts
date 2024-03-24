@@ -180,6 +180,6 @@ export const createInvoice = async (
   //     });
   //   }
   // }
-  xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
+  await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
   return;
 };
