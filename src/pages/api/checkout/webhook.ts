@@ -39,7 +39,7 @@ export default async function stripeWebhook(
       });
       try {
         await createInvoice(data, lineItems.data);
-        res.status(200).send(`Invoice created`);
+        return res.status(200).send(`Invoice created`);
       } catch (err: any) {
         console.log(err);
         return res
@@ -49,9 +49,9 @@ export default async function stripeWebhook(
     }
 
     console.log(`Webhook received: ${stripeEvent.type}`);
-    res.status(200).send(`Webhook received: ${stripeEvent.type}`);
+    return res.status(200).send(`Webhook received: ${stripeEvent.type}`);
   } catch (err: any) {
     console.log(`Webhook failed ${err.message}`);
-    res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }
