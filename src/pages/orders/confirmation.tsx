@@ -29,8 +29,12 @@ export default function OrderConfirmation() {
     if (cart.length) {
       setCart([]);
     }
-    updateOrderAndFetch();
   }, []);
+
+  useEffect(() => {
+    if (!router.query.orderId) return;
+    updateOrderAndFetch();
+  }, [router.query.orderId])
 
   const updateOrderAndFetch = async () => {
     await updateOrder.mutateAsync({ orderId: router.query.orderId as string });

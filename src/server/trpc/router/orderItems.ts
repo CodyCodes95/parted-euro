@@ -9,6 +9,7 @@ export const orderItemsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log(input.orderId);
       const order = await ctx.prisma.order.findUnique({
         where: {
           id: input.orderId,
