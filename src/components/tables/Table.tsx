@@ -73,7 +73,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
             <tr {...headerGroup.getHeaderGroupProps()} key={i}>
               {headerGroup.headers.map((column, i) => (
                 <th
-                  className="px-6 py-3"
+                  className="px-6 py-3 text-center"
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   key={i}
                 >
@@ -101,7 +101,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
               >
                 {row.cells.map((cell, i) => {
                   return (
-                    <td className="px-4 py-3" {...cell.getCellProps()} key={i}>
+                    <td className="px-4 py-3 text-center" {...cell.getCellProps()} key={i}>
                       {cell.render("Cell")}
                     </td>
                   );

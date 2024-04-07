@@ -10,6 +10,17 @@ import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import type { Column } from "react-table";
 import type { Order } from "@prisma/client";
+import {
+  DialogContent,
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { Mail } from "lucide-react";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
@@ -74,6 +85,10 @@ const Orders = () => {
             },
           ),
       },
+      {
+        Header: "Tracking number ",
+        accessor: (d) => <TrackingNumberModal />,
+      },
     ],
     [],
   );
@@ -106,3 +121,27 @@ const Orders = () => {
 };
 
 export default Orders;
+
+const TrackingNumberModal = () => {
+  const [trackingNumber, setTrackingNumber] = useState<string>("");
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Mail className="text-center" />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Send tracking</DialogTitle>
+        </DialogHeader>
+        <Label>Tracking number</Label>
+        <Input
+          value={trackingNumber}
+          onChange={(e) => setTrackingNumber(e.target.value)}
+        />
+        <div className="flex w-full justify-end">
+          <Button onClick={() => void 1}>Send</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
