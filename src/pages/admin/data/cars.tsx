@@ -26,13 +26,13 @@ const Cars: NextPage = () => {
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [filter, setFilter] = useState<string>("");
 
-
   const cars = trpc.cars.getAll.useQuery();
   const deleteCar = trpc.cars.deleteCar.useMutation();
 
   const deleteCarFunction = async () => {
     if (selectedCar) {
       await deleteCar.mutateAsync({ id: selectedCar.id });
+      cars.refetch();
       setShowDeleteModal(false);
     }
   };
@@ -83,7 +83,7 @@ const Cars: NextPage = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -96,7 +96,7 @@ const Cars: NextPage = () => {
         setShowModal={setShowDeleteModal}
         showModal={showDeleteModal}
       />
-      <main className="m-20 flex min-h-screen flex-col bg-white gap-2">
+      <main className="m-20 flex min-h-screen flex-col gap-2 bg-white">
         <BreadCrumbs />
         {showModal && (
           <AddCar

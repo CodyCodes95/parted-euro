@@ -5,6 +5,7 @@ import { useState } from "react";
 interface CartContextType {
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  emptyCart: () => void;
 }
 
 export type CartItem = {
@@ -23,6 +24,7 @@ export type CartItem = {
 const CartContext = createContext<CartContextType>({
   cart: [],
   setCart: () => void 0,
+  emptyCart: () => void 0,
 });
 
 export const useCart = () => {
@@ -33,6 +35,11 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // Initialize an empty cart
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartSet, setCartSet] = useState(false);
+
+  const emptyCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+  };
 
   useEffect(() => {
     setCart(
@@ -50,7 +57,7 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, [cart]);
 
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
+    <CartContext.Provider value={{ cart, setCart, emptyCart }}>
       {children}
     </CartContext.Provider>
   );

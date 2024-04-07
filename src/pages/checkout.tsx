@@ -7,6 +7,8 @@ import { useCart } from "../context/cartContext";
 import { useEffect, useState } from "react";
 import ReactSelect from "react-select";
 import { toast } from "sonner";
+import logo from "../../public/logo.png";
+import { formatter } from "../utils/formatPrice";
 
 const libraries = ["places"];
 
@@ -107,20 +109,15 @@ export default function CheckoutPage() {
   }, [cart]);
 
   return (
-    <div className="flex min-h-screen flex-col py-4 md:py-8">
-      <header className="mx-auto flex w-full max-w-4xl items-center justify-between px-4 md:px-6">
-        <Link className="flex items-center gap-2 font-semibold" href="#">
-          <Package2Icon className="h-6 w-6" />
-          <span className="">Parted Euro</span>
-        </Link>
-        <Link
-          className="ml-auto flex items-center gap-2 text-sm underline underline-offset-2"
-          href="#"
-        >
-          <ShoppingBag className="h-4 w-4" />
+    <div className="bg-white p-8 md:px-40">
+      <div className="flex items-center justify-between border-b py-2">
+        <img className="w-40" src={logo.src} alt="" />
+
+        <Link className="flex items-center gap-2" href="/listings">
+          <ShoppingBag />
           Return to store
         </Link>
-      </header>
+      </div>
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 md:px-6">
         <section className="flex flex-col gap-4 border-b border-t py-6 md:gap-8">
           <div className="grid gap-2 text-sm">
@@ -131,35 +128,57 @@ export default function CheckoutPage() {
               Your cart contains {cart.length} items
             </p>
           </div>
-          <div className="grid gap-4">
-            {cart?.map((item) => {
-              return (
-                <Link
-                  href={`/listings/listing?id=${item.listingId}`}
-                  key={item.listingId}
-                  className="grid grid-cols-[60px_1fr] items-start gap-4"
-                >
-                  <div className="aspect-square overflow-hidden rounded-lg">
-                    <img
-                      alt="Thumbnail"
-                      className="aspect-object cover-[object-position] rounded-lg"
-                      height="120"
-                      src={item.listingImage}
-                      width="120"
-                    />
-                  </div>
-                  <div className="grid gap-1.5">
-                    <h2 className="text-base font-semibold md:text-lg">
-                      {item.listingTitle}
-                    </h2>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div>Quantity: {item.quantity}</div>
-                      <div>Price: ${item.listingPrice}</div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="space-y-4">
+            {cart.map((item) => (
+              <Link
+                href={`/listings/listing?id=${item.listingId}`}
+                key={item.listingId}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    alt="Product Image"
+                    className="h-10 w-10"
+                    height="40"
+                    src={item.listingImage}
+                    style={{
+                      aspectRatio: "40/40",
+                      objectFit: "cover",
+                    }}
+                    width="40"
+                  />
+                  <p className="text-lg">
+                    {/* {item.listing.title} + {item.listing.partNumbers.join(", ")} */}
+                    {item.listingTitle}
+                  </p>
+                </div>
+                <p>Qty: {item.quantity}</p>
+                <div className="flex items-center space-x-4">
+                  <p>Price: {formatter.format(item.listingPrice)}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="py-4">
+            <div className="grid w-1/2 grid-cols-2">
+              <h3 className="font-semibold">Shipping:</h3>
+              <p>Calculated at checkout</p>
+            </div>
+            <div className="grid w-1/2 grid-cols-2">
+              <h3 className="font-semibold">Total inc. GST:</h3>
+              <p>
+                {cart
+                  ?.reduce(
+                    (acc: number, item) =>
+                      acc + item.listingPrice * item.quantity,
+                    0,
+                  )
+                  .toLocaleString("en-au", {
+                    style: "currency",
+                    currency: "AUD",
+                  })}
+              </p>
+            </div>
           </div>
         </section>
         <form
@@ -172,6 +191,26 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-semibold md:text-xl">
               Shipping information
             </h2>
+            <div className="grid gap-1.5">
+              <Label className="text-sm" htmlFor="zip">
+                Shipping method
+              </Label>
+              <ReactSelect
+                value={shippingMethod}
+                onChange={(e: any) => setShippingMethod(e)}
+                options={
+                  cart.reduce(
+                    (acc, item) => acc + item.weight * item.quantity,
+                    0,
+                  ) < 22
+                    ? [
+                        { label: "Shipped", value: 1 },
+                        { label: "Pickup", value: 0 },
+                      ]
+                    : [{ label: "Pickup", value: 0 }]
+                }
+              />
+            </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-1.5">
                 <Label className="text-sm" htmlFor="name">
@@ -194,26 +233,6 @@ export default function CheckoutPage() {
                 />
               </div>
 
-              <div className="grid gap-1.5">
-                <Label className="text-sm" htmlFor="zip">
-                  Shipping method
-                </Label>
-                <ReactSelect
-                  value={shippingMethod}
-                  onChange={(e: any) => setShippingMethod(e)}
-                  options={
-                    cart.reduce(
-                      (acc, item) => acc + item.weight * item.quantity,
-                      0,
-                    ) < 22
-                      ? [
-                          { label: "Shipped", value: 1 },
-                          { label: "Pickup", value: 0 },
-                        ]
-                      : [{ label: "Pickup", value: 0 }]
-                  }
-                />
-              </div>
               {shippingMethod.value ? (
                 <div className="grid gap-1.5">
                   <Label className="text-sm" htmlFor="zip">
@@ -247,47 +266,9 @@ export default function CheckoutPage() {
           </section>
           <section className="flex flex-col gap-4 py-6">
             <div className="grid gap-4">
-              {/* <div className="grid grid-cols-2 items-start gap-4">
-              <div>Subtotal</div>
-              <div>
-                {cart
-                  ?.reduce(
-                    (acc: number, item) =>
-                      acc + item.listingPrice * item.quantity,
-                    0,
-                  )
-                  .toLocaleString("en-au", {
-                    style: "currency",
-                    currency: "AUD",
-                  })}
-              </div>
-            </div> */}
-              <div className="grid grid-cols-2 items-start gap-4">
-                <div>Shipping</div>
-                <div>Calculated at checkout</div>
-              </div>
-              {/* <div className="grid grid-cols-2 items-start gap-4">
-              <div>Tax</div>
-              <div>$8.79</div>
-            </div> */}
-            </div>
-            <div className="grid grid-cols-2 items-start gap-4 text-lg font-semibold">
-              <div>Total</div>
-              <div>
-                {cart
-                  ?.reduce(
-                    (acc: number, item) =>
-                      acc + item.listingPrice * item.quantity,
-                    0,
-                  )
-                  .toLocaleString("en-au", {
-                    style: "currency",
-                    currency: "AUD",
-                  })}
-              </div>
-            </div>
+           </div>
             <Button type="submit" disabled={validated ? false : true}>
-              Checkout
+              Pay & Review
             </Button>
           </section>
         </form>

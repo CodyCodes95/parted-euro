@@ -259,7 +259,6 @@ const AddDonor: React.FC<AddDonorProps> = ({
             VIN
           </label>
           <input
-            disabled={donor ? true : false}
             type="text"
             value={vin}
             onChange={(e) => setVin(e.target.value)}
