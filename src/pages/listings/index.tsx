@@ -383,6 +383,22 @@ const ListingsResults = ({
   }
   return (
     <>
+      {/* <div className="flex flex-col gap-8">
+        {listings.data?.listings.map((listing) => (
+          <div key={listing.id} className="flex justify-between">
+            <div className="flex flex-col gap-2">
+              <p>{listing.title}</p>
+              <p>{listing.price}</p>
+              <a href="#">View more</a>
+            </div>
+            <img
+              src={listing.images[0]?.url}
+              className="h-36 w-36 rounded-md object-cover"
+              alt=""
+            />
+          </div>
+        ))}
+      </div> */}
       <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
         {listings.data?.listings.map((listing) => (
           <Card key={listing.id}>

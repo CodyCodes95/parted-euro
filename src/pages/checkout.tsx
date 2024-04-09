@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Package2Icon, ShoppingBag } from "lucide-react";
+import { Package2Icon, ShoppingBag, Trash } from "lucide-react";
 import { useCart } from "../context/cartContext";
 import { useEffect, useState } from "react";
 import ReactSelect from "react-select";
@@ -17,7 +17,7 @@ type ShippingAddress = {
 };
 
 export default function CheckoutPage() {
-  const { cart } = useCart();
+  const { cart, setCart } = useCart();
   // const [parent] = useAutoAnimate();
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
@@ -152,9 +152,50 @@ export default function CheckoutPage() {
                     {item.listingTitle}
                   </p>
                 </div>
-                <p>Qty: {item.quantity}</p>
+                <div className="flex items-center gap-2">
+                  <p>Qty:</p>
+                  <Input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      setCart((prev: any) => {
+                        if (prev === undefined) return;
+                        const index = prev.findIndex(
+                          (item: any) => item.listingId === item.listingId,
+                        );
+                        if (index === -1) return prev;
+                        return prev.map((item: any) => {
+                          if (item.listingId === item.listingId) {
+                            return {
+                              ...item,
+                              quantity: Number(e.target.value),
+                            };
+                          }
+                          return item;
+                        });
+                      });
+                    }}
+                  />
+                </div>
                 <div className="flex items-center space-x-4">
                   <p>Price: {formatter.format(item.listingPrice)}</p>
+                  <Trash
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCart((prev: any) => {
+                        if (prev === undefined) return;
+                        const index = prev.findIndex(
+                          (item: any) => item.listingId === item.listingId,
+                        );
+                        if (index === -1) return prev;
+                        return prev.filter((item: any) => {
+                          return item.listingId !== item.listingId;
+                        });
+                      });
+                    }}
+                    className="h-4 w-4 cursor-pointer text-red-500"
+                  />
                 </div>
               </Link>
             ))}
@@ -265,8 +306,7 @@ export default function CheckoutPage() {
           ) : null} */}
           </section>
           <section className="flex flex-col gap-4 py-6">
-            <div className="grid gap-4">
-           </div>
+            <div className="grid gap-4"></div>
             <Button type="submit" disabled={validated ? false : true}>
               Pay & Review
             </Button>
