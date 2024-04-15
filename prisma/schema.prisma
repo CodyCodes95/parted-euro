@@ -14,7 +14,7 @@ datasource db {
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url          = env("DATABASE_URL") 
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -175,9 +175,9 @@ model InventoryLocations {
 }
 
 model Order {
-  id              String      @id @default(cuid())
+  id              String        @id @default(cuid())
   xeroInvoiceRef  String?
-  xeroInvoiceId   String?     @unique
+  xeroInvoiceId   String?       @unique
   name            String
   email           String
   subtotal        Float
@@ -186,9 +186,10 @@ model Order {
   shippingMethod  String?
   shippingAddress String?
   trackingNumber  String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   orderItems      OrderItem[]
+  FailedOrder     FailedOrder[]
 }
 
 model OrderItem {
@@ -211,4 +212,14 @@ model PartTypes {
   parent    PartTypes?   @relation("PartTypeToParent", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   parentId  String?
   children  PartTypes[]  @relation("PartTypeToParent")
+}
+
+model FailedOrder {
+  id          String   @id @default(cuid())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     String
+  stripeEvent Json
+  lineItems   Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

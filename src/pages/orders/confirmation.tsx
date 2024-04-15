@@ -56,6 +56,33 @@ export default function OrderConfirmation() {
       </div>
     );
   }
+
+  if (!order.xeroInvoiceId) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4 text-center">
+        <div className="flex flex-col items-center gap-2">
+          <AlertTriangleIcon className="h-12 w-12 text-red-500" />
+          <h1 className="text-3xl font-bold">Invoice failed to generate</h1>
+          <p className="max-w-[600px] text-gray-500 dark:text-gray-400">
+            We were unable to generate an automatic invoice for your order.
+            There is no need to worry, your payment has been recieved successfully and we will manually send you an invoice via
+            email soon.
+          </p>
+        </div>
+        <Card className="w-full max-w-sm p-0">
+          <CardContent className="flex flex-col gap-4 p-6">
+            <div className="grid gap-2 text-sm">
+              <div className="font-medium">{order.id}</div>
+              <div className="text-gray-500 dark:text-gray-400">
+                Order reference
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-8 md:px-40">
       <div className="flex items-center justify-between border-b py-2">
@@ -157,86 +184,23 @@ export default function OrderConfirmation() {
   );
 }
 
-//   <>
-//     <Card className="mx-auto max-w-3xl">
-//       <CardHeader className="flex flex-row items-center space-y-0">
-//         <CardTitle>Order confirmation</CardTitle>
-//         <Button
-//           onClick={() => window.print()}
-//           className="ml-auto"
-//           variant="secondary"
-//         >
-//           Print
-//         </Button>
-//       </CardHeader>
-//       <CardContent className="grid gap-4">
-//         <div className="grid gap-2 text-sm">
-//           <div>Name</div>
-//           <div className="font-medium">{order.data?.name}</div>
-//         </div>
-//         <div className="grid gap-2 text-sm">
-//           <div>Order number</div>
-//           <div className="font-medium">{order.data?.xeroInvoiceId}</div>
-//         </div>
-//         <div className="grid gap-2 text-sm">
-//           <div>Order date</div>
-//           <div className="font-medium">
-//             {order.data?.createdAt.toLocaleString()}
-//           </div>
-//         </div>
-//       </CardContent>
-//     </Card>
-//     <Card className="mx-auto max-w-3xl">
-//       <CardHeader>
-//         <CardTitle>Items</CardTitle>
-//       </CardHeader>
-//       <CardContent className="grid gap-4">
-//         {order.data?.orderItems.map((item) => (
-//           <div key={item.listing.title} className="flex items-center gap-4">
-//             <img
-//               alt="Thumbnail"
-//               className="aspect-square rounded-md object-cover"
-//               height="100"
-//               src={item.listing.images[0]?.url}
-//               width="100"
-//             />
-//             <div className="grid gap-1 text-sm">
-//               <div className="font-medium">{item.listing.title}</div>
-//             </div>
-//             <div className="ml-auto grid gap-1 text-right">
-//               <div className="font-medium">x{item.quantity}</div>
-//               <div>${item.listing.price * item.quantity}</div>
-//             </div>
-//           </div>
-//         ))}
-//       </CardContent>
-//     </Card>
-//     {/* <Card className="mx-auto max-w-3xl"> */}
-//     {/* <CardHeader>
-//         <CardTitle>Shipping address</CardTitle>
-//       </CardHeader>
-//       <CardContent className="grid gap-2 text-sm">
-//         <div className="font-medium">{data.name}</div>
-//       </CardContent>
-//     </Card> */}
-//     <Card className="mx-auto max-w-3xl">
-//       <CardHeader>
-//         <CardTitle>Confirmation</CardTitle>
-//       </CardHeader>
-//       <CardContent>
-//         <div className="grid gap-1 text-sm">
-//           <div>
-//             Your order has been confirmed. Thank you for shopping with us!
-//           </div>
-//           <div>Please check your email for your invoice</div>
-//           <div className="font-medium">
-//             Order reference: #{order.data?.xeroInvoiceId}
-//           </div>
-//           {/* <div className="font-medium">
-//             Estimated delivery: February 18, 2023
-//           </div> */}
-//         </div>
-//       </CardContent>
-//     </Card>
-//   </>
-// );
+function AlertTriangleIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </svg>
+  );
+}
