@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Package2Icon, ShoppingBag, Trash } from "lucide-react";
+import { ShoppingBag, Trash } from "lucide-react";
 import { useCart } from "../context/cartContext";
 import { useEffect, useState } from "react";
 import ReactSelect from "react-select";

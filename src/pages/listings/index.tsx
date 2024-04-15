@@ -691,10 +691,10 @@ const CarSelection = () => {
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger disabled={!series} value="series">
-            Series
+            {series || "Series"}
           </TabsTrigger>
           <TabsTrigger disabled={!generation} value="generation">
-            Generation
+            {generation || "Generation"}
           </TabsTrigger>
           <TabsTrigger disabled value="model">
             Model

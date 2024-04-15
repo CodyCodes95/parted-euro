@@ -58,6 +58,11 @@ export const carRouter = router({
         NOT: {
           series: "PE000",
         },
+        AND: {
+          NOT: {
+            series: "SS000"
+          }
+        }
       },
       select: {
         series: true,
