@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../trpc";
+import { createInvoice } from "../../xero/createInvoice";
+import Stripe from "stripe";
 
 export const orderRouter = router({
   createOrder: adminProcedure
@@ -78,4 +80,19 @@ export const orderRouter = router({
       },
     });
   }),
+  regenerateInvoice: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const failedOrder = await ctx.prisma.failedOrder.findUnique({
+        where: {
+          orderId: input.id,
+        },
+      });
+      if (!failedOrder) return;
+      createInvoice(failedOrder.stripeEvent, failedOrder.lineItems as any);
+    }),
 });

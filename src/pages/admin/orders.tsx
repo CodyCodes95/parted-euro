@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog";
-import { Mail } from "lucide-react";
+import { File, Mail } from "lucide-react";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 
@@ -32,6 +32,8 @@ const Orders = () => {
   });
 
   const orders = trpc.order.getAllAdmin.useQuery();
+
+  const regenerateInvoice = trpc.order.regenerateInvoice.useMutation();
 
   const columns = useMemo<Array<Column<Order>>>(
     () => [
@@ -88,6 +90,17 @@ const Orders = () => {
       {
         Header: "Tracking number ",
         accessor: (d) => <TrackingNumberModal />,
+      },
+      {
+        Header: "Regenerate invoice",
+        accessor: (d) => (
+          <File
+            onClick={() => {
+              regenerateInvoice.mutateAsync({ id: d.id });
+            }}
+            className="cursor-pointer text-center"
+          />
+        ),
       },
     ],
     [],

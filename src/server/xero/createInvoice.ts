@@ -135,9 +135,11 @@ export const createInvoice = async (
       data: {
         shipping: shipping ?? 0,
         xeroInvoiceId: invoice?.invoiceNumber,
-        shippingAddress: `${event.shipping_details.address.line1}, ${event.shipping_details.address.line2 ?? " "
-          }, ${event.shipping_details.address.city}, ${event.shipping_details.address.postal_code
-          }, ${event.shipping_details.address.country}`,
+        shippingAddress: `${event.shipping_details.address.line1}, ${
+          event.shipping_details.address.line2 ?? " "
+        }, ${event.shipping_details.address.city}, ${
+          event.shipping_details.address.postal_code
+        }, ${event.shipping_details.address.country}`,
         xeroInvoiceRef: invoice?.invoiceID,
       },
     });
@@ -146,5 +148,12 @@ export const createInvoice = async (
     return;
   } catch (err) {
     // write event and lineitems to db
+    await prisma.failedOrder.create({
+      data: {
+        orderId: event.metadata.orderId,
+        stripeEvent: JSON.stringify(event),
+        lineItems: JSON.stringify(lineItems),
+      },
+    });
   }
 };

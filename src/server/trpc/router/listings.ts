@@ -113,11 +113,13 @@ export const listingRouter = router({
             {
               description: {
                 contains: input.search || "",
+                mode: "insensitive",
               },
             },
             {
               title: {
                 contains: input.search || "",
+                mode: "insensitive",
               },
             },
             {
@@ -126,6 +128,7 @@ export const listingRouter = router({
                   partDetails: {
                     partNo: {
                       contains: input.search || "",
+                      mode: "insensitive",
                     },
                   },
                 },
@@ -154,9 +157,11 @@ export const listingRouter = router({
               },
             },
           },
+          // @ts-ignore
           where: queryWhere,
           orderBy,
         });
+        // @ts-ignore
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
         return { listings, count, hasNextPage };
@@ -167,11 +172,13 @@ export const listingRouter = router({
             {
               description: {
                 contains: input.search || "",
+                mode: "insensitive",
               },
             },
             {
               title: {
                 contains: input.search || "",
+                mode: "insensitive",
               },
             },
           ],
@@ -223,9 +230,12 @@ export const listingRouter = router({
               },
             },
           },
+          // @ts-ignore
           where: queryWhere,
           orderBy,
         });
+        
+        // @ts-ignore
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
         return { listings, count, hasNextPage };
@@ -254,27 +264,16 @@ export const listingRouter = router({
             {
               description: {
                 contains: input.search || "",
+                mode: "insensitive",
               },
             },
             {
               title: {
                 contains: input.search || "",
+                mode: "insensitive"
               },
             },
           ],
-          // parts: {
-          //   some: {
-          //     partDetails: {
-          //       cars: {
-          //         some: {
-          //           generation: input.generation,
-          //           model: input.model,
-          //           series: input.series,
-          //         },
-          //       },
-          //     },
-          //   },
-          // },
         },
       });
       return listings;

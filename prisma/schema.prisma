@@ -217,7 +217,7 @@ model PartTypes {
 model FailedOrder {
   id          String   @id @default(cuid())
   order       Order    @relation(fields: [orderId], references: [id])
-  orderId     String
+  orderId     String   @unique
   stripeEvent Json
   lineItems   Json
   createdAt   DateTime @default(now())
