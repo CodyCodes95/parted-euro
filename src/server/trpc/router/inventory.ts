@@ -14,7 +14,7 @@ export const partRouter = router({
         weight: z.number(),
         partTypes: z.array(z.string()),
         alternatePartNos: z.string().optional(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       console.log(`INPUT -----`);
@@ -53,7 +53,7 @@ export const partRouter = router({
         cars: z.array(z.string()),
         partTypes: z.array(z.string()),
         alternatePartNos: z.string().optional(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.partDetail.update({
@@ -80,6 +80,13 @@ export const partRouter = router({
             }),
           },
           cars: {
+            deleteMany: {
+              NOT: {
+                id: {
+                  in: input.cars,
+                },
+              },
+            },
             connect: input.cars.map((id) => {
               return { id };
             }),
@@ -95,7 +102,7 @@ export const partRouter = router({
         quantity: z.number().min(1),
         inventoryLocationId: z.string(),
         variant: z.string().optional(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.create({ data: input });
@@ -107,7 +114,7 @@ export const partRouter = router({
         quantity: z.number().min(1),
         inventoryLocationId: z.string(),
         variant: z.string().optional(),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.update({
@@ -161,7 +168,7 @@ export const partRouter = router({
       z.object({
         id: z.string(),
         quantity: z.number().min(1),
-      })
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.update({
