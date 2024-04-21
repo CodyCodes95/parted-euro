@@ -78,6 +78,9 @@ export const partRouter = router({
             connect: input.partTypes.map((id) => {
               return { id };
             }),
+            disconnect: input.partTypes.map((id) => {
+              return { id };
+            })
           },
           cars: {
             // deleteMany: {
@@ -87,6 +90,9 @@ export const partRouter = router({
             //     },
             //   },
             // },
+            disconnect: input.cars.map((id) => {
+              return { id };
+            }),
             connect: input.cars.map((id) => {
               return { id };
             }),
