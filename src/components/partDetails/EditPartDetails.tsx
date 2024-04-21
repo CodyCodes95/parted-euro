@@ -1,7 +1,7 @@
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import type { Car, Part, PartDetail } from "@prisma/client";
-import {  useState } from "react";
+import { useState } from "react";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
 
@@ -34,7 +34,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
 }) => {
   const [partNo, setPartNo] = useState<string>(selection.partNo);
   const [alternatePartNos, setAlternatePartNos] = useState(
-    selection.alternatePartNumbers || ""
+    selection.alternatePartNumbers || "",
   );
   const [name, setName] = useState<string>(selection.name);
   const [weight, setWeight] = useState<string>(selection.weight.toString());
@@ -42,11 +42,11 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   const [width, setWidth] = useState<string>(selection.width.toString());
   const [height, setHeight] = useState<string>(selection.height.toString());
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>(
-    selection.cars.map((car: any) => car.id)
+    selection.cars.map((car: any) => car.id),
   );
   const [carOptions, setCarOptions] = useState<Array<NestedOptions>>([]);
   const [partTypeIds, setPartTypeIds] = useState<Array<string>>(
-    selection.partTypes.map((category: any) => category.id)
+    selection.partTypes.map((category: any) => category.id),
   );
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
@@ -116,7 +116,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
         onError: (err) => {
           toast.error(err.message);
         },
-      }
+      },
     );
   };
 
@@ -126,7 +126,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
       setIsOpen={setShowModal}
       title="Edit Part Details"
     >
-      <div className="space-y-6 p-6 overflow-auto">
+      <div className="space-y-6 overflow-auto p-6">
         <div className="mb-6">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Name
@@ -251,10 +251,10 @@ const EditPartDetails: React.FC<EditPartProps> = ({
               (options: any, group: any) => [
                 ...options,
                 ...group.options.filter((option: any) =>
-                  compatibleCars.includes(option.value)
+                  compatibleCars.includes(option.value),
                 ),
               ],
-              []
+              [],
             )}
             isMulti
             closeMenuOnSelect={false}
@@ -262,7 +262,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
               return {
                 label: group.label,
                 options: group.options.sort((a, b) =>
-                  a.label.localeCompare(b.label)
+                  a.label.localeCompare(b.label),
                 ),
               };
             })}

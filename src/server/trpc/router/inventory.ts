@@ -55,7 +55,22 @@ export const partRouter = router({
         alternatePartNos: z.string().optional(),
       }),
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const currentPart = await ctx.prisma.partDetail.findUnique({
+        where: {
+          partNo: input.partNo,
+        },
+        include: {
+          partTypes: true,
+          cars: true,
+        },
+      });
+      const partTypesToDisconnect = currentPart?.partTypes.filter(
+        (partType) => !input.partTypes.includes(partType.id),
+      );
+      const carsToDisconnect = currentPart?.cars.filter(
+        (car) => !input.cars.includes(car.id),
+      );
       return ctx.prisma.partDetail.update({
         where: {
           partNo: input.partNo,
@@ -78,9 +93,9 @@ export const partRouter = router({
             connect: input.partTypes.map((id) => {
               return { id };
             }),
-            disconnect: input.partTypes.map((id) => {
-              return { id };
-            })
+            disconnect: partTypesToDisconnect?.map((partType) => {
+              return { id: partType.id };
+            }),
           },
           cars: {
             // deleteMany: {
@@ -90,8 +105,8 @@ export const partRouter = router({
             //     },
             //   },
             // },
-            disconnect: input.cars.map((id) => {
-              return { id };
+            disconnect: carsToDisconnect?.map((car) => {
+              return { id: car.id };
             }),
             connect: input.cars.map((id) => {
               return { id };
