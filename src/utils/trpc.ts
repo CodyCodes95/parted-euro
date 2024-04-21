@@ -18,8 +18,8 @@ export const trpc = createTRPCNext<AppRouter>({
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
-          }
-        }
+          },
+        },
       },
       transformer: superjson,
       links: [
@@ -48,16 +48,23 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 // listings
-export type GetAllListingsAdminOutput = RouterOutputs["listings"]["getAllAdmin"][0]
+export type GetAllListingsAdminOutput =
+  RouterOutputs["listings"]["getAllAdmin"][0];
 
-export type GetAllSubCategoriesQuery = RouterOutputs["categories"]["getAllSubCategories"][0]
+export type GetAllSubCategoriesQuery =
+  RouterOutputs["categories"]["getAllSubCategories"][0];
 
-export type AllPartDetailsQuery = RouterOutputs["partDetails"]["getAll"][0]
+export type AllPartDetailsQuery = RouterOutputs["partDetails"]["getAll"][0];
 
-export type AllPartsQuery = RouterOutputs["parts"]["getAll"][0]
+export type AllPartsQuery = RouterOutputs["parts"]["getAll"][0];
 
-export type QueryDonorGetAllDashboard = RouterOutputs["donors"]["getAllDashboard"][0]
+export type QueryDonorGetAllDashboard =
+  RouterOutputs["donors"]["getAllDashboard"][0];
 
-export type QueryListingsGetAllAdmin = RouterOutputs["listings"]["getAllAdmin"][0]
+export type QueryListingsGetAllAdmin =
+  RouterOutputs["listings"]["getAllAdmin"][0];
 
-export type QueryListingsGetAllAvailable = RouterOutputs["listings"]["getAllAvailable"]
+export type QueryListingsGetAllAvailable =
+  RouterOutputs["listings"]["getAllAvailable"];
+
+export type QueryOrderGetAllAdmin = RouterOutputs["order"]["getAllAdmin"][0];

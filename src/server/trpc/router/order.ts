@@ -68,6 +68,7 @@ export const orderRouter = router({
         createdAt: "desc",
       },
       include: {
+        FailedOrder: true,
         orderItems: {
           include: {
             listing: {

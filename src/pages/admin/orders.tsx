@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import type { QueryOrderGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import AdminTable from "../../components/tables/AdminTable";
 import { useMemo, useState } from "react";
@@ -35,7 +36,7 @@ const Orders = () => {
 
   const regenerateInvoice = trpc.order.regenerateInvoice.useMutation();
 
-  const columns = useMemo<Array<Column<Order>>>(
+  const columns = useMemo<Array<Column<QueryOrderGetAllAdmin>>>(
     () => [
       {
         Header: "ID",
@@ -94,12 +95,16 @@ const Orders = () => {
       {
         Header: "Regenerate invoice",
         accessor: (d) => (
-          <File
-            onClick={() => {
-              regenerateInvoice.mutateAsync({ id: d.id });
-            }}
-            className="cursor-pointer text-center"
-          />
+          <>
+            {!!d.FailedOrder.length && (
+              <File
+                onClick={() => {
+                  regenerateInvoice.mutateAsync({ id: d.id });
+                }}
+                className="cursor-pointer text-center"
+              />
+            )}
+          </>
         ),
       },
     ],
