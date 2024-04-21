@@ -68,25 +68,31 @@ export const partRouter = router({
           weight: input.weight,
           alternatePartNumbers: input.alternatePartNos,
           partTypes: {
-            deleteMany: {
-              NOT: {
-                id: {
-                  in: input.partTypes,
-                },
-              },
-            },
+            // deleteMany: {
+            //   NOT: {
+            //     id: {
+            //       in: input.partTypes,
+            //     },
+            //   },
+            // },
+            disconnect: input.partTypes.map((id) => {
+              return { id };
+            })
             connect: input.partTypes.map((id) => {
               return { id };
             }),
           },
           cars: {
-            deleteMany: {
-              NOT: {
-                id: {
-                  in: input.cars,
-                },
-              },
-            },
+            // deleteMany: {
+            //   NOT: {
+            //     id: {
+            //       in: input.cars,
+            //     },
+            //   },
+            // },
+            disconnect: input.cars.map((id) => {
+              return { id };
+            }),
             connect: input.cars.map((id) => {
               return { id };
             }),
