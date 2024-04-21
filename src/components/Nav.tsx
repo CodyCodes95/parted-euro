@@ -78,9 +78,20 @@ const Nav = () => {
           <div className="flex items-center gap-1">
             <div
               onClick={() => setShowSearch(!showSearch)}
-              className="cursor-pointer p-2"
+              className="cursor-pointer"
             >
               <Search className="text-xl" />
+            </div>
+            <div className="relative">
+              {cart.length ? (
+                <Badge
+                  className="absolute -top-2 left-5 text-xs"
+                  variant={"destructive"}
+                >
+                  {cart.length}
+                </Badge>
+              ) : null}
+              <CartPopover />
             </div>
             <Menu onClick={toggleMenu} className="h-8 w-8 cursor-pointer" />
           </div>

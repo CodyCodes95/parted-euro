@@ -110,20 +110,10 @@ export default function CheckoutPage() {
 
   return (
     <div className="bg-white p-8 md:px-40">
-      <div className="flex items-center justify-between border-b py-2">
-        <img className="w-40" src={logo.src} alt="" />
-
-        <Link className="flex items-center gap-2" href="/listings">
-          <ShoppingBag />
-          Return to store
-        </Link>
-      </div>
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 md:px-6">
-        <section className="flex flex-col gap-4 border-b border-t py-6 md:gap-8">
+        <section className="flex flex-col gap-4 border-b py-6 md:gap-8">
           <div className="grid gap-2 text-sm">
-            <h1 className="text-xl font-semibold md:text-2xl">
-              Review your order
-            </h1>
+            <h1 className="text-xl font-semibold md:text-2xl">Your Cart</h1>
             <p className="text-gray-500 dark:text-gray-400">
               Your cart contains {cart.length} items
             </p>
@@ -133,7 +123,7 @@ export default function CheckoutPage() {
               <Link
                 href={`/listings/listing?id=${item.listingId}`}
                 key={item.listingId}
-                className="flex items-center justify-between"
+                className="flex items-center justify-between "
               >
                 <div className="flex items-center space-x-4">
                   <img
@@ -152,60 +142,67 @@ export default function CheckoutPage() {
                     {item.listingTitle}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <p>Qty:</p>
-                  <Input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) => {
-                      e.preventDefault();
-                      setCart((prev: any) => {
-                        if (prev === undefined) return;
-                        const index = prev.findIndex(
-                          (item: any) => item.listingId === item.listingId,
-                        );
-                        if (index === -1) return prev;
-                        return prev.map((item: any) => {
-                          if (item.listingId === item.listingId) {
-                            return {
-                              ...item,
-                              quantity: Number(e.target.value),
-                            };
-                          }
-                          return item;
+                <div className="flex flex-col flex-col gap-2 md:flex-row">
+                  <div className="flex items-center gap-2">
+                    <p>Qty:</p>
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setCart((prev: any) => {
+                          if (prev === undefined) return;
+                          const index = prev.findIndex(
+                            (item: any) => item.listingId === item.listingId,
+                          );
+                          if (index === -1) return prev;
+                          return prev.map((item: any) => {
+                            if (item.listingId === item.listingId) {
+                              return {
+                                ...item,
+                                quantity: Number(e.target.value),
+                              };
+                            }
+                            return item;
+                          });
                         });
-                      });
-                    }}
-                  />
-                </div>
-                <div className="flex items-center space-x-4">
-                  <p>Price: {formatter.format(item.listingPrice)}</p>
-                  <Trash
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCart((prev: any) => {
-                        if (prev === undefined) return;
-                        const index = prev.findIndex(
-                          (item: any) => item.listingId === item.listingId,
-                        );
-                        if (index === -1) return prev;
-                        return prev.filter((item: any) => {
-                          return item.listingId !== item.listingId;
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between space-x-4">
+                    <p className="flex items-center gap-2">
+                      Price:
+                      <span className="font-bold">
+                        {formatter.format(item.listingPrice)}
+                      </span>
+                    </p>
+                    <Trash
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCart((prev: any) => {
+                          if (prev === undefined) return;
+                          const index = prev.findIndex(
+                            (item: any) => item.listingId === item.listingId,
+                          );
+                          if (index === -1) return prev;
+                          return prev.filter((item: any) => {
+                            return item.listingId !== item.listingId;
+                          });
                         });
-                      });
-                    }}
-                    className="h-4 w-4 cursor-pointer text-red-500"
-                  />
+                      }}
+                      className="h-4 w-4 cursor-pointer text-red-500"
+                    />
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
           <div className="py-4">
-            <div className="grid w-1/2 grid-cols-2">
+            <div className="grid w-3/4 grid-cols-2 md:w-1/2">
               <h3 className="font-semibold">Shipping:</h3>
               <p>Calculated at checkout</p>
             </div>
-            <div className="grid w-1/2 grid-cols-2">
+            <div className="grid w-3/4 grid-cols-2 md:w-1/2">
               <h3 className="font-semibold">Total inc. GST:</h3>
               <p>
                 {cart
