@@ -46,7 +46,9 @@ export function Drawer({
     <VaulDrawer.Root onClose={onClose} open={open}>
       {trigger && <VaulDrawer.Trigger>{trigger}</VaulDrawer.Trigger>}
       <VaulDrawer.Portal>
-        <VaulDrawer.Overlay className="fixed inset-0 z-40 bg-black/40" />
+        <VaulDrawer.Overlay
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-black/40" />
         <VaulDrawer.Content
           className={
             "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-white"

@@ -1,9 +1,10 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDebounce } from "use-debounce";
 import { trpc } from "../../utils/trpc";
-import {AiOutlineArrowRight} from "react-icons/ai"
+import { AiOutlineArrowRight } from "react-icons/ai";
 import { Input } from "../ui/input";
+import { Search } from "lucide-react";
 
 interface searchBarProps {
   showSearch: boolean;
@@ -30,29 +31,35 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
     },
     {
       enabled: debouncedSearch !== "",
-    }
+    },
   );
 
   return (
     <>
       {showSearch && (
-        <div onClick={() => setShowSearch(!showSearch)} className="fixed top-20 left-0 z-[51] h-screen w-full bg-[#00000063]" />
+        <div
+          onClick={() => setShowSearch(!showSearch)}
+          className="fixed left-0 top-20 z-[51] h-screen w-full bg-[#00000063]"
+        />
       )}
       <div
-        className={`absolute top-[-5rem] left-0 z-[55] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
+        className={`absolute left-0 top-[-5rem] z-[55] flex h-20 w-full items-center justify-center bg-white duration-150 ease-linear ${
           showSearch ? "translate-y-[5rem]" : ""
         }`}
       >
-        <div className="flex w-full flex-col items-center">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={searchListings}
-            className="w-[33%]"
-            placeholder="Search by part number, part name, car, etc."
-          />
+        <div className="mx-4 flex w-full flex-col items-center justify-center">
+          <div className="relative w-full md:w-1/2">
+            <Search className="absolute left-2 top-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={searchListings}
+              className="w-full pl-8"
+              placeholder="Search by part number, part name, car, etc."
+            />
+          </div>
           {showSearch && listings.data?.length ? (
-            <div className="absolute flex w-[33%] translate-y-[3.7rem] flex-col bg-white shadow-lg">
+            <div className="absolute flex w-full md:w-1/2 top-20 flex-col bg-white shadow-lg">
               <div className="flex items-center justify-between border-b-2">
                 <h5 className="p-4 text-xl font-bold leading-none text-gray-900 dark:text-white">
                   Products
@@ -70,7 +77,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                         router.push(`/listings/listing?id=${listing.id}`);
                       }}
                       key={listing.id}
-                      className="group cursor-pointer py-3 px-4 hover:bg-gray-300 sm:py-4"
+                      className="group cursor-pointer px-4 py-3 hover:bg-gray-300 sm:py-4"
                     >
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">

@@ -65,6 +65,7 @@ const Listings: NextPage = () => {
   const [sortBy, setSortBy] = useState<"price" | "title" | "updatedAt">(
     "updatedAt",
   );
+
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sessionStorageSet, setSessionStorageSet] = useState(false);
   const [debouncedSearch] = useDebounce(searchQuery, 500);
@@ -320,6 +321,8 @@ const ListingsResults = ({
 }: ListingsResultsProps) => {
   const { series, generation, model, category, subcat, page } = query;
 
+  const isMobile = useIsMobile();
+
   const listings = trpc.listings.getAllAvailable.useQuery({
     series: series as string,
     generation: generation as string,
@@ -352,7 +355,7 @@ const ListingsResults = ({
     );
   };
 
-  if (listings.isLoading) {
+  if (listings.isLoading && !isMobile) {
     return (
       <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
         {[...Array(20)].map((_, i) => (
@@ -365,6 +368,25 @@ const ListingsResults = ({
               </div>
             </CardContent>
           </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (listings.isLoading && isMobile) {
+    return (
+      <div className="mt-8 flex flex-col gap-8">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="flex justify-between rounded-lg p-2 shadow-md"
+          >
+            <div className="flex flex-col gap-2">
+              <div className="h-4 w-40 animate-pulse bg-gray-200 text-sm font-medium" />
+              <div className="mt-1 h-4 animate-pulse bg-gray-200 text-lg font-bold" />
+            </div>
+            <div className="h-36 w-36 animate-pulse rounded-md bg-gray-200 object-cover" />
+          </div>
         ))}
       </div>
     );
@@ -383,43 +405,56 @@ const ListingsResults = ({
   }
   return (
     <>
-      {/* <div className="flex flex-col gap-8">
-        {listings.data?.listings.map((listing) => (
-          <div key={listing.id} className="flex justify-between">
-            <div className="flex flex-col gap-2">
-              <p>{listing.title}</p>
-              <p>{listing.price}</p>
-              <a href="#">View more</a>
-            </div>
-            <img
-              src={listing.images[0]?.url}
-              className="h-36 w-36 rounded-md object-cover"
-              alt=""
-            />
-          </div>
-        ))}
-      </div> */}
-      <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
-        {listings.data?.listings.map((listing) => (
-          <Card key={listing.id}>
-            <Link href={`/listings/listing?id=${listing.id}`}>
-              <CardContent className="p-0">
-                <img
-                  alt="Product image"
-                  className="max-h-80 w-full rounded-md object-cover"
-                  src={listing.images[0]?.url}
-                />
-                <div className="p-2">
-                  <div className="mt-2 text-sm font-medium">
-                    {listing.title}
-                  </div>
-                  <div className="mt-1 text-lg font-bold">${listing.price}</div>
-                </div>
-              </CardContent>
+      {isMobile && (
+        <div className="mt-8 flex flex-col gap-8">
+          {listings.data?.listings.map((listing) => (
+            <Link
+              href={`/listings/listing?id=${listing.id}`}
+              key={listing.id}
+              className="flex justify-between rounded-lg p-2 shadow-md"
+            >
+              <div className="flex flex-col gap-4">
+                <p className="text-sm font-medium">{listing.title}</p>
+                <p className="text-lg font-bold">${listing.price}</p>
+              </div>
+              <img
+                // @ts-ignore
+                src={listing.images[0]?.url}
+                className="h-36 w-36 rounded-md object-cover"
+                alt=""
+              />
             </Link>
-          </Card>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+      {!isMobile && (
+        <>
+          <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
+            {listings.data?.listings.map((listing) => (
+              <Card key={listing.id}>
+                <Link href={`/listings/listing?id=${listing.id}`}>
+                  <CardContent className="p-0">
+                    <img
+                      alt="Product image"
+                      className="max-h-80 w-full rounded-md object-cover"
+                      // @ts-ignore
+                      src={listing.images[0]?.url}
+                    />
+                    <div className="p-2">
+                      <div className="mt-2 text-sm font-medium">
+                        {listing.title}
+                      </div>
+                      <div className="mt-1 text-lg font-bold">
+                        ${listing.price}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
       <div className="p-4" />
 
       <Pagination>
@@ -440,27 +475,43 @@ const ListingsResults = ({
             Number(router.query.page ?? 0),
             Number(router.query.page ?? 0) + 1,
             Number(router.query.page ?? 0) + 2,
-          ].map((page, i) => {
-            if (page < 1) return null;
-            if (i > 3) return null;
-            if (
-              (!listings.data?.hasNextPage && i === 3) ||
-              (!listings.data?.hasNextPage && i === 3)
-            )
-              return null;
-            return (
-              <PaginationItem key={page}>
+            Number(router.query.page ?? 0) + 3,
+          ]
+            .filter((page) => page > 0)
+            .filter((page) => page <= listings.data!.totalPages)
+            .map((page, i) => {
+              if (i > 4) return null;
+              if (
+                (!listings.data?.hasNextPage && i === 3) ||
+                (!listings.data?.hasNextPage && i === 3)
+              )
+                return null;
+              return (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    className="cursor-pointer"
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    isActive={Number(router.query.page ?? 0) === page}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
+          {listings.data!.totalPages > Number(page ?? 0) + 4 && (
+            <>
+              <PaginationEllipsis />
+              <PaginationItem className="cursor-pointer">
                 <PaginationLink
                   className="cursor-pointer"
-                  key={page}
-                  onClick={() => handlePageClick(page)}
-                  isActive={Number(router.query.page ?? 0) === page}
+                  onClick={() => handlePageClick(listings.data!.totalPages)}
                 >
-                  {page}
+                  {listings.data?.totalPages}
                 </PaginationLink>
               </PaginationItem>
-            );
-          })}
+            </>
+          )}
           {listings.data?.hasNextPage && (
             <PaginationItem className="cursor-pointer">
               <PaginationNext
