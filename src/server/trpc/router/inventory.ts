@@ -75,9 +75,6 @@ export const partRouter = router({
             //     },
             //   },
             // },
-            disconnect: input.partTypes.map((id) => {
-              return { id };
-            })
             connect: input.partTypes.map((id) => {
               return { id };
             }),
@@ -90,9 +87,6 @@ export const partRouter = router({
             //     },
             //   },
             // },
-            disconnect: input.cars.map((id) => {
-              return { id };
-            }),
             connect: input.cars.map((id) => {
               return { id };
             }),
