@@ -107,6 +107,11 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           setPartNo("");
           setName("");
           setAlternatePartNos("");
+          setWeight("");
+          setLength("");
+          setWidth("");
+          setHeight("");
+          setPartTypeIds([]);
           setCompatibleCars([]);
           refetch();
           if (exit) {

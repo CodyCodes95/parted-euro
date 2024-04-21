@@ -196,7 +196,7 @@ model OrderItem {
   id        String   @id @default(cuid())
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   String
-  listing   Listing  @relation(fields: [listingId], references: [id])
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   listingId String
   quantity  Int
   createdAt DateTime @default(now())

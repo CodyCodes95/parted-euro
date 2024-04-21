@@ -11,7 +11,7 @@ type AddPartProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
-}
+};
 
 interface Options {
   label: string;
@@ -57,7 +57,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           setCarOptions((prevState: Array<NestedOptions>) => {
             if (
               prevState.some(
-                (group: NestedOptions) => group.label === car.series
+                (group: NestedOptions) => group.label === car.series,
               )
             ) {
               return prevState.map((group: NestedOptions) => {
@@ -86,7 +86,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           });
         });
       },
-    }
+    },
   );
 
   const savePartDetail = trpc.parts.createPartDetail.useMutation();
@@ -110,6 +110,11 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           setPartNo("");
           setName("");
           setCompatibleCars([]);
+          setWeight("");
+          setLength("");
+          setWidth("");
+          setHeight("");
+          setPartTypeIds([]);
           refetch();
           if (exit) {
             setShowModal(false);
@@ -118,7 +123,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         onError: (err) => {
           toast.error(err.message);
         },
-      }
+      },
     );
   };
 
@@ -246,7 +251,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 return {
                   label: group.label,
                   options: group.options.sort((a, b) =>
-                    a.label.localeCompare(b.label)
+                    a.label.localeCompare(b.label),
                   ),
                 };
               })}

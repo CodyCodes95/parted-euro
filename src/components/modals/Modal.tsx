@@ -40,7 +40,7 @@ const Modal: FC<ModalProps> = ({
         {/* <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white p-2 max-h-[45rem] overflow-y-scroll"> */}
         <Dialog.Panel
           className={cn(
-            "mx-auto max-h-[45rem] overflow-y-scroll rounded-lg bg-white p-2",
+            "mx-auto max-h-[80vh] overflow-y-scroll rounded-lg bg-white p-2",
             width,
           )}
         >

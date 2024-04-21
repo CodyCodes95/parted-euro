@@ -15,10 +15,11 @@ type TableProps = {
   columns: Array<Column<any>>;
   filter?: string;
   setFilter?: React.Dispatch<React.SetStateAction<string>>;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
-  const [currentPage, setCurrentPage] = useState<number>(0);
+const TableControls: React.FC<TableProps> = ({ data, columns, filter, setCurrentPage, currentPage }) => {
   const [previousSetPage, setPreviousSetPage] = useState<number>(0);
   const {
     getTableProps,
@@ -40,7 +41,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
     {
       columns,
       data,
-      initialState: { pageSize: 15, pageIndex: currentPage, globalFilter: filter },
+      initialState: { pageSize: 15, pageIndex: currentPage },
     },
     useGlobalFilter,
     useSortBy,
@@ -187,4 +188,4 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
   );
 };
 
-export default Table;
+export default TableControls;
