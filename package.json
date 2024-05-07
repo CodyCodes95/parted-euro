@@ -7,7 +7,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "email": "email dev"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -55,6 +56,9 @@
     "react-responsive-carousel": "^3.2.23",
     "react-select": "^5.7.0",
     "react-table": "^7.8.0",
+    "@react-email/components": "0.0.16",
+    "react-email": "2.1.1",
+    "resend": "^3.2.0",
     "sonner": "^1.0.3",
     "stripe": "^11.6.0",
     "superjson": "1.9.1",

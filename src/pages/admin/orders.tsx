@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import type { QueryOrderGetAllAdmin } from "../../utils/trpc";
+import type { OrderWithItems, QueryOrderGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import AdminTable from "../../components/tables/AdminTable";
 import { useMemo, useState } from "react";
@@ -22,6 +22,7 @@ import {
 import { File, Mail } from "lucide-react";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
@@ -90,7 +91,7 @@ const Orders = () => {
       },
       {
         Header: "Tracking number ",
-        accessor: (d) => <TrackingNumberModal />,
+        accessor: (d) => <TrackingNumberModal order={d} />,
       },
       {
         Header: "Regenerate invoice",
@@ -140,8 +141,34 @@ const Orders = () => {
 
 export default Orders;
 
-const TrackingNumberModal = () => {
-  const [trackingNumber, setTrackingNumber] = useState<string>("");
+type TrackingNumberModalProps = {
+  order: OrderWithItems;
+};
+
+const TrackingNumberModal = ({ order }: TrackingNumberModalProps) => {
+  const [trackingNumber, setTrackingNumber] = useState<string>(
+    order?.trackingNumber ?? "",
+  );
+
+  const updateOrder = trpc.order.updateOrder.useMutation();
+
+  const onSave = async () => {
+    if (!order) return;
+    await updateOrder.mutateAsync({
+      id: order.id,
+      trackingNumber: trackingNumber,
+    });
+    fetch("/api/resend/orderShipped", {
+      method: "POST",
+      body: JSON.stringify({
+        order: {
+          ...order,
+          trackingNumber,
+        },
+      }),
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -157,7 +184,9 @@ const TrackingNumberModal = () => {
           onChange={(e) => setTrackingNumber(e.target.value)}
         />
         <div className="flex w-full justify-end">
-          <Button onClick={() => void 1}>Send</Button>
+          <DialogClose>
+            <Button onClick={onSave}>Send</Button>
+          </DialogClose>
         </div>
       </DialogContent>
     </Dialog>

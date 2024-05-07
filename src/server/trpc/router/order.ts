@@ -96,4 +96,21 @@ export const orderRouter = router({
       if (!failedOrder) return;
       createInvoice(failedOrder.stripeEvent, failedOrder.lineItems as any);
     }),
+  updateOrder: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        trackingNumber: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.order.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          trackingNumber: input.trackingNumber,
+        },
+      });
+    }),
 });

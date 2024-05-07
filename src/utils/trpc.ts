@@ -68,3 +68,5 @@ export type QueryListingsGetAllAvailable =
   RouterOutputs["listings"]["getAllAvailable"];
 
 export type QueryOrderGetAllAdmin = RouterOutputs["order"]["getAllAdmin"][0];
+
+export type OrderWithItems = RouterOutputs["order"]["getOrder"];
