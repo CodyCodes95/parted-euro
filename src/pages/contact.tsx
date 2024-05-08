@@ -9,11 +9,13 @@ const contact: NextPage = () => {
         </h1>
         <p className="mb-2">
           <span className="font-semibold">Email: </span>
-          contact@partedeuro.com.au
+          <a href="mailto:contact@partedeuro.com.au">
+            contact@partedeuro.com.au
+          </a>
         </p>
         <p className="mb-2">
           <span className="font-semibold">Phone: </span>
-          0431 133 764
+          <a href="tel:0431133764">0431 133 764</a>
         </p>
         <p className="mb-1 font-bold">Hours:</p>
         <p className="mb-2">Open via Appointment only.</p>

@@ -9,6 +9,7 @@ import ReactSelect from "react-select";
 import { toast } from "sonner";
 import logo from "../../public/logo.png";
 import { formatter } from "../utils/formatPrice";
+import { useQuery } from "@tanstack/react-query";
 
 const libraries = ["places"];
 
@@ -21,55 +22,50 @@ export default function CheckoutPage() {
   // const [parent] = useAutoAnimate();
 
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
-  const [shippingMethod, setShippingMethod] = useState<any>({
-    label: "Pickup",
-    value: 0,
-  });
-  const [expressCost, setExpressCost] = useState(0);
-  const [regularCost, setRegularCost] = useState(0);
   const [validated, setValidated] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const calculateAuspostShipping = async () => {
-    const largestItem = cart.reduce((prev, current) =>
-      prev.length * prev.width * prev.height >
-      current.length * current.width * current.height
-        ? prev
-        : current,
-    );
-    const res = await fetch(`/api/checkout/shipping`, {
-      method: "POST",
-      body: JSON.stringify({
-        length: largestItem.length,
-        width: largestItem.width,
-        height: largestItem.height,
-        weight: cart.reduce(
-          (acc, item) => acc + item.weight * item.quantity,
-          0,
-        ),
-        from: "3152",
-        to: shippingAddress?.postCode,
-      }) as any,
-    });
-    const data = await res.json();
-    if (!res.ok) return toast.error(data.error);
-    let express = Number(data.express);
-    let regular = Number(data.regular);
-    const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-    for (let i = 0; i < cartItems - 1; i++) {
-      express += express * 0.1;
-      regular += regular * 0.1;
-    }
-    setExpressCost(Number(express.toFixed(2)));
-    setRegularCost(Number(regular.toFixed(2)));
-  };
-
-  useEffect(() => {
-    if (shippingAddress?.postCode.length === 4) {
-      calculateAuspostShipping();
-    }
-  }, [shippingAddress?.postCode, cart]);
+  const { data: auspostShipping } = useQuery({
+    queryKey: ["auspostShipping", shippingAddress?.postCode],
+    queryFn: async () => {
+      const largestItem = cart.reduce((prev, current) =>
+        prev.length * prev.width * prev.height >
+        current.length * current.width * current.height
+          ? prev
+          : current,
+      );
+      const res = await fetch(`/api/checkout/shipping`, {
+        method: "POST",
+        body: JSON.stringify({
+          length: largestItem.length,
+          width: largestItem.width,
+          height: largestItem.height,
+          weight: cart.reduce(
+            (acc, item) => acc + item.weight * item.quantity,
+            0,
+          ),
+          from: "3152",
+          to: shippingAddress?.postCode,
+        }) as any,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      let express = Number(data.express);
+      let regular = Number(data.regular);
+      const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+      for (let i = 0; i < cartItems - 1; i++) {
+        express += express * 0.1;
+        regular += regular * 0.1;
+      }
+      return {
+        express: express.toFixed(2),
+        regular: regular.toFixed(2),
+      };
+    },
+    enabled: shippingAddress?.postCode.length === 4,
+  });
 
   const submitCheckout = async () => {
     if (!validated) return toast.error("Please fill out all fields");
@@ -77,8 +73,8 @@ export default function CheckoutPage() {
       method: "POST",
       body: JSON.stringify({
         items: cart,
-        regularShipping: regularCost,
-        expressShipping: expressCost,
+        regularShipping: auspostShipping!.regular,
+        expressShipping: auspostShipping!.express,
         email,
         name,
       }),
@@ -88,25 +84,25 @@ export default function CheckoutPage() {
   };
 
   useEffect(() => {
-    if ((regularCost && name && email) || shippingMethod.value === 0) {
+    if (auspostShipping && name && email && acceptTerms) {
       setValidated(true);
     } else {
       setValidated(false);
     }
-  }, [regularCost, expressCost, shippingMethod.value]);
+  }, [auspostShipping, name, email, acceptTerms]);
 
-  useEffect(() => {
-    if (
-      cart.reduce((acc, item) => acc + item.weight * item.quantity, 0) >= 22
-    ) {
-      setShippingMethod({
-        label: "Pickup",
-        value: 0,
-      });
-      setExpressCost(0);
-      setRegularCost(0);
-    }
-  }, [cart]);
+  // useEffect(() => {
+  //   if (
+  //     cart.reduce((acc, item) => acc + item.weight * item.quantity, 0) >= 22
+  //   ) {
+  //     setShippingMethod({
+  //       label: "Pickup",
+  //       value: 0,
+  //     });
+  //     setExpressCost(0);
+  //     setRegularCost(0);
+  //   }
+  // }, [cart]);
 
   return (
     <div className="bg-white p-8 md:px-40">
@@ -229,26 +225,6 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-semibold md:text-xl">
               Shipping information
             </h2>
-            <div className="grid gap-1.5">
-              <Label className="text-sm" htmlFor="zip">
-                Shipping method
-              </Label>
-              <ReactSelect
-                value={shippingMethod}
-                onChange={(e: any) => setShippingMethod(e)}
-                options={
-                  cart.reduce(
-                    (acc, item) => acc + item.weight * item.quantity,
-                    0,
-                  ) < 22
-                    ? [
-                        { label: "Shipped", value: 1 },
-                        { label: "Pickup", value: 0 },
-                      ]
-                    : [{ label: "Pickup", value: 0 }]
-                }
-              />
-            </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-1.5">
                 <Label className="text-sm" htmlFor="name">
@@ -271,24 +247,38 @@ export default function CheckoutPage() {
                 />
               </div>
 
-              {shippingMethod.value ? (
-                <div className="grid gap-1.5">
-                  <Label className="text-sm" htmlFor="zip">
-                    Postcode
-                  </Label>
-                  <Input
-                    value={shippingAddress?.postCode}
-                    onChange={(e) => {
-                      setShippingAddress({
-                        ...shippingAddress,
-                        postCode: e.target.value,
-                      });
-                    }}
-                    id="postcode"
-                    placeholder="Enter your postcode"
+              <div className="grid gap-1.5">
+                <Label className="text-sm" htmlFor="zip">
+                  Postcode
+                </Label>
+                <Input
+                  value={shippingAddress?.postCode}
+                  onChange={(e) => {
+                    setShippingAddress({
+                      ...shippingAddress,
+                      postCode: e.target.value,
+                    });
+                  }}
+                  id="postcode"
+                  placeholder="Enter your postcode"
+                />
+              </div>
+              <div className="grid gap-1.5">
+                <Label className="text-sm" htmlFor="zip">
+                  Terms and conditions
+                </Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
                   />
+                  <span>
+                    I agree to the{" "}
+                    <Link target="_blank" className="hover:underline text-blue-500" href="/terms-and-conditions">Terms and Conditions</Link>
+                  </span>
                 </div>
-              ) : null}
+              </div>
               {cart.reduce(
                 (acc, item) => acc + item.weight * item.quantity,
                 0,

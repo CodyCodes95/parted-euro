@@ -12,8 +12,8 @@ const Footer: React.FC = () => {
           </h4>
           <div className="p-2 text-xl"></div>
           <p>Feel free to call or email us at:</p>
-          <p>Mobile: 0431 133 764</p>
-          <p>Email: contact@partedeuro.com</p>
+          <p>Mobile: <a href="tel:0431133764">0431 133 764</a></p>
+          <p>Email: <a href="mailto:contact@partedeuro.com.au">contact@partedeuro.com.au</a></p>
         </div>
         <div className="text-md flex w-full flex-col p-4 text-[#4d4d4d] md:w-[50%]">
           <p className="p-1">

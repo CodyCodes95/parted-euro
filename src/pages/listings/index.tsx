@@ -77,6 +77,7 @@ const Listings: NextPage = () => {
           pathname: router.pathname,
           query: {
             ...router.query,
+            search: debouncedSearch,
             page: 1,
           },
         },
@@ -101,8 +102,8 @@ const Listings: NextPage = () => {
   }, [subcat]);
 
   useEffect(() => {
-    if (series && generation && model) {
-      setSelectedCar(`${series} ${generation} ${model}`);
+    if (series) {
+      setSelectedCar(`${series} ${generation ?? ""} ${model ?? ""}`);
     }
   }, [series, generation, model]);
 

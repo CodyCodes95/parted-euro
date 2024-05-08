@@ -1,8 +1,5 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { trpc } from "../utils/trpc";
-import { useState } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,32 +15,11 @@ import five from "../../public/5.jpg";
 import six from "../../public/6.jpg";
 import eight from "../../public/8.jpg";
 import nine from "../../public/9.jpg";
+import Link from "next/link";
 
 const carImages = [carImg, four, five, six, eight, nine];
 
 const Home: NextPage = () => {
-  const [carSelectOpen, setCarSelectOpen] = useState<boolean>(false);
-  const [series, setSeries] = useState<string>("");
-  const [generation, setGeneration] = useState<string>("");
-  const [model, setModel] = useState<string>("");
-
-  const router = useRouter();
-
-  const cars = trpc.cars.getAllSeries.useQuery(undefined, {});
-
-  const generations = trpc.cars.getMatchingGenerations.useQuery(
-    { series },
-    {
-      enabled: series !== "",
-    },
-  );
-
-  const models = trpc.cars.getMatchingModels.useQuery(
-    { series, generation },
-    {
-      enabled: generation !== "",
-    },
-  );
 
   return (
     <>
@@ -118,13 +94,11 @@ const Home: NextPage = () => {
                     BMW&apos;s.
                   </p>
                   <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
-                    <Button
-                      className="text-black"
-                      variant="outline"
-                      onClick={() => router.push("/listings?page=1")}
-                    >
-                      BROWSE STORE
-                    </Button>
+                    <Link href="/listings?page=1">
+                      <Button className="text-black" variant="outline">
+                        BROWSE STORE
+                      </Button>
+                    </Link>
                   </div>
                 </motion.div>
               </AnimatePresence>
