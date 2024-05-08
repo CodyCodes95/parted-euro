@@ -269,6 +269,7 @@ export default function CheckoutPage() {
                 </Label>
                 <div className="flex items-center gap-2">
                   <input
+                    className="w-4 h-4"
                     type="checkbox"
                     checked={acceptTerms}
                     onChange={(e) => setAcceptTerms(e.target.checked)}
