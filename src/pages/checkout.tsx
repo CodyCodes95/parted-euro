@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                   />
                   <span>
                     I agree to the{" "}
-                    <Link target="_blank" className="hover:underline text-blue-500" href="/terms-and-conditions">Terms and Conditions</Link>
+                    <Link target="_blank" className="hover:underline text-blue-500" href="/returns-refunds">Terms and Conditions</Link>
                   </span>
                 </div>
               </div>
