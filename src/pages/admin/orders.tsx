@@ -19,13 +19,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog";
-import { File, Mail } from "lucide-react";
+import {
+  File,
+  Mail,
+  Option,
+  Package,
+  RefreshCcw,
+  Settings,
+} from "lucide-react";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { DialogClose } from "@radix-ui/react-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
+  const [selectedOrder, setSelectedOrder] = useState<
+    OrderWithItems | undefined
+  >();
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -36,6 +60,8 @@ const Orders = () => {
   const orders = trpc.order.getAllAdmin.useQuery();
 
   const regenerateInvoice = trpc.order.regenerateInvoice.useMutation();
+  const sendOrderReadyForPickup =
+    trpc.order.sendOrderReadyForPickup.useMutation();
 
   const columns = useMemo<Array<Column<QueryOrderGetAllAdmin>>>(
     () => [
@@ -90,22 +116,40 @@ const Orders = () => {
           ),
       },
       {
-        Header: "Tracking number ",
-        accessor: (d) => <TrackingNumberModal order={d} />,
-      },
-      {
-        Header: "Regenerate invoice",
+        Header: "Options",
         accessor: (d) => (
-          <>
-            {!!d.FailedOrder.length && (
-              <File
-                onClick={() => {
-                  regenerateInvoice.mutateAsync({ id: d.id });
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Settings />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem onClick={() => setSelectedOrder(d)}>
+                <Package className="mr-2 h-4 w-4" />
+                <span>Add tracking number</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  await sendOrderReadyForPickup.mutateAsync({ order: d });
+                  toast.success("Email sent");
                 }}
-                className="cursor-pointer text-center"
-              />
-            )}
-          </>
+              >
+                <File className="mr-2 h-4 w-4" />
+                <span>Ready for pickup</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  await regenerateInvoice.mutateAsync({ id: d.id });
+                  toast.success("Email sent");
+                }}
+                disabled={!d.FailedOrder.length}
+              >
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                <span>Regenerate invoice</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ),
       },
     ],
@@ -135,6 +179,13 @@ const Orders = () => {
           data={orders}
         />
       </main>
+      <TrackingNumberModal
+        order={selectedOrder}
+        open={!!selectedOrder}
+        onOpenChange={(open) => {
+          if (!open) setSelectedOrder(undefined);
+        }}
+      />
     </>
   );
 };
@@ -142,14 +193,21 @@ const Orders = () => {
 export default Orders;
 
 type TrackingNumberModalProps = {
-  order: OrderWithItems;
+  order: OrderWithItems | undefined;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
-const TrackingNumberModal = ({ order }: TrackingNumberModalProps) => {
+const TrackingNumberModal = ({
+  order,
+  onOpenChange,
+  open,
+}: TrackingNumberModalProps) => {
   const [trackingNumber, setTrackingNumber] = useState<string>(
     order?.trackingNumber ?? "",
   );
 
+  const sendOrderShippedEmail = trpc.order.sendOrderShippedEmail.useMutation();
   const updateOrder = trpc.order.updateOrder.useMutation();
 
   const onSave = async () => {
@@ -158,22 +216,12 @@ const TrackingNumberModal = ({ order }: TrackingNumberModalProps) => {
       id: order.id,
       trackingNumber: trackingNumber,
     });
-    fetch("/api/resend/orderShipped", {
-      method: "POST",
-      body: JSON.stringify({
-        order: {
-          ...order,
-          trackingNumber,
-        },
-      }),
-    });
+    await sendOrderShippedEmail.mutateAsync({ order });
+    toast.success("Email sent");
   };
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Mail className="text-center" />
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Send tracking</DialogTitle>

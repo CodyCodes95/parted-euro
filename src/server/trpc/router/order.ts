@@ -2,6 +2,10 @@ import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../trpc";
 import { createInvoice } from "../../xero/createInvoice";
 import Stripe from "stripe";
+import {
+  sendOrderReadyForPickupEmail,
+  sendOrderShippedEmail,
+} from "../../resend/resend";
 
 export const orderRouter = router({
   createOrder: adminProcedure
@@ -112,5 +116,62 @@ export const orderRouter = router({
           trackingNumber: input.trackingNumber,
         },
       });
+    }),
+  sendOrderReadyForPickup: adminProcedure
+    .input(
+      z.object({
+        order: z.object({
+          id: z.string(),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.findUnique({
+        where: {
+          id: input.order.id,
+        },
+        include: {
+          orderItems: {
+            include: {
+              listing: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!order) return;
+      await sendOrderReadyForPickupEmail(order);
+    }),
+  sendOrderShippedEmail: adminProcedure
+    .input(
+      z.object({
+        order: z.object({
+          id: z.string(),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.findUnique({
+        where: {
+          id: input.order.id,
+        },
+        include: {
+          orderItems: {
+            include: {
+              listing: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
+          FailedOrder: true,
+        },
+      });
+      if (!order) throw new Error("Order not found");
+      sendOrderShippedEmail(order);
     }),
 });

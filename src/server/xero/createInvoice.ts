@@ -2,6 +2,7 @@ import type { TokenSet, LineItem } from "xero-node";
 import { XeroClient, Invoice, LineAmountTypes } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
+import { sendNewOrderEmail } from "../resend/resend";
 
 const xero = new XeroClient({
   clientId: process.env.XERO_CLIENT_ID as string,
@@ -143,7 +144,7 @@ export const createInvoice = async (
         xeroInvoiceRef: invoice?.invoiceID,
       },
     });
-
+    sendNewOrderEmail(order);
     await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
     return;
   } catch (err) {

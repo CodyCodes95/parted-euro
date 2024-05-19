@@ -14,7 +14,7 @@ import logo from "../../public/logo.png";
 import type { Order } from "@prisma/client";
 import { OrderWithItems } from "../../../utils/trpc";
 type NewOrderEmailprops = {
-  order: OrderWithItems
+  order: Order
 };
 
 const baseUrl = process.env.VERCEL_URL
