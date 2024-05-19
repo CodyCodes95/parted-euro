@@ -116,6 +116,54 @@ const Orders = () => {
           ),
       },
       {
+        Header: "View Order",
+        accessor: (d) => (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <File />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Order</DialogTitle>
+                {/* <DialogDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </DialogDescription> */}
+              </DialogHeader>
+              {d.orderItems?.map((item) => (
+                <div
+                key={item.id}
+                ></div>
+              ))}
+              {/* <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    defaultValue="Pedro Duarte"
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-right">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    defaultValue="@peduarte"
+                    className="col-span-3"
+                  />
+                </div>
+              </div> */}
+            </DialogContent>
+          </Dialog>
+        ),
+      },
+      {
         Header: "Options",
         accessor: (d) => (
           <DropdownMenu>
