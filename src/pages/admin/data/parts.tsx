@@ -54,16 +54,16 @@ const Inventory: NextPage = () => {
         accessor: "weight",
       },
       {
+        Header: "Length",
+        accessor: "length",
+      },
+      {
         Header: "Width",
         accessor: "width",
       },
       {
         Header: "Height",
         accessor: "height",
-      },
-      {
-        Header: "Length",
-        accessor: "length",
       },
       {
         Header: "Type",
