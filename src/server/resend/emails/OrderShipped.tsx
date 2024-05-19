@@ -61,7 +61,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
                 <Text style={{ ...text }}>{item.listing.title}</Text>
               </Column>
               <Column>
-                <Text style={{ ...text }}>{item.listing.price / 100}</Text>
+                <Text style={{ ...text }}>{item.listing.price}</Text>
               </Column>
             </Row>
             // <Container key={item.id} style={container}>
@@ -72,7 +72,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
             // </Container>
           ))}
         </Section>
-        <Text style={{ ...text }}>Shipping: ${order?.shipping}</Text>
+        <Text style={{ ...text, margin: "0px" } }>Shipping: ${order?.shipping}</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Total: ${(order?.subtotal ?? 0) / 100}
         </Text>

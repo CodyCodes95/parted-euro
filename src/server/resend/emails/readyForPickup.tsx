@@ -61,7 +61,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
         >
           Email: contact@partedeuro.com.au
         </Text>
-        <Text style={{ ...text, marginBottom: "14px" }}>
+        <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
           Call / Text: 0431 133 764
         </Text>
         <Text
@@ -87,7 +87,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                 <Text style={{ ...text }}>{item.listing.title}</Text>
               </Column>
               <Column>
-                <Text style={{ ...text }}>{item.listing.price / 100}</Text>
+                <Text style={{ ...text }}>${item.listing.price}</Text>
               </Column>
             </Row>
             // <Container key={item.id} style={container}>

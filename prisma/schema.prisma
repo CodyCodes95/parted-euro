@@ -186,6 +186,7 @@ model Order {
   shippingMethod  String?
   shippingAddress String?
   trackingNumber  String?
+  carrier         String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   orderItems      OrderItem[]
