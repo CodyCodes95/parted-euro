@@ -65,8 +65,9 @@ export default function OrderConfirmation() {
           <h1 className="text-3xl font-bold">Invoice failed to generate</h1>
           <p className="max-w-[600px] text-gray-500 dark:text-gray-400">
             We were unable to generate an automatic invoice for your order.
-            There is no need to worry, your payment has been recieved successfully and we will manually send you an invoice via
-            email soon.
+            There is no need to worry, your payment has been recieved
+            successfully and we will manually send you an invoice via email
+            soon.
           </p>
         </div>
         <Card className="w-full max-w-sm p-0">
@@ -163,15 +164,15 @@ export default function OrderConfirmation() {
         </div>
       </div>
       <div className="flex flex-col items-end">
-        <div className="grid w-1/2 grid-cols-2 text-end ">
+        <div className="grid w-3/4 grid-cols-2 text-end ">
           <h3 className="font-semibold">Subtotal:</h3>
           <p>{formatter.format(order.subtotal / 100)}</p>
         </div>
-        <div className="grid w-1/2 grid-cols-2 text-end">
+        <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Shipping:</h3>
           <p>{formatter.format((order.shipping ?? 0) / 100)}</p>
         </div>
-        <div className="grid w-1/2 grid-cols-2 text-end">
+        <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Total inc. GST:</h3>
           <p>
             {formatter.format(

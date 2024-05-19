@@ -88,7 +88,6 @@ export const createInvoice = async (
       },
       date: invoiceDate,
       dueDate: invoiceDate,
-      reference: event.payment_intent,
       status: Invoice.StatusEnum.AUTHORISED,
       lineItems: lineItemsFormatted,
       lineAmountTypes: LineAmountTypes.Inclusive,
