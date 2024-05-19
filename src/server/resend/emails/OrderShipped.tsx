@@ -44,7 +44,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         </Text>
         <Text style={{ ...text, margin: "0px" }}>
           <Text style={{ ...span, fontWeight: "bold" }}>Carrier: </Text>
-          AusPost
+          {order?.shippingMethod}
         </Text>
         <Text style={{ ...text, fontWeight: "bold" }}>
           Below is a summary of your order {order!.xeroInvoiceId}:
@@ -108,11 +108,11 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px" }}>
-          <Text style={{ ...span, fontWeight: "bold" }}>Shipping:{" "}</Text>
+          <Text style={{ ...span, fontWeight: "bold" }}>Shipping: </Text>
           {formatter.format(order?.shipping ?? 0)}
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          <Text style={{ ...span, fontWeight: "bold" }}>Total:{" "}</Text>
+          <Text style={{ ...span, fontWeight: "bold" }}>Total: </Text>
           {formatter.format((order?.subtotal ?? 0) / 100)}
         </Text>
         <Text style={{ ...text }}>

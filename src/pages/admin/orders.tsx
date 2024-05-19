@@ -132,11 +132,7 @@ const Orders = () => {
                   done.
                 </DialogDescription> */}
               </DialogHeader>
-              {d.orderItems?.map((item) => (
-                <div
-                key={item.id}
-                ></div>
-              ))}
+              {d.orderItems?.map((item) => <div key={item.id}></div>)}
               {/* <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
@@ -254,6 +250,7 @@ const TrackingNumberModal = ({
   const [trackingNumber, setTrackingNumber] = useState<string>(
     order?.trackingNumber ?? "",
   );
+  const [carrier, setCarrier] = useState<string>(order?.shippingMethod ?? "");
 
   const sendOrderShippedEmail = trpc.order.sendOrderShippedEmail.useMutation();
   const updateOrder = trpc.order.updateOrder.useMutation();
@@ -263,6 +260,7 @@ const TrackingNumberModal = ({
     await updateOrder.mutateAsync({
       id: order.id,
       trackingNumber: trackingNumber,
+      shippingMethod: carrier,
     });
     await sendOrderShippedEmail.mutateAsync({ order });
     toast.success("Email sent");
@@ -274,11 +272,22 @@ const TrackingNumberModal = ({
         <DialogHeader>
           <DialogTitle>Send tracking</DialogTitle>
         </DialogHeader>
-        <Label>Tracking number</Label>
-        <Input
-          value={trackingNumber}
-          onChange={(e) => setTrackingNumber(e.target.value)}
-        />
+        <div className="flex flex-col gap-2">
+          <div>
+            <Label>Tracking number</Label>
+            <Input
+              value={trackingNumber}
+              onChange={(e) => setTrackingNumber(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Carrier</Label>
+            <Input
+              value={carrier}
+              onChange={(e) => setCarrier(e.target.value)}
+            />
+          </div>
+        </div>
         <div className="flex w-full justify-end">
           <DialogClose>
             <Button onClick={onSave}>Send</Button>

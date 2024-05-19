@@ -17,6 +17,7 @@ export const createInvoice = async (
   //   event: Stripe.Event.Data.Object,
   lineItems: Stripe.LineItem[],
 ) => {
+  console.log(JSON.stringify(event));
   try {
     await xero.initialize();
     const xeroCreds = await prisma.xeroCreds.findFirst();
@@ -141,7 +142,6 @@ export const createInvoice = async (
           event.shipping_details.address.postal_code
         }, ${event.shipping_details.address.country}`,
         xeroInvoiceRef: invoice?.invoiceID,
-        shippingMethod: JSON.stringify(event.shipping_options),
       },
     });
     sendNewOrderEmail(order);
