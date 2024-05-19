@@ -14,7 +14,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 import type { OrderWithItems } from "../../../utils/trpc";
-import { formatPrice } from "../../../utils/formatPrice";
+import { formatter } from "../../../utils/formatPrice";
 
 type ReadyForPickupEmailprops = {
   order: OrderWithItems;
@@ -93,7 +93,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>Price</Text>
-                    <Text style={{ ...text }}>{formatPrice(item.listing.price)}</Text>
+                    <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>
@@ -118,7 +118,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                   <Text style={{ ...text }}>{item.listing.title}</Text>
                 </Column>
                 <Column>
-                  <Text style={{ ...text }}>{formatPrice(item.listing.price)}</Text>
+                  <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
                 </Column>
                 <Column>
                   <Text style={{ ...text }}>{item.quantity}</Text>
@@ -128,7 +128,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: {formatPrice(order?.subtotal ?? 0)}
+          Total: {formatter.format(order?.subtotal ?? 0)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
