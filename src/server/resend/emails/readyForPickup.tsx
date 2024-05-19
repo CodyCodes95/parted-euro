@@ -35,7 +35,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
           height="32"
           alt="Parted Euro's Logo"
         />
-        <Text style={{ ...text }}>Hi {order!.name}</Text>
+        <Text style={{ ...text }}>Hi {order!.name},</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Great news! Your order is ready for Pickup!
         </Text>
