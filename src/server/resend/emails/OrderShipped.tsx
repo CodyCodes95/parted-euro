@@ -25,7 +25,7 @@ const baseUrl = process.env.VERCEL_URL
 export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
   <Html>
     <Head />
-    <Preview>Your order is has shipped!</Preview>
+    <Preview>Your order has shipped!</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
