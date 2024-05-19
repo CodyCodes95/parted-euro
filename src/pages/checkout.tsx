@@ -275,7 +275,7 @@ export default function CheckoutPage() {
                     onChange={(e) => setAcceptTerms(e.target.checked)}
                   />
                   <span>
-                    I agree to the{" "}
+                    I have read & agree to the{" "}
                     <Link target="_blank" className="hover:underline text-blue-500" href="/returns-refunds">Terms and Conditions</Link>
                   </span>
                 </div>
