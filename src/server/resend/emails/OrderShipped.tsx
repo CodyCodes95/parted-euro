@@ -36,14 +36,14 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         />
         <Text style={{ ...text }}>Hi {order!.name},</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Great news! Your order is has shipped!
+          Great news! Your order has shipped!
         </Text>
         <Text style={{ ...text, margin: "0px" }}>
-          <Text style={{ ...span, fontWeight: "bold" }}>Tracking number:</Text>
+          <Text style={{ ...span, fontWeight: "bold" }}>Tracking number: </Text>
           {order?.trackingNumber}
         </Text>
         <Text style={{ ...text, margin: "0px" }}>
-          <Text style={{ ...span, fontWeight: "bold" }}>Carrier:</Text>
+          <Text style={{ ...span, fontWeight: "bold" }}>Carrier: </Text>
           AusPost
         </Text>
         <Text style={{ ...text, fontWeight: "bold" }}>
@@ -108,10 +108,12 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px" }}>
-          Shipping: {formatter.format(order?.shipping ?? 0)}
+          <Text style={{ ...span, fontWeight: "bold" }}>Shipping:{" "}</Text>
+          {formatter.format(order?.shipping ?? 0)}
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: {formatter.format((order?.subtotal ?? 0) / 100)}
+          <Text style={{ ...span, fontWeight: "bold" }}>Total:{" "}</Text>
+          {formatter.format((order?.subtotal ?? 0) / 100)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!

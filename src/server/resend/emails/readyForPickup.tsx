@@ -132,7 +132,8 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: {formatter.format((order?.subtotal ?? 0) / 100)}
+          <Text style={{ ...span, fontWeight: "bold" }}>Total:{" "}</Text>
+          {formatter.format((order?.subtotal ?? 0) / 100)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
@@ -170,6 +171,14 @@ const link = {
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
   fontSize: "14px",
   textDecoration: "underline",
+};
+
+const span = {
+  color: "#333",
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: "14px",
+  display: "inline",
 };
 
 const text = {
