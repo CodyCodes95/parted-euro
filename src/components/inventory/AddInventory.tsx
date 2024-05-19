@@ -79,7 +79,7 @@ const AddInventory = ({
           </label>
           <ReactSelect
             placeholder={"Select a donor"}
-            isDisabled={donorVin ? true : false}
+            // isDisabled={donorVin ? true : false}
             options={donors.data?.map((donor) => {
               return {
                 label: donor.vin,

@@ -90,12 +90,6 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                 <Text style={{ ...text }}>${item.listing.price}</Text>
               </Column>
             </Row>
-            // <Container key={item.id} style={container}>
-            //   <Text style={{ ...text }}>{item.listing.title}</Text>
-            //   <Text style={{ ...text, marginBottom: "14px" }}>
-            //     {item.listing.price / 100}
-            //   </Text>
-            // </Container>
           ))}
         </Section>
         <Text style={{ ...text, marginBottom: "14px" }}>
