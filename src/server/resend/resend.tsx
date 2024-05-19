@@ -10,9 +10,9 @@ const resend = new Resend(process.env.RESEND_API_KEY as string);
 export const sendOrderShippedEmail = async (order: OrderWithItems) => {
   if (!order?.email) return;
   const { data, error } = await resend.emails.send({
-    from: "contact@partededuro.com.au",
+    from: "contact@partedeuro.com.au",
     // to: order?.email,
-    to: "contact@partededuro.com.au",
+    to: "contact@partedeuro.com.au",
     subject: `Your Parted Euro Order ${order.xeroInvoiceId} has Shipped!`,
     react: <OrderShippedEmail order={order} />,
   });
@@ -25,9 +25,9 @@ export const sendOrderShippedEmail = async (order: OrderWithItems) => {
 export const sendOrderReadyForPickupEmail = async (order: OrderWithItems) => {
   if (!order?.email) return;
   const { data, error } = await resend.emails.send({
-    // from: "contact@partededuro.com.au",
-    from: "contact@partededuro.com.au",
-    to: "contact@partededuro.com.au",
+    // from: "contact@partedeuro.com.au",
+    from: "contact@partedeuro.com.au",
+    to: "contact@partedeuro.com.au",
     subject: `Your Parted Euro Order ${order.xeroInvoiceId} is ready for pickup!`,
     react: <ReadyForPickupEmail order={order} />,
   });
@@ -39,9 +39,9 @@ export const sendOrderReadyForPickupEmail = async (order: OrderWithItems) => {
 
 export const sendNewOrderEmail = async (order: Order) => {
   const { data, error } = await resend.emails.send({
-    from: "contact@partededuro.com.au",
+    from: "contact@partedeuro.com.au",
     to: "contact@partedeuro.com.au",
-    subject: `Yo!!!! New order ${order.xeroInvoiceId} placed!`,
+    subject: `Yo!!! New order ${order.xeroInvoiceId} placed!`,
     react: <NewOrderEmail order={order} />,
   });
   if (error) {

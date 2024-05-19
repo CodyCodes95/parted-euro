@@ -54,7 +54,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={searchListings}
-              className="w-full pl-8 text-md"
+              className="w-full pl-8 text-base"
               placeholder="Search by part number, part name, car, etc."
             />
           </div>
