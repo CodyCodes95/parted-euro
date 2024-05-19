@@ -75,6 +75,9 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
         <Section>
           <Row>
             <Column>
+              <Text style={{ ...text }}>Image</Text>
+            </Column>
+            <Column>
               <Text style={{ ...text }}>Name</Text>
             </Column>
             <Column>
@@ -83,6 +86,14 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
           </Row>
           {order!.orderItems.map((item) => (
             <Row key={item.id}>
+              <Column>
+                <Img
+                  src={item.listing.images[0]?.url}
+                  width="40"
+                  height="40"
+                  alt="Product Image"
+                />
+              </Column>
               <Column>
                 <Text style={{ ...text }}>{item.listing.title}</Text>
               </Column>

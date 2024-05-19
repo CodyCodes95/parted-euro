@@ -49,6 +49,9 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         <Section>
           <Row>
             <Column>
+              <Text style={{ ...text }}>Image</Text>
+            </Column>
+            <Column>
               <Text style={{ ...text }}>Name</Text>
             </Column>
             <Column>
@@ -58,15 +61,25 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           {order!.orderItems.map((item) => (
             <Row key={item.id}>
               <Column>
+                <Img
+                  src={item.listing.images[0]?.url}
+                  width="40"
+                  height="40"
+                  alt="Product Image"
+                />
+              </Column>
+              <Column>
                 <Text style={{ ...text }}>{item.listing.title}</Text>
               </Column>
               <Column>
-                <Text style={{ ...text }}>{item.listing.price}</Text>
+                <Text style={{ ...text }}>${item.listing.price}</Text>
               </Column>
             </Row>
           ))}
         </Section>
-        <Text style={{ ...text, margin: "0px" } }>Shipping: ${order?.shipping}</Text>
+        <Text style={{ ...text, margin: "0px" }}>
+          Shipping: ${order?.shipping}
+        </Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Total: ${(order?.subtotal ?? 0) / 100}
         </Text>
