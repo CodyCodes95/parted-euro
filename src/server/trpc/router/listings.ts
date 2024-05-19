@@ -110,12 +110,12 @@ export const listingRouter = router({
         const queryWhere = {
           active: true,
           OR: [
-            {
-              description: {
-                contains: input.search || "",
-                mode: "insensitive",
-              },
-            },
+            // {
+            //   description: {
+            //     contains: input.search || "",
+            //     mode: "insensitive",
+            //   },
+            // },
             {
               title: {
                 contains: input.search || "",
@@ -170,12 +170,12 @@ export const listingRouter = router({
         const queryWhere = {
           active: true,
           OR: [
-            {
-              description: {
-                contains: input.search || "",
-                mode: "insensitive",
-              },
-            },
+            // {
+            //   description: {
+            //     contains: input.search || "",
+            //     mode: "insensitive",
+            //   },
+            // },
             {
               title: {
                 contains: input.search || "",
