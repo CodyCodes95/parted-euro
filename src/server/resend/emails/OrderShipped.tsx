@@ -2,10 +2,8 @@ import {
   Body,
   Container,
   Head,
-  Heading,
   Html,
   Img,
-  Link,
   Preview,
   Text,
   Row,
@@ -41,9 +39,13 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           Great news! Your order is has shipped!
         </Text>
         <Text style={{ ...text, margin: "0px" }}>
-          Tracking number: {order?.trackingNumber}
+          <Text style={{ ...span, fontWeight: "bold" }}>Tracking number:</Text>
+          {order?.trackingNumber}
         </Text>
-        <Text style={{ ...text }}>Carrier: AusPost</Text>
+        <Text style={{ ...text, margin: "0px" }}>
+          <Text style={{ ...span, fontWeight: "bold" }}>Carrier:</Text>
+          AusPost
+        </Text>
         <Text style={{ ...text, fontWeight: "bold" }}>
           Below is a summary of your order {order!.xeroInvoiceId}:
         </Text>
@@ -67,7 +69,9 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>Price</Text>
-                    <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
+                    <Text style={{ ...text }}>
+                      {formatter.format(item.listing.price)}
+                    </Text>
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>
@@ -92,7 +96,9 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
                   <Text style={{ ...text }}>{item.listing.title}</Text>
                 </Column>
                 <Column>
-                  <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
+                  <Text style={{ ...text }}>
+                    {formatter.format(item.listing.price)}
+                  </Text>
                 </Column>
                 <Column>
                   <Text style={{ ...text }}>{item.quantity}</Text>
@@ -105,7 +111,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           Shipping: {formatter.format(order?.shipping ?? 0)}
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: {formatter.format(order?.subtotal ?? 0)}
+          Total: {formatter.format((order?.subtotal ?? 0) / 100)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
@@ -151,6 +157,14 @@ const text = {
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
   fontSize: "14px",
   margin: "24px 0",
+};
+
+const span = {
+  color: "#333",
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: "14px",
+  display: "inline",
 };
 
 const footer = {

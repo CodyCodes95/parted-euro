@@ -93,7 +93,9 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>Price</Text>
-                    <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
+                    <Text style={{ ...text }}>
+                      {formatter.format(item.listing.price)}
+                    </Text>
                   </Column>
                   <Column>
                     <Text style={{ ...text, fontWeight: "bold" }}>
@@ -118,7 +120,9 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
                   <Text style={{ ...text }}>{item.listing.title}</Text>
                 </Column>
                 <Column>
-                  <Text style={{ ...text }}>{formatter.format(item.listing.price)}</Text>
+                  <Text style={{ ...text }}>
+                    {formatter.format(item.listing.price)}
+                  </Text>
                 </Column>
                 <Column>
                   <Text style={{ ...text }}>{item.quantity}</Text>
@@ -128,7 +132,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: {formatter.format(order?.subtotal ?? 0)}
+          Total: {formatter.format((order?.subtotal ?? 0) / 100)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
