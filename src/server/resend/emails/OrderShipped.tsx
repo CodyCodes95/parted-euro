@@ -47,35 +47,56 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           Below is a summary of your order {order!.xeroInvoiceId}:
         </Text>
         <Section>
-          <Row>
-            <Column>
-              <Text style={{ ...text }}></Text>
-            </Column>
-            <Column>
-              <Text style={{ ...text }}>Name</Text>
-            </Column>
-            <Column>
-              <Text style={{ ...text }}>Price</Text>
-            </Column>
-          </Row>
-          {order!.orderItems.map((item) => (
-            <Row key={item.id}>
-              <Column>
-                <Img
-                  src={item.listing.images[0]?.url}
-                  width="60"
-                  height="60"
-                  alt="Product Image"
-                />
-              </Column>
-              <Column>
-                <Text style={{ ...text }}>{item.listing.title}</Text>
-              </Column>
-              <Column>
-                <Text style={{ ...text }}>${item.listing.price}</Text>
-              </Column>
-            </Row>
-          ))}
+          {order!.orderItems.map((item, index) => {
+            if (index === 0) {
+              return (
+                <Row key={item.id}>
+                  <Column>
+                    <Text style={{ ...text }}></Text>
+                    <Img
+                      src={item.listing.images[0]?.url}
+                      width="60"
+                      height="60"
+                      alt="Product Image"
+                    />
+                  </Column>
+                  <Column>
+                    <Text style={{ ...text }}>Item</Text>
+                    <Text style={{ ...text }}>{item.listing.title}</Text>
+                  </Column>
+                  <Column>
+                    <Text style={{ ...text }}>Price</Text>
+                    <Text style={{ ...text }}>${item.listing.price}</Text>
+                  </Column>
+                  <Column>
+                    <Text style={{ ...text }}>Quantity</Text>
+                    <Text style={{ ...text }}>{item.quantity}</Text>
+                  </Column>
+                </Row>
+              );
+            }
+            return (
+              <Row key={item.id}>
+                <Column>
+                  <Img
+                    src={item.listing.images[0]?.url}
+                    width="60"
+                    height="60"
+                    alt="Product Image"
+                  />
+                </Column>
+                <Column>
+                  <Text style={{ ...text }}>{item.listing.title}</Text>
+                </Column>
+                <Column>
+                  <Text style={{ ...text }}>${item.listing.price}</Text>
+                </Column>
+                <Column>
+                  <Text style={{ ...text }}>{item.quantity}</Text>
+                </Column>
+              </Row>
+            );
+          })}
         </Section>
         <Text style={{ ...text, margin: "0px" }}>
           Shipping: ${order?.shipping}
