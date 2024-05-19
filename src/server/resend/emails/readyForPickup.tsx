@@ -75,7 +75,7 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
         <Section>
           <Row>
             <Column>
-              <Text style={{ ...text }}>Image</Text>
+              <Text style={{ ...text }}></Text>
             </Column>
             <Column>
               <Text style={{ ...text }}>Name</Text>
@@ -89,8 +89,8 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
               <Column>
                 <Img
                   src={item.listing.images[0]?.url}
-                  width="40"
-                  height="40"
+                  width="60"
+                  height="60"
                   alt="Product Image"
                 />
               </Column>
@@ -103,8 +103,14 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
             </Row>
           ))}
         </Section>
-        <Text style={{ ...text, marginBottom: "14px" }}>
-          Thanks for shopping at Parted Euro!
+        <Text style={{ ...text, margin: "0px" }}>
+          Shipping: ${order?.shipping}
+        </Text>
+        <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
+          Total: ${(order?.subtotal ?? 0) / 100}
+        </Text>
+        <Text style={{ ...text }}>
+          Thanks again for shopping at Parted Euro!
         </Text>
       </Container>
     </Body>

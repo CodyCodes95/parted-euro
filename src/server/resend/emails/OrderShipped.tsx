@@ -39,17 +39,17 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         <Text style={{ ...text, marginBottom: "14px" }}>
           Great news! Your order is has shipped!
         </Text>
-        <Text style={{ ...text }}>
+        <Text style={{ ...text, margin: "0px" }}>
           Tracking number: {order?.trackingNumber}
         </Text>
         <Text style={{ ...text }}>Carrier: AusPost</Text>
-        <Text style={{ ...text }}>
+        <Text style={{ ...text, fontWeight: "bold" }}>
           Below is a summary of your order {order!.xeroInvoiceId}:
         </Text>
         <Section>
           <Row>
             <Column>
-              <Text style={{ ...text }}>Image</Text>
+              <Text style={{ ...text }}></Text>
             </Column>
             <Column>
               <Text style={{ ...text }}>Name</Text>
@@ -63,8 +63,8 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
               <Column>
                 <Img
                   src={item.listing.images[0]?.url}
-                  width="40"
-                  height="40"
+                  width="60"
+                  height="60"
                   alt="Product Image"
                 />
               </Column>
@@ -80,7 +80,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         <Text style={{ ...text, margin: "0px" }}>
           Shipping: ${order?.shipping}
         </Text>
-        <Text style={{ ...text, marginBottom: "14px" }}>
+        <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
           Total: ${(order?.subtotal ?? 0) / 100}
         </Text>
         <Text style={{ ...text }}>

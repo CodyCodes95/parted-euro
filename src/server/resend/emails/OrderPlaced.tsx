@@ -10,9 +10,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
-import logo from "../../public/logo.png";
 import type { Order } from "@prisma/client";
-import { OrderWithItems } from "../../../utils/trpc";
 type NewOrderEmailprops = {
   order: Order
 };
