@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
+import type { QueryListingsGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { Combobox, Transition } from "@headlessui/react";
@@ -101,12 +101,12 @@ const EbayModal: React.FC<EbayModalProps> = ({
   refetch,
 }) => {
   const [title, setTitle] = useState<string>(
-    `${listing.title} ${listing.parts[0]?.partDetails.partNo}`
+    `${listing.title} ${listing.parts[0]?.partDetails.partNo}`,
   );
   const [description, setDescription] = useState<string>(listing.description);
   const [condition, setCondition] = useState<string>(listing.condition);
   const [price, setPrice] = useState<number>(
-    Math.ceil(listing.price * 0.15 + listing.price)
+    Math.ceil(listing.price * 0.15 + listing.price),
   );
   const [ebayCondition, setEbayCondition] = useState<any>("");
   const [validated, setValidated] = useState<boolean>(false);
@@ -117,29 +117,29 @@ const EbayModal: React.FC<EbayModalProps> = ({
     useState<boolean>(false);
   const [fulfillmentPolicy, setFulfillmentPolicy] =
     useState<FulfillmentPolicyType | null>(null);
-  const [quantity, setQuantity] = useState<number>(  listing.parts.every(part => {
-            const partNumber = listing.parts[0]?.partDetailsId
-            return part.partDetailsId === partNumber
-          })
-            ? listing.parts.reduce((acc, cur) => {
-                acc += cur.quantity;
-                return acc;
-              }, 0)
-            : 1);
+  const [quantity, setQuantity] = useState<number>(
+    listing.parts.every((part) => {
+      const partNumber = listing.parts[0]?.partDetailsId;
+      return part.partDetailsId === partNumber;
+    })
+      ? listing.parts.reduce((acc, cur) => {
+          acc += cur.quantity;
+          return acc;
+        }, 0)
+      : 1,
+  );
 
   const createEbayListing = trpc.ebay.createListing.useMutation();
   const fulfillmentPolicies = trpc.ebay.getFulfillmentPolicies.useQuery();
-  const categoryIds = trpc.ebay.getCategoryIds.useQuery(
-    {
-      title: title,
-    },
-  );
+  const categoryIds = trpc.ebay.getCategoryIds.useQuery({
+    title: title,
+  });
 
   type ListingParts = Part & {
     partDetails: PartDetail & {
-        cars: Car[];
+      cars: Car[];
     };
-}
+  };
 
   const makeTableHTML = () => {
     return listing.parts
@@ -147,7 +147,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
         if (
           !acc.some(
             (part) =>
-              part.partDetails.cars[0]!.id === cur.partDetails.cars[0]?.id
+              part.partDetails.cars[0]!.id === cur.partDetails.cars[0]?.id,
           )
         ) {
           acc.push(cur);
@@ -203,7 +203,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
             onChange={(e) => setTitle(e.target.value)}
           />
           <span
-            className={`absolute right-2 bottom-1 text-xs ${
+            className={`absolute bottom-1 right-2 text-xs ${
               title.length > 80 && "text-red-600"
             }`}
           >
@@ -243,7 +243,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
         <div className="">
           <Select
             placeholder="Ebay Category"
-            value={categoryIds.data?.find((c:any) => c.value === categoryId)}
+            value={categoryIds.data?.find((c: any) => c.value === categoryId)}
             options={categoryIds.data}
             onChange={(e) => setCategoryId(e.value)}
           />
@@ -290,7 +290,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
           </>
         ) : (
           <>
-            <Combobox value={fulfillmentPolicy} onChange={setFulfillmentPolicy}>
+            {/* <Combobox value={fulfillmentPolicy} onChange={setFulfillmentPolicy}>
               <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                   <Combobox.Input
@@ -356,7 +356,20 @@ const EbayModal: React.FC<EbayModalProps> = ({
                   </Combobox.Options>
                 </Transition>
               </div>
-            </Combobox>
+            </Combobox> */}
+            <Select
+              placeholder="Select a fulfillment policy"
+              value={fulfillmentPolicy}
+              onChange={(e) => setFulfillmentPolicy(e)}
+              options={fulfillmentPolicies.data?.map((policy: any) => {
+                return {
+                  label: policy.name,
+                  value: policy.fulfillmentPolicyId,
+                };
+              })}
+              className="basic-multi-select"
+              classNamePrefix="select"
+            />
             <a
               onClick={() => {
                 setFulfillmentPolicy(null);
