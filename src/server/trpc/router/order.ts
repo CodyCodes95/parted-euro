@@ -96,6 +96,21 @@ export const orderRouter = router({
         where: {
           orderId: input.id,
         },
+        include: {
+          order: {
+            include: {
+              orderItems: {
+                include: {
+                  listing: {
+                    include: {
+                      images: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
       if (!failedOrder) return;
       createInvoice(failedOrder.stripeEvent, failedOrder.lineItems as any);

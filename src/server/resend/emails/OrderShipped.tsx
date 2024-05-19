@@ -113,7 +113,9 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
           <Text style={{ ...span, fontWeight: "bold" }}>Total: </Text>
-          {formatter.format((order?.subtotal ?? 0) / 100)}
+          {formatter.format(
+            (order?.subtotal ?? 0) / 100 + (order?.shipping ?? 0),
+          )}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
