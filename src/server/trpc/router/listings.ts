@@ -134,6 +134,18 @@ export const listingRouter = router({
                 },
               },
             },
+            {
+              parts: {
+                some: {
+                  partDetails: {
+                    alternatePartNumbers: {
+                      contains: input.search || "",
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
           ],
         };
         const listings = await ctx.prisma.listing.findMany({
