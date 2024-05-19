@@ -8,9 +8,10 @@ import ReadyForPickupEmail from "../../../react-email-starter/emails/readyForPic
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export const sendOrderShippedEmail = async (order: OrderWithItems) => {
+  if (!order?.email) return;
   const { data, error } = await resend.emails.send({
     from: "onboarding@resend.dev",
-    to: "codythatsme@gmail.com",
+    to: order?.email,
     subject: "Order shipped!",
     react: <OrderShippedEmail order={order} />,
   });
@@ -21,9 +22,11 @@ export const sendOrderShippedEmail = async (order: OrderWithItems) => {
 };
 
 export const sendOrderReadyForPickupEmail = async (order: OrderWithItems) => {
+  if (!order?.email) return;
   const { data, error } = await resend.emails.send({
     from: "onboarding@resend.dev",
-    to: "codythatsme@gmail.com",
+    // to: "codythatsme@gmail.com",
+    to: order?.email,
     subject: "Order ready for pickup!",
     react: <ReadyForPickupEmail order={order} />,
   });
