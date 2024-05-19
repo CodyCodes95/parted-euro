@@ -11,8 +11,7 @@ export const sendOrderShippedEmail = async (order: OrderWithItems) => {
   if (!order?.email) return;
   const { data, error } = await resend.emails.send({
     from: "contact@partedeuro.com.au",
-    // to: order?.email,
-    to: "contact@partedeuro.com.au",
+    to: order?.email,
     subject: `Your Parted Euro Order ${order.xeroInvoiceId} has Shipped!`,
     react: <OrderShippedEmail order={order} />,
   });
@@ -25,9 +24,8 @@ export const sendOrderShippedEmail = async (order: OrderWithItems) => {
 export const sendOrderReadyForPickupEmail = async (order: OrderWithItems) => {
   if (!order?.email) return;
   const { data, error } = await resend.emails.send({
-    // from: "contact@partedeuro.com.au",
     from: "contact@partedeuro.com.au",
-    to: "contact@partedeuro.com.au",
+    to: order?.email,
     subject: `Your Parted Euro Order ${order.xeroInvoiceId} is ready for pickup!`,
     react: <ReadyForPickupEmail order={order} />,
   });
