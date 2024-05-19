@@ -235,15 +235,27 @@ const Listing: NextPage = () => {
               <tbody>
                 {Array.from(
                   new Set(
-                    listing.data?.parts.map((part) => (
-                      <tr key={part.partDetails.partNo}>
-                        <td className="px-4 py-3">{part.partDetails.name}</td>
-                        <td className="px-4 py-3">{part.partDetails.partNo}</td>
-                        <td className="px-4 py-3">
-                          {part.partDetails.alternatePartNumbers ?? "NA"}
-                        </td>
-                      </tr>
-                    )),
+                    listing.data?.parts
+                      .reduce((acc, cur) => {
+                        if (
+                          !acc.some(
+                            (group) => group.partDetails.partNo === cur.partDetails.partNo,
+                          )
+                        )
+                          acc.push(cur);
+                        return acc;
+                      }, [] as any[])
+                      .map((part) => (
+                        <tr key={part.partDetails.partNo}>
+                          <td className="px-4 py-3">{part.partDetails.name}</td>
+                          <td className="px-4 py-3">
+                            {part.partDetails.partNo}
+                          </td>
+                          <td className="px-4 py-3">
+                            {part.partDetails.alternatePartNumbers ?? "NA"}
+                          </td>
+                        </tr>
+                      )),
                   ),
                 )}
               </tbody>
