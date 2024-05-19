@@ -27,10 +27,10 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${baseUrl}/public/logo.png`}
+          src={`${baseUrl}/_next/static/media/logo.2d624463.png`}
           width="160"
           height="32"
-          alt="Notion's Logo"
+          alt="Parted Euro's Logo"
         />
         <Text style={{ ...text }}>Hi {order!.name}</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>

@@ -28,14 +28,14 @@ export const NewOrderEmail = ({ order }: NewOrderEmailprops) => (
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${baseUrl}/public/logo.png`}
+          src={`${baseUrl}/_next/static/media/logo.2d624463.png`}
           width="160"
           height="32"
           alt="Parted Euro Logo"
         />
         <Text style={{ ...text }}>Hi Huddy</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Great News! You are ${order!.subtotal/100} richer.
+          Great News! You are ${order!.subtotal / 100} richer.
         </Text>
         <Link style={link} href="https://www.partedeuro.com.au/admin/orders">
           View
