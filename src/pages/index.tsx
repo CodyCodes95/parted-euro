@@ -72,11 +72,11 @@ const Home: NextPage = () => {
           </Carousel>
           <div className="absolute flex h-full w-full flex-col items-center justify-center text-center text-white">
             <div className="flex w-full flex-col items-center">
-              <AnimatePresence>
-                <motion.div
-                  initial={{ x: 300, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -300, opacity: 0 }}
+              {/* <AnimatePresence> */}
+                <div
+                  // initial={{ x: 300, opacity: 0 }}
+                  // animate={{ x: 0, opacity: 1 }}
+                  // exit={{ x: -300, opacity: 0 }}
                   className={`absolute w-full duration-150 ease-linear`}
                 >
                   <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
@@ -91,8 +91,8 @@ const Home: NextPage = () => {
                       </Button>
                     </Link>
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              {/* </AnimatePresence> */}
             </div>
           </div>
         </div>
