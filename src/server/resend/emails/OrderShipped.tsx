@@ -8,6 +8,9 @@ import {
   Link,
   Preview,
   Text,
+  Row,
+  Column,
+  Section,
 } from "@react-email/components";
 import * as React from "react";
 import type { OrderWithItems } from "../../../utils/trpc";
@@ -32,25 +35,43 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           height="32"
           alt="Parted Euro's Logo"
         />
-        <Text style={{ ...text }}>Hi {order!.name}</Text>
+        <Text style={{ ...text }}>Hi {order!.name},</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Great News! Your order is has shipped!
+          Great news! Your order is has shipped!
         </Text>
         <Text style={{ ...text }}>
           Tracking number: {order?.trackingNumber}
         </Text>
         <Text style={{ ...text }}>Carrier: AusPost</Text>
         <Text style={{ ...text }}>
-          Below is a summary of your order: {order!.xeroInvoiceId}
+          Below is a summary of your order {order!.xeroInvoiceId}:
         </Text>
-        {order!.orderItems.map((item) => (
-          <Container key={item.id} style={container}>
-            <Text style={{ ...text }}>Line {item.listing.title}</Text>
-            <Text style={{ ...text, marginBottom: "14px" }}>
-              {item.listing.price / 100}
-            </Text>
-          </Container>
-        ))}
+        <Section>
+          <Row>
+            <Column>
+              <Text style={{ ...text }}>Name</Text>
+            </Column>
+            <Column>
+              <Text style={{ ...text }}>Price</Text>
+            </Column>
+          </Row>
+          {order!.orderItems.map((item) => (
+            <Row key={item.id}>
+              <Column>
+                <Text style={{ ...text }}>{item.listing.title}</Text>
+              </Column>
+              <Column>
+                <Text style={{ ...text }}>{item.listing.price / 100}</Text>
+              </Column>
+            </Row>
+            // <Container key={item.id} style={container}>
+            //   <Text style={{ ...text }}>{item.listing.title}</Text>
+            //   <Text style={{ ...text, marginBottom: "14px" }}>
+            //     {item.listing.price / 100}
+            //   </Text>
+            // </Container>
+          ))}
+        </Section>
         <Text style={{ ...text }}>Shipping: ${order?.shipping}</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Total: ${(order?.subtotal ?? 0) / 100}
