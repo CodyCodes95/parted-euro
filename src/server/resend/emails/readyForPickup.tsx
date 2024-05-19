@@ -37,20 +37,40 @@ export const ReadyForPickupEmail = ({ order }: ReadyForPickupEmailprops) => (
         />
         <Text style={{ ...text }}>Hi {order!.name}</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Great News! Your order is ready for Pickup!
+          Great news! Your order is ready for Pickup!
         </Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           To arrange a pickup from our warehouse, please contact us directly and
           we can organize a time with you. Parted Euro is strictly open via
           appointment only and not open for public walk-ins.
         </Text>
-        <Text style={{ ...text }}>Contact us via:</Text>
-        <Text style={{ ...text }}>Email: contact@partedeuro.com.au</Text>
+        <Text
+          style={{
+            ...text,
+            margin: "0px",
+            fontWeight: "bold",
+          }}
+        >
+          Contact us via:
+        </Text>
+        <Text
+          style={{
+            ...text,
+            margin: "0px",
+          }}
+        >
+          Email: contact@partedeuro.com.au
+        </Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Call / Text: 0431 133 764
         </Text>
-        <Text style={{ ...text }}>
-          Below is a summary of your order: {order!.xeroInvoiceId}:
+        <Text
+          style={{
+            ...text,
+            fontWeight: "bold",
+          }}
+        >
+          Below is a summary of your order {order!.xeroInvoiceId}:
         </Text>
         <Section>
           <Row>
