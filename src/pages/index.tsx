@@ -20,7 +20,6 @@ import Link from "next/link";
 const carImages = [carImg, four, five, six, eight, nine];
 
 const Home: NextPage = () => {
-
   return (
     <>
       <Head>
@@ -46,8 +45,8 @@ const Home: NextPage = () => {
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col bg-white">
-        <div className="flex w-full items-center justify-center">
+      <main className="flex min-h-[90vh] flex-col bg-white">
+        <div className="flex h-full w-full items-center justify-center">
           <Carousel
             plugins={[
               Autoplay({
@@ -62,7 +61,7 @@ const Home: NextPage = () => {
                   <Image
                     src={image.src}
                     alt="hero"
-                    className="h-screen w-full object-cover"
+                    className="h-[95vh] w-full object-cover"
                     width={image.width}
                     height={image.height}
                     priority
@@ -71,15 +70,7 @@ const Home: NextPage = () => {
               ))}
             </CarouselContent>
           </Carousel>
-          {/* <Image
-            src={carImg.src}
-            alt="hero"
-            className="h-[calc(100vh-5rem)] w-full object-cover"
-            width={carImg.width}
-            height={carImg.height}
-            priority
-          /> */}
-          <div className="absolute w-[50%] top-80 md: text-center text-white">
+          <div className="absolute flex h-full w-full flex-col items-center justify-center text-center text-white">
             <div className="flex w-full flex-col items-center">
               <AnimatePresence>
                 <motion.div
@@ -105,31 +96,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-        {/* <div className="flex w-full flex-wrap items-center p-4"> */}
-        {/* {listings.data?.map((listing) => (
-            <Link
-            key={listing.id}
-            className="group m-6 flex h-[740px] w-[22%] cursor-pointer flex-col justify-between"
-            href={`listings/listing?id=${listing.id}`}
-            >
-              <div className="max-h-[634px]">
-                <img
-                  src={listing.images[0]?.url}
-                  className="h-full duration-100 ease-linear group-hover:scale-105"
-                  alt=""
-                />
-              </div>
-              <div className="flex flex-col">
-                <p className="max-w-fit border-b-2 border-transparent group-hover:border-b-2 group-hover:border-black">
-                  {listing.title}
-                </p>
-                <p className="text-lg">
-                  {formatter.format(listing.price / 100).split("A")[1]} AUD
-                </p>
-              </div>
-            </Link>
-          ))} */}
-        {/* </div> */}
       </main>
     </>
   );
