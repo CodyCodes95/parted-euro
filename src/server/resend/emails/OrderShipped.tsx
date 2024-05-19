@@ -102,7 +102,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px" }}>
-          Shipping: {formatPrice(order?.shipping)}
+          Shipping: {formatPrice(order?.shipping ?? 0)}
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
           Total: {formatPrice(order?.subtotal ?? 0)}
