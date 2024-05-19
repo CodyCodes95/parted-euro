@@ -105,6 +105,7 @@ export const orderRouter = router({
       z.object({
         id: z.string(),
         trackingNumber: z.string(),
+        shippingMethod: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -114,6 +115,7 @@ export const orderRouter = router({
         },
         data: {
           trackingNumber: input.trackingNumber,
+          shippingMethod: input.shippingMethod,
         },
       });
     }),
