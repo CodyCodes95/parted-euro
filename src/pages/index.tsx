@@ -79,7 +79,7 @@ const Home: NextPage = () => {
             height={carImg.height}
             priority
           /> */}
-          <div className="absolute w-[50%] text-center text-white">
+          <div className="absolute w-[50%] top-80 md: text-center text-white">
             <div className="flex w-full flex-col items-center">
               <AnimatePresence>
                 <motion.div

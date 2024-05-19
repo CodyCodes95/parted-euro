@@ -3,7 +3,7 @@ import type { OrderWithItems } from "../../utils/trpc";
 import NewOrderEmail from "./emails/OrderPlaced";
 import OrderShippedEmail from "./emails/OrderShipped";
 import type { Order } from "@prisma/client";
-import ReadyForPickupEmail from "../../../react-email-starter/emails/readyForPickup";
+import ReadyForPickupEmail from "./emails/readyForPickup";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
