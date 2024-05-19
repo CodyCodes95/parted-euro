@@ -61,15 +61,17 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
                     />
                   </Column>
                   <Column>
-                    <Text style={{ ...text }}>Item</Text>
+                    <Text style={{ ...text, fontWeight: "bold" }}>Item</Text>
                     <Text style={{ ...text }}>{item.listing.title}</Text>
                   </Column>
                   <Column>
-                    <Text style={{ ...text }}>Price</Text>
+                    <Text style={{ ...text, fontWeight: "bold" }}>Price</Text>
                     <Text style={{ ...text }}>${item.listing.price}</Text>
                   </Column>
                   <Column>
-                    <Text style={{ ...text }}>Quantity</Text>
+                    <Text style={{ ...text, fontWeight: "bold" }}>
+                      Quantity
+                    </Text>
                     <Text style={{ ...text }}>{item.quantity}</Text>
                   </Column>
                 </Row>
