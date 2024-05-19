@@ -395,7 +395,9 @@ const Nav = () => {
           {session ? (
             <AdminMenu />
           ) : (
-            <LogIn className="text-2xl" onClick={() => signIn("google")} />
+              <LogIn className="text-2xl" onClick={() => signIn("google", {
+              
+            })} />
           )}
         </div>
       </div>

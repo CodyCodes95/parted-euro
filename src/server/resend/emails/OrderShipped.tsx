@@ -14,6 +14,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 import type { OrderWithItems } from "../../../utils/trpc";
+import { formatPrice } from "../../../utils/formatPrice";
 
 type OrderShippedEmailprops = {
   order: OrderWithItems;
@@ -91,7 +92,7 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
                   <Text style={{ ...text }}>{item.listing.title}</Text>
                 </Column>
                 <Column>
-                  <Text style={{ ...text }}>${item.listing.price}</Text>
+                  <Text style={{ ...text }}>{formatPrice(item.listing.price)}</Text>
                 </Column>
                 <Column>
                   <Text style={{ ...text }}>{item.quantity}</Text>
@@ -101,10 +102,10 @@ export const OrderShippedEmail = ({ order }: OrderShippedEmailprops) => (
           })}
         </Section>
         <Text style={{ ...text, margin: "0px" }}>
-          Shipping: ${order?.shipping}
+          Shipping: {formatPrice(order?.shipping)}
         </Text>
         <Text style={{ ...text, margin: "0px", marginBottom: "14px" }}>
-          Total: ${(order?.subtotal ?? 0) / 100}
+          Total: {formatPrice(order?.subtotal ?? 0)}
         </Text>
         <Text style={{ ...text }}>
           Thanks again for shopping at Parted Euro!
