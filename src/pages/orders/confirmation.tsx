@@ -170,13 +170,13 @@ export default function OrderConfirmation() {
         </div>
         <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Shipping:</h3>
-          <p>{formatter.format((order.shipping ?? 0) / 100)}</p>
+          <p>{formatter.format((order.shipping ?? 0))}</p>
         </div>
         <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Total inc. GST:</h3>
           <p>
             {formatter.format(
-              order.subtotal / 100 + (order.shipping ?? 0 / 100),
+              order.subtotal / 100 + (order.shipping ?? 0),
             )}
           </p>
         </div>

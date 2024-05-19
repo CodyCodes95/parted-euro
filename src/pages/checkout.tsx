@@ -6,7 +6,6 @@ import {  Trash } from "lucide-react";
 import { useCart } from "../context/cartContext";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import logo from "../../public/logo.png";
 import { formatter } from "../utils/formatPrice";
 import { useQuery } from "@tanstack/react-query";
 
