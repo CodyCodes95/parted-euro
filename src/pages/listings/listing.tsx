@@ -77,6 +77,15 @@ const Listing: NextPage = () => {
     },
   );
 
+  const carsOnListing = trpc.listings.getAllCarsOnListing.useQuery(
+    {
+      id: router.query.id as string,
+    },
+    {
+      enabled: !!router.query.id,
+    },
+  );
+
   const relatedListings = trpc.listings.getRelatedListings.useQuery(
     {
       generation: listing.data?.parts[0]?.partDetails.cars[0]
@@ -140,6 +149,9 @@ const Listing: NextPage = () => {
     if (!parts) return;
     const groupedBySeries = parts[0]?.partDetails?.cars.reduce(
       (seriesAcc: any, car: any) => {
+        if (!carsOnListing.data!.find((car2) => car2.id === car.id)) {
+          return seriesAcc;
+        }
         // Initialize the series if not already done
         if (!seriesAcc[car.series]) {
           seriesAcc[car.series] = {};
@@ -239,7 +251,9 @@ const Listing: NextPage = () => {
                       .reduce((acc, cur) => {
                         if (
                           !acc.some(
-                            (group) => group.partDetails.partNo === cur.partDetails.partNo,
+                            (group) =>
+                              group.partDetails.partNo ===
+                              cur.partDetails.partNo,
                           )
                         )
                           acc.push(cur);
@@ -286,9 +300,7 @@ const Listing: NextPage = () => {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {Object.entries(parts)
-                
-                .map(([series, cars]) => (
+              {Object.entries(parts).map(([series, cars]) => (
                 <TabsContent
                   className="max-h-80 w-full overflow-y-scroll"
                   key={series}

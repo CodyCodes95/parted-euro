@@ -247,7 +247,7 @@ export const listingRouter = router({
           where: queryWhere,
           orderBy,
         });
-        
+
         // @ts-ignore
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
@@ -284,7 +284,7 @@ export const listingRouter = router({
             {
               title: {
                 contains: input.search || "",
-                mode: "insensitive"
+                mode: "insensitive",
               },
             },
           ],
@@ -442,5 +442,46 @@ export const listingRouter = router({
           listedOnEbay: false,
         },
       });
+    }),
+  getAllCarsOnListing: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const listing = await ctx.prisma.listing.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          parts: {
+            include: {
+              partDetails: {
+                include: {
+                  cars: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return listing?.parts
+        .map((part) =>
+          part.partDetails.cars
+            .filter((car) =>
+              listing.parts.every((part) =>
+                part.partDetails.cars.some((car2) => car2.id === car.id),
+              ),
+            )
+            .map((car) => ({
+              make: car.make,
+              series: car.series,
+              model: car.model,
+              body: car.body,
+              id: car.id,
+            })),
+        )
+        .flat();
     }),
 });
