@@ -360,8 +360,9 @@ const EbayModal: React.FC<EbayModalProps> = ({
             <Select
               placeholder="Select a fulfillment policy"
               value={fulfillmentPolicy}
-              onChange={(e:any) => setFulfillmentPolicy(e.value)}
-              options={fulfillmentPolicies.data?.map((policy: any) => {
+              onChange={(e: any) => setFulfillmentPolicy(e.value)}
+              // @ts-ignore
+              options={fulfillmentPolicies.data?.map((policy) => {
                 return {
                   label: policy.name,
                   value: policy.fulfillmentPolicyId,
