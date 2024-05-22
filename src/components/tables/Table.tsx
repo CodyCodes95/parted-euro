@@ -111,78 +111,79 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
           })}
         </tbody>
       </table>
-      <nav
-        className="flex items-center justify-between pt-4"
-        aria-label="Table navigation"
-      >
-        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-          Showing{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            {1 + pageIndex * pageSize}-{page.length + pageIndex * pageSize}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            {data.length}
+      {data.length > pageSize && (
+        <nav
+          className="flex items-center justify-between pt-4"
+          aria-label="Table navigation"
+        >
+          <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+            Showing{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {1 + pageIndex * pageSize}-{page.length + pageIndex * pageSize}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {data.length}
+            </span>
           </span>
-        </span>
-        <ul className="inline-flex items-center -space-x-px">
-          <li
-            className="cursor-pointer rounded-l-md border-2 p-2 hover:bg-gray-200"
-            onClick={() => {
-              gotoPage(0);
-            }}
-          >
-            <BsChevronDoubleLeft className="h-6 w-6" />
-          </li>
-          <li
-            className="cursor-pointer border-2 p-2 hover:bg-gray-200"
-            onClick={previousPage}
-          >
-            Prev
-          </li>
-          {[
-            pageIndex - 2,
-            pageIndex - 1,
-            pageIndex,
-            pageIndex + 1,
-            pageIndex + 2,
-            pageIndex + 3,
-            pageIndex + 4,
-            pageIndex + 5,
-          ]
-            .filter((pageNo) => pageNo > 0 && pageNo <= pageOptions.length)
-            .map((page, i) => {
-              if (i > 4) return null;
-              return (
-                <li
-                  key={page}
-                  onClick={() => {
-                    gotoPage(page - 1);
-                  }}
-                  className={`cursor-pointer border-2 py-2 px-4 hover:bg-gray-200 ${
-                    pageIndex + 1 === page ? "bg-gray-200 font-semibold" : ""
-                  }`}
-                >
-                  {page}
-                </li>
-              );
-            })}
-          <li
-            className="cursor-pointer border-2 p-2 hover:bg-gray-200"
-            onClick={nextPage}
-          >
-            Next
-          </li>
-          <li
-            className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
-            onClick={() => {
-              gotoPage(pageCount - 1);
-            }}
-          >
-            <BsChevronDoubleRight className="h-6 w-6" />
-          </li>
-        </ul>
-      </nav>
+          <ul className="inline-flex items-center -space-x-px">
+            <li
+              className="cursor-pointer rounded-l-md border-2 p-2 hover:bg-gray-200"
+              onClick={() => {
+                gotoPage(0);
+              }}
+            >
+              <BsChevronDoubleLeft className="h-6 w-6" />
+            </li>
+            <li
+              className="cursor-pointer border-2 p-2 hover:bg-gray-200"
+              onClick={previousPage}
+            >
+              Prev
+            </li>
+            {[
+              pageIndex - 2,
+              pageIndex - 1,
+              pageIndex,
+              pageIndex + 1,
+              pageIndex + 2,
+              pageIndex + 3,
+              pageIndex + 4,
+              pageIndex + 5,
+            ]
+              .filter((pageNo) => pageNo > 0 && pageNo <= pageOptions.length)
+              .map((page, i) => {
+                if (i > 4) return null;
+                return (
+                  <li
+                    key={page}
+                    onClick={() => {
+                      gotoPage(page - 1);
+                    }}
+                    className={`cursor-pointer border-2 py-2 px-4 hover:bg-gray-200 ${pageIndex + 1 === page ? "bg-gray-200 font-semibold" : ""
+                      }`}
+                  >
+                    {page}
+                  </li>
+                );
+              })}
+            <li
+              className="cursor-pointer border-2 p-2 hover:bg-gray-200"
+              onClick={nextPage}
+            >
+              Next
+            </li>
+            <li
+              className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
+              onClick={() => {
+                gotoPage(pageCount - 1);
+              }}
+            >
+              <BsChevronDoubleRight className="h-6 w-6" />
+            </li>
+          </ul>
+        </nav>
+      )}
     </div>
   );
 };

@@ -18,6 +18,89 @@ import {
   TimeDurationUnit,
 } from "ebay-api/lib/enums";
 
+type FulfillmentPolicyResponse = {
+  fulfillmentPolicies: {
+    categoryTypes: {
+      default: string;
+      name: string;
+    }[];
+    description: string;
+    freightShipping: string;
+    fulfillmentPolicyId: string;
+    globalShipping: string;
+    handlingTime: {
+      unit: string;
+      value: string;
+    };
+    localPickup: string;
+    marketplaceId: string;
+    name: string;
+    pickupDropOff: string;
+    shippingOptions: {
+      costType: string;
+      insuranceFee: {
+        currency: string;
+        value: string;
+      };
+      insuranceOffered: string;
+      optionType: string;
+      packageHandlingCost: {
+        currency: string;
+        value: string;
+      };
+      rateTableId: string;
+      shippingDiscountProfileId: string;
+      shippingPromotionOffered: string;
+      shippingServices: {
+        additionalShippingCost: {
+          currency: string;
+          value: string;
+        };
+        buyerResponsibleForPickup: string;
+        buyerResponsibleForShipping: string;
+        freeShipping: string;
+        shippingCarrierCode: string;
+        shippingCost: {
+          currency: string;
+          value: string;
+        };
+        shippingServiceCode: string;
+        shipToLocations: {
+          regionExcluded: {
+            regionName: string;
+            regionType: string;
+          }[];
+          regionIncluded: {
+            regionName: string;
+            regionType: string;
+          }[];
+        };
+        sortOrder: string;
+        surcharge: {
+          currency: string;
+          value: string;
+        };
+      }[];
+    }[];
+    shipToLocations: {
+      regionExcluded: {
+        regionName: string;
+        regionType: string;
+      }[];
+      regionIncluded: {
+        regionName: string;
+        regionType: string;
+      }[];
+    };
+  }[];
+  href: string;
+  limit: string;
+  next: string;
+  offset: string;
+  prev: string;
+  total: string;
+};
+
 const ebay = eBayApi.fromEnv();
 ebay.config.acceptLanguage = "en-AU";
 ebay.config.contentLanguage = "en-AU" as ContentLanguage;
@@ -46,7 +129,7 @@ export const ebayRouter = router({
     .input(
       z.object({
         code: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const token = await ebay.OAuth2.getToken(input.code);
@@ -84,7 +167,7 @@ export const ebayRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
@@ -107,7 +190,7 @@ export const ebayRouter = router({
     .input(
       z.object({
         sku: z.string(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
@@ -132,7 +215,7 @@ export const ebayRouter = router({
     .input(
       z.object({
         title: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
@@ -150,13 +233,13 @@ export const ebayRouter = router({
       });
       const res = await ebay.commerce.taxonomy.getCategorySuggestions(
         "15",
-        input.title
+        input.title,
       );
       const categoryChoices = res.categorySuggestions.map((category: any) => {
         return {
           label: `${category.category.categoryName} // ${
             category.categoryTreeNodeAncestors.find(
-              (x: any) => x.categoryTreeNodeLevel === 1
+              (x: any) => x.categoryTreeNodeLevel === 1,
             ).categoryName
           }`,
           value: category.category.categoryId,
@@ -183,7 +266,7 @@ export const ebayRouter = router({
         internationalShipping: z.number(),
         fulfillmentPolicyId: z.string().optional(),
         partsTable: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       console.log("====================INPUT=====================");
@@ -291,7 +374,7 @@ export const ebayRouter = router({
                 brand: "BMW",
                 imageUrls: input.images,
               },
-            }
+            },
           );
         console.log("CREATED INVENTORY ITEM");
         console.log("=====================================");
@@ -306,7 +389,7 @@ export const ebayRouter = router({
             input.description
           } </p><h3 style="text-decoration: underline;"> Fitment:</h3>${input.partsTable.replaceAll(
             ",",
-            ""
+            "",
           )}<p> Please note: It is the <b> BUYERS REPSONSIBILITY </b>  to ensure fitment is correct for their vehicle. If you are unsure, feel free to send us a message and we will do our best to assist. </p><p> <b> Refunds will not be issued </b> if the part is not suitable for your car.  </p><h3 style="text-decoration: underline;"> Payment: </h3><p> We only accept PayPal for sales via eBay that are being shipped. For in-store pickup, we can also accept Card (2.5% surcharge) or Cash. Please ensure you have selected the correct delivery method at checkout. </p><h3 style="text-decoration: underline;"> Shipping: </h3><p> Any item(s) purchased will be shipped within <b> 2-3 business days </b> of the sale, once payment has been received. </p><h3 style="text-decoration: underline"> Warranty / Returns: </h3><p> We offer a 30-Day return policy, if an item fails or is not in the expected condition. <b> </p>
 <p> Unfortunately due to safety concerns, all items that are airbag / brake / hydraulic related are exempt from this warranty, as we cannot ensure the longevity of these second hand parts. Buy at your own risk. </b> We aim to be as transparent as possible with the condition of second hand parts. </p><p> Refunds will not be issued for change of mind. </p><h3 style="text-decoration: underline;"> About Us: </h3><p> We are a small wrecking business located in Knoxfield, Victoria (Australia). We ship worldwide, or offer in-store pickup. </p><p> If you are chasing something that is not listed on eBay, please feel free to send us a message and we will do our best to assist. </p></div>`,
           listingPolicies: {
@@ -327,7 +410,7 @@ export const ebayRouter = router({
         console.log("PUBLISHING OFFER");
         console.log(`CREATED OFFER ID: ${createOffer.offerId}`);
         const publishOffer = await ebay.sell.inventory.publishOffer(
-          createOffer.offerId
+          createOffer.offerId,
         );
         const listing = await ctx.prisma.listing.update({
           where: {
@@ -352,7 +435,7 @@ export const ebayRouter = router({
       z.object({
         sku: z.string(),
         quantity: z.number(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
@@ -389,7 +472,7 @@ export const ebayRouter = router({
       return offers.offers[0];
       const res = await ebay.sell.inventory.updateOffer(
         input.sku,
-        offers.offers[0]
+        offers.offers[0],
       );
       return {
         sku: input.sku,
@@ -414,7 +497,7 @@ export const ebayRouter = router({
 
     const sellItem = await ebay.commerce.taxonomy.getCategorySuggestions(
       "15",
-      "E39 cylinder head cover set"
+      "E39 cylinder head cover set",
     );
     return sellItem;
   }),
@@ -432,9 +515,8 @@ export const ebayRouter = router({
         },
       });
     });
-    const paymentPolicies = await ebay.sell.account.getPaymentPolicies(
-      "EBAY_AU"
-    );
+    const paymentPolicies =
+      await ebay.sell.account.getPaymentPolicies("EBAY_AU");
     return paymentPolicies.paymentPolicies[0].paymentPolicyId;
   }),
   getReturnPolicy: adminProcedure.mutation(async ({ ctx }) => {
@@ -490,7 +572,7 @@ export const ebayRouter = router({
         locationTypes: ["WAREHOUSE"],
         locationInstructions: "Items ship from here",
         merchantLocationStatus: "ENABLED",
-      } as InventoryLocationFull
+      } as InventoryLocationFull,
     );
     const createdLocation = await ebay.sell.inventory.getInventoryLocations();
     return createdLocation.locations[0].merchantLocationKey;
@@ -509,16 +591,20 @@ export const ebayRouter = router({
         },
       });
     });
-    const fulfillmentPolicies = await ebay.sell.account.getFulfillmentPolicies(
-      "EBAY_AU"
+    const fulfillmentPolicies = (await ebay.sell.account.getFulfillmentPolicies(
+      "EBAY_AU",
+    )) as FulfillmentPolicyResponse;
+    return fulfillmentPolicies.fulfillmentPolicies.sort(
+      (a, b) =>
+        Number(a.shippingOptions[0]?.shippingServices[0]?.shippingCost.value) -
+        Number(b.shippingOptions[0]?.shippingServices[0]?.shippingCost.value),
     );
-    return fulfillmentPolicies.fulfillmentPolicies;
   }),
   publishOffer: adminProcedure
     .input(
       z.object({
         offerId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const token = await ctx.prisma.ebayCreds.findFirst();
@@ -536,7 +622,7 @@ export const ebayRouter = router({
       });
       try {
         const publishOffer = await ebay.sell.inventory.publishOffer(
-          input.offerId
+          input.offerId,
         );
         return publishOffer;
       } catch (e) {

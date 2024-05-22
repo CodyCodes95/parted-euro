@@ -44,6 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 import { toast } from "sonner";
+import Table from "../../components/tables/Table";
 
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
@@ -62,6 +63,61 @@ const Orders = () => {
   const regenerateInvoice = trpc.order.regenerateInvoice.useMutation();
   const sendOrderReadyForPickup =
     trpc.order.sendOrderReadyForPickup.useMutation();
+
+  type PartFromOrder = {
+    part: string;
+    donorVin: string | null;
+    quantity: number;
+    inventoryLocation: string | undefined;
+  };
+
+  const getPartsFromOrdeQuery = (order: QueryOrderGetAllAdmin) => {
+    const parts = order.orderItems.map((item) => {
+      return item.listing.parts
+        .reduce((acc, cur) => {
+          if (
+            !acc.some(
+              (part) => part.partDetails.partNo === cur.partDetails.partNo,
+            )
+          ) {
+            acc.push(cur);
+          }
+          return acc;
+        }, [] as any[])
+
+        .map((part) => {
+          return {
+            part: part.partDetails.name,
+            donorVin: part.donorVin,
+            quantity: item.quantity,
+            inventoryLocation: part.inventoryLocation?.name,
+          };
+        });
+    });
+    return parts.flat();
+  };
+
+  const orderItemColumns = useMemo<Array<Column<PartFromOrder>>>(
+    () => [
+      {
+        Header: "Part",
+        accessor: "part",
+      },
+      {
+        Header: "Donor Vin",
+        accessor: "donorVin",
+      },
+      {
+        Header: "Quantity",
+        accessor: "quantity",
+      },
+      {
+        Header: "Inventory Location",
+        accessor: "inventoryLocation",
+      },
+    ],
+    [],
+  );
 
   const columns = useMemo<Array<Column<QueryOrderGetAllAdmin>>>(
     () => [
@@ -115,32 +171,31 @@ const Orders = () => {
             },
           ),
       },
-      // {
-      //   Header: "View Order",
-      //   accessor: (d) => (
-      //     <Dialog>
-      //       <DialogTrigger asChild>
-      //         <Button variant="outline">
-      //           <File />
-      //         </Button>
-      //       </DialogTrigger>
-      //       <DialogContent className="sm:max-w-[425px]">
-      //         <DialogHeader>
-      //           <DialogTitle>Order</DialogTitle>
-      //           {/* <DialogDescription>
-      //             Make changes to your profile here. Click save when you're
-      //             done.
-      //           </DialogDescription> */}
-      //         </DialogHeader>
-      //         {/* <div className="flex flex-col gap-4">
-      //           {d.orderItems?.map((item) => <div>
-                  
-      //           </div>)}
-      //         </div> */}
-      //       </DialogContent>
-      //     </Dialog>
-      //   ),
-      // },
+      {
+        Header: "View Order",
+        accessor: (d) => (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <File />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[850px]">
+              <DialogHeader>
+                <DialogTitle>Order</DialogTitle>
+                {/* <DialogDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </DialogDescription> */}
+              </DialogHeader>
+              <Table
+                columns={orderItemColumns}
+                data={getPartsFromOrdeQuery(d)}
+              />
+            </DialogContent>
+          </Dialog>
+        ),
+      },
       {
         Header: "Options",
         accessor: (d) => (

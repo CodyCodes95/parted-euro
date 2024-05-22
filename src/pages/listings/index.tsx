@@ -211,7 +211,7 @@ const Listings: NextPage = () => {
                   setShowCategorySelection(true);
                 }}
               >
-                Categories
+                {category ? `${category} ${subcat ? `- ${subcat}` : ""}` : "Categories"}
               </Button>
               <Popover>
                 <PopoverTrigger asChild>

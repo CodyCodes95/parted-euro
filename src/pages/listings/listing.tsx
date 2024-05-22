@@ -286,7 +286,9 @@ const Listing: NextPage = () => {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {Object.entries(parts).map(([series, cars]) => (
+              {Object.entries(parts)
+                
+                .map(([series, cars]) => (
                 <TabsContent
                   className="max-h-80 w-full overflow-y-scroll"
                   key={series}

@@ -78,6 +78,12 @@ export const orderRouter = router({
             listing: {
               include: {
                 images: true,
+                parts: {
+                  include: {
+                    inventoryLocation: true,
+                    partDetails: true
+                  }
+                }
               },
             },
           },
