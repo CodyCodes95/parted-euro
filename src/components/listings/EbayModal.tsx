@@ -365,7 +365,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
               options={fulfillmentPolicies.data?.map((policy) => {
                 return {
                   label: policy.name,
-                  value: policy.fulfillmentPolicyId,
+                  value: policy,
                 };
               })}
               className="basic-multi-select"

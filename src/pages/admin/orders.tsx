@@ -69,6 +69,7 @@ const Orders = () => {
     donorVin: string | null;
     quantity: number;
     inventoryLocation: string | undefined;
+    partNo: string;
   };
 
   const getPartsFromOrdeQuery = (order: QueryOrderGetAllAdmin) => {
@@ -91,6 +92,7 @@ const Orders = () => {
             donorVin: part.donorVin,
             quantity: item.quantity,
             inventoryLocation: part.inventoryLocation?.name,
+            partNo: part.partDetails.partNo,
           };
         });
     });
@@ -106,6 +108,10 @@ const Orders = () => {
       {
         Header: "Donor Vin",
         accessor: "donorVin",
+      },
+      {
+        Header: "Part No",
+        accessor: "partNo",
       },
       {
         Header: "Quantity",
