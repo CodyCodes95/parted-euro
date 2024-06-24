@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Carousel,
   CarouselContent,

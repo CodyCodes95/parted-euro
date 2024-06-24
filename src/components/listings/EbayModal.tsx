@@ -359,7 +359,10 @@ const EbayModal: React.FC<EbayModalProps> = ({
             </Combobox> */}
             <Select
               placeholder="Select a fulfillment policy"
-              value={fulfillmentPolicy}
+              value={{
+                label: fulfillmentPolicy?.name,
+                value: fulfillmentPolicy,
+              }}
               onChange={(e: any) => setFulfillmentPolicy(e.value)}
               // @ts-ignore
               options={fulfillmentPolicies.data?.map((policy) => {
@@ -376,9 +379,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
                 setFulfillmentPolicy(null);
                 setCreateNewFulfillmentPolicy(true);
               }}
-              className="
-            block cursor-pointer text-sm text-blue-500 hover:text-blue-700 hover:underline
-            "
+              className="block cursor-pointer text-sm text-blue-500 hover:text-blue-700 hover:underline"
             >
               Create new shipping policy
             </a>
