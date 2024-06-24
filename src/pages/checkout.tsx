@@ -2,12 +2,13 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import {  Trash } from "lucide-react";
+import { Info, Trash } from "lucide-react";
 import { useCart } from "../context/cartContext";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatter } from "../utils/formatPrice";
 import { useQuery } from "@tanstack/react-query";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 
 const libraries = ["places"];
 
@@ -25,6 +26,10 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
 
+  const cartWeight = useMemo(() => {
+    return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
+  }, [cart]);
+
   const { data: auspostShipping } = useQuery({
     queryKey: ["auspostShipping", shippingAddress?.postCode],
     queryFn: async () => {
@@ -40,10 +45,7 @@ export default function CheckoutPage() {
           length: largestItem.length,
           width: largestItem.width,
           height: largestItem.height,
-          weight: cart.reduce(
-            (acc, item) => acc + item.weight * item.quantity,
-            0,
-          ),
+          weight: cartWeight,
           from: "3152",
           to: shippingAddress?.postCode,
         }) as any,
@@ -62,7 +64,7 @@ export default function CheckoutPage() {
         regular: regular.toFixed(2),
       };
     },
-    enabled: shippingAddress?.postCode.length === 4,
+    enabled: shippingAddress?.postCode.length === 4 && cartWeight < 22,
   });
 
   const submitCheckout = async () => {
@@ -82,7 +84,7 @@ export default function CheckoutPage() {
   };
 
   useEffect(() => {
-    if (auspostShipping && name && email && acceptTerms) {
+    if ((auspostShipping || cartWeight >= 22) && name && email && acceptTerms) {
       setValidated(true);
     } else {
       setValidated(false);
@@ -267,29 +269,33 @@ export default function CheckoutPage() {
                 </Label>
                 <div className="flex items-center gap-2">
                   <input
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     type="checkbox"
                     checked={acceptTerms}
                     onChange={(e) => setAcceptTerms(e.target.checked)}
                   />
                   <span>
                     I have read & agree to the{" "}
-                    <Link target="_blank" className="hover:underline text-blue-500" href="/returns-refunds">Terms and Conditions</Link>
+                    <Link
+                      target="_blank"
+                      className="text-blue-500 hover:underline"
+                      href="/returns-refunds"
+                    >
+                      Terms and Conditions
+                    </Link>
                   </span>
                 </div>
               </div>
-              {cart.reduce(
-                (acc, item) => acc + item.weight * item.quantity,
-                0,
-              ) >= 22 ? (
-                <p className="text-lg text-red-500">
-                  Only pickup is available as your order exceeds 22KG
-                </p>
-              ) : null}
             </div>
-            {/* {isLoaded && shippingMethod.value ? (
-            <ShippingAddressField setShippingAddress={setShippingAddress} />
-          ) : null} */}
+            {cartWeight >= 22 ? (
+              <Alert className="w-full">
+                <Info className="h-4 w-4" />
+                <AlertTitle>Pickup only</AlertTitle>
+                <AlertDescription>
+                  Only pickup is available as your order exceeds 22KG
+                </AlertDescription>
+              </Alert>
+            ) : null}
           </section>
           <section className="flex flex-col gap-4 py-6">
             <div className="grid gap-4"></div>
