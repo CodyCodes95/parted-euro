@@ -2,70 +2,71 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Info, Trash } from "lucide-react";
-import { useCart } from "../context/cartContext";
-import { useEffect, useMemo, useState } from "react";
+import { Info, Trash, TriangleAlert } from "lucide-react";
+import { CartItem, useCart } from "../context/cartContext";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatter } from "../utils/formatPrice";
-import { useQuery } from "@tanstack/react-query";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
-
-const libraries = ["places"];
-
-type ShippingAddress = {
-  postCode: string;
-};
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { trpc } from "../utils/trpc";
 
 export default function CheckoutPage() {
   const { cart, setCart } = useCart();
   // const [parent] = useAutoAnimate();
 
-  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>();
-  const [validated, setValidated] = useState(false);
+  const [postcode, setPostcode] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [shipToCountryCode, setShipToCountryCode] = useState("AU");
 
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
   }, [cart]);
 
-  const { data: auspostShipping } = useQuery({
-    queryKey: ["auspostShipping", shippingAddress?.postCode],
-    queryFn: async () => {
-      const largestItem = cart.reduce((prev, current) =>
+  const largestCartItem = useMemo(() => {
+    return cart.reduce(
+      (prev, current) =>
         prev.length * prev.width * prev.height >
         current.length * current.width * current.height
           ? prev
           : current,
-      );
-      const res = await fetch(`/api/checkout/shipping`, {
-        method: "POST",
-        body: JSON.stringify({
-          length: largestItem.length,
-          width: largestItem.width,
-          height: largestItem.height,
-          weight: cartWeight,
-          from: "3152",
-          to: shippingAddress?.postCode,
-        }) as any,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      let express = Number(data.express);
-      let regular = Number(data.regular);
-      const cartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-      for (let i = 0; i < cartItems - 1; i++) {
-        express += express * 0.1;
-        regular += regular * 0.1;
-      }
-      return {
-        express: express.toFixed(2),
-        regular: regular.toFixed(2),
-      };
-    },
-    enabled: shippingAddress?.postCode.length === 4 && cartWeight < 22,
-  });
+      {} as CartItem,
+    );
+  }, [cart]);
+
+  const ausPostShippingCountries = trpc.ausPost.getShippingCountries.useQuery();
+  const domesticShippingServices =
+    trpc.ausPost.getDomesticShippingServices.useQuery(
+      {
+        from: "3152",
+        to: postcode,
+        weight: cartWeight,
+        length: largestCartItem.length,
+        width: largestCartItem.width,
+        height: largestCartItem.height,
+      },
+      {
+        enabled: postcode.length === 4 && shipToCountryCode === "AU",
+      },
+    );
+  const internationalShippingServices =
+    trpc.ausPost.getInternationalShippingServices.useQuery(
+      {
+        countryCode: shipToCountryCode,
+        parcelWeight: cartWeight,
+      },
+      {
+        enabled: shipToCountryCode !== "AU",
+      },
+    );
 
   const submitCheckout = async () => {
     if (!validated) return toast.error("Please fill out all fields");
@@ -73,8 +74,10 @@ export default function CheckoutPage() {
       method: "POST",
       body: JSON.stringify({
         items: cart,
-        regularShipping: auspostShipping!.regular,
-        expressShipping: auspostShipping!.express,
+        shippingOptions:
+          shipToCountryCode === "AU"
+            ? domesticShippingServices.data
+            : internationalShippingServices.data,
         email,
         name,
       }),
@@ -83,26 +86,23 @@ export default function CheckoutPage() {
     window.location = response.url;
   };
 
-  useEffect(() => {
-    if ((auspostShipping || cartWeight >= 22) && name && email && acceptTerms) {
-      setValidated(true);
-    } else {
-      setValidated(false);
-    }
-  }, [auspostShipping, name, email, acceptTerms]);
-
-  // useEffect(() => {
-  //   if (
-  //     cart.reduce((acc, item) => acc + item.weight * item.quantity, 0) >= 22
-  //   ) {
-  //     setShippingMethod({
-  //       label: "Pickup",
-  //       value: 0,
-  //     });
-  //     setExpressCost(0);
-  //     setRegularCost(0);
-  //   }
-  // }, [cart]);
+  const validated = useMemo(() => {
+    return (
+      (domesticShippingServices.data ||
+        internationalShippingServices.data ||
+        cartWeight >= 22) &&
+      name &&
+      email &&
+      acceptTerms
+    );
+  }, [
+    domesticShippingServices.data,
+    internationalShippingServices.data,
+    cartWeight,
+    name,
+    email,
+    acceptTerms,
+  ]);
 
   return (
     <div className="bg-white p-8 md:px-40">
@@ -246,23 +246,38 @@ export default function CheckoutPage() {
                   placeholder="Enter your email address"
                 />
               </div>
-
               <div className="grid gap-1.5">
-                <Label className="text-sm" htmlFor="zip">
-                  Postcode
-                </Label>
-                <Input
-                  value={shippingAddress?.postCode}
-                  onChange={(e) => {
-                    setShippingAddress({
-                      ...shippingAddress,
-                      postCode: e.target.value,
-                    });
-                  }}
-                  id="postcode"
-                  placeholder="Enter your postcode"
-                />
+                <Label className="text-sm">Country</Label>
+                <Select
+                  value={shipToCountryCode}
+                  onValueChange={(value) => setShipToCountryCode(value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a fruit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AU">Australia</SelectItem>
+                    {ausPostShippingCountries.data?.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+              {shipToCountryCode === "AU" && (
+                <div className="grid gap-1.5">
+                  <Label className="text-sm" htmlFor="zip">
+                    Postcode
+                  </Label>
+                  <Input
+                    value={postcode}
+                    onChange={(e) => setPostcode(e.target.value)}
+                    id="postcode"
+                    placeholder="Enter your postcode"
+                  />
+                </div>
+              )}
               <div className="grid gap-1.5">
                 <Label className="text-sm" htmlFor="zip">
                   Terms and conditions
@@ -296,6 +311,15 @@ export default function CheckoutPage() {
                 </AlertDescription>
               </Alert>
             ) : null}
+            {internationalShippingServices.isError && (
+              <Alert variant={"destructive"} className="w-full">
+                <TriangleAlert className="h-4 w-4" />
+                <AlertTitle>Shipping not available</AlertTitle>
+                <AlertDescription>
+                  Shipping is not available to this country
+                </AlertDescription>
+              </Alert>
+            )}
           </section>
           <section className="flex flex-col gap-4 py-6">
             <div className="grid gap-4"></div>

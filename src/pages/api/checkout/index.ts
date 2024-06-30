@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
+import { StripeShippingOption } from "../../../server/trpc/router/ausPost";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
@@ -10,8 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
 const prisma = new PrismaClient();
 
 type StripeSessionRequest = {
-  regularShipping: string;
-  expressShipping: string;
+  shippingOptions: StripeShippingOption[]
   email: string;
   name: string;
   items: CartItem[];
@@ -24,13 +24,8 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
         ? "http://localhost:3000"
         : `https://${req.headers.host}`;
 
-    const {
-      items,
-      regularShipping,
-      expressShipping,
-      email,
-      name,
-    }: StripeSessionRequest = JSON.parse(req.body);
+    const { items, shippingOptions, email, name }: StripeSessionRequest =
+      JSON.parse(req.body);
 
     // create a new customer
 
@@ -38,9 +33,6 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       email,
       name,
     });
-
-    const shippingOptions: Stripe.Checkout.SessionCreateParams.ShippingOption[] =
-      [];
 
     // Local pickup option as a default
     shippingOptions.push({
@@ -50,32 +42,6 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
         display_name: "Pickup from Parted Euro",
       },
     });
-
-    // If shipping is sent through, the user selected to ship
-    if (regularShipping && expressShipping) {
-      shippingOptions.push(
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: {
-              amount: Math.ceil(Number(regularShipping) * 100),
-              currency: "aud",
-            },
-            display_name: "AusPost Regular",
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: {
-              amount: Math.ceil(Number(expressShipping) * 100),
-              currency: "aud",
-            },
-            display_name: "AusPost Express",
-          },
-        },
-      );
-    }
 
     // const inventoryLocations = {} as any;
 
