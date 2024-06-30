@@ -108,7 +108,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       shipping_address_collection: {
         allowed_countries: ["AU"],
       },
-      shipping_options: shippingOptions,
+      shipping_options: shippingOptions as any,
       line_items: stripeLineItems,
       mode: "payment",
       success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
