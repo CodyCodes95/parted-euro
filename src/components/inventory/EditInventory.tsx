@@ -76,7 +76,7 @@ const EditInventoryModal = ({
                 ?.name,
             }}
             isDisabled={true}
-            closeMenuOnSelect={false}
+            closeMenuOnSelect
           />
         </div>
         <div className="">
@@ -111,7 +111,7 @@ const EditInventoryModal = ({
                 ? {
                     label:
                       inventoryLocations.data?.find(
-                        (location) => location.id === inventoryLocation
+                        (location) => location.id === inventoryLocation,
                       )?.name || "",
                     value: inventoryLocation,
                   }

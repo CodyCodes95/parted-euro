@@ -78,6 +78,7 @@ const AddInventory = ({
             Donor Car (Donor)
           </label>
           <ReactSelect
+            closeMenuOnSelect
             placeholder={"Select a donor"}
             // isDisabled={donorVin ? true : false}
             options={donors.data?.map((donor) => {
