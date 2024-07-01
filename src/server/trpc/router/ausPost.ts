@@ -2,6 +2,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
 const baseUrl = "https://digitalapi.auspost.com.au";
+const supportedShippingMethods = ["Standard", "Express"];
 
 type ShippingCountryResponse = {
   countries: Record<"country", AusPostShippingCodes[]>;
@@ -125,17 +126,23 @@ export const ausPostRouter = router({
         },
       );
       const data = (await res.json()) as AvailableShippingServicesResponse;
-      return data.services.service.map((service) => {
-        return {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: {
-              amount: Math.ceil(Number(service.price) * 100),
-              currency: "AUD",
+      return data.services.service
+        .map((service) => {
+          return {
+            shipping_rate_data: {
+              type: "fixed_amount",
+              fixed_amount: {
+                amount: Math.ceil(Number(service.price) * 100),
+                currency: "AUD",
+              },
+              display_name: service.name,
             },
-            display_name: service.name,
-          },
-        };
-      });
+          };
+        })
+        .filter((service) =>
+          supportedShippingMethods.includes(
+            service.shipping_rate_data.display_name,
+          ),
+        );
     }),
 });

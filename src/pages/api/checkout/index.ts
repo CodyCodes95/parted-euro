@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
-import { StripeShippingOption } from "../../../server/trpc/router/ausPost";
+import type { StripeShippingOption } from "../../../server/trpc/router/ausPost";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
@@ -11,10 +11,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
 const prisma = new PrismaClient();
 
 type StripeSessionRequest = {
-  shippingOptions: StripeShippingOption[]
+  shippingOptions: StripeShippingOption[];
   email: string;
   name: string;
   items: CartItem[];
+  countryCode: string;
 };
 
 async function POST(req: NextApiRequest, res: NextApiResponse) {
@@ -24,8 +25,13 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
         ? "http://localhost:3000"
         : `https://${req.headers.host}`;
 
-    const { items, shippingOptions, email, name }: StripeSessionRequest =
-      JSON.parse(req.body);
+    const {
+      items,
+      shippingOptions,
+      email,
+      name,
+      countryCode,
+    }: StripeSessionRequest = JSON.parse(req.body);
 
     // create a new customer
 
@@ -34,14 +40,17 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       name,
     });
 
-    // Local pickup option as a default
-    shippingOptions.push({
-      shipping_rate_data: {
-        type: "fixed_amount",
-        fixed_amount: { amount: 0, currency: "aud" },
-        display_name: "Pickup from Parted Euro",
-      },
-    });
+    // Local pickup option as a default if country is AU
+
+    if (countryCode === "AU") {
+      shippingOptions.push({
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: 0, currency: "aud" },
+          display_name: "Pickup from Parted Euro",
+        },
+      });
+    }
 
     // const inventoryLocations = {} as any;
 
@@ -106,7 +115,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       customer: customer.id,
       payment_method_types: ["card", "afterpay_clearpay"],
       shipping_address_collection: {
-        allowed_countries: ["AU"],
+        allowed_countries: [countryCode as any],
       },
       shipping_options: shippingOptions as any,
       line_items: stripeLineItems,

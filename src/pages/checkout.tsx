@@ -3,7 +3,8 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Info, Trash, TriangleAlert } from "lucide-react";
-import { CartItem, useCart } from "../context/cartContext";
+import type { CartItem } from "../context/cartContext";
+import { useCart } from "../context/cartContext";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatter } from "../utils/formatPrice";
@@ -64,7 +65,8 @@ export default function CheckoutPage() {
         parcelWeight: cartWeight,
       },
       {
-        enabled: shipToCountryCode !== "AU",
+        enabled: shipToCountryCode !== "AU" && cartWeight < 20,
+        retry: false,
       },
     );
 
@@ -80,6 +82,7 @@ export default function CheckoutPage() {
             : internationalShippingServices.data,
         email,
         name,
+        countryCode: shipToCountryCode,
       }),
     });
     const response = await res.json();
@@ -138,7 +141,7 @@ export default function CheckoutPage() {
                     {item.listingTitle}
                   </p>
                 </div>
-                <div className="flex flex-col flex-col gap-2 md:flex-row">
+                <div className="flex flex-col gap-2 md:flex-row">
                   <div className="flex items-center gap-2">
                     <p>Qty:</p>
                     <Input
@@ -252,7 +255,7 @@ export default function CheckoutPage() {
                   value={shipToCountryCode}
                   onValueChange={(value) => setShipToCountryCode(value)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger id="country" className="w-full">
                     <SelectValue placeholder="Select a fruit" />
                   </SelectTrigger>
                   <SelectContent>
@@ -302,12 +305,22 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-            {cartWeight >= 22 ? (
+            {cartWeight >= 22 && shipToCountryCode === "AU" ? (
               <Alert className="w-full">
                 <Info className="h-4 w-4" />
                 <AlertTitle>Pickup only</AlertTitle>
                 <AlertDescription>
                   Only pickup is available as your order exceeds 22KG
+                </AlertDescription>
+              </Alert>
+            ) : null}
+            {cartWeight >= 20 && shipToCountryCode !== "AU" ? (
+              <Alert variant={"destructive"} className="w-full">
+                <Info className="h-4 w-4" />
+                <AlertTitle>Not available</AlertTitle>
+                <AlertDescription>
+                  International shipping of orders over 20kg are currently not
+                  available.
                 </AlertDescription>
               </Alert>
             ) : null}
