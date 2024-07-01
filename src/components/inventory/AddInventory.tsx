@@ -43,8 +43,8 @@ const AddInventory = ({
     await inventoryLocations.refetch();
     setInventoryLocation(
       inventoryLocations.data?.find(
-        (location) => location.name === newInventoryLocation
-      )?.id || ""
+        (location) => location.name === newInventoryLocation,
+      )?.id || "",
     );
     setNewInventoryLocation(undefined);
   };
@@ -61,7 +61,7 @@ const AddInventory = ({
           quantity,
           inventoryLocationId: inventoryLocation,
         });
-      })
+      }),
     );
     toast.success(`Parts assigned to ${donorVin}`);
     setVariant("");
@@ -78,7 +78,6 @@ const AddInventory = ({
             Donor Car (Donor)
           </label>
           <ReactSelect
-            closeMenuOnSelect
             placeholder={"Select a donor"}
             // isDisabled={donorVin ? true : false}
             options={donors.data?.map((donor) => {
@@ -118,7 +117,7 @@ const AddInventory = ({
             onChange={(e) => {
               setSelectedParts(e?.map((part) => part.value) || []);
             }}
-            closeMenuOnSelect={false}
+            closeMenuOnSelect
           />
         </div>
         <div className="">
@@ -128,7 +127,10 @@ const AddInventory = ({
           <div className="flex w-full items-center gap-2">
             {typeof newInventoryLocation === "string" ? (
               <>
-                <Input value={newInventoryLocation} onChange={(e) => setNewInventoryLocation(e.target.value)} />
+                <Input
+                  value={newInventoryLocation}
+                  onChange={(e) => setNewInventoryLocation(e.target.value)}
+                />
                 <div
                   onClick={() => saveInventoryLocation()}
                   className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
@@ -152,7 +154,7 @@ const AddInventory = ({
                       ? {
                           label:
                             inventoryLocations.data?.find(
-                              (location) => location.id === inventoryLocation
+                              (location) => location.id === inventoryLocation,
                             )?.name || "",
                           value: inventoryLocation,
                         }
