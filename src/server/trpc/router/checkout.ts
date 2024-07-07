@@ -43,17 +43,19 @@ export type StripeShippingOption = {
 type InterparcelShippingServicesResponse = {
   status: number;
   errorMessage: string;
-  services: {
-    id: string;
-    service: string;
-    type: string;
-    rapid: {
-      quote: string;
-      pickup: string;
-      transitTimes: string;
-    };
-  }[];
+  services: InterparcelShippingService[];
   invalidServices: never[];
+};
+
+type InterparcelShippingService = {
+  id: string;
+  service: string;
+  type: string;
+  rapid: {
+    quote: string;
+    pickup: string;
+    transitTimes: string;
+  };
 };
 
 type InterparcelShippingQuote = {
@@ -126,6 +128,12 @@ type InterparcelShippingQuote = {
     timeElapsed: number;
   }[];
   invalidServices: never[];
+};
+
+const filterInterparcelShippingServices = (
+  service: InterparcelShippingService,
+) => {
+  return !service.service.includes("Hunter");
 };
 
 const getShippingServicesInputSchema = z.object({
@@ -270,8 +278,9 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
   if (shippingServicesAvailableData.errorMessage) {
     throw new Error(shippingServicesAvailableData.errorMessage);
   }
-  const requests = shippingServicesAvailableData.services.map(
-    async (service) => {
+  const requests = shippingServicesAvailableData.services
+    .filter(filterInterparcelShippingServices)
+    .map(async (service) => {
       const searchParams = new URLSearchParams({
         ...interparcelParams,
         service: service.id,
@@ -280,8 +289,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
         `${interparcelBaseUrl}/quote/quote?${searchParams}`,
         {
           headers: {
-            Cookie:
-              "PHPSESSID=f",
+            Cookie: "PHPSESSID=f",
           },
         },
       );
@@ -294,13 +302,14 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
             amount: Math.ceil(Number(data.services[0]!.sellPrice) * 100),
             currency: "AUD",
           },
-          display_name: data.services[0]!.carrier,
+          display_name: `${data.services[0]!.carrier} - ${
+            data.services[0]!.name
+          }`,
         },
       };
-    },
-  );
+    });
   const availableServices = await Promise.all(requests);
-  return availableServices;
+  return availableServices.slice(0, 4);
 };
 
 export const checkoutRouter = router({
