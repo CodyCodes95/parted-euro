@@ -130,12 +130,6 @@ type InterparcelShippingQuote = {
   invalidServices: never[];
 };
 
-const filterInterparcelShippingServices = (
-  service: InterparcelShippingService,
-) => {
-  return !service.service.includes("Hunter");
-};
-
 const getShippingServicesInputSchema = z.object({
   weight: z.number(),
   length: z.number(),
@@ -279,7 +273,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     throw new Error(shippingServicesAvailableData.errorMessage);
   }
   const requests = shippingServicesAvailableData.services
-    .filter(filterInterparcelShippingServices)
+    .filter((service) => !service.service.includes("Hunter"))
     .map(async (service) => {
       const searchParams = new URLSearchParams({
         ...interparcelParams,
