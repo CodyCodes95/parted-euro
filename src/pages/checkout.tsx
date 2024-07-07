@@ -43,32 +43,25 @@ export default function CheckoutPage() {
     );
   }, [cart]);
 
-  const ausPostShippingCountries = trpc.ausPost.getShippingCountries.useQuery();
-  const domesticShippingServices =
-    trpc.ausPost.getDomesticShippingServices.useQuery(
-      {
-        from: "3152",
-        to: postcode,
-        weight: cartWeight,
-        length: largestCartItem.length,
-        width: largestCartItem.width,
-        height: largestCartItem.height,
-      },
-      {
-        enabled: postcode.length === 4 && shipToCountryCode === "AU",
-      },
-    );
-  const internationalShippingServices =
-    trpc.ausPost.getInternationalShippingServices.useQuery(
-      {
-        countryCode: shipToCountryCode,
-        parcelWeight: cartWeight,
-      },
-      {
-        enabled: shipToCountryCode !== "AU" && cartWeight < 20,
-        retry: false,
-      },
-    );
+  const ausPostShippingCountries =
+    trpc.checkout.getShippingCountries.useQuery();
+
+  const shippingServices = trpc.checkout.getShippingServices.useQuery(
+    {
+      destinationPostcode: postcode,
+      weight: cartWeight,
+      length: largestCartItem.length,
+      width: largestCartItem.width,
+      height: largestCartItem.height,
+      destinationCountry: shipToCountryCode || "AUSTRALIA",
+      destinationCity: "Warwick",
+      destinationState: "QLD",
+    },
+    {
+      enabled: postcode.length === 4 || shipToCountryCode !== "AU",
+      retry: false,
+    },
+  );
 
   const submitCheckout = async () => {
     if (!validated) return toast.error("Please fill out all fields");
@@ -76,10 +69,7 @@ export default function CheckoutPage() {
       method: "POST",
       body: JSON.stringify({
         items: cart,
-        shippingOptions:
-          shipToCountryCode === "AU"
-            ? domesticShippingServices.data
-            : internationalShippingServices.data,
+        shippingOptions: shippingServices.data,
         email,
         name,
         countryCode: shipToCountryCode,
@@ -90,22 +80,8 @@ export default function CheckoutPage() {
   };
 
   const validated = useMemo(() => {
-    return (
-      (domesticShippingServices.data ||
-        internationalShippingServices.data ||
-        cartWeight >= 22) &&
-      name &&
-      email &&
-      acceptTerms
-    );
-  }, [
-    domesticShippingServices.data,
-    internationalShippingServices.data,
-    cartWeight,
-    name,
-    email,
-    acceptTerms,
-  ]);
+    return shippingServices.data && name && email && acceptTerms;
+  }, [shippingServices.data, cartWeight, name, email, acceptTerms]);
 
   return (
     <div className="bg-white p-8 md:px-40">
@@ -305,31 +281,12 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-            {cartWeight >= 22 && shipToCountryCode === "AU" ? (
-              <Alert className="w-full">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Pickup only</AlertTitle>
-                <AlertDescription>
-                  Only pickup is available as your order exceeds 22KG
-                </AlertDescription>
-              </Alert>
-            ) : null}
-            {cartWeight >= 20 && shipToCountryCode !== "AU" ? (
-              <Alert variant={"destructive"} className="w-full">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Not available</AlertTitle>
-                <AlertDescription>
-                  International shipping of orders over 20kg are currently not
-                  available.
-                </AlertDescription>
-              </Alert>
-            ) : null}
-            {internationalShippingServices.isError && (
+            {shippingServices.isError && (
               <Alert variant={"destructive"} className="w-full">
                 <TriangleAlert className="h-4 w-4" />
                 <AlertTitle>Shipping not available</AlertTitle>
                 <AlertDescription>
-                  Shipping is not available to this country
+                  {shippingServices.error.message}
                 </AlertDescription>
               </Alert>
             )}

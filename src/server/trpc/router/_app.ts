@@ -12,7 +12,7 @@ import { inventoryLocationRouter } from "./inventoryLocations";
 import { categoryRouter } from "./categories";
 import { orderRouter } from "./order";
 import { orderItemsRouter } from "./orderItems";
-import { ausPostRouter } from "./ausPost";
+import { checkoutRouter } from "./checkout";
 
 export const appRouter = router({
   cars: carRouter,
@@ -28,7 +28,7 @@ export const appRouter = router({
   categories: categoryRouter,
   order: orderRouter,
   orderItems: orderItemsRouter,
-  ausPost: ausPostRouter,
+  checkout: checkoutRouter,
 });
 
 // export type definition of API

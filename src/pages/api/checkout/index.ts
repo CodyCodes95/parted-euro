@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
-import type { StripeShippingOption } from "../../../server/trpc/router/ausPost";
+import type { StripeShippingOption } from "../../../server/trpc/router/checkout";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
   apiVersion: "2022-11-15",
