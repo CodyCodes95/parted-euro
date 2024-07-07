@@ -58,7 +58,8 @@ export default function CheckoutPage() {
       destinationState: "QLD",
     },
     {
-      enabled: postcode.length === 4 || shipToCountryCode !== "AU",
+      enabled:
+        !!cart.length && (postcode.length === 4 || shipToCountryCode !== "AU"),
       retry: false,
     },
   );

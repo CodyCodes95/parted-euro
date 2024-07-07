@@ -149,7 +149,7 @@ const supportedShippingMethods = ["Standard", "Express"];
 const interparcelBaseUrl = "https://au.interparcel.com/api";
 
 const partedEuroAddress = {
-  postcode: "3152",
+  postcode: "3180",
   city: "Knoxfield",
   state: "VIC",
   country: "AU",
@@ -238,21 +238,25 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     height,
     destinationPostcode,
     destinationCountry,
+    destinationCity,
+    destinationState,
     weight,
   } = input;
   if (weight > 35) throw new Error("Weight is too heavy");
   const interparcelParams = {
     source: "booking",
-    coll_country: "AUSTRALIA",
+    coll_country: "Australia",
     coll_state: partedEuroAddress.state,
     coll_city: partedEuroAddress.city,
     coll_postcode: partedEuroAddress.postcode,
+    del_postcode: destinationPostcode,
+    del_city: destinationCity!,
+    del_state: destinationState!,
+    del_country: "Australia",
     "pkg[0][0]": weight.toString(),
     "pkg[0][1]": length.toString(),
     "pkg[0][2]": width.toString(),
     "pkg[0][3]": height.toString(),
-    del_postcode: destinationPostcode,
-    del_country: destinationCountry,
   };
   const searchParams = new URLSearchParams({
     ...interparcelParams,
@@ -266,7 +270,6 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
   if (shippingServicesAvailableData.errorMessage) {
     throw new Error(shippingServicesAvailableData.errorMessage);
   }
-  console.log(JSON.stringify(shippingServicesAvailableData, null, 2));
   const requests = shippingServicesAvailableData.services.map(
     async (service) => {
       const searchParams = new URLSearchParams({
@@ -275,8 +278,15 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
       });
       const response = await fetch(
         `${interparcelBaseUrl}/quote/quote?${searchParams}`,
+        {
+          headers: {
+            Cookie:
+              "PHPSESSID=f",
+          },
+        },
       );
       const data = (await response.json()) as InterparcelShippingQuote;
+      console.log(JSON.stringify(data, null, 2));
       return {
         shipping_rate_data: {
           type: "fixed_amount",
@@ -284,7 +294,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
             amount: Math.ceil(Number(data.services[0]!.sellPrice) * 100),
             currency: "AUD",
           },
-          display_name: data.services[0]!.name,
+          display_name: data.services[0]!.carrier,
         },
       };
     },
