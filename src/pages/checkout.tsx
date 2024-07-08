@@ -357,7 +357,7 @@ export function PlacesAutocomplete() {
     debounce: 300,
   });
 
-  console.log(data);
+  if (!ready) return null;
 
   return (
     <>
@@ -376,7 +376,7 @@ export function PlacesAutocomplete() {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               value={value}
               onValueChange={(value) => setValue(value)}
@@ -385,10 +385,10 @@ export function PlacesAutocomplete() {
             <CommandList>
               <CommandEmpty>No framework found.</CommandEmpty>
               <CommandGroup>
-                {frameworks.map((framework) => (
+                {data.map((suggestion) => (
                   <CommandItem
-                    key={framework.value}
-                    value={framework.value}
+                    key={suggestion.place_id}
+                    value={suggestion.place_id}
                     onSelect={(currentValue) => {
                       setValue(currentValue === value ? "" : currentValue);
                       setOpen(false);
@@ -397,10 +397,12 @@ export function PlacesAutocomplete() {
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === framework.value ? "opacity-100" : "opacity-0",
+                        value === suggestion.place_id
+                          ? "opacity-100"
+                          : "opacity-0",
                       )}
                     />
-                    {framework.label}
+                    {suggestion.description}
                   </CommandItem>
                 ))}
               </CommandGroup>
