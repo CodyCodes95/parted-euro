@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Info, Trash, TriangleAlert } from "lucide-react";
+import { ChevronsUpDown, Trash, TriangleAlert } from "lucide-react";
 import type { CartItem } from "../context/cartContext";
 import { useCart } from "../context/cartContext";
 import { useMemo, useState } from "react";
@@ -17,6 +17,22 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { trpc } from "../utils/trpc";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../components/ui/command";
+import { Check } from "lucide-react";
+import { cn } from "../lib/utils";
+import usePlacesAutocomplete from "use-places-autocomplete";
 
 export default function CheckoutPage() {
   const { cart, setCart } = useCart();
@@ -248,14 +264,9 @@ export default function CheckoutPage() {
               {shipToCountryCode === "AU" && (
                 <div className="grid gap-1.5">
                   <Label className="text-sm" htmlFor="zip">
-                    Postcode
+                    Shipping suburb
                   </Label>
-                  <Input
-                    value={postcode}
-                    onChange={(e) => setPostcode(e.target.value)}
-                    id="postcode"
-                    placeholder="Enter your postcode"
-                  />
+                  <PlacesAutocomplete />
                 </div>
               )}
               <div className="grid gap-1.5">
@@ -301,5 +312,106 @@ export default function CheckoutPage() {
         </form>
       </main>
     </div>
+  );
+}
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+
+export function PlacesAutocomplete() {
+  const [open, setOpen] = useState(false);
+
+  const {
+    ready,
+    value,
+    setValue,
+    suggestions: { status, data },
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      types: ["(regions)"],
+      componentRestrictions: {
+        country: "AU",
+      },
+    },
+    debounce: 300,
+  });
+
+  console.log(data);
+
+  return (
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+          >
+            {value
+              ? frameworks.find((framework) => framework.value === value)?.label
+              : "Select framework..."}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0">
+          <Command>
+            <CommandInput
+              value={value}
+              onValueChange={(value) => setValue(value)}
+              placeholder="Suburb or postcode"
+            />
+            <CommandList>
+              <CommandEmpty>No framework found.</CommandEmpty>
+              <CommandGroup>
+                {frameworks.map((framework) => (
+                  <CommandItem
+                    key={framework.value}
+                    value={framework.value}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? "" : currentValue);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === framework.value ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {framework.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      <script
+        defer
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places&callback=initMap`}
+      ></script>
+    </>
   );
 }

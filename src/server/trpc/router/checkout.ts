@@ -135,8 +135,8 @@ const getShippingServicesInputSchema = z.object({
   length: z.number(),
   width: z.number(),
   height: z.number(),
-  destinationPostcode: z.string(),
   destinationCountry: z.string(),
+  destinationPostcode: z.string().optional(),
   destinationCity: z.string().optional(),
   destinationState: z.string().optional(),
 });
@@ -251,10 +251,10 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     coll_state: partedEuroAddress.state,
     coll_city: partedEuroAddress.city,
     coll_postcode: partedEuroAddress.postcode,
-    del_postcode: destinationPostcode,
-    del_city: destinationCity!,
-    del_state: destinationState!,
-    del_country: "Australia",
+    del_postcode: destinationPostcode ?? "",
+    del_city: destinationCity ?? "",
+    del_state: destinationState ?? "",
+    del_country: destinationCountry,
     "pkg[0][0]": weight.toString(),
     "pkg[0][1]": length.toString(),
     "pkg[0][2]": width.toString(),
@@ -274,6 +274,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
   }
   const requests = shippingServicesAvailableData.services
     .filter((service) => !service.service.includes("Hunter"))
+    .filter((service) => !service.service.toLowerCase().includes("b2b"))
     .map(async (service) => {
       const searchParams = new URLSearchParams({
         ...interparcelParams,
@@ -288,7 +289,6 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
         },
       );
       const data = (await response.json()) as InterparcelShippingQuote;
-      console.log(JSON.stringify(data, null, 2));
       return {
         shipping_rate_data: {
           type: "fixed_amount",
