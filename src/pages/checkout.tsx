@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { ChevronsUpDown, Trash, TriangleAlert } from "lucide-react";
+import { Trash, TriangleAlert } from "lucide-react";
 import type { CartItem } from "../context/cartContext";
 import { useCart } from "../context/cartContext";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatter } from "../utils/formatPrice";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
@@ -18,27 +18,26 @@ import {
 } from "../components/ui/select";
 import { trpc } from "../utils/trpc";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../components/ui/popover";
-import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
-  CommandItem,
   CommandList,
 } from "../components/ui/command";
-import { Check } from "lucide-react";
-import { cn } from "../lib/utils";
-import usePlacesAutocomplete from "use-places-autocomplete";
+import usePlacesAutocomplete, { getDetails } from "use-places-autocomplete";
+import { FormMessages } from "../components/ui/FormMessages";
+import { Delete, Loader2 } from "lucide-react";
+import { Command as CommandPrimitive } from "cmdk";
 
 export default function CheckoutPage() {
   const { cart, setCart } = useCart();
   // const [parent] = useAutoAnimate();
 
-  const [postcode, setPostcode] = useState("");
+  const [address, setAddress] = useState<AddressType>({
+    formattedAddress: "",
+    city: "",
+    region: "",
+    postalCode: "",
+  });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -64,18 +63,18 @@ export default function CheckoutPage() {
 
   const shippingServices = trpc.checkout.getShippingServices.useQuery(
     {
-      destinationPostcode: postcode,
+      destinationPostcode: address.postalCode ?? "",
       weight: cartWeight,
       length: largestCartItem.length,
       width: largestCartItem.width,
       height: largestCartItem.height,
       destinationCountry: shipToCountryCode || "AUSTRALIA",
-      destinationCity: "Warwick",
-      destinationState: "QLD",
+      destinationCity: address.city ?? "",
+      destinationState: address.region ?? "",
     },
     {
       enabled:
-        !!cart.length && (postcode.length === 4 || shipToCountryCode !== "AU"),
+        !!cart.length && (!!address.postalCode || shipToCountryCode !== "AU"),
       retry: false,
     },
   );
@@ -266,7 +265,10 @@ export default function CheckoutPage() {
                   <Label className="text-sm" htmlFor="zip">
                     Shipping suburb
                   </Label>
-                  <PlacesAutocomplete />
+                  <AddressAutoComplete
+                    address={address}
+                    setAddress={setAddress}
+                  />
                 </div>
               )}
               <div className="grid gap-1.5">
@@ -315,38 +317,118 @@ export default function CheckoutPage() {
   );
 }
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+export interface AddressType {
+  formattedAddress: string;
+  city: string;
+  region: string;
+  postalCode: string;
+}
 
-export function PlacesAutocomplete() {
-  const [open, setOpen] = useState(false);
+interface AddressAutoCompleteProps {
+  address: AddressType;
+  setAddress: (address: AddressType) => void;
+  showInlineError?: boolean;
+  placeholder?: string;
+}
+
+export function AddressAutoComplete(props: AddressAutoCompleteProps) {
+  const { address, setAddress, showInlineError = true, placeholder } = props;
+  console.log(address);
+  const [selectedPlaceId, setSelectedPlaceId] = useState("");
+
+  const getPlaceDetails = async (placeId: string) => {
+    const placeDetails = (await getDetails({
+      placeId: placeId,
+      fields: ["address_components", "formatted_address"],
+    })) as google.maps.places.PlaceResult;
+    return placeDetails;
+  };
+
+  useEffect(() => {
+    if (selectedPlaceId) {
+      getPlaceDetails(selectedPlaceId).then((placeDetails) => {
+        console.log(placeDetails);
+        setAddress({
+          city: placeDetails.address_components!.find((x) =>
+            x.types.includes("locality"),
+          )!.short_name,
+          formattedAddress: placeDetails.formatted_address!,
+          postalCode: placeDetails.address_components!.find((x) =>
+            x.types.includes("postal_code"),
+          )!.short_name,
+          region: placeDetails.address_components!.find((x) =>
+            x.types.includes("administrative_area_level_1"),
+          )!.short_name,
+        });
+      });
+    }
+  }, [selectedPlaceId]);
+
+  return (
+    <>
+      {selectedPlaceId !== "" || address.formattedAddress ? (
+        <div className="flex items-center gap-2">
+          <Input value={address?.formattedAddress} readOnly />
+          <Button
+            type="reset"
+            onClick={() => {
+              setSelectedPlaceId("");
+              setAddress({
+                formattedAddress: "",
+                city: "",
+                region: "",
+                postalCode: "",
+              });
+            }}
+            size="icon"
+            variant="outline"
+            className="shrink-0"
+          >
+            <Delete className="size-4" />
+          </Button>
+        </div>
+      ) : (
+        <AddressAutoCompleteInput
+          selectedPlaceId={selectedPlaceId}
+          setSelectedPlaceId={setSelectedPlaceId}
+          showInlineError={showInlineError}
+          placeholder={placeholder}
+        />
+      )}
+      <script
+        defer
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places&callback=initMap`}
+      ></script>
+    </>
+  );
+}
+
+interface CommonProps {
+  selectedPlaceId: string;
+  setSelectedPlaceId: (placeId: string) => void;
+  showInlineError?: boolean;
+  placeholder?: string;
+}
+
+function AddressAutoCompleteInput(props: CommonProps) {
+  const { setSelectedPlaceId, selectedPlaceId, showInlineError, placeholder } =
+    props;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Escape") {
+      close();
+    }
+  };
 
   const {
-    ready,
     value,
     setValue,
-    suggestions: { status, data },
-    clearSuggestions,
+    suggestions: { data: predictions, loading },
   } = usePlacesAutocomplete({
     requestOptions: {
       types: ["(regions)"],
@@ -357,63 +439,79 @@ export function PlacesAutocomplete() {
     debounce: 300,
   });
 
-  if (!ready) return null;
-
+  console.log(predictions);
   return (
-    <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {value
-              ? frameworks.find((framework) => framework.value === value)?.label
-              : "Select framework..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
-          <Command shouldFilter={false}>
-            <CommandInput
-              value={value}
-              onValueChange={(value) => setValue(value)}
-              placeholder="Suburb or postcode"
-            />
-            <CommandList>
-              <CommandEmpty>No framework found.</CommandEmpty>
-              <CommandGroup>
-                {data.map((suggestion) => (
-                  <CommandItem
-                    key={suggestion.place_id}
-                    value={suggestion.place_id}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === suggestion.place_id
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                    {suggestion.description}
-                  </CommandItem>
-                ))}
+    <Command
+      shouldFilter={false}
+      onKeyDown={handleKeyDown}
+      className="overflow-visible"
+    >
+      <div className="flex w-full items-center justify-between rounded-lg border bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+        <CommandPrimitive.Input
+          autoComplete="off"
+          value={value}
+          onValueChange={setValue}
+          onBlur={close}
+          onFocus={open}
+          placeholder={placeholder || "Enter suburb or postcode"}
+          className="w-full rounded-lg p-3 outline-none"
+        />
+      </div>
+      {value !== "" && !isOpen && !selectedPlaceId && showInlineError && (
+        <FormMessages
+          type="error"
+          className="pt-1 text-sm"
+          messages={["Select a valid address from the list"]}
+        />
+      )}
+
+      {isOpen && (
+        <div className="relative h-auto animate-in fade-in-0 zoom-in-95">
+          <CommandList>
+            <div className="absolute top-1.5 z-50 w-full">
+              <CommandGroup className="relative z-50 h-auto min-w-[8rem] overflow-hidden rounded-md border bg-background shadow-md">
+                {loading ? (
+                  <div className="flex h-28 items-center justify-center">
+                    <Loader2 className="size-6 animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    {predictions
+                      .filter(
+                        (prediction) =>
+                          !prediction.types.includes("colloquial_area"),
+                      )
+                      .map((prediction) => (
+                        <CommandPrimitive.Item
+                          value={prediction.place_id}
+                          onSelect={() => {
+                            setValue("");
+                            setSelectedPlaceId(prediction.place_id);
+                          }}
+                          className="flex h-max cursor-pointer select-text flex-col items-start gap-0.5 rounded-md p-2 px-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
+                          key={prediction.place_id}
+                          onMouseDown={(e) => e.preventDefault()}
+                        >
+                          {prediction.description}
+                        </CommandPrimitive.Item>
+                      ))}
+                  </>
+                )}
+
+                <CommandEmpty>
+                  {!loading && predictions.length === 0 && (
+                    <div className="flex items-center justify-center py-4">
+                      {value === ""
+                        ? "Please enter an address"
+                        : "No address found"}
+                    </div>
+                  )}
+                </CommandEmpty>
               </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-      <script
-        defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places&callback=initMap`}
-      ></script>
-    </>
+            </div>
+          </CommandList>
+        </div>
+      )}
+    </Command>
   );
 }
