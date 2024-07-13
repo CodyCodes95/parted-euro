@@ -91,19 +91,20 @@ model Donor {
 }
 
 model Listing {
-  id           String      @id @default(cuid())
-  title        String
-  description  String      @db.Text
-  condition    String
-  price        Float
-  parts        Part[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  images       Image[]
-  active       Boolean     @default(true)
-  listedOnEbay Boolean     @default(false)
+  id               String             @id @default(cuid())
+  title            String
+  description      String             @db.Text
+  condition        String
+  price            Float
+  parts            Part[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  images           Image[]
+  active           Boolean            @default(true)
+  listedOnEbay     Boolean            @default(false)
   // ebaySku      String?
-  OrderItem    OrderItem[]
+  OrderItem        OrderItem[]
+  ListingAnalytics ListingAnalytics[]
 }
 
 model Part {
@@ -223,4 +224,11 @@ model FailedOrder {
   lineItems   Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ListingAnalytics {
+  id        String   @id @default(cuid())
+  listingId String
+  createdAt DateTime @default(now())
+  listing   Listing  @relation(fields: [listingId], references: [id])
 }
