@@ -7,11 +7,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start",
-    "email": "email dev"
-  },
-  "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "start": "next start"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.5",
