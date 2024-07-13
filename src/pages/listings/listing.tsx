@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
@@ -31,10 +31,11 @@ import {
 } from "../../components/ui/tabs";
 import Link from "next/link";
 import { useCartStore } from "../../context/cartStore";
+import { cn } from "../../lib/utils";
+import { ClassNameValue } from "tailwind-merge";
 
 const Listing: NextPage = () => {
   const router = useRouter();
-  const [parts, setParts] = useState<any>(undefined);
 
   type ListingType = {
     id: string;
@@ -68,7 +69,7 @@ const Listing: NextPage = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const listing = trpc.listings.getListing.useQuery(
+  const { data: listing, isLoading } = trpc.listings.getListing.useQuery(
     {
       id: router.query.id as string,
     },
@@ -88,23 +89,14 @@ const Listing: NextPage = () => {
 
   const relatedListings = trpc.listings.getRelatedListings.useQuery(
     {
-      generation: listing.data?.parts[0]?.partDetails.cars[0]
-        ?.generation as string,
-      model: listing.data?.parts[0]?.partDetails.cars[0]?.model as string,
-      id: listing.data?.id as string,
+      generation: listing?.parts[0]?.partDetails.cars[0]?.generation as string,
+      model: listing?.parts[0]?.partDetails.cars[0]?.model as string,
+      id: listing?.id as string,
     },
     {
-      enabled: listing.data !== undefined,
+      enabled: !!listing,
     },
   );
-
-  useEffect(() => {
-    if (listing.data?.parts.length) {
-      processParts(listing.data?.parts);
-    }
-  }, [listing.data]);
-
-  console.log(cart)
 
   const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
@@ -146,8 +138,9 @@ const Listing: NextPage = () => {
     }
   };
 
-  const processParts = (parts: any) => {
+  const partsGrouped = useMemo(() => {
     // Group by series and then by generation
+    const parts = listing?.parts;
     if (!parts) return;
     const groupedBySeries = parts[0]?.partDetails?.cars.reduce(
       (seriesAcc: any, car: any) => {
@@ -172,111 +165,152 @@ const Listing: NextPage = () => {
       {},
     );
 
-    setParts(groupedBySeries);
-  };
+    return groupedBySeries;
+  }, [listing, carsOnListing.data]);
 
-  const quantityAvailable = listing.data?.parts.reduce((acc, cur) => {
+  const quantityAvailable = listing?.parts.reduce((acc, cur) => {
     acc += cur.quantity;
     return acc;
   }, 0);
 
+  const skeletonClasses = "animate-pulse rounded-md bg-gray-200";
+
   return (
     <>
       <Head>
-        <title>{listing.data?.title}</title>
+        <title>{listing?.title}</title>
       </Head>
       <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-96">
         <div className="flex justify-center">
-          <ImageCarousel images={listing.data?.images ?? []} />
+          {isLoading ? (
+            <SkeletonCell classNames="h-80 w-full" />
+          ) : (
+            <ImageCarousel images={listing?.images ?? []} />
+          )}
         </div>
         <div className="space-y-6">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">{listing.data?.title}</h1>
+            <h1
+              className={cn(
+                "text-2xl font-bold",
+                isLoading && `${skeletonClasses} h-8 w-full`,
+              )}
+            >
+              {listing?.title}
+            </h1>
             <div className="flex items-center space-x-1">
-              <span className="text-xl font-semibold">
-                ${listing.data?.price}
+              <span
+                className={cn(
+                  "text-xl font-semibold",
+                  isLoading && `${skeletonClasses} h-8 w-28`,
+                )}
+              >
+                {listing?.price ? `$${listing?.price}` : ""}
               </span>
             </div>
-            <p className="pt-8 text-xl font-bold">Description</p>
-            <p>{listing.data?.description}</p>
+            <p
+              className={cn(
+                "pt-8 text-xl font-bold",
+                isLoading && `${skeletonClasses} h-8 w-full`,
+              )}
+            >
+              {listing && "Description"}
+            </p>
+            <p className={cn(isLoading && `${skeletonClasses} h-28 w-full`)}>
+              {listing?.description}
+            </p>
           </div>
-          <div className="flex items-center justify-center gap-4 md:justify-normal">
-            <Button
-              onClick={() => {
-                if (quantity > 1) {
-                  setQuantity(quantity - 1);
-                }
-              }}
-              className="text-lg"
-              variant="outline"
-            >
-              -
-            </Button>
-            <span className="text-lg">{quantity}</span>
-            <Button
-              onClick={() => {
-                if (quantityAvailable && quantity < quantityAvailable) {
-                  setQuantity(quantity + 1);
-                }
-              }}
-              className="text-lg"
-              variant="outline"
-            >
-              +
-            </Button>
-            <span className="text-sm">{quantityAvailable} In stock</span>
-            {quantityAvailable === 0 ? (
-              <Button disabled>Out of stock</Button>
-            ) : (
-              <Button onClick={() => addToCart(listing.data as ListingType)}>
-                Add to cart
+          {isLoading ? (
+            <SkeletonCell classNames="h-8 w-full" />
+          ) : (
+            <div className="flex items-center justify-center gap-4 md:justify-normal">
+              <Button
+                onClick={() => {
+                  if (quantity > 1) {
+                    setQuantity(quantity - 1);
+                  }
+                }}
+                className="text-lg"
+                variant="outline"
+              >
+                -
               </Button>
-            )}
-          </div>
+              <span className="text-lg">{quantity}</span>
+              <Button
+                onClick={() => {
+                  if (quantityAvailable && quantity < quantityAvailable) {
+                    setQuantity(quantity + 1);
+                  }
+                }}
+                className="text-lg"
+                variant="outline"
+              >
+                +
+              </Button>
+              <span className="text-sm">{quantityAvailable} In stock</span>
+              {quantityAvailable === 0 ? (
+                <Button disabled>Out of stock</Button>
+              ) : (
+                <Button onClick={() => addToCart(listing as ListingType)}>
+                  Add to cart
+                </Button>
+              )}
+            </div>
+          )}
           <div className="p-4" />
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 text-sm">
-            <p className="font-bold">PARTS</p>
-            <table className="w-full text-left text-sm text-gray-700">
-              <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                <tr>
-                  <th className="px-4 py-3">Part</th>
-                  <th className="px-4 py-3">Part No.</th>
-                  <th className="px-4 py-3">Alternate part no.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.from(
-                  new Set(
-                    listing.data?.parts
-                      .reduce((acc, cur) => {
-                        if (
-                          !acc.some(
-                            (group) =>
-                              group.partDetails.partNo ===
-                              cur.partDetails.partNo,
+            {isLoading ? (
+              <SkeletonCell classNames="h-8 w-28" />
+            ) : (
+              <p className="font-bold">PARTS</p>
+            )}
+            {isLoading ? (
+              <SkeletonCell classNames="h-52 w-full" />
+            ) : (
+              <table className="w-full text-left text-sm text-gray-700">
+                <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+                  <tr>
+                    <th className="px-4 py-3">Part</th>
+                    <th className="px-4 py-3">Part No.</th>
+                    <th className="px-4 py-3">Alternate part no.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from(
+                    new Set(
+                      listing?.parts
+                        .reduce((acc, cur) => {
+                          if (
+                            !acc.some(
+                              (group) =>
+                                group.partDetails.partNo ===
+                                cur.partDetails.partNo,
+                            )
                           )
-                        )
-                          acc.push(cur);
-                        return acc;
-                      }, [] as any[])
-                      .map((part) => (
-                        <tr key={part.partDetails.partNo}>
-                          <td className="px-4 py-3">{part.partDetails.name}</td>
-                          <td className="px-4 py-3">
-                            {part.partDetails.partNo}
-                          </td>
-                          <td className="px-4 py-3">
-                            {part.partDetails.alternatePartNumbers ?? "NA"}
-                          </td>
-                        </tr>
-                      )),
-                  ),
-                )}
-              </tbody>
-            </table>
-            {listing.data?.parts.some(
+                            acc.push(cur);
+                          return acc;
+                        }, [] as any[])
+                        .map((part) => (
+                          <tr key={part.partDetails.partNo}>
+                            <td className="px-4 py-3">
+                              {part.partDetails.name}
+                            </td>
+                            <td className="px-4 py-3">
+                              {part.partDetails.partNo}
+                            </td>
+                            <td className="px-4 py-3">
+                              {part.partDetails.alternatePartNumbers ?? "NA"}
+                            </td>
+                          </tr>
+                        )),
+                    ),
+                  )}
+                </tbody>
+              </table>
+            )}
+            {listing?.parts.some(
               (part) =>
                 part.partDetails.alternatePartNumbers && (
                   <p>
@@ -289,20 +323,24 @@ const Listing: NextPage = () => {
           </div>
         </div>
         <div className="flex w-full flex-col">
-          <p className="font-bold">Fits the following cars:</p>
-          {parts && (
+          {isLoading ? (
+            <SkeletonCell classNames="h-8 w-full" />
+          ) : (
+            <p className="font-bold">Fits the following cars:</p>
+          )}
+          {partsGrouped && (
             <Tabs
-              defaultValue={Object.keys(parts ?? {})[0]}
+              defaultValue={Object.keys(partsGrouped ?? {})[0]}
               className="grid w-full gap-4 md:grid-cols-2"
             >
               <TabsList className="h-fit w-full flex-row md:flex-col">
-                {Object.entries(parts).map(([series, cars]) => (
+                {Object.entries(partsGrouped).map(([series, cars]) => (
                   <TabsTrigger key={series} value={series}>
                     {series}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {Object.entries(parts).map(([series, cars]) => (
+              {Object.entries(partsGrouped).map(([series, cars]) => (
                 <TabsContent
                   className="max-h-80 w-full overflow-y-scroll"
                   key={series}
@@ -332,7 +370,11 @@ const Listing: NextPage = () => {
           )}
         </div>
         <div className="order-2 space-y-4 md:col-span-2">
-          <h2 className="text-2xl font-bold">Related Products</h2>
+          {isLoading ? (
+            <SkeletonCell classNames="h-8 w-28" />
+          ) : (
+            <h2 className="text-2xl font-bold">Related Products</h2>
+          )}
           <div className="grid gap-4 md:grid-cols-4">
             {relatedListings.data?.map((listing) => (
               <Link
@@ -419,5 +461,11 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
         slides={images.map((image) => ({ src: image.url }))}
       />
     </>
+  );
+};
+
+const SkeletonCell = ({ classNames }: { classNames: ClassNameValue }) => {
+  return (
+    <div className={cn("animate-pulse rounded-md bg-gray-200", classNames)} />
   );
 };
