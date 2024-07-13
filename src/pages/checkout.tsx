@@ -442,7 +442,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
     >
       <div className="flex w-full items-center justify-between rounded-lg border bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <CommandPrimitive.Input
-          autoComplete="off"
+          autoComplete="false"
           value={value}
           onValueChange={setValue}
           onBlur={close}

@@ -40,6 +40,17 @@ export const listingRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const currentListing = await ctx.prisma.listing.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      const partsToDisconnect = currentListing?.parts.filter(
+        (part) => !input.parts.includes(part.partDetailsId),
+      );
       const listing = await ctx.prisma.listing.update({
         where: {
           id: input.id,
@@ -52,6 +63,9 @@ export const listingRouter = router({
           parts: {
             connect: input.parts.map((part) => {
               return { id: part };
+            }),
+            disconnect: partsToDisconnect?.map((part) => {
+              return { id: part.id };
             }),
           },
         },

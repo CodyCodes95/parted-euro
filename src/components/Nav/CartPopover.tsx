@@ -38,7 +38,7 @@ const CartPopover = () => {
         <div className="flex flex-col gap-4 overflow-auto rounded-md">
           <h4 className="text-xl">Cart</h4>
           <div className="w-full border" />
-          {cart.map((item, index) => (
+          {cart.map((item) => (
             <Link
               href={`/listings/listing?id=${item.listingId}`}
               key={item.listingId}
