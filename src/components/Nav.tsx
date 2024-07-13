@@ -25,9 +25,9 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import { ShoppingCart } from "lucide-react";
-import { useCart } from "../context/cartContext";
 import { useRouter } from "next/router";
 import { Button } from "./ui/button";
+import { useCartStore } from "../context/cartStore";
 
 const generations = [
   { generation: "F8X", series: "M2/M3/M4", param: "F8" },
@@ -46,7 +46,7 @@ const Nav = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { cart } = useCart();
+  const { cart } = useCartStore();
 
   const { data: session } = useSession();
 

@@ -157,6 +157,14 @@ const partedEuroAddress = {
   country: "AU",
 };
 
+const pickupShippingOption = {
+  shipping_rate_data: {
+    type: "fixed_amount",
+    fixed_amount: { amount: 0, currency: "aud" },
+    display_name: "Pickup from Parted Euro",
+  },
+};
+
 const getDomesticShippingServices = async (input: ShippingServicesInput) => {
   const { weight, length, width, height, destinationPostcode } = input;
   const ausPostRes = await fetch(
@@ -244,7 +252,6 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     destinationState,
     weight,
   } = input;
-  if (weight > 35) throw new Error("Weight is too heavy");
   const interparcelParams = {
     source: "booking",
     coll_country: "Australia",
@@ -289,6 +296,8 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
         },
       );
       const data = (await response.json()) as InterparcelShippingQuote;
+      if (!data.services.length)
+        throw new Error("Unable to ship this item to the destination country");
       return {
         shipping_rate_data: {
           type: "fixed_amount",
@@ -320,8 +329,12 @@ export const checkoutRouter = router({
     .input(getShippingServicesInputSchema)
     .query(async ({ input }): Promise<StripeShippingOption[]> => {
       const { weight, destinationCountry } = input;
+      if (weight > 35) return [pickupShippingOption];
       if (weight >= 20) {
-        const shippingServices = await getInterparcelShippingServices(input);
+        let shippingServices = await getInterparcelShippingServices(input);
+        if (destinationCountry === "AU") {
+          shippingServices = [...shippingServices, pickupShippingOption];
+        }
         return shippingServices;
       }
       if (destinationCountry !== "AU") {

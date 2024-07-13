@@ -6,7 +6,6 @@ import type { Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import type { CartItem } from "../../context/cartContext";
-import { useCart } from "../../context/cartContext";
 import { toast } from "sonner";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Button } from "../../components/ui/button";
@@ -31,6 +30,7 @@ import {
   TabsTrigger,
 } from "../../components/ui/tabs";
 import Link from "next/link";
+import { useCartStore } from "../../context/cartStore";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -64,7 +64,7 @@ const Listing: NextPage = () => {
     }[];
   };
 
-  const { cart, setCart } = useCart();
+  const { cart, setCart } = useCartStore();
 
   const [quantity, setQuantity] = useState(1);
 
@@ -103,6 +103,8 @@ const Listing: NextPage = () => {
       processParts(listing.data?.parts);
     }
   }, [listing.data]);
+
+  console.log(cart)
 
   const addToCart = (listing: ListingType) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);

@@ -2,9 +2,8 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Trash, TriangleAlert } from "lucide-react";
+import { Info, Trash, TriangleAlert } from "lucide-react";
 import type { CartItem } from "../context/cartContext";
-import { useCart } from "../context/cartContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatter } from "../utils/formatPrice";
@@ -27,9 +26,10 @@ import usePlacesAutocomplete, { getDetails } from "use-places-autocomplete";
 import { FormMessages } from "../components/ui/FormMessages";
 import { Delete, Loader2 } from "lucide-react";
 import { Command as CommandPrimitive } from "cmdk";
+import { useCartStore } from "../context/cartStore";
 
 export default function CheckoutPage() {
-  const { cart, setCart } = useCart();
+  const { cart, setCart, removeItemFromCart } = useCartStore();
   // const [parent] = useAutoAnimate();
 
   const [address, setAddress] = useState<AddressType>({
@@ -46,6 +46,8 @@ export default function CheckoutPage() {
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
   }, [cart]);
+
+  const pickupOnly = cartWeight > 35;
 
   const largestCartItem = useMemo(() => {
     return cart.reduce(
@@ -74,7 +76,8 @@ export default function CheckoutPage() {
     },
     {
       enabled:
-        !!cart.length && (!!address.postalCode || shipToCountryCode !== "AU"),
+        !!cart.length &&
+        (!!address.postalCode || shipToCountryCode !== "AU" || pickupOnly),
       retry: false,
     },
   );
@@ -97,7 +100,7 @@ export default function CheckoutPage() {
 
   const validated = useMemo(() => {
     return shippingServices.data && name && email && acceptTerms;
-  }, [shippingServices.data, cartWeight, name, email, acceptTerms]);
+  }, [shippingServices.data, name, email, acceptTerms]);
 
   return (
     <div className="bg-white p-8 md:px-40">
@@ -128,10 +131,7 @@ export default function CheckoutPage() {
                     }}
                     width="40"
                   />
-                  <p className="text-lg">
-                    {/* {item.listing.title} + {item.listing.partNumbers.join(", ")} */}
-                    {item.listingTitle}
-                  </p>
+                  <p className="text-lg">{item.listingTitle}</p>
                 </div>
                 <div className="flex flex-col gap-2 md:flex-row">
                   <div className="flex items-center gap-2">
@@ -141,22 +141,15 @@ export default function CheckoutPage() {
                       value={item.quantity}
                       onChange={(e) => {
                         e.preventDefault();
-                        setCart((prev: any) => {
-                          if (prev === undefined) return;
-                          const index = prev.findIndex(
-                            (item: any) => item.listingId === item.listingId,
-                          );
-                          if (index === -1) return prev;
-                          return prev.map((item: any) => {
-                            if (item.listingId === item.listingId) {
-                              return {
-                                ...item,
-                                quantity: Number(e.target.value),
-                              };
-                            }
-                            return item;
-                          });
-                        });
+                        const itemIndex = cart.findIndex(
+                          (item) => item.listingId === item.listingId,
+                        );
+                        if (itemIndex === -1) return;
+                        const updatedCart = [...cart];
+                        updatedCart[itemIndex]!.quantity = Number(
+                          e.target.value,
+                        );
+                        setCart(updatedCart);
                       }}
                     />
                   </div>
@@ -170,16 +163,7 @@ export default function CheckoutPage() {
                     <Trash
                       onClick={(e) => {
                         e.preventDefault();
-                        setCart((prev: any) => {
-                          if (prev === undefined) return;
-                          const index = prev.findIndex(
-                            (item: any) => item.listingId === item.listingId,
-                          );
-                          if (index === -1) return prev;
-                          return prev.filter((item: any) => {
-                            return item.listingId !== item.listingId;
-                          });
-                        });
+                        removeItemFromCart(item.listingId);
                       }}
                       className="h-4 w-4 cursor-pointer text-red-500"
                     />
@@ -241,35 +225,39 @@ export default function CheckoutPage() {
                   placeholder="Enter your email address"
                 />
               </div>
-              <div className="grid gap-1.5">
-                <Label className="text-sm">Country</Label>
-                <Select
-                  value={shipToCountryCode}
-                  onValueChange={(value) => setShipToCountryCode(value)}
-                >
-                  <SelectTrigger id="country" className="w-full">
-                    <SelectValue placeholder="Select a fruit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="AU">Australia</SelectItem>
-                    {ausPostShippingCountries.data?.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {shipToCountryCode === "AU" && (
-                <div className="grid gap-1.5">
-                  <Label className="text-sm" htmlFor="zip">
-                    Shipping suburb
-                  </Label>
-                  <AddressAutoComplete
-                    address={address}
-                    setAddress={setAddress}
-                  />
-                </div>
+              {!pickupOnly && (
+                <>
+                  <div className="grid gap-1.5">
+                    <Label className="text-sm">Country</Label>
+                    <Select
+                      value={shipToCountryCode}
+                      onValueChange={(value) => setShipToCountryCode(value)}
+                    >
+                      <SelectTrigger id="country" className="w-full">
+                        <SelectValue placeholder="Select a fruit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AU">Australia</SelectItem>
+                        {ausPostShippingCountries.data?.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {shipToCountryCode === "AU" && (
+                    <div className="grid gap-1.5">
+                      <Label className="text-sm" htmlFor="zip">
+                        Shipping suburb
+                      </Label>
+                      <AddressAutoComplete
+                        address={address}
+                        setAddress={setAddress}
+                      />
+                    </div>
+                  )}
+                </>
               )}
               <div className="grid gap-1.5">
                 <Label className="text-sm" htmlFor="zip">
@@ -304,6 +292,15 @@ export default function CheckoutPage() {
                 </AlertDescription>
               </Alert>
             )}
+            {pickupOnly && (
+              <Alert className="w-full">
+                <Info className="h-4 w-4" />
+                <AlertTitle>Pickup only</AlertTitle>
+                <AlertDescription>
+                  This item must be picked up from our warehouse in Knoxfield.
+                </AlertDescription>
+              </Alert>
+            )}
           </section>
           <section className="flex flex-col gap-4 py-6">
             <div className="grid gap-4"></div>
@@ -333,7 +330,6 @@ interface AddressAutoCompleteProps {
 
 export function AddressAutoComplete(props: AddressAutoCompleteProps) {
   const { address, setAddress, showInlineError = true, placeholder } = props;
-  console.log(address);
   const [selectedPlaceId, setSelectedPlaceId] = useState("");
 
   const getPlaceDetails = async (placeId: string) => {
@@ -347,7 +343,6 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
   useEffect(() => {
     if (selectedPlaceId) {
       getPlaceDetails(selectedPlaceId).then((placeDetails) => {
-        console.log(placeDetails);
         setAddress({
           city: placeDetails.address_components!.find((x) =>
             x.types.includes("locality"),
@@ -439,7 +434,6 @@ function AddressAutoCompleteInput(props: CommonProps) {
     debounce: 300,
   });
 
-  console.log(predictions);
   return (
     <Command
       shouldFilter={false}

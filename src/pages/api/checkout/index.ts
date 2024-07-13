@@ -40,18 +40,6 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       name,
     });
 
-    // Local pickup option as a default if country is AU
-
-    if (countryCode === "AU") {
-      shippingOptions.push({
-        shipping_rate_data: {
-          type: "fixed_amount",
-          fixed_amount: { amount: 0, currency: "aud" },
-          display_name: "Pickup from Parted Euro",
-        },
-      });
-    }
-
     // const inventoryLocations = {} as any;
 
     // items.forEach((item: any) => {

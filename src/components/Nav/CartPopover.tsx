@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useCart } from "../../context/cartContext";
-import Spacer from "../Spacer";
 import { Button } from "../ui/button";
 import { ShoppingBagIcon, ShoppingCartIcon, X } from "lucide-react";
 import {
@@ -10,12 +8,12 @@ import {
 } from "../../components/ui/popover";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useCartStore } from "../../context/cartStore";
 
 const CartPopover = () => {
-  const [shipping, setShipping] = useState<number>(0);
   const [cartOpen, setCartOpen] = useState<boolean>(false);
 
-  const { cart, setCart } = useCart();
+  const { cart, setCart } = useCartStore();
 
   const router = useRouter();
 

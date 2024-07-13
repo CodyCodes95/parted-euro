@@ -29,14 +29,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <CartProvider>
         <Toaster position="bottom-right" richColors />
         <main className={cn(geist.variable, "font-sans")}>
           <Nav />
           <Component {...pageProps} />
           <Footer />
         </main>
-      </CartProvider>
     </SessionProvider>
   );
 };

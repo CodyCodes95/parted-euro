@@ -6,7 +6,6 @@ import {
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { useEffect } from "react";
-import { useCart } from "../../context/cartContext";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import LoadingSpinner from "../../components/ui/Loader";
@@ -14,9 +13,10 @@ import logo from "../../../public/logo.png";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { formatPrice, formatter } from "../../utils/formatPrice";
+import { useCartStore } from "../../context/cartStore";
 
 export default function OrderConfirmation() {
-  const { cart, setCart, emptyCart } = useCart();
+  const { cart, setCart, emptyCart } = useCartStore();
   const router = useRouter();
   const updateOrder = trpc.orderItems.updateOrderItems.useMutation();
 
