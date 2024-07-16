@@ -32,6 +32,7 @@
     "@trpc/next": "^10.0.0",
     "@trpc/react-query": "^10.0.0",
     "@trpc/server": "^10.0.0",
+    "caniuse-lite": "",
     "class-variance-authority": "^0.5.3",
     "cloudinary": "^1.33.0",
     "clsx": "^1.2.1",

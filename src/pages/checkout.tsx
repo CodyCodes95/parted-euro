@@ -27,6 +27,7 @@ import { FormMessages } from "../components/ui/FormMessages";
 import { Delete, Loader2 } from "lucide-react";
 import { Command as CommandPrimitive } from "cmdk";
 import { useCartStore } from "../context/cartStore";
+import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
 
 export default function CheckoutPage() {
   const { cart, setCart, removeItemFromCart } = useCartStore();
@@ -340,6 +341,8 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
     return placeDetails;
   };
 
+  const { isLoaded } = useGoogleMapsApi();
+
   useEffect(() => {
     if (selectedPlaceId) {
       getPlaceDetails(selectedPlaceId).then((placeDetails) => {
@@ -358,6 +361,8 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
       });
     }
   }, [selectedPlaceId]);
+
+  if (!isLoaded) return null;
 
   return (
     <>
@@ -390,10 +395,6 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
           placeholder={placeholder}
         />
       )}
-      <script
-        defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places&callback=initMap`}
-      ></script>
     </>
   );
 }

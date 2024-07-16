@@ -31,9 +31,7 @@ export default async function stripeWebhook(
       webhookSecret as string,
     );
     if (stripeEvent.type === "checkout.session.completed") {
-      const data = stripeEvent.data.object;
-      // unsure why we need to ignore here. Stripe doesn't seem to change the type of data based on the event type above
-      // @ts-ignore
+      const data = stripeEvent.data.object as Stripe.Checkout.Session;
       const lineItems = await stripe.checkout.sessions.listLineItems(data.id, {
         expand: ["data.price.product"],
       });

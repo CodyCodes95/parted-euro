@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../trpc";
 import { createInvoice } from "../../xero/createInvoice";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import {
   sendOrderReadyForPickupEmail,
   sendOrderShippedEmail,
@@ -81,9 +81,9 @@ export const orderRouter = router({
                 parts: {
                   include: {
                     inventoryLocation: true,
-                    partDetails: true
-                  }
-                }
+                    partDetails: true,
+                  },
+                },
               },
             },
           },
@@ -119,7 +119,10 @@ export const orderRouter = router({
         },
       });
       if (!failedOrder) return;
-      createInvoice(failedOrder.stripeEvent, failedOrder.lineItems as any);
+      createInvoice(
+        failedOrder.stripeEvent as unknown as Stripe.Checkout.Session,
+        failedOrder.lineItems as any,
+      );
     }),
   updateOrder: adminProcedure
     .input(

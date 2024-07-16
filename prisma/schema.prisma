@@ -182,6 +182,7 @@ model Order {
   name            String
   email           String
   subtotal        Float
+  shippingRateId  String?
   shipping        Float?
   status          String
   shippingMethod  String?

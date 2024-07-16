@@ -12,11 +12,11 @@ import LoadingSpinner from "../../components/ui/Loader";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
-import { formatPrice, formatter } from "../../utils/formatPrice";
+import { formatter } from "../../utils/formatPrice";
 import { useCartStore } from "../../context/cartStore";
 
 export default function OrderConfirmation() {
-  const { cart, setCart, emptyCart } = useCartStore();
+  const { cart, emptyCart } = useCartStore();
   const router = useRouter();
   const updateOrder = trpc.orderItems.updateOrderItems.useMutation();
 
@@ -114,7 +114,7 @@ export default function OrderConfirmation() {
           </div>
           <div>
             <h3 className="font-semibold">Shipping Method:</h3>
-            <p>{order.shipping ? "Ship" : "Pickup"}</p>
+            <p>{order.shippingMethod}</p>
           </div>
         </div>
         <div className="mb-4">
@@ -170,14 +170,12 @@ export default function OrderConfirmation() {
         </div>
         <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Shipping:</h3>
-          <p>{formatter.format((order.shipping ?? 0))}</p>
+          <p>{formatter.format(order.shipping ?? 0)}</p>
         </div>
         <div className="grid w-3/4 grid-cols-2 text-end">
           <h3 className="font-semibold">Total inc. GST:</h3>
           <p>
-            {formatter.format(
-              order.subtotal / 100 + (order.shipping ?? 0),
-            )}
+            {formatter.format(order.subtotal / 100 + (order.shipping ?? 0))}
           </p>
         </div>
       </div>
