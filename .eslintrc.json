@@ -8,5 +8,6 @@
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/ban-ts-comment": "warn"
-  }
+  },
+  "ignorePatterns": ["**/*.jsx"]
 }
