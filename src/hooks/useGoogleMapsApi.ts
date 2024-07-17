@@ -10,13 +10,12 @@ export const useGoogleMapsApi = () => {
     document.body.appendChild(script);
   };
 
-  // @ts-expect-error: Setting our own function on window
-  window.initMap = () => {
-    setIsLoaded(true);
-  };
-
   useEffect(() => {
     mountGoolgleMapsScript();
+    // @ts-expect-error: Setting our own function on window
+    window.initMap = () => {
+      setIsLoaded(true);
+    };
   }, []);
 
   return { isLoaded };
