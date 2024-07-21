@@ -20,6 +20,7 @@ import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
 import { Button } from "../../sidebar";
 import type { QueryListingsGetAllAdmin } from "@/utils/trpc";
+import { useAdminStore } from "../../AppShell";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -29,7 +30,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const listing = row.original as QueryListingsGetAllAdmin;
-
+  const { setSelectedListing } = useAdminStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -42,7 +43,9 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setSelectedListing(listing)}>
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
