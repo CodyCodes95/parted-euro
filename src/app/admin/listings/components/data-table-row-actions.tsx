@@ -1,6 +1,6 @@
 "use client";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Row } from "@tanstack/react-table";
+import type { Row } from "@tanstack/react-table";
 
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ import {
 import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
 import { Button } from "../../sidebar";
+import type { QueryListingsGetAllAdmin } from "@/utils/trpc";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,7 +28,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original);
+  const listing = row.original as QueryListingsGetAllAdmin;
 
   return (
     <DropdownMenu>
@@ -48,7 +49,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
+            <DropdownMenuRadioGroup value={listing.title}>
               {labels.map((label) => (
                 <DropdownMenuRadioItem key={label.value} value={label.value}>
                   {label.label}

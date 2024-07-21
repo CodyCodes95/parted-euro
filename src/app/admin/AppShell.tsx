@@ -20,7 +20,7 @@ const AppShell = ({ children }: React.PropsWithChildren) => {
           {/* ===== Top Heading ===== */}
           <Layout.Header>
             <div className="flex w-full items-center justify-between">
-              {/* <Search /> */}
+              <div />
               <div className="flex items-center space-x-4">
                 <ThemeSwitch />
                 <UserNav />

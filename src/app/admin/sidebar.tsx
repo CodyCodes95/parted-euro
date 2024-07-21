@@ -304,6 +304,7 @@ function NavLink({
   subLink = false,
 }: NavLinkProps) {
   const { checkActiveNav } = useCheckActiveNav();
+
   return (
     <Link
       href={href}

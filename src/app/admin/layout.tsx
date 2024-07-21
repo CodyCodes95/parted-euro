@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AppShell from "./AppShell";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ClientProvider } from "../components/trpcClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppShell>{children}</AppShell>
+          <ClientProvider>
+            <AppShell>{children}</AppShell>
+          </ClientProvider>
         </ThemeProvider>
       </body>
     </html>

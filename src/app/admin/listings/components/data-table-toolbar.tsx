@@ -22,11 +22,11 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
         <Input
-          placeholder="Filter tasks..."
+          placeholder="Search..."
           onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        <div className="flex gap-x-2">
+        {/* <div className="flex gap-x-2">
           {table.getColumn("status") && (
             <DataTableFacetedFilter
               column={table.getColumn("status")}
@@ -41,7 +41,7 @@ export function DataTableToolbar<TData>({
               options={priorities}
             />
           )}
-        </div>
+        </div> */}
         {isFiltered && (
           <Button
             variant="ghost"

@@ -60,9 +60,9 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
-      // eslint-disable-next-line 
+      // eslint-disable-next-line
       rowA.columnFiltersMeta[columnId]?.itemRank!,
-      // eslint-disable-next-line 
+      // eslint-disable-next-line
       rowB.columnFiltersMeta[columnId]?.itemRank!,
     );
   }
@@ -93,6 +93,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -108,6 +109,7 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination: { pageIndex: currentPage, pageSize: 10 },
     },
     enableRowSelection: true,
     enableGlobalFilter: true,
@@ -178,7 +180,10 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+        table={table} />
     </div>
   );
 }
