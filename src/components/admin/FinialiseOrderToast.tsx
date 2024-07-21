@@ -1,4 +1,4 @@
-import type { OrderItem } from "../../pages/admin/listings";
+import type { OrderItem } from "../../pages/adminp/listings";
 import FinialiseOrder from "../modals/FinialiseOrder";
 import { Button } from "../ui/button";
 import {

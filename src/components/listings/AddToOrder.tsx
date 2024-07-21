@@ -8,10 +8,10 @@ import {
 } from "../ui/select";
 import type { GetAllListingsAdminOutput } from "../../utils/trpc";
 import { Button } from "../ui/button";
-import {  useState } from "react";
+import { useState } from "react";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
-import type { OrderItem } from "../../pages/admin/listings";
+import type { OrderItem } from "../../pages/adminp/listings";
 
 type AddToOrderProps = {
   isOpen: boolean;
@@ -71,14 +71,13 @@ const AddToOrder = ({
       }
       const index = prev.findIndex((item) => item.inventoryId === inventoryId);
       if (index === -1) {
-        return [...prev, { inventoryId, price, quantity: 0  }];
+        return [...prev, { inventoryId, price, quantity: 0 }];
       }
-      console.log(price)
+      console.log(price);
       prev[index]!.price = price;
       return prev;
     });
   };
-
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>

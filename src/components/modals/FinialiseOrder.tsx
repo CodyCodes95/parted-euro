@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { OrderItem } from "../../pages/admin/listings";
+import type { OrderItem } from "../../pages/adminp/listings";
 import { trpc } from "../../utils/trpc";
 import {
   Select,
@@ -18,7 +18,7 @@ type FinialiseOrderProps = {
 
 const FinialiseOrder = ({ order }: FinialiseOrderProps) => {
   const [shippingMethod, setShippingMethod] = useState<"pickup" | "post">(
-    "pickup"
+    "pickup",
   );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,7 +28,7 @@ const FinialiseOrder = ({ order }: FinialiseOrderProps) => {
   const [orderItems, setOrderItems] = useState<OrderItem[] | undefined>([]);
 
   const inventoryItems = trpc.parts.getInventoryDetailsById.useQuery(
-    order.map((item) => item.inventoryId)
+    order.map((item) => item.inventoryId),
     // {
     //   onSuccess: (data) => {
     //     setOrderItems(data);
@@ -63,7 +63,7 @@ const FinialiseOrder = ({ order }: FinialiseOrderProps) => {
       xero: xeroInvoice,
       subtotal: orderItems.reduce((acc, item) => {
         const orderItem = order.find(
-          (orderItem) => orderItem.inventoryId === item.inventoryId
+          (orderItem) => orderItem.inventoryId === item.inventoryId,
         );
         if (!orderItem) return acc;
         return acc + orderItem.price * orderItem.quantity;
@@ -72,14 +72,14 @@ const FinialiseOrder = ({ order }: FinialiseOrderProps) => {
     await Promise.all(
       orderItems.map(async (item) => {
         const orderItem = order.find(
-          (orderItem) => orderItem.inventoryId === item.inventoryId
+          (orderItem) => orderItem.inventoryId === item.inventoryId,
         );
         if (!orderItem) return;
         await decreaseQuantityMutate.mutateAsync({
           id: item.inventoryId,
           quantity: orderItem.quantity,
         });
-      })
+      }),
     );
     console.log(res);
   };
