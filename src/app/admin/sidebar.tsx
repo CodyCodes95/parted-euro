@@ -60,7 +60,12 @@ export function Sidebar({
           className="z-50 flex justify-between px-4 py-3 shadow-sm md:px-4"
         >
           <div className={`flex items-center ${!isCollapsed ? "gap-2" : ""}`}>
-            <Image src="/bmw-stripes.png" width={40} height={40} />
+            <Image
+              alt="Parted Euro Logo"
+              src="/bmw-stripes.png"
+              width={40}
+              height={40}
+            />
             <div
               className={`flex flex-col justify-end truncate ${
                 isCollapsed ? "invisible w-0" : "visible w-auto"
@@ -534,7 +539,7 @@ export const sidelinks: SideLink[] = [
   {
     title: "Listings",
     label: "",
-    href: "",
+    href: "/admin/listings",
     icon: <IconList size={18} />,
   },
   {
