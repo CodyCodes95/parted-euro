@@ -1,6 +1,6 @@
 "use client";
 import useIsCollapsed from "@/hooks/use-is-collapsed";
-import React from "react";
+import { useEffect, useState } from "react";
 import { Button, Layout, Sidebar } from "./sidebar";
 import ThemeSwitch from "@/components/admin/theme-switch";
 import { UserNav } from "@/components/admin/user-nav";
@@ -110,7 +110,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
-import type { QueryListingsGetAllAdmin } from "@/utils/trpc";
+import { trpc, type QueryListingsGetAllAdmin } from "@/utils/trpc";
 import {
   Dialog,
   DialogContent,
@@ -121,11 +121,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useDebounce } from "use-debounce";
 
 export function Command() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
+  const results = trpc.admin.adminSearch.useQuery(debouncedSearch);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
