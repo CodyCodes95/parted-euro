@@ -31,7 +31,7 @@ const calculateQty = (listing:QueryListingsGetAllAdmin) => {
         if (!acc[part.partDetailsId]) {
             acc[part.partDetailsId] = 0;
         }
-        acc[part.partDetailsId] += part.quantity;
+        acc[part.partDetailsId]! += part.quantity;
         return acc;
     }, {} as Record<string, number> );
 
