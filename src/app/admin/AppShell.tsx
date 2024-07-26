@@ -51,9 +51,11 @@ const AppShell = ({ children }: React.PropsWithChildren) => {
         >
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>
+                {selectedListing.id ? "Edit car" : "New car"}
+              </DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save done
+                Make changes to your car here. Click save done
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -93,7 +95,10 @@ export default AppShell;
 import {
   Calculator,
   Calendar,
+  Car,
   CreditCard,
+  Loader2,
+  Search,
   Settings,
   Smile,
   User,
@@ -110,6 +115,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
+import type { AdminSearchCounts } from "@/utils/trpc";
 import { trpc, type QueryListingsGetAllAdmin } from "@/utils/trpc";
 import {
   Dialog,
@@ -122,12 +128,36 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "use-debounce";
+import EditCar from "./listings/components/EditCar";
+import {
+  IconCar,
+  IconCarCrash,
+  IconCategory,
+  IconInvoice,
+  IconList,
+  IconPackage,
+  IconSettings,
+  IconShoppingBag,
+  IconShoppingBagEdit,
+  IconTool,
+} from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+
+type AdminSearchStore = {
+  shouldFilter: boolean;
+  setShouldFilter: (shouldFilter: boolean) => void;
+};
+
+export const useAdminSearchStore = create<AdminSearchStore>((set) => ({
+  shouldFilter: true,
+  setShouldFilter: (shouldFilter) => set({ shouldFilter }),
+}));
 
 export function Command() {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch] = useDebounce(search, 500);
-  const results = trpc.admin.adminSearch.useQuery(debouncedSearch);
+  const [commandPage, setCommandPage] = useState("home");
+  const { shouldFilter } = useAdminSearchStore();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -155,44 +185,226 @@ export function Command() {
           </kbd>
         </Button>
       </div>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Calendar</span>
-            </CommandItem>
-            <CommandItem>
-              <Smile className="mr-2 h-4 w-4" />
-              <span>Search Emoji</span>
-            </CommandItem>
-            <CommandItem>
-              <Calculator className="mr-2 h-4 w-4" />
-              <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+      <CommandDialog
+        shouldFilter={shouldFilter}
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          setCommandPage("home");
+        }}
+      >
+        {commandPage === "home" && (
+          <CommandHome setCommandPage={setCommandPage} />
+        )}
+        {commandPage === "search" && (
+          <CommandGlobalSearch setCommandPage={setCommandPage} />
+        )}
       </CommandDialog>
     </>
   );
 }
+
+type CommandPageProps = {
+  setCommandPage: (page: string) => void;
+};
+
+const CommandGlobalSearch = ({ setCommandPage }: CommandPageProps) => {
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
+  const [resultsPage, setResultsPage] = useState("counts");
+  const { setShouldFilter } = useAdminSearchStore();
+  // const { data: counts, isLoading } =
+  //   trpc.admin.adminSearchCounts.useQuery(debouncedSearch);
+  const counts = {
+    listings: 5,
+    cars: 0,
+    inventory: 8,
+  };
+  const isLoading = false;
+
+  // TODO: remove
+  useEffect(() => {
+    if (!counts) return;
+    setShouldFilter(false);
+  }, [counts]);
+
+  return (
+    <>
+      <CommandInput
+        autoFocus
+        value={search}
+        onValueChange={(val) => setSearch(val)}
+        placeholder="Type a command or search..."
+      />
+      <CommandList>
+        {resultsPage === "counts" && counts && (
+          <CommandSearchCounts
+            counts={counts}
+            setResultsPage={setResultsPage}
+            isLoading={isLoading}
+            search={debouncedSearch}
+          />
+        )}
+        {resultsPage === "listings" && (
+          <CommandListingResults search={debouncedSearch} />
+        )}
+      </CommandList>
+    </>
+  );
+};
+
+const CommandSearchCounts = ({
+  counts,
+  setResultsPage,
+  search,
+  isLoading,
+}: {
+  counts: AdminSearchCounts;
+  setResultsPage: (page: string) => void;
+  search: string;
+  isLoading: boolean;
+}) => {
+  return (
+    <>
+      <CommandEmpty>
+        {!search ? (
+          "Search for anything"
+        ) : isLoading ? (
+          <div className="flex w-full items-center justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          "No results found"
+        )}
+      </CommandEmpty>
+      <CommandGroup heading="Results">
+        <CommandItem onSelect={() => setResultsPage("listings")}>
+          <IconList size={18} />
+          <span>Listings</span>
+          <Badge className="ml-auto">{counts?.listings}</Badge>
+        </CommandItem>
+        <CommandItem onSelect={() => setResultsPage("inventory")}>
+          <IconPackage size={18} />
+          <span>Inventory</span>
+          <Badge className="ml-auto">{counts?.inventory}</Badge>
+        </CommandItem>
+        <CommandItem onSelect={() => setResultsPage("cars")}>
+          <IconCar size={18} />
+          <span>Cars</span>
+          <Badge className="ml-auto">{counts?.cars}</Badge>
+        </CommandItem>
+      </CommandGroup>
+    </>
+  );
+};
+
+const CommandListingResults = ({ search }: { search: string }) => {
+  const { data: listings, isLoading } =
+    trpc.admin.adminSearchListings.useQuery(search);
+  return (
+    <>
+      <CommandEmpty>
+        {!search ? (
+          "Search for anything"
+        ) : isLoading ? (
+          <div className="flex w-full items-center justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          "No results found"
+        )}
+      </CommandEmpty>
+      {listings?.length && (
+        <CommandGroup heading="Listings">
+          {listings?.map((listing) => {
+            return (
+              // on select - go to listings page with table filtered?
+              // Or just open up edit modal right here?
+              <CommandItem key={listing.id}>
+                <IconList size={18} />
+                <span>{listing.title}</span>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      )}
+    </>
+  );
+};
+
+const CommandHome = ({ setCommandPage }: CommandPageProps) => {
+  return (
+    <>
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Commands">
+          <CommandItem onSelect={() => setCommandPage("search")}>
+            <Search size={18} />
+            <span>Global search</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Pages">
+          <CommandItemLink href={"/admin/data/cars"}>
+            <IconCar size={18} />
+            <span>Cars</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/data/parts">
+            <IconTool size={18} />
+            <span>Parts</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/data/categories">
+            <IconCategory size={18} />
+            <span>Categories</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/donors">
+            <IconCarCrash size={18} />
+            <span>Donors</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/inventory">
+            <IconPackage size={18} />
+            <span>Inventory</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/listings">
+            <IconList size={18} />
+            <span>Listings</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/orders">
+            <IconShoppingBag size={18} />
+            <span>Orders</span>
+          </CommandItemLink>
+          <CommandItemLink href="/admin/settings">
+            <IconSettings size={18} />
+            <span>Settings</span>
+          </CommandItemLink>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+          <CommandItem>
+            <IconInvoice size={18} />
+            <span>Refresh Xero</span>
+            {/* <CommandShortcut>⌘P</CommandShortcut> */}
+          </CommandItem>
+          <CommandItem>
+            <IconShoppingBagEdit size={18} />
+            <span>Refresh eBay</span>
+            {/* <CommandShortcut>⌘B</CommandShortcut> */}
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </>
+  );
+};
+
+type CommandItemLinkProps = {
+  href: string;
+  children: React.ReactNode;
+};
+
+const CommandItemLink = ({ href, children }: CommandItemLinkProps) => {
+  const router = useRouter();
+
+  return (
+    <CommandItem onSelect={() => router.push(href)}>{children}</CommandItem>
+  );
+};

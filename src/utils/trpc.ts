@@ -70,3 +70,11 @@ export type QueryListingsGetAllAvailable =
 export type QueryOrderGetAllAdmin = RouterOutputs["order"]["getAllAdmin"][0];
 
 export type OrderWithItems = RouterOutputs["order"]["getOrder"];
+
+export type AdminSearchCounts = RouterOutputs["admin"]["adminSearchCounts"];
+
+// export type AdminSearchListings =
+//   RouterOutputs["admin"]["adminSearch"]["listings"];
+// export type AdminSearchCars = RouterOutputs["admin"]["adminSearch"]["cars"];
+// export type AdminSearchParts =
+//   RouterOutputs["admin"]["adminSearch"]["inventory"];
