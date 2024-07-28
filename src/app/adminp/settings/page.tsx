@@ -12,24 +12,10 @@ import { trpc } from "@/utils/trpc";
 import { Check, Loader2, TriangleAlert } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { useSetXeroToken } from "./hooks/useSetXeroToken";
+import { useSetEbayToken } from "./hooks/useSetEbayToken";
 
-export const useSetXeroToken = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const code = searchParams?.get("code");
-
-  const setXeroToken = trpc.xero.updateTokenset.useMutation();
-
-  useEffect(() => {
-    if (!code) return;
-    setXeroToken.mutateAsync({
-      code,
-    });
-    router.push("/admin/settings?tab=xero");
-  }, [code]);
-  return null;
-};
 
 const XeroTab = () => {
   useSetXeroToken();
@@ -55,22 +41,7 @@ const XeroTab = () => {
   );
 };
 
-export const useSetEbayToken = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const code = searchParams?.get("code");
-
-  const setEbayToken = trpc.ebay.setTokenSet.useMutation();
-  useEffect(() => {
-    if (!code) return;
-    setEbayToken.mutateAsync({
-      code,
-    });
-    router.push("/admin/settings?tab=ebay");
-  }, [code]);
-  return null;
-};
 const EbayTab = () => {
   useSetEbayToken();
   const testConnection = trpc.ebay.testEbayConnection.useQuery();

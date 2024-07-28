@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/app/admin/sidebar";
+import { Button } from "@/app/adminp/sidebar";
 
 function ThemeSwitch() {
   const { setTheme } = useTheme();

@@ -189,6 +189,7 @@ model Order {
   shippingAddress String?
   trackingNumber  String?
   carrier         String?
+  paymentIntentId String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   orderItems      OrderItem[]
@@ -234,13 +235,13 @@ model ListingAnalytics {
   listing   Listing  @relation(fields: [listingId], references: [id])
 }
 
-model Notification {
-  id        String   @id @default(cuid())
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+// model Notification {
+//   id        String   @id @default(cuid())
+//   message   String
+//   read      Boolean  @default(false)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
 
 // model HomePageImage {
 //   id        String   @id @default(cuid())

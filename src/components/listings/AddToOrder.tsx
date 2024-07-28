@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
-import type { OrderItem } from "../../pages/adminp/listings";
+import type { OrderItem } from "../../pages/admin/listings";
 
 type AddToOrderProps = {
   isOpen: boolean;

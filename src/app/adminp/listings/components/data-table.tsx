@@ -29,8 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { DataTablePagination } from "../components/data-table-pagination";
-import { DataTableToolbar } from "../components/data-table-toolbar";
+import { DataTablePagination } from "./data-table-pagination";
+import { DataTableToolbar } from "./data-table-toolbar";
 
 import type { RankingInfo } from "@tanstack/match-sorter-utils";
 import { rankItem, compareItems } from "@tanstack/match-sorter-utils";
@@ -181,9 +181,10 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-        table={table} />
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        table={table}
+      />
     </div>
   );
 }

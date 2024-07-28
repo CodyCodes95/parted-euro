@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { OrderItem } from "../../pages/adminp/listings";
+import type { OrderItem } from "../../pages/admin/listings";
 import { trpc } from "../../utils/trpc";
 import {
   Select,

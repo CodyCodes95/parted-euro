@@ -1,4 +1,4 @@
-import { Button } from "@/app/admin/sidebar";
+import { Button } from "@/app/adminp/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
