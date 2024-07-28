@@ -63,7 +63,7 @@ const Listings: NextPage = () => {
     refetchOnWindowFocus: false,
   });
   const ebayLogin = trpc.ebay.authenticate.useMutation();
-  const updateRefreshToken = trpc.ebay.updateRefreshToken.useMutation();
+  const updateRefreshToken = trpc.ebay.setTokenSet.useMutation();
   const deleteListing = trpc.listings.deleteListing.useMutation();
   const markAsNotListedEbay = trpc.listings.markAsNotListedEbay.useMutation();
 

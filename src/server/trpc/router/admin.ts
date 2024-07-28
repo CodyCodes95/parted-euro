@@ -13,10 +13,24 @@ export const adminRouter = router({
                 contains: input,
                 mode: "insensitive",
               },
+            },
+            {
               parts: {
                 some: {
                   partDetails: {
                     partNo: {
+                      contains: input,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+            {
+              parts: {
+                some: {
+                  partDetails: {
+                    alternatePartNumbers: {
                       contains: input,
                       mode: "insensitive",
                     },
@@ -54,6 +68,14 @@ export const adminRouter = router({
                 },
               },
             },
+            {
+              inventoryLocation: {
+                name: {
+                  contains: input,
+                  mode: "insensitive",
+                },
+              },
+            },
           ],
         },
       });
@@ -79,6 +101,8 @@ export const adminRouter = router({
                 contains: input,
                 mode: "insensitive",
               },
+            },
+            {
               parts: {
                 some: {
                   partDetails: {
@@ -90,9 +114,85 @@ export const adminRouter = router({
                 },
               },
             },
+            {
+              parts: {
+                some: {
+                  partDetails: {
+                    alternatePartNumbers: {
+                      contains: input,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
           ],
         },
       });
       return listings;
+    }),
+  adminSearchCars: adminProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const cars = await ctx.prisma.car.findMany({
+        where: {
+          OR: [
+            {
+              model: {
+                contains: input,
+                mode: "insensitive",
+              },
+            },
+            {
+              series: {
+                contains: input,
+                mode: "insensitive",
+              },
+            },
+            {
+              generation: {
+                contains: input,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      });
+      return cars;
+    }),
+  adminSearchInventory: adminProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const inventory = await ctx.prisma.part.findMany({
+        where: {
+          OR: [
+            {
+              partDetails: {
+                name: {
+                  contains: input,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              partDetails: {
+                partNo: {
+                  contains: input,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              inventoryLocation: {
+                name: {
+                  contains: input,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        },
+      });
+      return inventory;
     }),
 });

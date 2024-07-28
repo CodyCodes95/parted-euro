@@ -24,11 +24,11 @@ const Admin: NextPage = () => {
 
   const { code } = router.query;
 
-  const daysTillExpiry = trpc.xero.getExpiry.useQuery();
+  // const daysTillExpiry = trpc.xero.getExpiry.useQuery();
 
   const authenticateXero = trpc.xero.authenticate.useMutation();
 
-  const renewToken = trpc.xero.updateRefreshToken.useMutation();
+  const renewToken = trpc.xero.updateTokenset.useMutation();
 
   const onRenew = async () => {
     const result = await authenticateXero.mutateAsync();
@@ -130,9 +130,7 @@ const Admin: NextPage = () => {
           <img src={xero.src} className="w-24" alt="Xero logo" />
           <div className="p-4"></div>
           <div className="flex flex-col items-center">
-            <p className="text-xl">
-              {daysTillExpiry.data?.daysTillExpiry} Days until Xero expiry.
-            </p>
+            <p className="text-xl">0 Days until Xero expiry.</p>
             <div className="p-2"></div>
             <button className="hover:underline" onClick={onRenew}>
               Renew token

@@ -233,3 +233,11 @@ model ListingAnalytics {
   createdAt DateTime @default(now())
   listing   Listing  @relation(fields: [listingId], references: [id])
 }
+
+// model HomePageImage {
+//   id        String   @id @default(cuid())
+//   url       String
+//   order     Int
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }

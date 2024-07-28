@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
+  return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

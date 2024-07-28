@@ -92,17 +92,7 @@ const AppShell = ({ children }: React.PropsWithChildren) => {
 
 export default AppShell;
 
-import {
-  Calculator,
-  Calendar,
-  Car,
-  CreditCard,
-  Loader2,
-  Search,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
 import {
   CommandDialog,
@@ -145,25 +135,28 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 
 type AdminSearchStore = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
   shouldFilter: boolean;
   setShouldFilter: (shouldFilter: boolean) => void;
 };
 
 export const useAdminSearchStore = create<AdminSearchStore>((set) => ({
   shouldFilter: true,
+  open: false,
+  setOpen: (open) => set({ open }),
   setShouldFilter: (shouldFilter) => set({ shouldFilter }),
 }));
 
 export function Command() {
-  const [open, setOpen] = useState(false);
   const [commandPage, setCommandPage] = useState("home");
-  const { shouldFilter } = useAdminSearchStore();
+  const { shouldFilter, open, setOpen } = useAdminSearchStore();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen(!open);
       }
     };
 
@@ -213,20 +206,13 @@ const CommandGlobalSearch = ({ setCommandPage }: CommandPageProps) => {
   const [debouncedSearch] = useDebounce(search, 500);
   const [resultsPage, setResultsPage] = useState("counts");
   const { setShouldFilter } = useAdminSearchStore();
-  // const { data: counts, isLoading } =
-  //   trpc.admin.adminSearchCounts.useQuery(debouncedSearch);
-  const counts = {
-    listings: 5,
-    cars: 0,
-    inventory: 8,
-  };
-  const isLoading = false;
+  const counts = trpc.admin.adminSearchCounts.useQuery(debouncedSearch);
 
   // TODO: remove
   useEffect(() => {
-    if (!counts) return;
+    if (!counts.data) return;
     setShouldFilter(false);
-  }, [counts]);
+  }, [counts.data]);
 
   return (
     <>
@@ -237,33 +223,63 @@ const CommandGlobalSearch = ({ setCommandPage }: CommandPageProps) => {
         placeholder="Type a command or search..."
       />
       <CommandList>
-        {resultsPage === "counts" && counts && (
-          <CommandSearchCounts
-            counts={counts}
-            setResultsPage={setResultsPage}
-            isLoading={isLoading}
-            search={debouncedSearch}
-          />
+        {resultsPage === "counts" && (
+          <>
+            <CommandEmpty>
+              {!search ? "Search for anything" : "No results found"}
+            </CommandEmpty>
+            <CommandGroup heading="Results">
+              <CommandItem onSelect={() => setResultsPage("listings")}>
+                <IconList size={18} />
+                <span>Listings</span>
+                {counts.isLoading ? (
+                  <Loader2 className="ml-auto animate-spin text-white" />
+                ) : (
+                  <Badge className="ml-auto">
+                    {counts.data?.listings ?? 0}
+                  </Badge>
+                )}
+              </CommandItem>
+              <CommandItem onSelect={() => setResultsPage("inventory")}>
+                <IconPackage size={18} />
+                <span>Inventory</span>
+                {counts.isLoading ? (
+                  <Loader2 className="ml-auto animate-spin text-white" />
+                ) : (
+                  <Badge className="ml-auto">
+                    {counts.data?.inventory ?? 0}
+                  </Badge>
+                )}
+              </CommandItem>
+              <CommandItem onSelect={() => setResultsPage("cars")}>
+                <IconCar size={18} />
+                <span>Cars</span>
+                {counts.isLoading ? (
+                  <Loader2 className="ml-auto animate-spin text-white" />
+                ) : (
+                  <Badge className="ml-auto">{counts.data?.cars ?? 0}</Badge>
+                )}
+              </CommandItem>
+            </CommandGroup>
+          </>
         )}
         {resultsPage === "listings" && (
           <CommandListingResults search={debouncedSearch} />
+        )}
+        {resultsPage === "inventory" && (
+          <CommandInventoryResults search={debouncedSearch} />
+        )}
+        {resultsPage === "cars" && (
+          <CommandCarsResults search={debouncedSearch} />
         )}
       </CommandList>
     </>
   );
 };
 
-const CommandSearchCounts = ({
-  counts,
-  setResultsPage,
-  search,
-  isLoading,
-}: {
-  counts: AdminSearchCounts;
-  setResultsPage: (page: string) => void;
-  search: string;
-  isLoading: boolean;
-}) => {
+const CommandInventoryResults = ({ search }: { search: string }) => {
+  const { data: listings, isLoading } =
+    trpc.admin.adminSearchListings.useQuery(search);
   return (
     <>
       <CommandEmpty>
@@ -277,23 +293,56 @@ const CommandSearchCounts = ({
           "No results found"
         )}
       </CommandEmpty>
-      <CommandGroup heading="Results">
-        <CommandItem onSelect={() => setResultsPage("listings")}>
-          <IconList size={18} />
-          <span>Listings</span>
-          <Badge className="ml-auto">{counts?.listings}</Badge>
-        </CommandItem>
-        <CommandItem onSelect={() => setResultsPage("inventory")}>
-          <IconPackage size={18} />
-          <span>Inventory</span>
-          <Badge className="ml-auto">{counts?.inventory}</Badge>
-        </CommandItem>
-        <CommandItem onSelect={() => setResultsPage("cars")}>
-          <IconCar size={18} />
-          <span>Cars</span>
-          <Badge className="ml-auto">{counts?.cars}</Badge>
-        </CommandItem>
-      </CommandGroup>
+      {!!listings?.length && (
+        <CommandGroup heading="Listings">
+          {listings?.map((listing) => {
+            return (
+              // on select - go to listings page with table filtered?
+              // Or just open up edit modal right here?
+              <CommandItem
+                key={listing.id}
+                onSelect={() => console.log(listing)}
+              >
+                <IconList size={18} />
+                <span>{listing.title}</span>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      )}
+    </>
+  );
+};
+
+const CommandCarsResults = ({ search }: { search: string }) => {
+  const { data: cars, isLoading } = trpc.admin.adminSearchCars.useQuery(search);
+  return (
+    <>
+      <CommandEmpty>
+        {!search ? (
+          "Search for anything"
+        ) : isLoading ? (
+          <div className="flex w-full items-center justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          "No results found"
+        )}
+      </CommandEmpty>
+      {!!cars?.length && (
+        <CommandGroup heading="Cars">
+          {cars?.map((car) => {
+            return (
+              // on select - go to listings page with table filtered?
+              // Or just open up edit modal right here?
+              <CommandItem key={car.id} onSelect={() => console.log(car)}>
+                <IconCar size={18} />
+                <span>{car.make}</span>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      )}
     </>
   );
 };
@@ -314,7 +363,7 @@ const CommandListingResults = ({ search }: { search: string }) => {
           "No results found"
         )}
       </CommandEmpty>
-      {listings?.length && (
+      {!!listings?.length && (
         <CommandGroup heading="Listings">
           {listings?.map((listing) => {
             return (

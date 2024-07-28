@@ -14,6 +14,7 @@ import type {
   MarketplaceId,
 } from "ebay-api/lib/enums";
 import { CategoryType, TimeDurationUnit } from "ebay-api/lib/enums";
+import { prisma } from "../../db/client";
 
 type FulfillmentPolicyResponse = {
   fulfillmentPolicies: {
@@ -104,6 +105,12 @@ ebay.config.acceptLanguage = "en-AU";
 ebay.config.contentLanguage = "en-AU" as ContentLanguage;
 ebay.config.marketplaceId = "EBAY_AU" as MarketplaceId;
 
+const initEbay = async () => {
+  const token = await prisma.ebayCreds.findFirst();
+  if (!token) throw new Error("Ebay credentials not found");
+  ebay.OAuth2.setCredentials(token.refreshToken as string);
+};
+
 export const ebayRouter = router({
   // Auth functions
   authenticate: adminProcedure.mutation(async ({ ctx }) => {
@@ -113,7 +120,7 @@ export const ebayRouter = router({
       url: url,
     };
   }),
-  updateRefreshToken: adminProcedure
+  setTokenSet: adminProcedure
     .input(
       z.object({
         code: z.string(),
