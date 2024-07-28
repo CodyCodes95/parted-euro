@@ -15,6 +15,7 @@ import type {
 } from "ebay-api/lib/enums";
 import { CategoryType, TimeDurationUnit } from "ebay-api/lib/enums";
 import { prisma } from "../../db/client";
+import type { AuthToken } from "ebay-api/lib/auth/oAuth2";
 
 type FulfillmentPolicyResponse = {
   fulfillmentPolicies: {
@@ -108,7 +109,23 @@ ebay.config.marketplaceId = "EBAY_AU" as MarketplaceId;
 const initEbay = async () => {
   const token = await prisma.ebayCreds.findFirst();
   if (!token) throw new Error("Ebay credentials not found");
-  ebay.OAuth2.setCredentials(token.refreshToken as string);
+  const tokenSet = token.refreshToken as AuthToken;
+  if (
+    new Date(token.updatedAt).getTime() + tokenSet.expires_in! * 1000 <
+    Date.now()
+  ) {
+    const updatedTokenSet = (await ebay.OAuth2.refreshToken()) as AuthToken;
+    await prisma.ebayCreds.update({
+      where: {
+        id: token.id,
+      },
+      data: {
+        refreshToken: updatedTokenSet,
+      },
+    });
+    return ebay.OAuth2.setCredentials(updatedTokenSet);
+  }
+  ebay.OAuth2.setCredentials(tokenSet);
 };
 
 export const ebayRouter = router({
@@ -141,6 +158,12 @@ export const ebayRouter = router({
         updatedCreds,
       };
     }),
+  testEbayConnection: adminProcedure.query(async ({ ctx }) => {
+    await initEbay();
+    const paymentPolicies =
+      await ebay.sell.account.getPaymentPolicies("EBAY_AU");
+    return !!paymentPolicies.paymentPolicies[0]?.paymentPolicyId;
+  }),
 
   // Actually using
   getCategoryIds: adminProcedure
@@ -150,19 +173,7 @@ export const ebayRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const token = await ctx.prisma.ebayCreds.findFirst();
-      ebay.OAuth2.setCredentials(token?.refreshToken as any);
-      ebay.OAuth2.on("refreshAuthToken", async (token) => {
-        const creds = await ctx.prisma.ebayCreds.findFirst();
-        const updatedCreds = await ctx.prisma.ebayCreds.update({
-          where: {
-            id: creds?.id,
-          },
-          data: {
-            refreshToken: token,
-          },
-        });
-      });
+      await initEbay();
       const res = await ebay.commerce.taxonomy.getCategorySuggestions(
         "15",
         input.title,
@@ -204,19 +215,7 @@ export const ebayRouter = router({
       console.log("====================INPUT=====================");
       console.log(input);
       console.log("====================INPUT=====================");
-      const token = await ctx.prisma.ebayCreds.findFirst();
-      ebay.OAuth2.setCredentials(token?.refreshToken as any);
-      ebay.OAuth2.on("refreshAuthToken", async (token) => {
-        const creds = await ctx.prisma.ebayCreds.findFirst();
-        const updatedCreds = await ctx.prisma.ebayCreds.update({
-          where: {
-            id: creds?.id,
-          },
-          data: {
-            refreshToken: token,
-          },
-        });
-      });
+      await initEbay();
       try {
         const random = Math.floor(100000 + Math.random() * 900000);
         let fulfillmentPolicy;
@@ -299,6 +298,7 @@ export const ebayRouter = router({
               product: {
                 title: input.title,
                 description: input.description,
+                // @ts-expect-error: TODO: Has updated api broke this?
                 aspects: {
                   Brand: ["BMW"],
                 },
@@ -363,19 +363,7 @@ export const ebayRouter = router({
       }
     }),
   getFulfillmentPolicies: adminProcedure.query(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
+    await initEbay();
     const fulfillmentPolicies = (await ebay.sell.account.getFulfillmentPolicies(
       "EBAY_AU",
     )) as FulfillmentPolicyResponse;
@@ -394,19 +382,7 @@ export const ebayRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const token = await ctx.prisma.ebayCreds.findFirst();
-      ebay.OAuth2.setCredentials(token?.refreshToken as any);
-      ebay.OAuth2.on("refreshAuthToken", async (token) => {
-        const creds = await ctx.prisma.ebayCreds.findFirst();
-        const updatedCreds = await ctx.prisma.ebayCreds.update({
-          where: {
-            id: creds?.id,
-          },
-          data: {
-            refreshToken: token,
-          },
-        });
-      });
+      await initEbay();
       const offers = await ebay.sell.inventory.getOffers({
         sku: input.sku,
       });
@@ -443,19 +419,7 @@ export const ebayRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const token = await ctx.prisma.ebayCreds.findFirst();
-      ebay.OAuth2.setCredentials(token?.refreshToken as any);
-      ebay.OAuth2.on("refreshAuthToken", async (token) => {
-        const creds = await ctx.prisma.ebayCreds.findFirst();
-        const updatedCreds = await ctx.prisma.ebayCreds.update({
-          where: {
-            id: creds?.id,
-          },
-          data: {
-            refreshToken: token,
-          },
-        });
-      });
+      await initEbay();
       try {
         const publishOffer = await ebay.sell.inventory.publishOffer(
           input.offerId,
@@ -467,19 +431,7 @@ export const ebayRouter = router({
     }),
 
   getInventroyItems: adminProcedure.query(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
+    await initEbay();
     const listings = await ebay.sell.inventory.getInventoryItems();
     return listings;
   }),
@@ -513,95 +465,25 @@ export const ebayRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const token = await ctx.prisma.ebayCreds.findFirst();
-      ebay.OAuth2.setCredentials(token?.refreshToken as any);
-      ebay.OAuth2.on("refreshAuthToken", async (token) => {
-        const creds = await ctx.prisma.ebayCreds.findFirst();
-        const updatedCreds = await ctx.prisma.ebayCreds.update({
-          where: {
-            id: creds?.id,
-          },
-          data: {
-            refreshToken: token,
-          },
-        });
-      });
+      await initEbay();
       const offers = await ebay.sell.inventory.getOffers({
         sku: input.sku,
       });
       return offers;
     }),
-
-  test: adminProcedure.mutation(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
-
-    const sellItem = await ebay.commerce.taxonomy.getCategorySuggestions(
-      "15",
-      "E39 cylinder head cover set",
-    );
-    return sellItem;
-  }),
   getPaymentPolicy: adminProcedure.mutation(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
+    await initEbay();
     const paymentPolicies =
       await ebay.sell.account.getPaymentPolicies("EBAY_AU");
     return paymentPolicies.paymentPolicies[0].paymentPolicyId;
   }),
   getReturnPolicy: adminProcedure.mutation(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
+    await initEbay();
     const returnPolicies = await ebay.sell.account.getReturnPolicies("EBAY_AU");
     return returnPolicies.returnPolicies[0].returnPolicyId;
   }),
   createInventoryLocation: adminProcedure.mutation(async ({ ctx }) => {
-    const token = await ctx.prisma.ebayCreds.findFirst();
-    ebay.OAuth2.setCredentials(token?.refreshToken as any);
-    ebay.OAuth2.on("refreshAuthToken", async (token) => {
-      const creds = await ctx.prisma.ebayCreds.findFirst();
-      const updatedCreds = await ctx.prisma.ebayCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          refreshToken: token,
-        },
-      });
-    });
+    await initEbay();
     const inventoryLocation = await ebay.sell.inventory.getInventoryLocations();
     if (inventoryLocation.total > 0) {
       return inventoryLocation.locations[0].merchantLocationKey;
