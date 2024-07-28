@@ -32,7 +32,7 @@ import {
 import Link from "next/link";
 import { useCartStore } from "../../context/cartStore";
 import { cn } from "../../lib/utils";
-import { ClassNameValue } from "tailwind-merge";
+import type { ClassNameValue } from "tailwind-merge";
 
 const Listing: NextPage = () => {
   const router = useRouter();
@@ -77,6 +77,8 @@ const Listing: NextPage = () => {
       enabled: !!router.query.id,
     },
   );
+
+  const listingViewAnalytic = trpc.analytics.listingView.useMutation();
 
   const carsOnListing = trpc.listings.getAllCarsOnListing.useQuery(
     {
@@ -167,6 +169,13 @@ const Listing: NextPage = () => {
 
     return groupedBySeries;
   }, [listing, carsOnListing.data]);
+
+  useEffect(() => {
+    if (!listing) return;
+    listingViewAnalytic.mutateAsync({
+      listingId: listing.id,
+    });
+  }, [listing]);
 
   const quantityAvailable = listing?.parts.reduce((acc, cur) => {
     acc += cur.quantity;

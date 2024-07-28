@@ -52,9 +52,7 @@ export const xeroRouter = router({
   // }),
   authenticate: adminProcedure.mutation(async ({ ctx }) => {
     const consentUrl = await xero.buildConsentUrl();
-    return {
-      url: consentUrl,
-    };
+    return consentUrl;
   }),
   updateTokenset: adminProcedure
     .input(

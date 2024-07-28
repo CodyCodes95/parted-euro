@@ -133,9 +133,7 @@ export const ebayRouter = router({
   authenticate: adminProcedure.mutation(async ({ ctx }) => {
     ebay.OAuth2.setScope(process.env.EBAY_SCOPES?.split(" ") as string[]);
     const url = ebay.OAuth2.generateAuthUrl();
-    return {
-      url: url,
-    };
+    return url;
   }),
   setTokenSet: adminProcedure
     .input(

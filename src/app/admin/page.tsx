@@ -25,7 +25,6 @@ export default function Admin() {
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
           </TabsList>
         </div>
@@ -150,6 +149,12 @@ export default function Admin() {
               <CardContent>{/* <RecentSales /> */}</CardContent>
             </Card>
           </div>
+        </TabsContent>
+        <TabsContent value="analytics" className="space-y-4">
+          <p>coming soon</p>
+        </TabsContent>
+        <TabsContent value="notifications" className="space-y-4">
+          <p>coming soon</p>
         </TabsContent>
       </Tabs>
     </div>

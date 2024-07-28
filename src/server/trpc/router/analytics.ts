@@ -8,6 +8,7 @@ export const analyticsRouter = router({
       }),
     )
     .mutation(({ ctx, input }) => {
+      if (ctx.session?.user) return;
       return ctx.prisma.listingAnalytics.create({
         data: {
           listingId: input.listingId,

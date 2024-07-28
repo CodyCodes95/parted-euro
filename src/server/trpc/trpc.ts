@@ -33,7 +33,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-const isAdmin = t.middleware(({ ctx, next }:any) => {
+const isAdmin = t.middleware(({ ctx, next }: any) => {
   if (!ctx.session || !ctx.session.user.isAdmin) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

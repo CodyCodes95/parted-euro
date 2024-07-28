@@ -33,7 +33,7 @@ const Admin: NextPage = () => {
   const onRenew = async () => {
     const result = await authenticateXero.mutateAsync();
     if (result) {
-      router.push(result.url);
+      router.push(result);
     }
   };
 

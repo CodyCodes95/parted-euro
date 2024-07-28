@@ -382,6 +382,21 @@ const CommandListingResults = ({ search }: { search: string }) => {
 };
 
 const CommandHome = ({ setCommandPage }: CommandPageProps) => {
+  const authenticateXero = trpc.xero.authenticate.useMutation();
+  const authenticateEbay = trpc.ebay.authenticate.useMutation();
+
+  const onAuthenticateXero = async () => {
+    const url = await authenticateXero.mutateAsync();
+    if (!url) throw new Error("Xero authentication failed");
+    window.open(url, "_blank");
+  };
+
+  const onAuthenticateEbay = async () => {
+    const url = await authenticateEbay.mutateAsync();
+    if (!url) throw new Error("Ebay authentication failed");
+    window.open(url, "_blank");
+  };
+
   return (
     <>
       <CommandInput placeholder="Type a command or search..." />
@@ -429,12 +444,12 @@ const CommandHome = ({ setCommandPage }: CommandPageProps) => {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
-          <CommandItem>
+          <CommandItem onSelect={onAuthenticateXero}>
             <IconInvoice size={18} />
             <span>Refresh Xero</span>
             {/* <CommandShortcut>⌘P</CommandShortcut> */}
           </CommandItem>
-          <CommandItem>
+          <CommandItem onSelect={onAuthenticateEbay}>
             <IconShoppingBagEdit size={18} />
             <span>Refresh eBay</span>
             {/* <CommandShortcut>⌘B</CommandShortcut> */}
