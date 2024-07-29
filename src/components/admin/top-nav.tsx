@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from './custom/button'
 import { IconMenu } from '@tabler/icons-react'
+import { Button } from '../ui/button'
 
 interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
   links: {

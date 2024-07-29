@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
-import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
+import type { QueryListingsGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import AddListing from "../../components/listings/AddListing";
 import { useRouter } from "next/router";
@@ -25,19 +25,22 @@ export type OrderItem = {
   price: number;
 };
 
-const calculateQty = (listing:QueryListingsGetAllAdmin) => {
-    // Group parts by partDetailsId and sum their quantities
-    const groupedParts = listing.parts.reduce((acc, part) => {
-        if (!acc[part.partDetailsId]) {
-            acc[part.partDetailsId] = 0;
-        }
-        acc[part.partDetailsId]! += part.quantity;
-        return acc;
-    }, {} as Record<string, number> );
+const calculateQty = (listing: QueryListingsGetAllAdmin) => {
+  // Group parts by partDetailsId and sum their quantities
+  const groupedParts = listing.parts.reduce(
+    (acc, part) => {
+      if (!acc[part.partDetailsId]) {
+        acc[part.partDetailsId] = 0;
+      }
+      acc[part.partDetailsId]! += part.quantity;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
-    // Find the maximum sum of quantities for any part number
-    const maxQuantity = Math.max(...Object.values(groupedParts));
-    return maxQuantity;
+  // Find the maximum sum of quantities for any part number
+  const maxQuantity = Math.max(...Object.values(groupedParts));
+  return maxQuantity;
 };
 
 const Listings: NextPage = () => {
@@ -81,7 +84,7 @@ const Listings: NextPage = () => {
       {
         Header: "ID",
         accessor: (d) => d.id,
-    },
+      },
       {
         Header: "Title",
         accessor: (d) => d.title,
@@ -103,8 +106,7 @@ const Listings: NextPage = () => {
       },
       {
         Header: "Quantity",
-        accessor: (d) =>
-       calculateQty(d)
+        accessor: (d) => calculateQty(d),
       },
       {
         Header: "Listed On",
@@ -177,7 +179,7 @@ const Listings: NextPage = () => {
         ),
       },
     ],
-    [order]
+    [order],
   );
 
   const onDeleteListing = async () => {
@@ -187,9 +189,9 @@ const Listings: NextPage = () => {
   };
 
   const authenticateEbay = async () => {
-    const result = await ebayLogin.mutateAsync();
-    if (result) {
-      router.push(result.url);
+    const url = await ebayLogin.mutateAsync();
+    if (url) {
+      router.push(url);
     }
   };
 
@@ -224,8 +226,8 @@ const Listings: NextPage = () => {
             listing={selected}
             refetch={listings.refetch}
           />
-        ) }
-        {showEbayModal && selected &&  (
+        )}
+        {showEbayModal && selected && (
           <EbayModal
             showModal={showEbayModal}
             setShowModal={setShowEbayModal}

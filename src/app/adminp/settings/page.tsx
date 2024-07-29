@@ -11,11 +11,9 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { Check, Loader2, TriangleAlert } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSetXeroToken } from "./hooks/useSetXeroToken";
 import { useSetEbayToken } from "./hooks/useSetEbayToken";
-
-
 
 const XeroTab = () => {
   useSetXeroToken();
@@ -40,7 +38,6 @@ const XeroTab = () => {
     </div>
   );
 };
-
 
 const EbayTab = () => {
   useSetEbayToken();
@@ -70,45 +67,51 @@ const EbayTab = () => {
 const HomepageTab = () => null;
 
 const Settings = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const changeTab = (tab: string) => {
-    console.log("change");
-    router.push(`/admin/settings?tab=${tab}`);
-  };
-
   return (
     <div>
       <div className="mb-2 flex items-center justify-between space-y-2">
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
       </div>
-      <Tabs
-        onValueChange={(value) => changeTab(value)}
-        orientation="vertical"
-        defaultValue={searchParams?.get("tab") ?? "xero"}
-        className="space-y-4"
-      >
-        <div className="w-full overflow-x-auto pb-2">
-          <TabsList>
-            <TabsTrigger value="xero">Xero</TabsTrigger>
-            <TabsTrigger onClick={() => changeTab("ebay")} value="ebay">
-              Ebay
-            </TabsTrigger>
-            <TabsTrigger value="homepage">Homepage</TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent value="xero" className="space-y-4">
-          <XeroTab />
-        </TabsContent>
-        <TabsContent value="ebay" className="space-y-4">
-          <EbayTab />
-        </TabsContent>
-        <TabsContent value="homepage" className="space-y-4">
-          <HomepageTab />
-        </TabsContent>
-      </Tabs>
+      <Suspense>
+        <SettingsTabs />
+      </Suspense>
     </div>
   );
 };
 
 export default Settings;
+
+const SettingsTabs = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const changeTab = (tab: string) => {
+    router.push(`/admin/settings?tab=${tab}`);
+  };
+
+  return (
+    <Tabs
+      onValueChange={(value) => changeTab(value)}
+      orientation="vertical"
+      defaultValue={searchParams?.get("tab") ?? "xero"}
+      className="space-y-4"
+    >
+      <div className="w-full overflow-x-auto pb-2">
+        <TabsList>
+          <TabsTrigger value="xero">Xero</TabsTrigger>
+          <TabsTrigger value="ebay">Ebay</TabsTrigger>
+          <TabsTrigger value="homepage">Homepage</TabsTrigger>
+        </TabsList>
+      </div>
+      <TabsContent value="xero" className="space-y-4">
+        <XeroTab />
+      </TabsContent>
+      <TabsContent value="ebay" className="space-y-4">
+        <EbayTab />
+      </TabsContent>
+      <TabsContent value="homepage" className="space-y-4">
+        <HomepageTab />
+      </TabsContent>
+    </Tabs>
+  );
+};
