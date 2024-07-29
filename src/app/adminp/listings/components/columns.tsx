@@ -88,6 +88,7 @@ export const columns: ColumnDef<QueryListingsGetAllAdmin>[] = [
     cell: ({ cell }) => {
       const partNumbers = cell
         .getValue()
+        // @ts-expect-error: hard to put the right type here
         ?.map((part) => part.partDetailsId)
         .join(", ");
       return (

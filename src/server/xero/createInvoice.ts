@@ -1,5 +1,5 @@
 import type { TokenSet, LineItem } from "xero-node";
-import { XeroClient, Invoice, LineAmountTypes } from "xero-node";
+import { XeroClient, Invoice, LineAmountTypes, Address } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
 import { sendNewOrderEmail } from "../resend/resend";
@@ -76,15 +76,16 @@ export const createInvoice = async (
       contact: {
         emailAddress: event.customer_details!.email!,
         name: event.customer_details!.name!,
-        // addresses: [
-        //   {
-        //     addressLine1: event.customer_details.address.line1,
-        //     addressLine2: event.customer_details.address.line2,
-        //     city: event.customer_details.address.city,
-        //     postalCode: event.customer_details.address.postal_code,
-        //     country: event.customer_details.address.country,
-        //   },
-        // ],
+        addresses: [
+          {
+            addressType: Address.AddressTypeEnum.STREET, // or AddressType.STREET depending on your needs
+            addressLine1: event.customer_details!.address!.line1!,
+            addressLine2: event.customer_details!.address!.line2!,
+            city: event.customer_details!.address!.city!,
+            postalCode: event.customer_details!.address!.postal_code!,
+            country: event.customer_details!.address!.country!,
+          },
+        ],
       },
       date: invoiceDate,
       dueDate: invoiceDate,
