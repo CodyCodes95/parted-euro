@@ -343,6 +343,6 @@ export const checkoutRouter = router({
         return shippingServices;
       }
       const shippingServices = await getDomesticShippingServices(input);
-      return shippingServices;
+      return [...shippingServices, pickupShippingOption];
     }),
 });
