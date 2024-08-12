@@ -223,7 +223,7 @@ function generatePickupOrderEmailHTML(order: OrderWithItems): string {
 </head>
 <body>
     <div class="container">
-        <img src="https://yourwebsite.com/logo.png" alt="Parted Euro's Logo" width="160" height="32" class="logo">
+        <img src="${baseUrl}/_next/static/media/logo.2d624463.png" alt="Parted Euro's Logo" width="160" height="32" class="logo">
         <h1>Your order is ready for pickup!</h1>
         <p>Hi ${order.name},</p>
         <p>Great news! Your order is ready for Pickup!</p>
