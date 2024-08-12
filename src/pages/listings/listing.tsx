@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { useEffect, useMemo, useState } from "react";
-import type { Car } from "@prisma/client";
+import { PrismaClient, type Car } from "@prisma/client";
 import Head from "next/head";
 import type { Image } from "@prisma/client";
 import type { CartItem } from "../../context/cartContext";
@@ -34,36 +34,59 @@ import { useCartStore } from "../../context/cartStore";
 import { cn } from "../../lib/utils";
 import type { ClassNameValue } from "tailwind-merge";
 
-const Listing: NextPage = () => {
-  const router = useRouter();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query?.id as string;
+  const prisma = new PrismaClient();
+  const listing = await prisma.listing.findUnique({
+    where: { id },
+    select: { id: true, title: true, description: true, images: true },
+  });
 
-  type ListingType = {
-    id: string;
-    title: string;
-    price: number;
-    images: Image[];
-    parts: {
-      donor: {
-        car: Car;
-        vin: string;
-        year: number;
-        mileage: number;
-      };
-      partDetails: {
-        cars: {
-          id: string;
-          generation: string;
-          model: string;
-          body: string | null;
-        }[];
-        partNo: string;
-        weight: number;
-        length: number;
-        width: number;
-        height: number;
-      };
-    }[];
+  if (!listing) {
+    return { notFound: true };
+  }
+
+  return {
+    props: {
+      listingMeta: {
+        title: listing.title,
+        description: listing.description,
+        image: listing.images[0]?.url,
+      },
+    },
   };
+};
+type ListingType = {
+  id: string;
+  title: string;
+  price: number;
+  description: string;
+  images: Image[];
+  parts: {
+    donor: {
+      car: Car;
+      vin: string;
+      year: number;
+      mileage: number;
+    };
+    partDetails: {
+      cars: {
+        id: string;
+        generation: string;
+        model: string;
+        body: string | null;
+      }[];
+      partNo: string;
+      weight: number;
+      length: number;
+      width: number;
+      height: number;
+    };
+  }[];
+};
+
+const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
+  const router = useRouter();
 
   const { cart, setCart } = useCartStore();
 
@@ -187,7 +210,11 @@ const Listing: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{listing?.title}</title>
+        <title>{listingMeta.title}</title>
+        <meta property="og:title" content={listingMeta.title} />
+        <meta property="og:description" content={listingMeta.description} />
+        {/* @ts-ignore */}
+        <meta property="og:image" content={listingMeta.image} />
       </Head>
       <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-96">
         <div className="flex justify-center">

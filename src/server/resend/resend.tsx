@@ -1,9 +1,7 @@
 import { Resend } from "resend";
 import type { OrderWithItems } from "../../utils/trpc";
 import NewOrderEmail from "./emails/OrderPlaced";
-import OrderShippedEmail from "./emails/OrderShipped";
 import type { Order } from "@prisma/client";
-import ReadyForPickupEmail from "./emails/readyForPickup";
 
 const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
