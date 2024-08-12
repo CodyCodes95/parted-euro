@@ -101,8 +101,8 @@ function generateOrderEmailHTML(order: OrderWithItems): string {
         <p>Hi ${order.name},</p>
         <p>Great news! Your order has shipped!</p>
         <div class="tracking-info">
-        <p><strong>Shipping address:</strong> ${order.shippingAddress}</p>
-            <p><strong>Tracking number:</strong> ${order.trackingNumber}</p>
+        <p><strong>Shipping Address:</strong> ${order.shippingAddress}</p>
+            <p><strong>Tracking Number:</strong> ${order.trackingNumber}</p>
             <p><strong>Carrier:</strong> ${order.shippingMethod}</p>
         </div>
         <p><strong>Below is a summary of your order ${
