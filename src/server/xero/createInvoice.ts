@@ -1,4 +1,4 @@
-import type { TokenSet, LineItem, Contact } from "xero-node";
+import type { TokenSet, LineItem } from "xero-node";
 import { XeroClient, Invoice, LineAmountTypes, Address } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
@@ -71,50 +71,21 @@ export const createInvoice = async (
         lineAmount: event.shipping_cost.amount_total / 100,
       });
     }
-
-    const contactToCreateOrUpdate: Contact = {
-      name: event.customer_details!.name!,
-      emailAddress: event.customer_details!.email!,
-      addresses: [
-        {
-          addressType: Address.AddressTypeEnum.STREET, // or AddressType.STREET depending on your needs
-          addressLine1: event.customer_details!.address!.line1 ?? "",
-          addressLine2: event.customer_details!.address!.line2 ?? "",
-          city: event.customer_details!.address!.city ?? "",
-          postalCode: event.customer_details!.address!.postal_code ?? "",
-          country: event.customer_details!.address!.country ?? "",
-        },
-      ],
-    };
-
-    let contactId;
-
-    // First, try to find if the contact already exists
-    const contacts = await xero.accountingApi.getContacts(
-      activeTenantId,
-      undefined,
-      `EmailAddress="${event.customer_details!.email!}"`,
-    );
-
-    if (contacts.body.contacts && contacts.body.contacts.length > 0) {
-      // Contact exists, update it
-      contactId = contacts.body.contacts[0]!.contactID;
-      await xero.accountingApi.updateContact(activeTenantId, contactId!, {
-        contacts: [contactToCreateOrUpdate],
-      });
-    } else {
-      // Contact doesn't exist, create a new one
-      const createdContact = await xero.accountingApi.createContacts(
-        activeTenantId,
-        { contacts: [contactToCreateOrUpdate] },
-      );
-      contactId = createdContact.body.contacts![0]!.contactID;
-    }
-
     const invoiceToCreate: Invoice = {
       type: Invoice.TypeEnum.ACCREC,
       contact: {
-        contactID: contactId,
+        emailAddress: event.customer_details!.email!,
+        name: event.customer_details!.name!,
+        addresses: [
+          {
+            addressType: Address.AddressTypeEnum.STREET, // or AddressType.STREET depending on your needs
+            addressLine1: event.customer_details!.address!.line1!,
+            addressLine2: event.customer_details!.address!.line2!,
+            city: event.customer_details!.address!.city!,
+            postalCode: event.customer_details!.address!.postal_code!,
+            country: event.customer_details!.address!.country!,
+          },
+        ],
       },
       date: invoiceDate,
       dueDate: invoiceDate,
