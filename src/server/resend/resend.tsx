@@ -240,7 +240,7 @@ function generatePickupOrderEmailHTML(order: OrderWithItems): string {
         <table>
             <thead>
                 <tr>
-                    <th>Image</th>
+                    <th></th>
                     <th>Item</th>
                     <th>Price</th>
                     <th>Quantity</th>
