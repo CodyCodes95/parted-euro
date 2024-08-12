@@ -19,7 +19,11 @@ const XeroTab = () => {
   useSetXeroToken();
   const testConnection = trpc.xero.testXeroConnection.useQuery();
   if (testConnection.isLoading)
-    return <Loader2 className="h-32 w-32 animate-spin" />;
+    return (
+      <div className="flex w-full items-center justify-center">
+        <Loader2 className="h-32 w-32 animate-spin" />
+      </div>
+    );
 
   if (!testConnection.data)
     return (
@@ -44,7 +48,11 @@ const EbayTab = () => {
   const testConnection = trpc.ebay.testEbayConnection.useQuery();
 
   if (testConnection.isLoading)
-    return <Loader2 className="flex w-full items-center justify-center" />;
+    return (
+      <div className="flex w-full items-center justify-center">
+        <Loader2 className="h-32 w-32 animate-spin" />
+      </div>
+    );
 
   if (!testConnection.data)
     return (
