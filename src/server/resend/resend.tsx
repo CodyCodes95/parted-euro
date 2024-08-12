@@ -131,7 +131,7 @@ function generateOrderEmailHTML(order: OrderWithItems): string {
         </table>
         <p>Thanks again for shopping at Parted Euro!</p>
         <div class="footer">
-            <p>If you have any questions, please don't hesitate to contact our customer service.</p>
+            <p>If you have any questions, feel free to contact us directly.</p>
         </div>
     </div>
 </body>
@@ -254,7 +254,7 @@ function generatePickupOrderEmailHTML(order: OrderWithItems): string {
         </table>
         <p>Thanks again for shopping at Parted Euro!</p>
         <div class="footer">
-            <p>If you have any questions, please don't hesitate to contact our customer service.</p>
+            <p>If you have any questions, feel free to contact us directly.</p>
         </div>
     </div>
 </body>
