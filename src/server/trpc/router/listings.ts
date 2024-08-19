@@ -1,6 +1,7 @@
 import { adminProcedure } from "./../trpc";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+import { type Prisma } from "@prisma/client";
 
 export const listingRouter = router({
   createListing: adminProcedure
@@ -112,9 +113,8 @@ export const listingRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const orderBy = {};
-      // @ts-ignore
-      orderBy[input.sortBy] = input.sortOrder;
+      const orderBy: Record<string, "asc" | "desc"> = {};
+      orderBy[input.sortBy] = input.sortOrder as "asc" | "desc";
       if (
         !input.generation &&
         !input.model &&
@@ -132,7 +132,7 @@ export const listingRouter = router({
             // },
             {
               title: {
-                contains: input.search || "",
+                contains: input.search ?? "",
                 mode: "insensitive",
               },
             },
@@ -141,7 +141,7 @@ export const listingRouter = router({
                 some: {
                   partDetails: {
                     partNo: {
-                      contains: input.search || "",
+                      contains: input.search ?? "",
                       mode: "insensitive",
                     },
                   },
@@ -153,7 +153,7 @@ export const listingRouter = router({
                 some: {
                   partDetails: {
                     alternatePartNumbers: {
-                      contains: input.search || "",
+                      contains: input.search ?? "",
                       mode: "insensitive",
                     },
                   },
@@ -161,7 +161,7 @@ export const listingRouter = router({
               },
             },
           ],
-        };
+        } as Prisma.ListingWhereInput;
         const listings = await ctx.prisma.listing.findMany({
           take: 20,
           skip: input.page * 20,
@@ -183,11 +183,9 @@ export const listingRouter = router({
               },
             },
           },
-          // @ts-ignore
           where: queryWhere,
           orderBy,
         });
-        // @ts-ignore
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
         const totalPages = Math.ceil(count / 20);
@@ -204,7 +202,7 @@ export const listingRouter = router({
             // },
             {
               title: {
-                contains: input.search || "",
+                contains: input.search ?? "",
                 mode: "insensitive",
               },
             },
@@ -216,18 +214,18 @@ export const listingRouter = router({
                   some: {
                     parent: {
                       name: {
-                        contains: input.category || "",
+                        contains: input.category ?? "",
                       },
                     },
                     name: {
-                      contains: input.subcat || "",
+                      contains: input.subcat ?? "",
                     },
                   },
                 },
                 cars: {
                   some: {
                     generation: {
-                      contains: input.generation || "",
+                      contains: input.generation ?? "",
                     },
                     model: input.model,
                     series: input.series,
@@ -236,7 +234,7 @@ export const listingRouter = router({
               },
             },
           },
-        };
+        } as Prisma.ListingWhereInput;
         const listings = await ctx.prisma.listing.findMany({
           take: 20,
           skip: input.page * 20,
@@ -257,12 +255,9 @@ export const listingRouter = router({
               },
             },
           },
-          // @ts-ignore
           where: queryWhere,
           orderBy,
         });
-
-        // @ts-ignore
         const count = await ctx.prisma.listing.count({ where: queryWhere });
         const hasNextPage = count > input.page * 20 + 20;
         const totalPages = Math.ceil(count / 20);

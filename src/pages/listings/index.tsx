@@ -14,13 +14,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { trpc } from "../../utils/trpc";
-import type {
-  Image,
-  Listing,
-  Part,
-  PartDetail,
-  PartTypes,
-} from "@prisma/client";
 import { useIsMobile } from "../../hooks/isMobile";
 import Link from "next/link";
 import { Card, CardContent } from "../../components/ui/card";
@@ -72,7 +65,7 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (debouncedSearch) {
-      router.push(
+      void router.push(
         {
           pathname: router.pathname,
           query: {
@@ -103,7 +96,11 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (series) {
-      setSelectedCar(`${series} ${generation ?? ""} ${model ?? ""}`);
+      setSelectedCar(
+        `${series as string} ${(generation as string) ?? ""} ${
+          (model as string) ?? ""
+        }`,
+      );
     }
   }, [series, generation, model]);
 
@@ -188,7 +185,7 @@ const Listings: NextPage = () => {
                     delete query.series;
                     delete query.generation;
                     delete query.model;
-                    router.push(
+                    void router.push(
                       {
                         pathname: router.pathname,
                         query: query,
@@ -211,7 +208,11 @@ const Listings: NextPage = () => {
                   setShowCategorySelection(true);
                 }}
               >
-                {category ? `${category} ${subcat ? `- ${subcat}` : ""}` : "Categories"}
+                {category
+                  ? `${category.toString()} ${
+                      subcat ? `- ${subcat.toString()}` : ""
+                    }`
+                  : "Categories"}
               </Button>
               <Popover>
                 <PopoverTrigger asChild>
@@ -341,7 +342,7 @@ const ListingsResults = ({
       top: 0,
       behavior: "smooth",
     });
-    router.push(
+    void router.push(
       {
         pathname: router.pathname,
         query: {
@@ -359,6 +360,7 @@ const ListingsResults = ({
   if (listings.isLoading && !isMobile) {
     return (
       <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
+        {/* eslint-disable-next-line */}
         {[...Array(20)].map((_, i) => (
           <Card key={i}>
             <CardContent className="p-0">
@@ -377,6 +379,7 @@ const ListingsResults = ({
   if (listings.isLoading && isMobile) {
     return (
       <div className="mt-8 flex flex-col gap-8">
+        {/* eslint-disable-next-line */}
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
@@ -419,7 +422,6 @@ const ListingsResults = ({
                 <p className="text-lg font-bold">${listing.price}</p>
               </div>
               <img
-                // @ts-ignore
                 src={listing.images[0]?.url}
                 className="h-36 w-36 rounded-md object-cover"
                 alt=""
@@ -438,7 +440,6 @@ const ListingsResults = ({
                     <img
                       alt="Product image"
                       className="max-h-80 w-full rounded-md object-cover"
-                      // @ts-ignore
                       src={listing.images[0]?.url}
                     />
                     <div className="p-2">
@@ -553,14 +554,14 @@ const CategoryFilters = () => {
     delete query.subcat;
     if (query[key] === value) {
       delete query[key];
-      router.push({
+      void router.push({
         pathname: router.pathname,
         query: query,
       });
       return;
     }
     query[key] = value;
-    router.push({
+    void router.push({
       pathname: router.pathname,
       query: query,
     });
@@ -664,6 +665,7 @@ const CarSelection = () => {
       <div className="flex flex-col gap-2">
         <p className="text-xl">Select your series</p>
         <div className="flex flex-wrap gap-2">
+          {/* eslint-disable-next-line */}
           {[...Array(10)].map((_, i) => (
             <Button
               variant={"outline"}
@@ -736,17 +738,17 @@ const CarSelection = () => {
             delete router.query.model;
             delete router.query.series;
           }
-          setCurrentTab(tab as any);
+          setCurrentTab(tab as "series" | "generation" | "model");
         }}
         defaultValue="series"
         className="flex flex-col gap-4"
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger disabled={!series} value="series">
-            {series || "Series"}
+            {series ?? "Series"}
           </TabsTrigger>
           <TabsTrigger disabled={!generation} value="generation">
-            {generation || "Generation"}
+            {generation ?? "Generation"}
           </TabsTrigger>
           <TabsTrigger disabled value="model">
             Model
@@ -761,7 +763,7 @@ const CarSelection = () => {
                 key={series.value}
                 onClick={() => {
                   router.query.series = series.value;
-                  router.push(router);
+                  void router.push(router);
                   router.query.generation = undefined;
                 }}
               >
@@ -779,7 +781,7 @@ const CarSelection = () => {
                 key={generation.value}
                 onClick={() => {
                   router.query.generation = generation.value;
-                  router.push(router);
+                  void router.push(router);
                 }}
               >
                 {generation.label.split("(")[0]}
@@ -796,7 +798,7 @@ const CarSelection = () => {
                 key={model.value}
                 onClick={() => {
                   router.query.model = model.value;
-                  router.push(router);
+                  void router.push(router);
                 }}
               >
                 {model.label}

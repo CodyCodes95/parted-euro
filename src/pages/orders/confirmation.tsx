@@ -41,12 +41,12 @@ export default function OrderConfirmation() {
 
   useEffect(() => {
     if (!router.query.orderId) return;
-    updateOrderAndFetch();
+    void updateOrderAndFetch();
   }, [router.query.orderId]);
 
   const updateOrderAndFetch = async () => {
     await updateOrder.mutateAsync({ orderId: router.query.orderId as string });
-    refetch();
+    void refetch();
   };
 
   if (updateOrder.isLoading || orderLoading || !order) {

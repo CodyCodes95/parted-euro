@@ -1,11 +1,10 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
 const Order: NextPage = () => {
-
-    const router = useRouter();
+  const router = useRouter();
 
   return <div>order</div>;
 };
 
-export default Order
+export default Order;

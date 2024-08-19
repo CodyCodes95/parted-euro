@@ -20,7 +20,7 @@ const Wrecking: NextPage = () => {
   });
 
   const [search, setSearch] = useState<string | string[]>(
-    router.query.search || "",
+    router.query.search ?? "",
   );
 
   const [debouncedSearch] = useDebounce(search, 500);

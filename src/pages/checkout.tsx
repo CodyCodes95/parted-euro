@@ -95,8 +95,8 @@ export default function CheckoutPage() {
         countryCode: shipToCountryCode,
       }),
     });
-    const response = await res.json();
-    window.location = response.url;
+    const response = (await res.json()) as { url: string };
+    window.location.href = response.url;
   };
 
   const validated = useMemo(() => {
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            submitCheckout();
+            void submitCheckout();
           }}
         >
           <section className="grid gap-4 py-6">

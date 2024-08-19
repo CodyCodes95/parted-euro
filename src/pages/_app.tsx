@@ -4,7 +4,6 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import Footer from "../components/Footer";
-import { CartProvider } from "../context/cartContext";
 import Nav from "../components/Nav";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";

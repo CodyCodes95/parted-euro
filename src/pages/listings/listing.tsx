@@ -85,7 +85,9 @@ type ListingType = {
   }[];
 };
 
-const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
+const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
+  listingMeta,
+}) => {
   const router = useRouter();
 
   const { cart, setCart } = useCartStore();
@@ -114,9 +116,9 @@ const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
 
   const relatedListings = trpc.listings.getRelatedListings.useQuery(
     {
-      generation: listing?.parts[0]?.partDetails.cars[0]?.generation as string,
-      model: listing?.parts[0]?.partDetails.cars[0]?.model as string,
-      id: listing?.id as string,
+      generation: listing!.parts[0]!.partDetails.cars[0]!.generation,
+      model: listing!.parts[0]!.partDetails.cars[0]!.model,
+      id: listing!.id,
     },
     {
       enabled: !!listing,
@@ -156,34 +158,34 @@ const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
       toast("Added to cart", {
         action: {
           label: "Checkout",
-          onClick: () => router.push("/checkout"),
+          onClick: () => void router.push("/checkout"),
         },
       });
       setCart([...cart, cartItem]);
     }
   };
 
+  type GroupedBySeries = Record<string, Record<string, string[]>>;
+
   const partsGrouped = useMemo(() => {
-    // Group by series and then by generation
     const parts = listing?.parts;
-    if (!parts) return;
-    const groupedBySeries = parts[0]?.partDetails?.cars.reduce(
-      (seriesAcc: any, car: any) => {
-        if (!carsOnListing.data!.find((car2) => car2.id === car.id)) {
+    if (!parts?.[0]?.partDetails?.cars || !carsOnListing.data) return null;
+
+    const groupedBySeries = parts[0].partDetails.cars.reduce<GroupedBySeries>(
+      (seriesAcc, car) => {
+        if (!carsOnListing.data?.find((car2) => car2.id === car.id)) {
           return seriesAcc;
         }
-        // Initialize the series if not already done
+
         if (!seriesAcc[car.series]) {
           seriesAcc[car.series] = {};
         }
 
-        // Initialize the generation within the series if not already done
-        if (!seriesAcc[car.series][car.generation]) {
-          seriesAcc[car.series][car.generation] = [];
+        if (!seriesAcc[car.series]?.[car.generation]) {
+          seriesAcc[car.series]![car.generation] = [];
         }
 
-        // Add the model to the correct series and generation
-        seriesAcc[car.series][car.generation].push(car.model);
+        seriesAcc[car.series]![car.generation]!.push(car.model);
 
         return seriesAcc;
       },
@@ -195,7 +197,7 @@ const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
 
   useEffect(() => {
     if (!listing) return;
-    listingViewAnalytic.mutateAsync({
+    void listingViewAnalytic.mutateAsync({
       listingId: listing.id,
     });
   }, [listing]);
@@ -213,7 +215,6 @@ const Listing: NextPage<{ listingMeta: ListingType }> = ({ listingMeta }) => {
         <title>{listingMeta.title}</title>
         <meta property="og:title" content={listingMeta.title} />
         <meta property="og:description" content={listingMeta.description} />
-        {/* @ts-ignore */}
         <meta property="og:image" content={listingMeta.image} />
       </Head>
       <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-96">
