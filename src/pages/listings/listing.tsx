@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { type ListingsGetListing, trpc } from "../../utils/trpc";
 import { useEffect, useMemo, useState } from "react";
 import { PrismaClient, type Car } from "@prisma/client";
 import Head from "next/head";
@@ -56,38 +56,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-type ListingType = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  images: Image[];
-  parts: {
-    donor: {
-      car: Car;
-      vin: string;
-      year: number;
-      mileage: number;
-    };
-    partDetails: {
-      cars: {
-        id: string;
-        generation: string;
-        model: string;
-        body: string | null;
-      }[];
-      partNo: string;
-      weight: number;
-      length: number;
-      width: number;
-      height: number;
-    };
-  }[];
-};
 
-const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
-  listingMeta,
-}) => {
+const Listing: NextPage<{
+  listingMeta: ListingsGetListing & { image: string };
+}> = ({ listingMeta }) => {
   const router = useRouter();
 
   const { cart, setCart } = useCartStore();
@@ -125,7 +97,7 @@ const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
     },
   );
 
-  const addToCart = (listing: ListingType) => {
+  const addToCart = (listing: ListingsGetListing) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
 
     if (existingItem) {
@@ -288,76 +260,14 @@ const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
               {quantityAvailable === 0 ? (
                 <Button disabled>Out of stock</Button>
               ) : (
-                <Button onClick={() => addToCart(listing as ListingType)}>
-                  Add to cart
-                </Button>
+                <Button onClick={() => addToCart(listing!)}>Add to cart</Button>
               )}
             </div>
           )}
           <div className="p-4" />
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4 text-sm">
-            {isLoading ? (
-              <SkeletonCell classNames="h-8 w-28" />
-            ) : (
-              <p className="font-bold">PARTS</p>
-            )}
-            {isLoading ? (
-              <SkeletonCell classNames="h-52 w-full" />
-            ) : (
-              <table className="w-full text-left text-sm text-gray-700">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                  <tr>
-                    <th className="px-4 py-3">Part</th>
-                    <th className="px-4 py-3">Part No.</th>
-                    <th className="px-4 py-3">Alternate part no.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Array.from(
-                    new Set(
-                      listing?.parts
-                        .reduce((acc, cur) => {
-                          if (
-                            !acc.some(
-                              (group) =>
-                                group.partDetails.partNo ===
-                                cur.partDetails.partNo,
-                            )
-                          )
-                            acc.push(cur);
-                          return acc;
-                        }, [] as any[])
-                        .map((part) => (
-                          <tr key={part.partDetails.partNo}>
-                            <td className="px-4 py-3">
-                              {part.partDetails.name}
-                            </td>
-                            <td className="px-4 py-3">
-                              {part.partDetails.partNo}
-                            </td>
-                            <td className="px-4 py-3">
-                              {part.partDetails.alternatePartNumbers ?? "NA"}
-                            </td>
-                          </tr>
-                        )),
-                    ),
-                  )}
-                </tbody>
-              </table>
-            )}
-            {listing?.parts.some(
-              (part) =>
-                part.partDetails.alternatePartNumbers && (
-                  <p>
-                    {Array.from(
-                      new Set(part.partDetails.alternatePartNumbers),
-                    ).join(",")}
-                  </p>
-                ),
-            )}
-          </div>
+          <PartsTable listing={listing} isLoading={isLoading} />
         </div>
         <div className="flex w-full flex-col">
           {isLoading ? (
@@ -391,14 +301,12 @@ const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(cars as any).map(
-                        ([generation, models]: any[]) => (
-                          <tr className="border-b bg-white" key={generation}>
-                            <td className="px-4 py-4">{generation}</td>
-                            <td className="px-4 py-4">{models.join(", ")}</td>
-                          </tr>
-                        ),
-                      )}
+                      {Object.entries(cars).map(([generation, models]) => (
+                        <tr className="border-b bg-white" key={generation}>
+                          <td className="px-4 py-4">{generation}</td>
+                          <td className="px-4 py-4">{models.join(", ")}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </TabsContent>
@@ -446,6 +354,76 @@ const Listing: NextPage<{ listingMeta: ListingType & { image: string } }> = ({
 };
 
 export default Listing;
+const PartsTable = ({
+  listing,
+  isLoading,
+}: {
+  listing: ListingsGetListing | undefined;
+  isLoading: boolean;
+}) => {
+  if (!listing) return null;
+  return (
+    <div className="flex flex-col gap-4 text-sm">
+      {isLoading ? (
+        <SkeletonCell classNames="h-8 w-28" />
+      ) : (
+        <p className="font-bold">PARTS</p>
+      )}
+      {isLoading ? (
+        <SkeletonCell classNames="h-52 w-full" />
+      ) : (
+        <table className="w-full text-left text-sm text-gray-700">
+          <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+            <tr>
+              <th className="px-4 py-3">Part</th>
+              <th className="px-4 py-3">Part No.</th>
+              <th className="px-4 py-3">Alternate part no.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from(
+              new Set(
+                listing?.parts
+                  .reduce(
+                    (acc, cur) => {
+                      if (
+                        !acc.some(
+                          (group) =>
+                            group.partDetails.partNo === cur.partDetails.partNo,
+                        )
+                      )
+                        acc.push(cur);
+                      return acc;
+                    },
+                    [] as ListingsGetListing["parts"],
+                  )
+                  .map((part) => (
+                    <tr key={part.partDetails.partNo}>
+                      <td className="px-4 py-3">{part.partDetails.name}</td>
+                      <td className="px-4 py-3">{part.partDetails.partNo}</td>
+                      <td className="px-4 py-3">
+                        {part.partDetails.alternatePartNumbers ?? "NA"}
+                      </td>
+                    </tr>
+                  )),
+              ),
+            )}
+          </tbody>
+        </table>
+      )}
+      {listing?.parts.some(
+        (part) =>
+          part.partDetails.alternatePartNumbers && (
+            <p>
+              {Array.from(new Set(part.partDetails.alternatePartNumbers)).join(
+                ",",
+              )}
+            </p>
+          ),
+      )}
+    </div>
+  );
+};
 
 type ImageCarouselProps = {
   images: Image[];

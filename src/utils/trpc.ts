@@ -73,6 +73,8 @@ export type OrderWithItems = RouterOutputs["order"]["getOrder"];
 
 export type AdminSearchCounts = RouterOutputs["admin"]["adminSearchCounts"];
 
+export type ListingsGetListing = RouterOutputs["listings"]["getListing"]
+
 // export type AdminSearchListings =
 //   RouterOutputs["admin"]["adminSearch"]["listings"];
 // export type AdminSearchCars = RouterOutputs["admin"]["adminSearch"]["cars"];

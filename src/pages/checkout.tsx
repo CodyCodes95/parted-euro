@@ -345,7 +345,7 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
 
   useEffect(() => {
     if (selectedPlaceId) {
-      getPlaceDetails(selectedPlaceId).then((placeDetails) => {
+      void getPlaceDetails(selectedPlaceId).then((placeDetails) => {
         setAddress({
           city: placeDetails.address_components!.find((x) =>
             x.types.includes("locality"),
@@ -448,7 +448,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onValueChange={setValue}
           onBlur={close}
           onFocus={open}
-          placeholder={placeholder || "Enter suburb or postcode"}
+          placeholder={placeholder ?? "Enter suburb or postcode"}
           className="w-full rounded-lg p-3 outline-none"
         />
       </div>

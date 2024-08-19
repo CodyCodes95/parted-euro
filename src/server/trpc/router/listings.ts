@@ -364,8 +364,8 @@ export const listingRouter = router({
         id: z.string(),
       }),
     )
-    .query(({ ctx, input }) => {
-      const listing = ctx.prisma.listing.findUnique({
+    .query(async ({ ctx, input }) => {
+      const listing = await ctx.prisma.listing.findUnique({
         where: {
           id: input.id,
         },
@@ -420,7 +420,8 @@ export const listingRouter = router({
           },
         },
       });
-      if (!listing.parts.length) return null;
+      if (!listing) throw new Error("Listing not found");
+      if (!listing.parts.length) throw new Error("No parts found");
       return listing;
     }),
   deleteListing: adminProcedure
