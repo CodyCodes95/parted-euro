@@ -346,17 +346,24 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
   useEffect(() => {
     if (selectedPlaceId) {
       void getPlaceDetails(selectedPlaceId).then((placeDetails) => {
+        const city = placeDetails.address_components?.find((x) =>
+          x.types.includes("locality"),
+        )?.short_name;
+        const postalCode = placeDetails.address_components?.find((x) =>
+          x.types.includes("postal_code"),
+        )?.short_name;
+        const region = placeDetails.address_components?.find((x) =>
+          x.types.includes("administrative_area_level_1"),
+        )?.short_name;
+        const formattedAddress = placeDetails.formatted_address;
+        if (!city || !postalCode || !region || !formattedAddress) {
+          return toast.error("Unable to find address from selected location");
+        }
         setAddress({
-          city: placeDetails.address_components!.find((x) =>
-            x.types.includes("locality"),
-          )!.short_name,
-          formattedAddress: placeDetails.formatted_address!,
-          postalCode: placeDetails.address_components!.find((x) =>
-            x.types.includes("postal_code"),
-          )!.short_name,
-          region: placeDetails.address_components!.find((x) =>
-            x.types.includes("administrative_area_level_1"),
-          )!.short_name,
+          city: city,
+          formattedAddress: formattedAddress,
+          postalCode: postalCode,
+          region: region,
         });
       });
     }
