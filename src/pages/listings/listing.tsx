@@ -86,17 +86,6 @@ const Listing: NextPage<{
     },
   );
 
-  const relatedListings = trpc.listings.getRelatedListings.useQuery(
-    {
-      generation: listing!.parts[0]!.partDetails.cars[0]!.generation,
-      model: listing!.parts[0]!.partDetails.cars[0]!.model,
-      id: listing!.id,
-    },
-    {
-      enabled: !!listing,
-    },
-  );
-
   const addToCart = (listing: ListingsGetListing) => {
     const existingItem = cart.find((i) => i.listingId === listing.id);
 
@@ -192,7 +181,7 @@ const Listing: NextPage<{
       <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-96">
         <div className="flex justify-center">
           {isLoading ? (
-            <SkeletonCell classNames="h-80 w-full" />
+            <SkeletonCell classNames="h-[35rem] w-full" />
           ) : (
             <ImageCarousel images={listing?.images ?? []} />
           )}
@@ -269,87 +258,125 @@ const Listing: NextPage<{
         <div className="flex flex-col gap-4">
           <PartsTable listing={listing} isLoading={isLoading} />
         </div>
-        <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col gap-4">
           {isLoading ? (
             <SkeletonCell classNames="h-8 w-full" />
           ) : (
             <p className="font-bold">Fits the following cars:</p>
           )}
-          {partsGrouped && (
-            <Tabs
-              defaultValue={Object.keys(partsGrouped ?? {})[0]}
-              className="grid w-full gap-4 md:grid-cols-2"
-            >
-              <TabsList className="h-fit w-full flex-row md:flex-col">
-                {Object.entries(partsGrouped).map(([series, cars]) => (
-                  <TabsTrigger key={series} value={series}>
-                    {series}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {Object.entries(partsGrouped).map(([series, cars]) => (
-                <TabsContent
-                  className="max-h-80 w-full overflow-y-scroll"
-                  key={series}
-                  value={series}
-                >
-                  <table className="w-full text-left text-sm text-gray-700">
-                    <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                      <tr>
-                        <th className="px-4 py-3">Generation</th>
-                        <th className="px-4 py-3">Models</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(cars).map(([generation, models]) => (
-                        <tr className="border-b bg-white" key={generation}>
-                          <td className="px-4 py-4">{generation}</td>
-                          <td className="px-4 py-4">{models.join(", ")}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </TabsContent>
-              ))}
-            </Tabs>
-          )}
+          {partsGrouped && <FitsFollowingCars partsGrouped={partsGrouped} />}
         </div>
-        <div className="order-2 space-y-4 md:col-span-2">
-          {isLoading ? (
-            <SkeletonCell classNames="h-8 w-28" />
-          ) : (
-            <h2 className="text-2xl font-bold">Related Products</h2>
-          )}
-          <div className="grid gap-4 md:grid-cols-4">
-            {relatedListings.data?.map((listing) => (
-              <Link
-                href={`
-              /listings/listing?id=${listing.id}
-                `}
-                key={listing.id}
-                className="space-y-2"
-              >
-                <img
-                  alt={listing.title}
-                  className="h-auto w-full"
-                  height="200"
-                  src={listing.images[0]?.url}
-                  style={{
-                    aspectRatio: "200/200",
-                    objectFit: "cover",
-                  }}
-                  width="200"
-                />
-                <h3 className="line-clamp-1 text-lg font-bold">
-                  {listing.title}
-                </h3>
-                <p className="line-clamp-3 text-sm">{listing.description}</p>
-              </Link>
-            ))}
-          </div>
+        <div className="order-2 md:col-span-2">
+          {listing && <RelatedListings listing={listing} />}
         </div>
       </div>
     </>
+  );
+};
+
+// Add the RelatedListings component within the same file
+const RelatedListings: React.FC<{ listing: ListingsGetListing }> = ({
+  listing,
+}) => {
+  const relatedListings = trpc.listings.getRelatedListings.useQuery(
+    {
+      generation: listing.parts[0]!.partDetails.cars[0]!.generation,
+      model: listing.parts[0]!.partDetails.cars[0]!.model,
+      id: listing.id,
+    },
+    {
+      enabled: !!listing,
+    },
+  );
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold">Related Products</h2>
+      {relatedListings.isLoading ? (
+        <div className="grid gap-4 md:grid-cols-4">
+          {/* eslint-disable-next-line */}
+          {[...Array(4)].map((_, index) => (
+            <SkeletonCell key={index} classNames="h-[200px] w-full" />
+          ))}
+        </div>
+      ) : relatedListings.isError ? (
+        <div>Error loading related listings</div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-4">
+          {relatedListings.data?.map((relatedListing) => (
+            <Link
+              href={`/listings/listing?id=${relatedListing.id}`}
+              key={relatedListing.id}
+              className="space-y-2"
+            >
+              <img
+                alt={relatedListing.title}
+                className="h-auto w-full"
+                height="200"
+                src={relatedListing.images[0]?.url}
+                style={{
+                  aspectRatio: "200/200",
+                  objectFit: "cover",
+                }}
+                width="200"
+              />
+              <h3 className="line-clamp-1 text-lg font-bold">
+                {relatedListing.title}
+              </h3>
+              <p className="line-clamp-3 text-sm">
+                {relatedListing.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Add the FitsFollowingCars component within the same file
+type GroupedBySeries = Record<string, Record<string, string[]>>;
+
+const FitsFollowingCars: React.FC<{ partsGrouped: GroupedBySeries }> = ({
+  partsGrouped,
+}) => {
+  return (
+    <Tabs
+      defaultValue={Object.keys(partsGrouped ?? {})[0]}
+      className="grid w-full gap-4 md:grid-cols-2"
+    >
+      <TabsList className="h-fit w-full flex-row md:flex-col">
+        {Object.entries(partsGrouped).map(([series, cars]) => (
+          <TabsTrigger className="w-full" key={series} value={series}>
+            {series}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {Object.entries(partsGrouped).map(([series, cars]) => (
+        <TabsContent
+          className="h-80 w-full overflow-y-scroll"
+          key={series}
+          value={series}
+        >
+          <table className="w-full text-left text-sm text-gray-700">
+            <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+              <tr>
+                <th className="px-4 py-3">Generation</th>
+                <th className="px-4 py-3">Models</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(cars).map(([generation, models]) => (
+                <tr className="border-b bg-white" key={generation}>
+                  <td className="px-4 py-4">{generation}</td>
+                  <td className="px-4 py-4">{models.join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 };
 
@@ -363,11 +390,11 @@ const PartsTable = ({
 }) => {
   if (!listing) return null;
   return (
-    <div className="flex flex-col gap-4 text-sm">
+    <>
       {isLoading ? (
         <SkeletonCell classNames="h-8 w-28" />
       ) : (
-        <p className="font-bold">PARTS</p>
+        <p className="font-bold">Parts</p>
       )}
       {isLoading ? (
         <SkeletonCell classNames="h-52 w-full" />
@@ -421,7 +448,7 @@ const PartsTable = ({
             </p>
           ),
       )}
-    </div>
+    </>
   );
 };
 
