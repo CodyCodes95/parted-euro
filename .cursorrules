@@ -1,0 +1,4 @@
+- Never use interfaces, always types
+- When creating a new component, if it is only used in one place, keep it in the same file that the page is on
+- No explicit any types, please narrow types better
+- If you are not awaiting a promise, void it

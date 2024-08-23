@@ -8,17 +8,30 @@ import {
   CarouselItem,
 } from "../components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import carImg from "../../public/car.jpg";
-import four from "../../public/4.jpg";
-import five from "../../public/5.jpg";
-import six from "../../public/6.jpg";
-import eight from "../../public/8.jpg";
-import nine from "../../public/9.jpg";
 import Link from "next/link";
+import { prisma } from "../server/db/client";
+import type { HomepageImage } from "@prisma/client";
 
-const carImages = [carImg, four, five, six, eight, nine];
+interface HomeProps {
+    images: { id: string; url: string; order: number }[];
+}
 
-const Home: NextPage = () => {
+export async function getServerSideProps() {
+  const carouselImages = await prisma.homepageImage.findMany({
+    orderBy: { order: 'asc' },
+  });
+
+  return {
+    props: {
+      images: carouselImages.map((image) => ({
+        id: image.id,
+        url: image.url,
+      })),
+    },
+  };
+}
+
+const Home: NextPage<HomeProps> = ({ images }) => {
   return (
     <>
       <Head>
@@ -42,7 +55,6 @@ const Home: NextPage = () => {
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-[90vh] flex-col bg-white">
         <div className="flex h-full w-full items-center justify-center">
@@ -55,44 +67,30 @@ const Home: NextPage = () => {
             className="w-full"
           >
             <CarouselContent>
-              {carImages.map((image, index) => (
-                <CarouselItem key={index}>
+              {images.map((image) => (
+                <CarouselItem key={image.id}>
                   <Image
-                    src={image.src}
+                    src={image.url}
                     alt="hero"
                     className="h-[95vh] w-full object-cover"
-                    width={image.width}
-                    height={image.height}
-                    priority
+                    width={1920}
+                    height={1080}
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
-          <div className="absolute flex h-full w-full flex-col items-center justify-center text-center text-white">
-            <div className="flex w-full flex-col items-center">
-              {/* <AnimatePresence> */}
-                <div
-                  // initial={{ x: 300, opacity: 0 }}
-                  // animate={{ x: 0, opacity: 1 }}
-                  // exit={{ x: -300, opacity: 0 }}
-                  className={`absolute w-full duration-150 ease-linear`}
-                >
-                  <h4 className="text-3xl">BMW Spare Parts Specialists</h4>
-                  <p className="mt-2 text-xl">
-                    Shop our wide range of second-hand parts from various
-                    BMW&apos;s.
-                  </p>
-                  <div className="mt-4 flex flex-col justify-around gap-4 md:flex-row">
-                    <Link href="/listings?page=1">
-                      <Button className="text-black" variant="outline">
-                        BROWSE STORE
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              {/* </AnimatePresence> */}
-            </div>
+        </div>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="mb-4 text-center text-4xl font-bold text-white drop-shadow-lg">
+              BMW Parts
+            </h1>
+            <Link href="/listings">
+              <Button className="bg-white text-black hover:bg-gray-200">
+                Shop Now
+              </Button>
+            </Link>
           </div>
         </div>
       </main>

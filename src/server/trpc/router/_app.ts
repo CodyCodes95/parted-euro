@@ -15,6 +15,7 @@ import { orderItemsRouter } from "./orderItems";
 import { checkoutRouter } from "./checkout";
 import { adminRouter } from "./admin";
 import { analyticsRouter } from "./analytics";
+import { homepageImagesRouter } from "./homepageImages";
 
 export const appRouter = router({
   cars: carRouter,
@@ -32,7 +33,8 @@ export const appRouter = router({
   orderItems: orderItemsRouter,
   checkout: checkoutRouter,
   admin: adminRouter,
-  analytics: analyticsRouter
+  analytics: analyticsRouter,
+  homepageImages: homepageImagesRouter
 });
 
 // export type definition of API

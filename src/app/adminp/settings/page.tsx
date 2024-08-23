@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { useSetXeroToken } from "./hooks/useSetXeroToken";
 import { useSetEbayToken } from "./hooks/useSetEbayToken";
+import WebsiteTab from './components/WebsiteTab';
 
 const XeroTab = () => {
   useSetXeroToken();
@@ -72,8 +73,6 @@ const EbayTab = () => {
   );
 };
 
-const HomepageTab = () => null;
-
 const Settings = () => {
   return (
     <div>
@@ -106,19 +105,19 @@ const SettingsTabs = () => {
     >
       <div className="w-full overflow-x-auto pb-2">
         <TabsList>
+          <TabsTrigger value="website">Website</TabsTrigger>
           <TabsTrigger value="xero">Xero</TabsTrigger>
           <TabsTrigger value="ebay">Ebay</TabsTrigger>
-          <TabsTrigger value="homepage">Homepage</TabsTrigger>
         </TabsList>
       </div>
+      <TabsContent value="website" className="space-y-4">
+        <WebsiteTab />
+      </TabsContent>
       <TabsContent value="xero" className="space-y-4">
         <XeroTab />
       </TabsContent>
       <TabsContent value="ebay" className="space-y-4">
         <EbayTab />
-      </TabsContent>
-      <TabsContent value="homepage" className="space-y-4">
-        <HomepageTab />
       </TabsContent>
     </Tabs>
   );
