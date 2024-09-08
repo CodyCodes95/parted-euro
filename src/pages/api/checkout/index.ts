@@ -4,7 +4,7 @@ import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
 import type { StripeShippingOption } from "../../../server/trpc/router/checkout";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
+const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: "2022-11-15",
 });
 
@@ -18,20 +18,94 @@ type StripeSessionRequest = {
   countryCode: string;
 };
 
-async function POST(req: NextApiRequest, res: NextApiResponse) {
+async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
     const redirectURL =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
         : `https://${req.headers.host}`;
 
-    const {
-      items,
+    // const {
+    //   items,
+    //   shippingOptions,
+    //   email,
+    //   name,
+    //   countryCode,
+    // }: StripeSessionRequest = JSON.parse(req.body);
+
+    type ItemQuery = {
+      itemId: string;
+      quantity: number;
+    };
+
+    type CheckoutQuery = {
+      items: string;
+      name: string; // Full name
+      email: string; // Email address
+      countryCode: string; // ISO 3166-1 alpha-2 country code
+      shippingOptions: string
+    };
+
+    const query = req.query as unknown as CheckoutQuery;
+
+    const { items, shippingOptions, email, name, countryCode } = query;
+
+    const itemsParsed = JSON.parse(items) as ItemQuery[];
+
+    const parsedShippingOptions = JSON.parse(shippingOptions) as StripeShippingOption[];
+
+    console.log(
+      itemsParsed.map((item) => item.itemId),
       shippingOptions,
       email,
       name,
-      countryCode,
-    }: StripeSessionRequest = JSON.parse(req.body);
+      countryCode
+    )
+
+    // get items from query
+
+    const listingsPurchased = await prisma.listing.findMany({
+      where: {
+        id: {
+          in: itemsParsed.map((item) => item.itemId),
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        images: {
+          orderBy: {
+            order: "asc",
+          },
+        },
+        parts: {
+          select: {
+            donor: {
+              select: {
+                vin: true,
+              },
+            },
+            inventoryLocation: {
+              select: {
+                name: true,
+              },
+            },
+            partDetails: {
+              select: {
+                partNo: true,
+                alternatePartNumbers: true,
+                name: true,
+                weight: true,
+                length: true,
+                width: true,
+                height: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
     // create a new customer
 
@@ -40,28 +114,24 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       name,
     });
 
-    // const inventoryLocations = {} as any;
-
-    // items.forEach((item: any) => {
-    //   // inventoryLocations[item.listingTitle] = item.inventoryLocations
-    //   inventoryLocations[item.listingTitle] = "test";
-    // });
-
-    const stripeLineItems = items.map((item) => {
+    const stripeLineItems = listingsPurchased.map((item) => {
       return {
         price_data: {
           currency: "aud",
           product_data: {
-            name: item.listingTitle,
-            images: [item.listingImage!],
+            name: item.title,
+            images: [item.images[0]!.url],
             metadata: {
-              VIN: item.itemVin,
-              // inventoryLocations: "A44",
+              VIN: item.parts[0]?.donor!.vin,
+              inventoryLocations: item.parts
+                .map((part) => part.inventoryLocation?.name)
+                .join(","),
             },
           },
-          unit_amount: item.listingPrice * 100,
+          unit_amount: item.price * 100,
         },
-        quantity: item.quantity,
+        quantity: itemsParsed.find((itemQuery) => itemQuery.itemId === item.id)!
+          .quantity,
       };
     });
 
@@ -77,22 +147,24 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    for (const item of items) {
+    for (const item of listingsPurchased) {
       const orderItem = await prisma?.orderItem.create({
         data: {
-          listingId: item.listingId,
-          quantity: item.quantity,
-          orderId: order?.id as string,
+          listingId: item.id,
+          quantity: itemsParsed.find(
+            (itemQuery) => itemQuery.itemId === item.id,
+          )!.quantity,
+          orderId: order?.id,
         },
       });
       await prisma?.order.update({
         where: {
-          id: order?.id as string,
+          id: order?.id,
         },
         data: {
           orderItems: {
             connect: {
-              id: orderItem?.id as string,
+              id: orderItem?.id,
             },
           },
         },
@@ -105,7 +177,8 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       shipping_address_collection: {
         allowed_countries: [countryCode as any],
       },
-      shipping_options: shippingOptions as any,
+      shipping_options:
+        parsedShippingOptions as unknown as Stripe.Checkout.Session.ShippingOption[],
       line_items: stripeLineItems,
       mode: "payment",
       success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
@@ -122,4 +195,4 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default POST;
+export default GET;

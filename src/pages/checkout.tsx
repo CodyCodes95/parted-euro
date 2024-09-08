@@ -83,21 +83,42 @@ export default function CheckoutPage() {
     },
   );
 
-  const submitCheckout = async () => {
-    if (!validated) return toast.error("Please fill out all fields");
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      body: JSON.stringify({
-        items: cart,
-        shippingOptions: shippingServices.data,
-        email,
-        name,
-        countryCode: shipToCountryCode,
-      }),
+const submitCheckout = async () => {
+  if (!validated) return toast.error("Please fill out all fields");
+
+  const items = cart.map((item) => ({
+    itemId: item.listingId,
+    quantity: item.quantity,
+  }));
+
+  const params = new URLSearchParams({
+    items: JSON.stringify(items),
+    name,
+    email,
+    countryCode: shipToCountryCode,
+    shippingOptions: JSON.stringify(shippingServices.data),
+  });
+
+  if (shipToCountryCode === "AU") {
+    params.append("address", JSON.stringify(address));
+  }
+
+  try {
+    const res = await fetch(`/api/checkout?${params.toString()}`, {
+      method: "GET",
     });
+
+    if (!res.ok) {
+      throw new Error("Failed to create checkout session");
+    }
+
     const response = (await res.json()) as { url: string };
     window.location.href = response.url;
-  };
+  } catch (error) {
+    console.error("Checkout error:", error);
+    toast.error("An error occurred during checkout. Please try again.");
+  }
+};
 
   const validated = useMemo(() => {
     return shippingServices.data && name && email && acceptTerms;
@@ -115,8 +136,7 @@ export default function CheckoutPage() {
           </div>
           <div className="space-y-4">
             {cart.map((item) => (
-              <Link
-                href={`/listings/listing?id=${item.listingId}`}
+              <div
                 key={item.listingId}
                 className="flex items-center justify-between "
               >
@@ -132,7 +152,12 @@ export default function CheckoutPage() {
                     }}
                     width="40"
                   />
-                  <p className="text-lg">{item.listingTitle}</p>
+                  <Link
+                    href={`/listings/listing?id=${item.listingId}`}
+                    className="text-lg text-blue-500 hover:underline"
+                  >
+                    {item.listingTitle}
+                  </Link>
                 </div>
                 <div className="flex flex-col gap-2 md:flex-row">
                   <div className="flex items-center gap-2">
@@ -170,7 +195,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
           <div className="py-4">
