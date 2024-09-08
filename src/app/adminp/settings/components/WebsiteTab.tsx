@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-  DragStartEvent,
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -51,11 +51,23 @@ const WebsiteTabClient: React.FC<WebsiteTabClientProps> = ({
   initialImages,
 }) => {
   const [images, setImages] = useState<HomepageImage[]>(initialImages);
-  const [newImage, setNewImage] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const photoUploadRef = useRef<HTMLInputElement>(null);
 
-  const uploadImage = trpc.homepageImages.upload.useMutation();
+  const uploadImageMutation = trpc.homepageImages.upload.useMutation({
+    onSuccess: (uploadedImage) => {
+      setImages((prevImages) => [...prevImages, uploadedImage]);
+      toast.success("Image uploaded successfully");
+      if (photoUploadRef.current) {
+        photoUploadRef.current.value = "";
+      }
+    },
+    onError: (error) => {
+      toast.error("Failed to upload image: " + error.message);
+    },
+  });
   const updateOrder = trpc.homepageImages.updateOrder.useMutation();
   const deleteImage = trpc.homepageImages.delete.useMutation();
 
@@ -92,53 +104,47 @@ const WebsiteTabClient: React.FC<WebsiteTabClientProps> = ({
     [updateOrder],
   );
 
-  const handleImageAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageAttach = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (onLoadEvent: ProgressEvent<FileReader>) => {
-        new Compressor(file, {
-          quality: 0.6,
-          maxHeight: 1422,
-          maxWidth: 800,
-          success(result) {
-            const compressedReader = new FileReader();
-            compressedReader.onload = (
-              compressedEvent: ProgressEvent<FileReader>,
-            ) => {
-              setNewImage(compressedEvent.target?.result as string);
-            };
-            compressedReader.readAsDataURL(result);
-          },
+      try {
+        const compressedImage = await new Promise<string>((resolve, reject) => {
+          new Compressor(file, {
+            quality: 0.8,
+            maxHeight: 4000,
+            maxWidth: 4000,
+            success(result) {
+              const reader = new FileReader();
+              reader.onload = (event) =>
+                resolve(event.target?.result as string);
+              reader.readAsDataURL(result);
+            },
+            error(err) {
+              reject(err);
+            },
+          });
         });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleUpload = async () => {
-    if (!newImage) return;
-
-    try {
-      const uploadedImage = await uploadImage.mutateAsync({
-        image: newImage,
-      });
-      setImages((prevImages) => [...prevImages, uploadedImage]);
-      setNewImage(null);
-      toast.success("Image uploaded successfully");
-    } catch (error) {
-      toast.error("Failed to upload image");
+        uploadImageMutation.mutate({ image: compressedImage });
+      } catch (error) {
+        toast.error("Failed to compress image");
+        if (photoUploadRef.current) {
+          photoUploadRef.current.value = "";
+        }
+      }
     }
   };
 
   const handleDelete = async (id: string) => {
-    console.log("DELETING");
+    setDeletingId(id);
     try {
       await deleteImage.mutateAsync({ id });
       setImages((prevImages) => prevImages.filter((img) => img.id !== id));
       toast.success("Image deleted successfully");
     } catch (error) {
       toast.error("Failed to delete image");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -146,17 +152,26 @@ const WebsiteTabClient: React.FC<WebsiteTabClientProps> = ({
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold">Homepage Images</h2>
-        <div className="flex gap-2">
+        <div>
           <input
             type="file"
             ref={photoUploadRef}
             onChange={handleImageAttach}
             className="hidden"
           />
-          <Button onClick={() => photoUploadRef.current?.click()}>
-            <FaCamera />
+          <Button
+            onClick={() => photoUploadRef.current?.click()}
+            disabled={uploadImageMutation.isLoading}
+            className="gap-2"
+          >
+            {uploadImageMutation.isLoading ? (
+              "Uploading..."
+            ) : (
+              <>
+                <FaCamera /> Upload
+              </>
+            )}
           </Button>
-          <Button onClick={handleUpload}>Upload</Button>
         </div>
       </div>
       <DndContext
@@ -172,12 +187,13 @@ const WebsiteTabClient: React.FC<WebsiteTabClientProps> = ({
               id={image.id}
               url={image.url}
               onDelete={() => handleDelete(image.id)}
+              isDeleting={deletingId === image.id}
             />
           ))}
         </SortableContext>
         <DragOverlay>
           {activeId ? (
-            <div className="h-40 w-full bg-gray-200 opacity-50 rounded-md" />
+            <div className="h-40 w-full rounded-md bg-gray-200 opacity-50" />
           ) : null}
         </DragOverlay>
       </DndContext>
@@ -189,9 +205,10 @@ type SortableItemProps = {
   id: string;
   url: string;
   onDelete: (id: string) => void;
+  isDeleting: boolean;
 };
 
-export function SortableItem({ id, url, onDelete }: SortableItemProps) {
+function SortableItem({ id, url, onDelete, isDeleting }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -215,18 +232,20 @@ export function SortableItem({ id, url, onDelete }: SortableItemProps) {
         style={style}
         {...attributes}
         {...listeners}
-        className="flex-grow flex items-center gap-4 bg-white p-2 rounded-md shadow-sm transition-colors duration-200 ease-in-out"
+        className="flex flex-grow items-center gap-4 rounded-md bg-white p-2 shadow-sm transition-colors duration-200 ease-in-out"
       >
         <div className="cursor-move">☰</div>
         <div className="flex-grow">
           <img
             src={url}
             alt="Homepage image"
-            className="h-40 w-full object-cover rounded-md"
+            className="h-80 w-full rounded-md object-cover"
           />
         </div>
       </div>
-      <Button onClick={() => onDelete(id)}>Delete</Button>
+      <Button onClick={() => onDelete(id)} disabled={isDeleting}>
+        {isDeleting ? "Deleting..." : "Delete"}
+      </Button>
     </div>
   );
 }
