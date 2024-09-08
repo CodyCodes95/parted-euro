@@ -32,7 +32,12 @@ type FinializeOrderProps = {
 };
 
 const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
-  const { control, handleSubmit, watch } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       shippingMethod: "",
@@ -101,55 +106,86 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
       </div>
       <div className="z-50 grid grid-cols-2 gap-4 p-4">
         <p>Shipping Method:</p>
-        <Controller
-          name="shippingMethod"
-          control={control}
-          render={({ field }) => <Input {...field} className="w-full" />}
-        />
+        <div>
+          <Controller
+            name="shippingMethod"
+            control={control}
+            render={({ field }) => <Input {...field} className="w-full" />}
+          />
+          {errors.shippingMethod && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.shippingMethod.message}
+            </p>
+          )}
+        </div>
         <p>Postage Cost:</p>
-        <Controller
-          name="postageCost"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="number"
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
+        <div>
+          <Controller
+            name="postageCost"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="number"
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            )}
+          />
+          {errors.postageCost && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.postageCost.message}
+            </p>
           )}
-        />
+        </div>
         <p>Name</p>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        <p>Email</p>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input {...field} />}
-        />
-        <p>Country</p>
-        <Controller
-          name="countryCode"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger id="country" className="w-full">
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="AU">Australia</SelectItem>
-                {ausPostShippingCountries.data?.map((country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => <Input {...field} />}
+          />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
           )}
-        />
+        </div>
+        <p>Email</p>
+        <div>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input {...field} />}
+          />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+          )}
+        </div>
+        <p>Country</p>
+        <div>
+          <Controller
+            name="countryCode"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger id="country" className="w-full">
+                  <SelectValue placeholder="Select a country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AU">Australia</SelectItem>
+                  {ausPostShippingCountries.data?.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.countryCode && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.countryCode.message}
+            </p>
+          )}
+        </div>
       </div>
       <div className="flex w-full justify-end">
         <Button type="submit" loading={createCheckout.isFetching}>
@@ -189,7 +225,7 @@ const ItemsByListing = ({
           <p className="flex">{item.partDetails.name}</p>
           <div className="flex items-center gap-4">
             <p>VIN:</p>
-            <span>${item.donorVin}</span>
+            <span>{item.donorVin}</span>
           </div>
           <div className="flex items-center gap-4">
             <p>Price:</p>

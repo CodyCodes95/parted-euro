@@ -26,6 +26,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDraggable } from "@dnd-kit/core";
 import { DragOverlay } from "@dnd-kit/core";
+import LoadingSpinner from "@/components/ui/Loader";
+import { Loader2 } from "lucide-react";
 
 type HomepageImage = {
   id: string;
@@ -40,7 +42,12 @@ interface WebsiteTabClientProps {
 const WebsiteTab = () => {
   const websiteImages = trpc.homepageImages.getAll.useQuery();
 
-  if (!websiteImages.data) return null;
+  if (!websiteImages.data)
+    return (
+      <div className="flex items-center justify-center">
+        <Loader2 className="h-32 w-32 animate-spin" />
+      </div>
+    );
 
   return <WebsiteTabClient initialImages={websiteImages.data} />;
 };
