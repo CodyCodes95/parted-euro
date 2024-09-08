@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET!, {
 
 const prisma = new PrismaClient();
 
-type ItemQuery = {
+export type CheckoutItem = {
   itemId: string;
   quantity: number;
   price?: number;
@@ -28,7 +28,7 @@ type StripeSessionRequest = {
   shippingOptions: StripeShippingOption[];
   email: string;
   name: string;
-  items: ItemQuery[];
+  items: CheckoutItem[];
   countryCode: string;
 };
 
@@ -191,7 +191,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   const { items, shippingOptions, email, name, countryCode } = query;
 
-  const itemsParsed = JSON.parse(items) as ItemQuery[];
+  const itemsParsed = JSON.parse(items) as CheckoutItem[];
 
   if (itemsParsed.some((item) => typeof item.price !== "undefined")) {
     throw new Error("Unsupported setting of prices");

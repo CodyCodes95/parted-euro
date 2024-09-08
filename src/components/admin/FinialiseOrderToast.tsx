@@ -1,3 +1,4 @@
+import { CheckoutItem } from "@/pages/api/checkout";
 import type { OrderItem } from "../../pages/admin/listings";
 import FinialiseOrder from "../modals/FinialiseOrder";
 import { Button } from "../ui/button";
@@ -11,10 +12,11 @@ import {
 } from "../ui/dialog";
 
 type FinialiseOrderToastProps = {
-  order: OrderItem[];
+  order: CheckoutItem[];
+  setOrder: (order: CheckoutItem[]) => void;
 };
 
-const FinialiseOrderToast = ({ order }: FinialiseOrderToastProps) => {
+const FinialiseOrderToast = ({ order, setOrder }: FinialiseOrderToastProps) => {
   if (!order?.length) return null;
 
   return (
@@ -28,7 +30,7 @@ const FinialiseOrderToast = ({ order }: FinialiseOrderToastProps) => {
           <DialogHeader>
             <DialogTitle>Finialise Order</DialogTitle>
             <DialogDescription>
-              <FinialiseOrder order={order} />
+              <FinialiseOrder order={order} setOrder={setOrder} />
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

@@ -201,13 +201,21 @@ export const partRouter = router({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.part.delete({ where: { id: input.id } });
     }),
-  getInventoryDetailsById: adminProcedure
-    .input(z.array(z.string()))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.part.findMany({
+  getInventoryDetailsByListingId: adminProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findUnique({
+        where: {
+          id: input,
+        },
+        include: { parts: true },
+      });
+
+      const partsIds = listings?.parts.map((part) => part.id);
+      const parts = await ctx.prisma.part.findMany({
         where: {
           id: {
-            in: input.map((item) => item),
+            in: partsIds,
           },
         },
         include: {
@@ -220,5 +228,6 @@ export const partRouter = router({
           inventoryLocation: true,
         },
       });
+      return parts;
     }),
 });

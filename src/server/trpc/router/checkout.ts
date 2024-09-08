@@ -324,7 +324,7 @@ export const checkoutRouter = router({
           z.object({
             itemId: z.string(),
             quantity: z.number(),
-            price: z.number(),
+            price: z.number().optional(),
           }),
         ),
         name: z.string(),

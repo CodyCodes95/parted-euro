@@ -18,6 +18,8 @@ import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import { toast } from "sonner";
 import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
+import { Listing } from "@prisma/client";
+import { CheckoutItem } from "../api/checkout";
 
 export type OrderItem = {
   inventoryId: string;
@@ -60,7 +62,7 @@ const Listings: NextPage = () => {
   const [filter, setFilter] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMarkAsSold, setShowMarkAsSold] = useState(false);
-  const [order, setOrder] = useState<OrderItem[] | undefined>();
+  const [order, setOrder] = useState<CheckoutItem[] | undefined>();
 
   const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -72,7 +74,7 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (order?.length) {
-      toast(<FinialiseOrderToast order={order} />, {
+      toast(<FinialiseOrderToast setOrder={setOrder} order={order} />, {
         duration: 5000000,
         id: "order",
       });
@@ -238,6 +240,7 @@ const Listings: NextPage = () => {
         {showMarkAsSold && (
           <AddToOrder
             setOrder={setOrder}
+            order={order}
             isOpen={showMarkAsSold}
             onClose={() => {
               listings.refetch();

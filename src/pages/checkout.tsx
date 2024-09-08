@@ -260,7 +260,7 @@ const submitCheckout = async () => {
                       onValueChange={(value) => setShipToCountryCode(value)}
                     >
                       <SelectTrigger id="country" className="w-full">
-                        <SelectValue placeholder="Select a fruit" />
+                        <SelectValue placeholder="Select a country" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="AU">Australia</SelectItem>
