@@ -140,6 +140,7 @@ const getShippingServicesInputSchema = z.object({
   destinationPostcode: z.string().optional(),
   destinationCity: z.string().optional(),
   destinationState: z.string().optional(),
+  b2b: z.boolean(),
 });
 
 type ShippingServicesInput = z.infer<typeof getShippingServicesInputSchema>;
@@ -252,6 +253,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     destinationCity,
     destinationState,
     weight,
+    b2b,
   } = input;
   const interparcelParams = {
     source: "booking",
@@ -282,7 +284,10 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
   }
   const requests = shippingServicesAvailableData.services
     .filter((service) => !service.service.includes("Hunter"))
-    .filter((service) => !service.service.toLowerCase().includes("b2b"))
+    .filter((service) => {
+      if (!b2b) return true;
+      return !service.service.toLowerCase().includes("b2b");
+    })
     .map(async (service) => {
       const searchParams = new URLSearchParams({
         ...interparcelParams,
@@ -355,7 +360,26 @@ export const checkoutRouter = router({
       },
     });
     const data = (await res.json()) as ShippingCountryResponse;
-    return data.countries.country;
+    const priorityCountries = ["US", "GB", "CA", "BR"];
+    const sortedCountries = data.countries.country.sort((a, b) => {
+      const indexA = priorityCountries.indexOf(a.code);
+      const indexB = priorityCountries.indexOf(b.code);
+
+      if (indexA !== -1 && indexB !== -1) {
+        // Both countries are in the priority list
+        return indexA - indexB;
+      } else if (indexA !== -1) {
+        // Only country A is in the priority list
+        return -1;
+      } else if (indexB !== -1) {
+        // Only country B is in the priority list
+        return 1;
+      } else {
+        // Neither country is in the priority list, sort alphabetically
+        return a.name.localeCompare(b.name);
+      }
+    });
+    return sortedCountries;
   }),
   getShippingServices: publicProcedure
     .input(getShippingServicesInputSchema)

@@ -43,6 +43,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [shipToCountryCode, setShipToCountryCode] = useState("AU");
+  const [isB2B, setIsB2B] = useState(false);
 
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
@@ -74,6 +75,7 @@ export default function CheckoutPage() {
       destinationCountry: shipToCountryCode || "AUSTRALIA",
       destinationCity: address.city ?? "",
       destinationState: address.region ?? "",
+      b2b: isB2B,
     },
     {
       enabled:
@@ -83,42 +85,42 @@ export default function CheckoutPage() {
     },
   );
 
-const submitCheckout = async () => {
-  if (!validated) return toast.error("Please fill out all fields");
+  const submitCheckout = async () => {
+    if (!validated) return toast.error("Please fill out all fields");
 
-  const items = cart.map((item) => ({
-    itemId: item.listingId,
-    quantity: item.quantity,
-  }));
+    const items = cart.map((item) => ({
+      itemId: item.listingId,
+      quantity: item.quantity,
+    }));
 
-  const params = new URLSearchParams({
-    items: JSON.stringify(items),
-    name,
-    email,
-    countryCode: shipToCountryCode,
-    shippingOptions: JSON.stringify(shippingServices.data),
-  });
-
-  if (shipToCountryCode === "AU") {
-    params.append("address", JSON.stringify(address));
-  }
-
-  try {
-    const res = await fetch(`/api/checkout?${params.toString()}`, {
-      method: "GET",
+    const params = new URLSearchParams({
+      items: JSON.stringify(items),
+      name,
+      email,
+      countryCode: shipToCountryCode,
+      shippingOptions: JSON.stringify(shippingServices.data),
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to create checkout session");
+    if (shipToCountryCode === "AU") {
+      params.append("address", JSON.stringify(address));
     }
 
-    const response = (await res.json()) as { url: string };
-    window.location.href = response.url;
-  } catch (error) {
-    console.error("Checkout error:", error);
-    toast.error("An error occurred during checkout. Please try again.");
-  }
-};
+    try {
+      const res = await fetch(`/api/checkout?${params.toString()}`, {
+        method: "GET",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      const response = (await res.json()) as { url: string };
+      window.location.href = response.url;
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("An error occurred during checkout. Please try again.");
+    }
+  };
 
   const validated = useMemo(() => {
     return shippingServices.data && name && email && acceptTerms;
@@ -285,27 +287,43 @@ const submitCheckout = async () => {
                   )}
                 </>
               )}
-              <div className="grid gap-1.5">
-                <Label className="text-sm" htmlFor="zip">
-                  Terms and conditions
-                </Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    className="h-4 w-4"
-                    type="checkbox"
-                    checked={acceptTerms}
-                    onChange={(e) => setAcceptTerms(e.target.checked)}
-                  />
-                  <span>
-                    I have read & agree to the{" "}
-                    <Link
-                      target="_blank"
-                      className="text-blue-500 hover:underline"
-                      href="/returns-refunds"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </span>
+              <div className="flex flex-col gap-4">
+                <div className="grid gap-1.5">
+                  <Label className="text-sm" htmlFor="zip">
+                    B2B Delivery
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      checked={isB2B}
+                      className="h-4 w-4"
+                      type="checkbox"
+                      onChange={(e) => setIsB2B(e.target.checked)}
+                    />
+                    <span>This is a business address</span>
+                  </div>
+                </div>
+                <div className="grid gap-1.5 mt-4">
+                  <Label className="text-sm" htmlFor="zip">
+                    Terms and conditions
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      className="h-4 w-4"
+                      type="checkbox"
+                      checked={acceptTerms}
+                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                    />
+                    <span>
+                      I have read & agree to the{" "}
+                      <Link
+                        target="_blank"
+                        className="text-blue-500 hover:underline"
+                        href="/returns-refunds"
+                      >
+                        Terms and Conditions
+                      </Link>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
