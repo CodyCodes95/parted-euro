@@ -302,7 +302,7 @@ export default function CheckoutPage() {
                     <span>This is a business address</span>
                   </div>
                 </div>
-                <div className="grid gap-1.5 mt-4">
+                <div className="mt-4 grid gap-1.5">
                   <Label className="text-sm" htmlFor="zip">
                     Terms and conditions
                   </Label>
@@ -418,7 +418,11 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
     <>
       {selectedPlaceId !== "" || address.formattedAddress ? (
         <div className="flex items-center gap-2">
-          <Input value={address?.formattedAddress} readOnly />
+          <Input
+            autoComplete="off"
+            value={address?.formattedAddress}
+            readOnly
+          />
           <Button
             type="reset"
             onClick={() => {
