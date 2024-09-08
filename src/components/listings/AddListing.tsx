@@ -35,6 +35,14 @@ const AddListing: React.FC<AddListingProps> = ({
     listing?.description || ""
   );
   const [condition, setCondition] = useState<string>(listing?.condition || "");
+
+  // Add this new constant for condition options
+  const conditionOptions = [
+    { label: "New", value: "NEW" },
+    { label: "Used", value: "USED_EXCELLENT" },
+    { label: "For Parts Or Not Working", value: "FOR_PARTS_OR_NOT_WORKING" },
+  ];
+
   const [price, setPrice] = useState<number>(listing?.price || 0);
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useState<Array<string>>(listing ? listing.parts.map((part) => part.id) : [] || []);
@@ -181,7 +189,7 @@ const AddListing: React.FC<AddListingProps> = ({
           />
         </div>
         <div className="">
-          <Textarea
+          <Textareae
             value={description}
             rows={4}
             placeholder="Description"
@@ -189,10 +197,13 @@ const AddListing: React.FC<AddListingProps> = ({
           />
         </div>
         <div className="">
-          <Input
-            value={condition}
+          <Select
+            value={conditionOptions.find(option => option.value === condition)}
+            options={conditionOptions}
+            onChange={(selectedOption) => setCondition(selectedOption?.value || "")}
             placeholder="Condition"
-            onChange={(e) => setCondition(e.target.value)}
+            className="basic-select"
+            classNamePrefix="select"
           />
         </div>
         <div className="">

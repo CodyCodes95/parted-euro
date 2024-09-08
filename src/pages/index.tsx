@@ -10,7 +10,6 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 import { prisma } from "../server/db/client";
-import type { HomepageImage } from "@prisma/client";
 
 interface HomeProps {
     images: { id: string; url: string; order: number }[];

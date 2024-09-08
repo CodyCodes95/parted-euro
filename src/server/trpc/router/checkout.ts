@@ -172,7 +172,7 @@ const getDomesticShippingServices = async (input: ShippingServicesInput) => {
     {
       method: "GET",
       headers: {
-        "AUTH-KEY": process.env.AUSPOST_API_KEY as string,
+        "AUTH-KEY": process.env.AUSPOST_API_KEY!,
       },
     },
   );
@@ -216,7 +216,7 @@ const getAusPostInternationalShippingServices = async (
     `${auspostBaseUrl}/postage/parcel/international/service.json?country_code=${destinationCountry}&weight=${weight}`,
     {
       headers: {
-        "AUTH-KEY": process.env.AUSPOST_API_KEY as string,
+        "AUTH-KEY": process.env.AUSPOST_API_KEY!,
       },
     },
   );
@@ -272,7 +272,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     type: "parcel",
   });
   const shippingServicesAvailableResponse = await fetch(
-    `${interparcelBaseUrl}/quote/availability?${searchParams}`,
+    `${interparcelBaseUrl}/quote/availability?${searchParams.toString()}`,
   );
   const shippingServicesAvailableData =
     (await shippingServicesAvailableResponse.json()) as InterparcelShippingServicesResponse;
@@ -288,7 +288,7 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
         service: service.id,
       });
       const response = await fetch(
-        `${interparcelBaseUrl}/quote/quote?${searchParams}`,
+        `${interparcelBaseUrl}/quote/quote?${searchParams.toString()}`,
         {
           headers: {
             Cookie: "PHPSESSID=f",
@@ -319,7 +319,7 @@ export const checkoutRouter = router({
   getShippingCountries: publicProcedure.query(async () => {
     const res = await fetch(`${auspostBaseUrl}/postage/country.json`, {
       headers: {
-        "AUTH-KEY": process.env.AUSPOST_API_KEY as string,
+        "AUTH-KEY": process.env.AUSPOST_API_KEY!,
       },
     });
     const data = (await res.json()) as ShippingCountryResponse;
@@ -328,7 +328,7 @@ export const checkoutRouter = router({
   getShippingServices: publicProcedure
     .input(getShippingServicesInputSchema)
     .query(async ({ input }): Promise<StripeShippingOption[]> => {
-      const { weight, destinationCountry } = input;
+      const { weight, destinationCountry, length, width, height } = input;
       if (weight > 35) return [pickupShippingOption];
       if (weight >= 20) {
         let shippingServices = await getInterparcelShippingServices(input);
@@ -337,7 +337,10 @@ export const checkoutRouter = router({
         }
         return shippingServices;
       }
-      if (destinationCountry !== "AU") {
+      if (
+        destinationCountry !== "AU" &&
+        [width, length, height].every((dimension) => dimension < 105)
+      ) {
         const shippingServices =
           await getAusPostInternationalShippingServices(input);
         return shippingServices;

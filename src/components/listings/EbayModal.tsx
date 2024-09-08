@@ -106,7 +106,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
   const [price, setPrice] = useState<number>(
     Math.ceil(listing.price * 0.15 + listing.price),
   );
-  const [ebayCondition, setEbayCondition] = useState<any>("");
+  const [ebayCondition, setEbayCondition] = useState("");
   const [validated, setValidated] = useState<boolean>(false);
   const [categoryId, setCategoryId] = useState<string>("");
   const [domesticShipping, setDomesticShipping] = useState<number>(0);
@@ -179,7 +179,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       condition: condition,
       conditionDescription: ebayCondition.value,
       quantity: quantity,
-      partNo: listing.parts[0]?.partDetails.partNo as string,
+      partNo: listing.parts[0]?.partDetails.partNo!,
       categoryId: categoryId,
       domesticShipping: domesticShipping,
       internationalShipping: internationalShipping,
