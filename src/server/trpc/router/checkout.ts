@@ -349,7 +349,7 @@ export const checkoutRouter = router({
         ),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx, input  }) => {
       const url = await createStripeSession(input);
       return url;
     }),

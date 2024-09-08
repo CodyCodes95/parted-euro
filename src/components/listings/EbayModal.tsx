@@ -139,6 +139,15 @@ const EbayModal: React.FC<EbayModalProps> = ({
     };
   };
 
+  const ebayConditions = [
+    { label: "New", value: "NEW" },
+    { label: "Used", value: "USED_EXCELLENT" },
+    {
+      label: "For Parts Or Not Working",
+      value: "FOR_PARTS_OR_NOT_WORKING",
+    },
+  ];
+
   const makeTableHTML = () => {
     return listing.parts
       .reduce((acc, cur) => {
@@ -177,7 +186,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
       description: description,
       images: listing.images.map((image) => image.url),
       condition: condition,
-      conditionDescription: ebayCondition.value,
+      conditionDescription: ebayCondition,
       quantity: quantity,
       partNo: listing.parts[0]?.partDetails.partNo!,
       categoryId: categoryId,
@@ -226,16 +235,11 @@ const EbayModal: React.FC<EbayModalProps> = ({
         <div className="">
           <Select
             placeholder="Ebay Condition"
-            value={ebayCondition}
-            options={[
-              { label: "New", value: "NEW" },
-              { label: "Used", value: "USED_EXCELLENT" },
-              {
-                label: "For Parts Or Not Working",
-                value: "FOR_PARTS_OR_NOT_WORKING",
-              },
-            ]}
-            onChange={(e) => setEbayCondition(e)}
+            value={ebayConditions.find(
+              (condition) => condition.value === ebayCondition,
+            )}
+            options={ebayConditions}
+            onChange={(e) => setEbayCondition(e?.value || "")}
           />
         </div>
         <div className="">

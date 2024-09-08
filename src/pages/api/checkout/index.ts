@@ -38,7 +38,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const redirectURL =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
-        : `https://${req.headers.host}`;
+        : `https://partedeuro.com.au`;
 
     // const {
     //   items,
@@ -166,9 +166,8 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
       shipping_address_collection: {
         allowed_countries: [countryCode as any],
       },
-      shipping_options:
-        shippingOptions as unknown as Stripe.Checkout.Session.ShippingOption[],
-      line_items: stripeLineItems,
+      shipping_options: shippingOptions as any,
+      line_items: stripeLineItems as any,
       mode: "payment",
       success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
       cancel_url: `${redirectURL}/checkout`,
