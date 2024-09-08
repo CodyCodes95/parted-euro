@@ -231,7 +231,7 @@ model ListingAnalytics {
   id        String   @id @default(cuid())
   listingId String
   createdAt DateTime @default(now())
-  listing   Listing  @relation(fields: [listingId], references: [id])
+  listing   Listing  @relation(fields: [listingId], references: [id] , onDelete: Cascade)
 }
 
 model HomepageImage {
