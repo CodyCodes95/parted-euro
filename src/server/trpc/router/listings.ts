@@ -40,6 +40,7 @@ export const listingRouter = router({
         parts: z.array(z.string()),
       }),
     )
+
     .mutation(async ({ ctx, input }) => {
       const currentListing = await ctx.prisma.listing.findUnique({
         where: {
@@ -50,8 +51,9 @@ export const listingRouter = router({
         },
       });
       const partsToDisconnect = currentListing?.parts.filter(
-        (part) => !input.parts.includes(part.partDetailsId),
+        (part) => !input.parts.includes(part.id),
       );
+      console.log(partsToDisconnect);
       const listing = await ctx.prisma.listing.update({
         where: {
           id: input.id,

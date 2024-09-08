@@ -189,7 +189,7 @@ const AddListing: React.FC<AddListingProps> = ({
           />
         </div>
         <div className="">
-          <Textareae
+          <Textarea
             value={description}
             rows={4}
             placeholder="Description"
