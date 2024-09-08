@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { adminProcedure, publicProcedure, router } from "../trpc";
+import { createStripeSession } from "@/pages/api/checkout";
 
 type ShippingCountryResponse = {
   countries: Record<"country", AusPostShippingCodes[]>;
@@ -316,6 +317,37 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
 };
 
 export const checkoutRouter = router({
+  getAdminCheckoutSession: adminProcedure
+    .input(
+      z.object({
+        items: z.array(
+          z.object({
+            itemId: z.string(),
+            quantity: z.number(),
+            price: z.number(),
+          }),
+        ),
+        name: z.string(),
+        email: z.string(),
+        countryCode: z.string(),
+        shippingOptions: z.array(
+          z.object({
+            shipping_rate_data: z.object({
+              type: z.string(),
+              display_name: z.string(),
+              fixed_amount: z.object({
+                amount: z.number(),
+                currency: z.string(),
+              }),
+            }),
+          }),
+        ),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const url = await createStripeSession(input);
+      return url;
+    }),
   getShippingCountries: publicProcedure.query(async () => {
     const res = await fetch(`${auspostBaseUrl}/postage/country.json`, {
       headers: {

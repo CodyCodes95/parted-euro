@@ -10,15 +10,30 @@ const stripe = new Stripe(process.env.STRIPE_SECRET!, {
 
 const prisma = new PrismaClient();
 
+type ItemQuery = {
+  itemId: string;
+  quantity: number;
+  price?: number;
+};
+
+type CheckoutQuery = {
+  items: string;
+  name: string; // Full name
+  email: string; // Email address
+  countryCode: string; // ISO 3166-1 alpha-2 country code
+  shippingOptions: string;
+};
+
 type StripeSessionRequest = {
   shippingOptions: StripeShippingOption[];
   email: string;
   name: string;
-  items: CartItem[];
+  items: ItemQuery[];
   countryCode: string;
 };
 
-async function GET(req: NextApiRequest, res: NextApiResponse) {
+export const createStripeSession = async (input: StripeSessionRequest) => {
+  const { items, shippingOptions, email, name, countryCode } = input;
   try {
     const redirectURL =
       process.env.NODE_ENV === "development"
@@ -33,41 +48,12 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     //   countryCode,
     // }: StripeSessionRequest = JSON.parse(req.body);
 
-    type ItemQuery = {
-      itemId: string;
-      quantity: number;
-    };
-
-    type CheckoutQuery = {
-      items: string;
-      name: string; // Full name
-      email: string; // Email address
-      countryCode: string; // ISO 3166-1 alpha-2 country code
-      shippingOptions: string
-    };
-
-    const query = req.query as unknown as CheckoutQuery;
-
-    const { items, shippingOptions, email, name, countryCode } = query;
-
-    const itemsParsed = JSON.parse(items) as ItemQuery[];
-
-    const parsedShippingOptions = JSON.parse(shippingOptions) as StripeShippingOption[];
-
-    console.log(
-      itemsParsed.map((item) => item.itemId),
-      shippingOptions,
-      email,
-      name,
-      countryCode
-    )
-
     // get items from query
 
     const listingsPurchased = await prisma.listing.findMany({
       where: {
         id: {
-          in: itemsParsed.map((item) => item.itemId),
+          in: items.map((item) => item.itemId),
         },
       },
       select: {
@@ -115,6 +101,9 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     });
 
     const stripeLineItems = listingsPurchased.map((item) => {
+      const itemProvided = items.find(
+        (itemQuery) => itemQuery.itemId === item.id,
+      );
       return {
         price_data: {
           currency: "aud",
@@ -128,10 +117,9 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
                 .join(","),
             },
           },
-          unit_amount: item.price * 100,
+          unit_amount: (itemProvided?.price ?? item.price) * 100,
         },
-        quantity: itemsParsed.find((itemQuery) => itemQuery.itemId === item.id)!
-          .quantity,
+        quantity: itemProvided!.quantity,
       };
     });
 
@@ -148,12 +136,13 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     });
 
     for (const item of listingsPurchased) {
+      const itemProvided = items.find(
+        (itemQuery) => itemQuery.itemId === item.id,
+      );
       const orderItem = await prisma?.orderItem.create({
         data: {
           listingId: item.id,
-          quantity: itemsParsed.find(
-            (itemQuery) => itemQuery.itemId === item.id,
-          )!.quantity,
+          quantity: itemProvided!.quantity,
           orderId: order?.id,
         },
       });
@@ -178,7 +167,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
         allowed_countries: [countryCode as any],
       },
       shipping_options:
-        parsedShippingOptions as unknown as Stripe.Checkout.Session.ShippingOption[],
+        shippingOptions as unknown as Stripe.Checkout.Session.ShippingOption[],
       line_items: stripeLineItems,
       mode: "payment",
       success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
@@ -188,11 +177,38 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    res.json({ url: session.url });
+    return {
+      url: session.url,
+    };
   } catch (err: any) {
     console.log(err.message);
     throw new Error(err.message);
   }
+};
+
+async function GET(req: NextApiRequest, res: NextApiResponse) {
+  const query = req.query as unknown as CheckoutQuery;
+
+  const { items, shippingOptions, email, name, countryCode } = query;
+
+  const itemsParsed = JSON.parse(items) as ItemQuery[];
+
+  if (itemsParsed.some((item) => typeof item.price !== "undefined")) {
+    throw new Error("Unsupported setting of prices");
+  }
+
+  const parsedShippingOptions = JSON.parse(
+    shippingOptions,
+  ) as StripeShippingOption[];
+  const session = await createStripeSession({
+    items: itemsParsed,
+    shippingOptions: parsedShippingOptions,
+    email,
+    name,
+    countryCode,
+  });
+
+  res.json({ url: session.url });
 }
 
 export default GET;
