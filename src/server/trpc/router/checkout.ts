@@ -349,7 +349,7 @@ export const checkoutRouter = router({
         ),
       }),
     )
-    .query(async ({ ctx, input  }) => {
+    .query(async ({ ctx, input }) => {
       const url = await createStripeSession(input);
       return url;
     }),
@@ -393,12 +393,14 @@ export const checkoutRouter = router({
         }
         return shippingServices;
       }
-      if (
-        destinationCountry !== "AU" &&
-        [width, length, height].every((dimension) => dimension < 105)
-      ) {
-        const shippingServices =
-          await getAusPostInternationalShippingServices(input);
+      if (destinationCountry !== "AU") {
+        let shippingServices;
+        if ([width, length, height].every((dimension) => dimension < 105)) {
+          shippingServices =
+            await getAusPostInternationalShippingServices(input);
+        } else {
+          shippingServices = await getInterparcelShippingServices(input);
+        }
         return shippingServices;
       }
       const shippingServices = await getDomesticShippingServices(input);
