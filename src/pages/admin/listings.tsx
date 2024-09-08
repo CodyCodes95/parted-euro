@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
 import { Listing } from "@prisma/client";
-import { CheckoutItem } from "../api/checkout";
+import { type CheckoutItem } from "../api/checkout";
 
 export type OrderItem = {
   inventoryId: string;
@@ -34,7 +34,7 @@ const calculateQty = (listing: QueryListingsGetAllAdmin) => {
       if (!acc[part.partDetailsId]) {
         acc[part.partDetailsId] = 0;
       }
-      acc[part.partDetailsId]! += part.quantity;
+      acc[part.partDetailsId] += part.quantity;
       return acc;
     },
     {} as Record<string, number>,
@@ -186,14 +186,16 @@ const Listings: NextPage = () => {
 
   const onDeleteListing = async () => {
     const res = deleteListing.mutateAsync({ id: selected!.id });
-    listings.refetch();
+    void listings.refetch();
     toast.success("Listing deleted");
+    setSelected(undefined);
+    setShowDeleteModal(false);
   };
 
   const authenticateEbay = async () => {
     const url = await ebayLogin.mutateAsync();
     if (url) {
-      router.push(url);
+      void router.push(url);
     }
   };
 
