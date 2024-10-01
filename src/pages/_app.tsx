@@ -8,6 +8,7 @@ import Nav from "../components/Nav";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
 import { cn } from "../lib/utils";
+import { Analytics } from "@vercel/analytics/react";
 
 const geist = localFont({
   src: [
@@ -28,12 +29,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-        <Toaster position="bottom-right" richColors />
-        <main className={cn(geist.variable, "font-sans")}>
-          <Nav />
-          <Component {...pageProps} />
-          <Footer />
-        </main>
+      <Analytics />
+      <Toaster position="bottom-right" richColors />
+      <main className={cn(geist.variable, "font-sans")}>
+        <Nav />
+        <Component {...pageProps} />
+        <Footer />
+      </main>
     </SessionProvider>
   );
 };
