@@ -3,12 +3,13 @@ import { XeroClient, Invoice, LineAmountTypes, Address } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
 import { sendNewOrderEmail } from "../resend/resend";
+import { initXero } from "../trpc/router/xero";
 
 const xero = new XeroClient({
-  clientId: process.env.XERO_CLIENT_ID as string,
-  clientSecret: process.env.XERO_CLIENT_SECRET as string,
-  redirectUris: [process.env.XERO_REDIRECT_URI as string],
-  scopes: process.env.XERO_SCOPES?.split(" "),
+  clientId: process.env.XERO_CLIENT_ID!,
+  clientSecret: process.env.XERO_CLIENT_SECRET!,
+  redirectUris: [process.env.XERO_REDIRECT_URI!],
+  scopes: process.env.XERO_SCOPES!.split(" "),
 });
 
 export const createInvoice = async (
@@ -18,27 +19,8 @@ export const createInvoice = async (
   lineItems: Stripe.LineItem[],
 ) => {
   try {
-    await xero.initialize();
-    const xeroCreds = await prisma.xeroCreds.findFirst();
-    xero.setTokenSet(xeroCreds?.tokenSet as TokenSet);
-    const xeroTokenSet = xero.readTokenSet();
-
-    if (xeroTokenSet.expired()) {
-      const validTokenSet = (await xero.refreshToken()) as any;
-      const creds = await prisma.xeroCreds.findFirst();
-      await prisma.xeroCreds.update({
-        where: {
-          id: creds?.id,
-        },
-        data: {
-          tokenSet: validTokenSet,
-          refreshToken: validTokenSet.refresh_token,
-        },
-      });
-    }
-
-    await xero.updateTenants();
-    const activeTenantId = xero.tenants[0].tenantId;
+    await initXero();
+    const activeTenantId = xero.tenants[0].tenantId as string;
 
     const invoiceDate = new Date().toISOString().split("T")[0];
 
@@ -51,7 +33,7 @@ export const createInvoice = async (
         tracking: [
           {
             name: "VIN",
-            // @ts-ignore
+            // @ts-expect-error: bad types
             option: item.price.product.metadata.VIN,
           },
         ],
@@ -122,8 +104,7 @@ export const createInvoice = async (
 
     const invoice = createInvoiceResponse?.body?.invoices[0];
 
-    const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]
-      ?.invoiceID as string;
+    const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]?.invoiceID!;
 
     const paymentResponse = await xero.accountingApi.createPayments(
       activeTenantId,

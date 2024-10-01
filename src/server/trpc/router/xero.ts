@@ -5,9 +5,9 @@ import { XeroClient } from "xero-node";
 import { prisma } from "../../db/client";
 
 export const xero = new XeroClient({
-  clientId: process.env.XERO_CLIENT_ID as string,
-  clientSecret: process.env.XERO_CLIENT_SECRET as string,
-  redirectUris: [process.env.XERO_REDIRECT_URI as string],
+  clientId: process.env.XERO_CLIENT_ID!,
+  clientSecret: process.env.XERO_CLIENT_SECRET!,
+  redirectUris: [process.env.XERO_REDIRECT_URI!],
   scopes: process.env.XERO_SCOPES?.split(" "),
 });
 
