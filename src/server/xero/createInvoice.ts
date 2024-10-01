@@ -1,12 +1,5 @@
-import type { TokenSet, LineItem, Contact as ContactType } from "xero-node";
-import {
-  XeroClient,
-  Invoice,
-  LineAmountTypes,
-  Address,
-  Contact,
-  Contacts,
-} from "xero-node";
+import type { TokenSet, LineItem } from "xero-node";
+import { XeroClient, Invoice, LineAmountTypes, Address } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
 import { sendNewOrderEmail } from "../resend/resend";
@@ -27,39 +20,8 @@ export const createInvoice = async (
 ) => {
   try {
     await initXero();
-    const { name, email } = event.customer_details!;
     const activeTenantId = xero.tenants[0].tenantId as string;
-    const xeroContact = await xero.accountingApi.getContacts(
-      activeTenantId,
-      undefined,
-      `EmailAddress=="${email}"`,
-    );
-    let contact: ContactType | undefined;
-    if (!xeroContact.body.contacts?.length) {
-      // create contact
-      const contactToCreate = new Contact();
-      contactToCreate.name = name!;
-      contactToCreate.emailAddress = email!;
-      contactToCreate.addresses = [
-        {
-          addressType: Address.AddressTypeEnum.STREET, // or AddressType.STREET depending on your needs
-          addressLine1: event.customer_details?.address?.line1 ?? undefined,
-          addressLine2: event.customer_details?.address?.line2 ?? undefined,
-          city: event.customer_details?.address?.city ?? undefined,
-          postalCode: event.customer_details?.address?.postal_code ?? undefined,
-          country: event.customer_details?.address?.country ?? undefined,
-        },
-      ];
-      const contacts = new Contacts();
-      contacts.contacts = [contactToCreate];
-      const res = await xero.accountingApi.createContacts(
-        activeTenantId,
-        contacts,
-      );
-      contact = res.body.contacts?.[0];
-    } else {
-      contact = xeroContact.body.contacts?.[0];
-    }
+
     const invoiceDate = new Date().toISOString().split("T")[0];
 
     const lineItemsFormatted = lineItems.map((item) => {
@@ -93,21 +55,20 @@ export const createInvoice = async (
     }
     const invoiceToCreate: Invoice = {
       type: Invoice.TypeEnum.ACCREC,
-      contact: contact,
-      // contact: {
-      //   emailAddress: event.customer_details!.email!,
-      //   name: event.customer_details!.name!,
-      //   addresses: [
-      //     {
-      //       addressType: Address.AddressTypeEnum.STREET, // or AddressType.STREET depending on your needs
-      //       addressLine1: event.customer_details!.address!.line1!,
-      //       addressLine2: event.customer_details!.address!.line2!,
-      //       city: event.customer_details!.address!.city!,
-      //       postalCode: event.customer_details!.address!.postal_code!,
-      //       country: event.customer_details!.address!.country!,
-      //     },
-      //   ],
-      // },
+      contact: {
+        emailAddress: event.customer_details!.email!,
+        name: event.customer_details!.name!,
+        addresses: [
+          {
+            addressType: Address.AddressTypeEnum.POBOX, 
+            addressLine1: event.customer_details!.address!.line1!,
+            addressLine2: event.customer_details!.address!.line2!,
+            city: event.customer_details!.address!.city!,
+            postalCode: event.customer_details!.address!.postal_code!,
+            country: event.customer_details!.address!.country!,
+          },
+        ],
+      },
       date: invoiceDate,
       dueDate: invoiceDate,
       status: Invoice.StatusEnum.AUTHORISED,
