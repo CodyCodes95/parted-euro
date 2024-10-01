@@ -83,7 +83,7 @@ const Home: NextPage<HomeProps> = ({ images }) => {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
           <div className="flex flex-col items-center justify-center">
             <h1 className="mb-4 text-center text-4xl font-bold text-white drop-shadow-lg">
-              BMW Parts
+              Your BMW Spare Parts Specialists.
             </h1>
             <Link href="/listings">
               <Button className="bg-white text-black hover:bg-gray-200">
