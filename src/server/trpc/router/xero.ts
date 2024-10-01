@@ -33,6 +33,7 @@ export const initXero = async () => {
     xero.setTokenSet(validTokenSet as any);
   }
   await xero.updateTenants();
+  return xero
 };
 
 export const xeroRouter = router({
