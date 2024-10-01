@@ -5,13 +5,6 @@ import type Stripe from "stripe";
 import { sendNewOrderEmail } from "../resend/resend";
 import { initXero } from "../trpc/router/xero";
 
-const xero = new XeroClient({
-  clientId: process.env.XERO_CLIENT_ID!,
-  clientSecret: process.env.XERO_CLIENT_SECRET!,
-  redirectUris: [process.env.XERO_REDIRECT_URI!],
-  scopes: process.env.XERO_SCOPES!.split(" "),
-});
-
 export const createInvoice = async (
   event: Stripe.Checkout.Session,
   //   Need to find how to get the right type for event
@@ -19,7 +12,7 @@ export const createInvoice = async (
   lineItems: Stripe.LineItem[],
 ) => {
   try {
-    await initXero();
+    const xero = await initXero();
     const activeTenantId = xero.tenants[0].tenantId as string;
 
     const invoiceDate = new Date().toISOString().split("T")[0];
@@ -60,7 +53,7 @@ export const createInvoice = async (
         name: event.customer_details!.name!,
         addresses: [
           {
-            addressType: Address.AddressTypeEnum.POBOX, 
+            addressType: Address.AddressTypeEnum.POBOX,
             addressLine1: event.customer_details!.address!.line1!,
             addressLine2: event.customer_details!.address!.line2!,
             city: event.customer_details!.address!.city!,

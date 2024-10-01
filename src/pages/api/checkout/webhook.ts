@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { createInvoice } from "../../../server/xero/createInvoice";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
+const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: "2022-11-15",
 });
 
@@ -28,7 +28,7 @@ export default async function stripeWebhook(
     const stripeEvent = stripe.webhooks.constructEvent(
       rawBody,
       stripeSignature as string,
-      webhookSecret as string,
+      webhookSecret!,
     );
     if (stripeEvent.type === "checkout.session.completed") {
       const data = stripeEvent.data.object as Stripe.Checkout.Session;
