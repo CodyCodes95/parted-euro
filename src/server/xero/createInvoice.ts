@@ -13,6 +13,7 @@ export const createInvoice = async (
 ) => {
   try {
     const xero = await initXero();
+    // eslint-disable-next-line
     const activeTenantId = xero.tenants[0].tenantId as string;
 
     const invoiceDate = new Date().toISOString().split("T")[0];
@@ -26,7 +27,8 @@ export const createInvoice = async (
         tracking: [
           {
             name: "VIN",
-            // @ts-expect-error: bad types
+            // @ts-expect-error: bad types on stripe event
+            // eslint-disable-next-line
             option: item.price.product.metadata.VIN,
           },
         ],
@@ -97,12 +99,14 @@ export const createInvoice = async (
 
     const invoice = createInvoiceResponse?.body?.invoices[0];
 
-    const xeroInvoiceId = createInvoiceResponse?.body?.invoices[0]?.invoiceID!;
+    if (!invoice) {
+      throw new Error("No invoice created");
+    }
 
-    const paymentResponse = await xero.accountingApi.createPayments(
-      activeTenantId,
-      payment,
-    );
+    const xeroInvoiceId = invoice.invoiceID!;
+
+    await xero.accountingApi.createPayments(activeTenantId, payment);
+
     const order = await prisma.order.update({
       where: {
         id: event.metadata!.orderId,
