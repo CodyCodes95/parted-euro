@@ -205,7 +205,7 @@ const Listings: NextPage = () => {
         code: code as string,
       });
       console.log(updateTokenRes);
-      router.replace("/admin/listings", undefined, { shallow: true });
+      void router.replace("/admin/listings", undefined, { shallow: true });
     }
   }, [code]);
 
@@ -245,7 +245,7 @@ const Listings: NextPage = () => {
             order={order}
             isOpen={showMarkAsSold}
             onClose={() => {
-              listings.refetch();
+              void listings.refetch();
               setShowMarkAsSold(false);
             }}
             title="Mark as sold"
