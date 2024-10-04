@@ -173,17 +173,6 @@ export const listingRouter = router({
                 order: "asc",
               },
             },
-            // parts: true,
-            parts: {
-              include: {
-                partDetails: {
-                  include: {
-                    partTypes: true,
-                    cars: true,
-                  },
-                },
-              },
-            },
           },
           where: queryWhere,
           orderBy,
@@ -246,18 +235,9 @@ export const listingRouter = router({
           skip: input.page * 20,
           include: {
             images: {
+              take: 2,
               orderBy: {
                 order: "asc",
-              },
-            },
-            parts: {
-              include: {
-                partDetails: {
-                  include: {
-                    partTypes: true,
-                    cars: true,
-                  },
-                },
               },
             },
           },
