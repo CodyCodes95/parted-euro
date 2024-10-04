@@ -159,8 +159,8 @@ const Orders = () => {
         accessor: "status",
       },
       {
-        Header: "Type",
-        accessor: (d) => (d.shipping ? "Shipped" : "Pickup"),
+        Header: "Shipping method",
+        accessor: "shippingMethod",
       },
       {
         Header: "Shipping Address",
