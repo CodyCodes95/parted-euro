@@ -124,8 +124,8 @@ export const createInvoice = async (
         shippingRateId: event.shipping_cost!.shipping_rate! as string,
       },
     });
-    await sendNewOrderEmail(order);
-    await xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
+    void sendNewOrderEmail(order);
+    void xero.accountingApi.emailInvoice(activeTenantId, xeroInvoiceId, {});
     return;
   } catch (err) {
     // write event and lineitems to db
