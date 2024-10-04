@@ -164,7 +164,7 @@ export const listingRouter = router({
             },
           ],
         } as Prisma.ListingWhereInput;
-        const listings = await ctx.prisma.listing.findMany({
+        const listingsRequest = ctx.prisma.listing.findMany({
           take: 20,
           skip: input.page * 20,
           include: {
@@ -188,7 +188,11 @@ export const listingRouter = router({
           where: queryWhere,
           orderBy,
         });
-        const count = await ctx.prisma.listing.count({ where: queryWhere });
+        const countRequest = ctx.prisma.listing.count({ where: queryWhere });
+        const [listings, count] = await Promise.all([
+          listingsRequest,
+          countRequest,
+        ]);
         const hasNextPage = count > input.page * 20 + 20;
         const totalPages = Math.ceil(count / 20);
         return { listings, count, hasNextPage, totalPages };
@@ -237,7 +241,7 @@ export const listingRouter = router({
             },
           },
         } as Prisma.ListingWhereInput;
-        const listings = await ctx.prisma.listing.findMany({
+        const listingsRequest = ctx.prisma.listing.findMany({
           take: 20,
           skip: input.page * 20,
           include: {
@@ -260,7 +264,11 @@ export const listingRouter = router({
           where: queryWhere,
           orderBy,
         });
-        const count = await ctx.prisma.listing.count({ where: queryWhere });
+        const countRequest = ctx.prisma.listing.count({ where: queryWhere });
+        const [listings, count] = await Promise.all([
+          listingsRequest,
+          countRequest,
+        ]);
         const hasNextPage = count > input.page * 20 + 20;
         const totalPages = Math.ceil(count / 20);
         return { listings, count, hasNextPage, totalPages };

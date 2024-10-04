@@ -1,5 +1,5 @@
-import type { TokenSet, LineItem } from "xero-node";
-import { XeroClient, Invoice, LineAmountTypes, Address } from "xero-node";
+import type { LineItem } from "xero-node";
+import { Invoice, LineAmountTypes, Address } from "xero-node";
 import { prisma } from "../db/client";
 import type Stripe from "stripe";
 import { sendNewOrderEmail } from "../resend/resend";
