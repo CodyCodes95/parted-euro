@@ -80,7 +80,11 @@ export const listingRouter = router({
       include: {
         parts: {
           include: {
-            partDetails: true
+            partDetails: {
+              include: {
+                cars: true
+              }
+            }
           },
         },
         images: {
