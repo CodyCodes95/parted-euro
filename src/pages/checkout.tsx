@@ -413,6 +413,11 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
         const city = placeDetails.address_components?.find((x) =>
           x.types.includes("locality"),
         )?.short_name;
+        const addressOne = `${placeDetails.address_components?.find((x) =>
+          x.types.includes("street_number"),
+        )?.short_name} ${placeDetails.address_components?.find((x) =>
+          x.types.includes("route"),
+        )?.short_name}`;
         const postalCode = placeDetails.address_components?.find((x) =>
           x.types.includes("postal_code"),
         )?.short_name;
@@ -428,7 +433,7 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
           formattedAddress: formattedAddress,
           postalCode: postalCode,
           region: region,
-          address1: "",
+          address1: addressOne,
           address2: "",
         });
         setIsOpen(true);
