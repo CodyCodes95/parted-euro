@@ -63,6 +63,19 @@ export function Checkout() {
   const [shipToCountryCode, setShipToCountryCode] = useState("AU");
   const [isB2B, setIsB2B] = useState(false);
 
+  // Add useEffect hooks to save values to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem("checkout-address", JSON.stringify(address));
+  }, [address]);
+
+  useEffect(() => {
+    localStorage.setItem("checkout-name", name);
+  }, [name]);
+
+  useEffect(() => {
+    localStorage.setItem("checkout-email", email);
+  }, [email]);
+
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
   }, [cart]);
@@ -110,9 +123,10 @@ export function Checkout() {
       itemId: item.listingId,
       quantity: item.quantity,
     }));
-
+    console.log(address);
     const params = new URLSearchParams({
       items: JSON.stringify(items),
+      // address: JSON.stringify(address),
       name,
       email,
       countryCode: shipToCountryCode,
@@ -377,7 +391,7 @@ export function Checkout() {
 }
 
 export interface AddressType {
-  formattedAddress: string;
+  formattedAddress?: string;
   city: string;
   region: string;
   postalCode: string;
@@ -794,7 +808,7 @@ export function AddressDialog(
       region !== address.region
     ) {
       const newFormattedAddress = updateAndFormatAddress(
-        address.formattedAddress,
+        address.formattedAddress!,
         {
           "street-address": address1,
           address2,

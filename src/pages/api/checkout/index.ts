@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
 import type { StripeShippingOption } from "../../../server/trpc/router/checkout";
+import { type AddressType } from "@/pages/checkout";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: "2022-11-15",
@@ -22,6 +23,7 @@ type CheckoutQuery = {
   email: string; // Email address
   countryCode: string; // ISO 3166-1 alpha-2 country code
   shippingOptions: string;
+  address: string;
 };
 
 type StripeSessionRequest = {
@@ -30,10 +32,11 @@ type StripeSessionRequest = {
   name: string;
   items: CheckoutItem[];
   countryCode: string;
+  address?: AddressType
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
-  const { items, shippingOptions, email, name, countryCode } = input;
+  const { items, shippingOptions, email, name, countryCode, address } = input;
   try {
     const redirectURL =
       process.env.NODE_ENV === "development"
@@ -163,8 +166,10 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ["card", "afterpay_clearpay"],
+      add
       shipping_address_collection: {
         allowed_countries: [countryCode as any],
+        
       },
       shipping_options: shippingOptions as any,
       line_items: stripeLineItems as any,
@@ -188,9 +193,11 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query as unknown as CheckoutQuery;
 
-  const { items, shippingOptions, email, name, countryCode } = query;
+  const { items, shippingOptions, email, name, countryCode, address } = query;
+
 
   const itemsParsed = JSON.parse(items) as CheckoutItem[];
+  const addressParsed = JSON.parse(address) as AddressType;
 
   if (itemsParsed.some((item) => typeof item.price !== "undefined")) {
     throw new Error("Unsupported setting of prices");
@@ -205,6 +212,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     email,
     name,
     countryCode,
+    address: addressParsed,
   });
 
   res.json({ url: session.url });
