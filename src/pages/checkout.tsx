@@ -30,6 +30,16 @@ import { useCartStore } from "../context/cartStore";
 import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
 
 export default function CheckoutPage() {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+  return <Checkout />;
+}
+
+export function Checkout() {
   const { cart, setCart, removeItemFromCart } = useCartStore();
   // const [parent] = useAutoAnimate();
 
@@ -821,7 +831,6 @@ export function AddressDialog(
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
-        (
         <form onSubmit={handleSave}>
           <div className="space-y-4 py-7">
             <div className="space-y-0.5">
