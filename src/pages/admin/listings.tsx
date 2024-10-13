@@ -212,7 +212,8 @@ const Listings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Listings</title>
+        <title>BMW Parts</title>
+        <meta name="description" content="BMW Parts" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ConfirmDelete

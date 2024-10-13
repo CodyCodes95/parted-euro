@@ -6,12 +6,11 @@ import { type GetServerSideProps } from "next";
 function generateSiteMap(listings: Listing[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-     <!--We manually set the two URLs we know already-->
      <url>
-       <loc>https://jsonplaceholder.typicode.com</loc>
+       <loc>https://partedeuro.com.au</loc>
      </url>
      <url>
-       <loc>https://jsonplaceholder.typicode.com/guide</loc>
+       <loc>https://partedeuro.com.au/listings</loc>
      </url>
      ${listings
        .map(({ id }) => {

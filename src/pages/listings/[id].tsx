@@ -39,7 +39,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const prisma = new PrismaClient();
   const listing = await prisma.listing.findUnique({
     where: { id },
-    select: { id: true, title: true, description: true, images: true },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      images: true,
+      parts: {
+        take: 1,
+        select: {
+          partDetails: {
+            select: {
+              partNo: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!listing) {
@@ -52,13 +67,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         title: listing.title,
         description: listing.description,
         image: listing.images[0]?.url,
+        partNo: listing.parts[0]?.partDetails.partNo,
       },
     },
   };
 };
 
 const Listing: NextPage<{
-  listingMeta: ListingsGetListing & { image: string };
+  listingMeta: ListingsGetListing & { image: string; partNo: string };
 }> = ({ listingMeta }) => {
   const router = useRouter();
   const { id } = router.query as { id: string };
@@ -174,8 +190,14 @@ const Listing: NextPage<{
     <>
       <Head>
         <title>{listingMeta.title}</title>
-        <meta property="og:title" content={listingMeta.title} />
-        <meta property="og:description" content={listingMeta.description} />
+        <meta
+          property="og:title"
+          content={`${listingMeta.title} - ${listingMeta.partNo}`}
+        />
+        <meta
+          property="og:description"
+          content={`${listingMeta.description} `}
+        />
         <meta property="og:image" content={listingMeta.image} />
       </Head>
       <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 2xl:px-96">
