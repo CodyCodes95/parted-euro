@@ -49,7 +49,7 @@ const AddToOrder = ({
         {listing.parts.map((part, index) => (
           <a
             className="text-blue-500 hover:underline"
-            href={`/listings/listing?id=${listing.id}`}
+            href={`/listings/${listing.id}`}
             key={index}
           >
             {part.partDetails.name} - {part.donorVin}

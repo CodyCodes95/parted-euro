@@ -91,7 +91,7 @@ const Listings: NextPage = () => {
         Header: "Title",
         accessor: (d) => d.title,
         Cell: ({ row }: any) => (
-          <Link href={`/listings/listing?id=${row.original.id}`}>
+          <Link href={`/listings/${row.original.id}`}>
             <p className="text-blue-500 hover:text-blue-600">
               {row.original.title}
             </p>

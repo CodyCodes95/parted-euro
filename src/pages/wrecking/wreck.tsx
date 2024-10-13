@@ -21,7 +21,7 @@ const Listing: NextPage = () => {
       onSuccess: (data) => {
         setMainImage(data?.imageUrl || "");
       },
-    }
+    },
   );
 
   const fourWrecks = trpc.donors.getFourWrecks.useQuery();
@@ -67,12 +67,12 @@ const Listing: NextPage = () => {
                     <Link
                       className="hover:underline"
                       key={list.id}
-                      href={`/listings/listing?id=${list.id}`}
+                      href={`/listings/${list.id}`}
                     >
                       {list.title}
                     </Link>
                   );
-                })
+                }),
               )}
             <div className="p-2"></div>
             <div className="flex w-full flex-col items-center md:place-items-start">

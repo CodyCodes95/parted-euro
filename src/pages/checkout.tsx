@@ -187,7 +187,7 @@ export function Checkout() {
                     width="40"
                   />
                   <Link
-                    href={`/listings/listing?id=${item.listingId}`}
+                    href={`/listings/${item.listingId}`}
                     className="text-lg text-blue-500 hover:underline"
                   >
                     {item.listingTitle}

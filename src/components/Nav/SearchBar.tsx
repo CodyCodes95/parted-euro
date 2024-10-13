@@ -59,7 +59,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
             />
           </div>
           {showSearch && listings.data?.length ? (
-            <div className="absolute flex w-full md:w-1/2 top-20 flex-col bg-white shadow-lg">
+            <div className="absolute top-20 flex w-full flex-col bg-white shadow-lg md:w-1/2">
               <div className="flex items-center justify-between border-b-2">
                 <h5 className="p-4 text-xl font-bold leading-none text-gray-900 dark:text-white">
                   Products
@@ -74,7 +74,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                     <li
                       onClick={() => {
                         setShowSearch(false);
-                        router.push(`/listings/listing?id=${listing.id}`);
+                        router.push(`/listings/${listing.id}`);
                       }}
                       key={listing.id}
                       className="group cursor-pointer px-4 py-3 hover:bg-gray-300 sm:py-4"

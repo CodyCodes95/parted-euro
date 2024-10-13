@@ -54,7 +54,12 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
-        <Drawer title="" onOpenChange={() => console.log("open change")} onClose={() => console.log("close")} open={!selectedCar} />
+        <Drawer
+          title=""
+          onOpenChange={() => console.log("open change")}
+          onClose={() => console.log("close")}
+          open={!selectedCar}
+        />
         {listings.map((listing) => (
           <div
             key={listing.id}
@@ -91,9 +96,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
           onMouseLeave={() => setHoveredListing("")}
           className="h-fit rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
         >
-          <div
-            onClick={() => router.push(`/listings/listing?id=${listing.id}`)}
-          >
+          <div onClick={() => router.push(`/listings/${listing.id}`)}>
             <img
               src={
                 hoveredListing === listing.id

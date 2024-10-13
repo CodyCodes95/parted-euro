@@ -35,7 +35,7 @@ import { cn } from "../../lib/utils";
 import type { ClassNameValue } from "tailwind-merge";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.query?.id as string;
+  const { id } = context.query as { id: string };
   const prisma = new PrismaClient();
   const listing = await prisma.listing.findUnique({
     where: { id },
@@ -61,17 +61,17 @@ const Listing: NextPage<{
   listingMeta: ListingsGetListing & { image: string };
 }> = ({ listingMeta }) => {
   const router = useRouter();
-
+  const { id } = router.query as { id: string };
   const { cart, setCart } = useCartStore();
 
   const [quantity, setQuantity] = useState(1);
 
   const { data: listing, isLoading } = trpc.listings.getListing.useQuery(
     {
-      id: router.query.id as string,
+      id: id,
     },
     {
-      enabled: !!router.query.id,
+      enabled: !!id,
     },
   );
 
@@ -79,10 +79,10 @@ const Listing: NextPage<{
 
   const carsOnListing = trpc.listings.getAllCarsOnListing.useQuery(
     {
-      id: router.query.id as string,
+      id: id,
     },
     {
-      enabled: !!router.query.id,
+      enabled: !!id,
     },
   );
 
@@ -305,7 +305,7 @@ const RelatedListings: React.FC<{ listing: ListingsGetListing }> = ({
         <div className="grid gap-4 md:grid-cols-4">
           {relatedListings.data?.map((relatedListing) => (
             <Link
-              href={`/listings/listing?id=${relatedListing.id}`}
+              href={`/listings/${relatedListing.id}`}
               key={relatedListing.id}
               className="space-y-2"
             >

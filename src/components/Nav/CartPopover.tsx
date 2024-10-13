@@ -40,7 +40,7 @@ const CartPopover = () => {
           <div className="w-full border" />
           {cart.map((item) => (
             <Link
-              href={`/listings/listing?id=${item.listingId}`}
+              href={`/listings/${item.listingId}`}
               key={item.listingId}
               className="flex items-center gap-4 p-4 hover:bg-zinc-100"
             >

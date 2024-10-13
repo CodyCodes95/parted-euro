@@ -413,7 +413,7 @@ const ListingsResults = ({
         <div className="mt-8 flex flex-col gap-8">
           {listings.data?.listings.map((listing) => (
             <Link
-              href={`/listings/listing?id=${listing.id}`}
+              href={`/listings/${listing.id}`}
               key={listing.id}
               className="flex justify-between rounded-lg p-2 shadow-md"
             >
@@ -435,7 +435,7 @@ const ListingsResults = ({
           <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
             {listings.data?.listings.map((listing) => (
               <Card key={listing.id}>
-                <Link href={`/listings/listing?id=${listing.id}`}>
+                <Link href={`/listings/${listing.id}`}>
                   <CardContent className="p-0">
                     <img
                       alt="Product image"
