@@ -318,7 +318,7 @@ export function Checkout() {
                   {shipToCountryCode === "AU" && (
                     <div className="grid gap-1.5">
                       <Label className="text-sm" htmlFor="zip">
-                        Shipping suburb
+                        Shipping address
                       </Label>
                       <AddressAutoComplete
                         address={address}
