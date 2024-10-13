@@ -410,7 +410,12 @@ export const checkoutRouter = router({
         }
         return shippingServices;
       }
-      const shippingServices = await getDomesticShippingServices(input);
+      let shippingServices;
+      if ([width, length, height].every((dimension) => dimension < 105)) {
+        shippingServices = await getDomesticShippingServices(input);
+      } else {
+        shippingServices = await getInterparcelShippingServices(input);
+      }
       return [...shippingServices, pickupShippingOption];
     }),
 });
