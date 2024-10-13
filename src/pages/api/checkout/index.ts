@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
 import type { StripeShippingOption } from "../../../server/trpc/router/checkout";
-import { type AddressType } from "@/pages/checkout";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: "2022-11-15",
@@ -23,7 +22,6 @@ type CheckoutQuery = {
   email: string; // Email address
   countryCode: string; // ISO 3166-1 alpha-2 country code
   shippingOptions: string;
-  address: string;
 };
 
 type StripeSessionRequest = {
@@ -32,11 +30,10 @@ type StripeSessionRequest = {
   name: string;
   items: CheckoutItem[];
   countryCode: string;
-  address?: string
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
-  const { items, shippingOptions, email, name, countryCode, address } = input;
+  const { items, shippingOptions, email, name, countryCode } = input;
   try {
     const redirectURL =
       process.env.NODE_ENV === "development"
@@ -129,7 +126,6 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const order = await prisma?.order.create({
       data: {
         email,
-        shippingAddress: address,
         name,
         status: "PENDING",
         subtotal: stripeLineItems.reduce(
@@ -166,12 +162,10 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
 
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
-      payment_method_types: ["card"],
-      shipping_address_collection: address
-        ? undefined
-        : {
-            allowed_countries: [countryCode as any],
-          },
+      payment_method_types: ["card", "afterpay_clearpay"],
+      shipping_address_collection: {
+        allowed_countries: [countryCode as any],
+      },
       shipping_options: shippingOptions as any,
       line_items: stripeLineItems as any,
       mode: "payment",
@@ -194,7 +188,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
 async function GET(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query as unknown as CheckoutQuery;
 
-  const { items, shippingOptions, email, name, countryCode, address } = query;
+  const { items, shippingOptions, email, name, countryCode } = query;
 
   const itemsParsed = JSON.parse(items) as CheckoutItem[];
 
@@ -211,7 +205,6 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     email,
     name,
     countryCode,
-    address: address,
   });
 
   res.json({ url: session.url });
