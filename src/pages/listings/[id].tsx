@@ -118,18 +118,16 @@ const Listing: NextPage<{
         listingPrice: listing.price,
         listingImage: listing.images[0]?.url,
         quantity: quantity,
-        length: listing.parts
-          .map((part) => part.partDetails.length)
-          .reduce((a, b) => a + b, 0),
-        width: listing.parts
-          .map((part) => part.partDetails.width)
-          .reduce((a, b) => a + b, 0),
-        height: listing.parts
-          .map((part) => part.partDetails.height)
-          .reduce((a, b) => a + b, 0),
-        weight: listing.parts
-          .map((part) => part.partDetails.weight)
-          .reduce((a, b) => a + b, 0),
+        length: Math.max(
+          ...listing.parts.map((part) => part.partDetails.length),
+        ),
+        width: Math.max(...listing.parts.map((part) => part.partDetails.width)),
+        height: Math.max(
+          ...listing.parts.map((part) => part.partDetails.height),
+        ),
+        weight: Math.max(
+          ...listing.parts.map((part) => part.partDetails.weight),
+        ),
         itemVin: listing.parts[0]?.donor?.vin.slice(-7) ?? "",
       };
       toast("Added to cart", {
