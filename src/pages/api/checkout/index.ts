@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import type { CartItem } from "../../../context/cartContext";
 import { PrismaClient } from "@prisma/client";
 import type { StripeShippingOption } from "../../../server/trpc/router/checkout";
 
@@ -33,6 +32,7 @@ type StripeSessionRequest = {
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
+  console.log("HERE 1");
   const { items, shippingOptions, email, name, countryCode } = input;
   try {
     const redirectURL =
@@ -92,14 +92,14 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
         },
       },
     });
-
+    console.log("HERE 2");
     // create a new customer
 
     const customer = await stripe.customers.create({
       email,
       name,
     });
-
+    console.log("HERE 3");
     const stripeLineItems = listingsPurchased.map((item) => {
       const itemProvided = items.find(
         (itemQuery) => itemQuery.itemId === item.id,
@@ -122,7 +122,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
         quantity: itemProvided!.quantity,
       };
     });
-
+    console.log("HERE 4");
     const order = await prisma?.order.create({
       data: {
         email,
@@ -134,7 +134,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
         ),
       },
     });
-
+    console.log("HERE 5");
     for (const item of listingsPurchased) {
       const itemProvided = items.find(
         (itemQuery) => itemQuery.itemId === item.id,
@@ -159,7 +159,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
         },
       });
     }
-
+    console.log("HERE 6");
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ["card", "afterpay_clearpay"],

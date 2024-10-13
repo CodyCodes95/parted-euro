@@ -289,7 +289,7 @@ export default function CheckoutPage() {
                   {shipToCountryCode === "AU" && (
                     <div className="grid gap-1.5">
                       <Label className="text-sm" htmlFor="zip">
-                        Shipping suburb
+                        Shipping Suburb
                       </Label>
                       <AddressAutoComplete
                         address={address}
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
               <InfoIcon className="h-4 w-4" />
               <AlertTitle>Heads up!</AlertTitle>
               <AlertDescription>
-                We will gather your shipping address on the next page
+                We will gather your full shipping address on the next page.
               </AlertDescription>
             </Alert>
             {shippingServices.isError && (
