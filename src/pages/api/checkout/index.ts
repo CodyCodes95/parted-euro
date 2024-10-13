@@ -32,7 +32,7 @@ type StripeSessionRequest = {
   name: string;
   items: CheckoutItem[];
   countryCode: string;
-  address?: AddressType
+  address?: address;
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
@@ -129,6 +129,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const order = await prisma?.order.create({
       data: {
         email,
+        shippingAddress: address?.formattedAddress,
         name,
         status: "PENDING",
         subtotal: stripeLineItems.reduce(
@@ -165,12 +166,12 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
 
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
-      payment_method_types: ["card", "afterpay_clearpay"],
-      add
-      shipping_address_collection: {
-        allowed_countries: [countryCode as any],
-        
-      },
+      payment_method_types: ["card"],
+      shipping_address_collection: address
+        ? undefined
+        : {
+            allowed_countries: [countryCode as any],
+          },
       shipping_options: shippingOptions as any,
       line_items: stripeLineItems as any,
       mode: "payment",
@@ -195,9 +196,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   const { items, shippingOptions, email, name, countryCode, address } = query;
 
-
   const itemsParsed = JSON.parse(items) as CheckoutItem[];
-  const addressParsed = JSON.parse(address) as AddressType;
 
   if (itemsParsed.some((item) => typeof item.price !== "undefined")) {
     throw new Error("Unsupported setting of prices");
@@ -212,7 +211,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     email,
     name,
     countryCode,
-    address: addressParsed,
+    address: address,
   });
 
   res.json({ url: session.url });

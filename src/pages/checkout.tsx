@@ -126,7 +126,7 @@ export function Checkout() {
     console.log(address);
     const params = new URLSearchParams({
       items: JSON.stringify(items),
-      // address: JSON.stringify(address),
+      address: address.formattedAddress!,
       name,
       email,
       countryCode: shipToCountryCode,
@@ -291,7 +291,17 @@ export function Checkout() {
                     <Label className="text-sm">Country</Label>
                     <Select
                       value={shipToCountryCode}
-                      onValueChange={(value) => setShipToCountryCode(value)}
+                      onValueChange={(value) => {
+                        setShipToCountryCode(value);
+                        setAddress({
+                          formattedAddress: "",
+                          city: "",
+                          region: "",
+                          postalCode: "",
+                          address1: "",
+                          address2: "",
+                        });
+                      }}
                     >
                       <SelectTrigger id="country" className="w-full">
                         <SelectValue placeholder="Select a country" />
@@ -450,7 +460,6 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
           address1: addressOne,
           address2: "",
         });
-        setIsOpen(true);
       });
     }
   }, [selectedPlaceId]);
@@ -466,7 +475,7 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
             value={address?.formattedAddress}
             readOnly
           />
-          <AddressDialog
+          {/* <AddressDialog
             dialogTitle={"Edit Address"}
             address={address}
             setAddress={setAddress}
@@ -476,7 +485,7 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
             <Button size="icon" variant="outline" className="shrink-0">
               <PencilIcon className="size-4" />
             </Button>
-          </AddressDialog>
+          </AddressDialog> */}
           <Button
             type="reset"
             onClick={() => {
