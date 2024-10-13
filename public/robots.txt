@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://partedeuro.com.au/sitemap.xml
