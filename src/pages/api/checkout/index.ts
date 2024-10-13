@@ -32,7 +32,7 @@ type StripeSessionRequest = {
   name: string;
   items: CheckoutItem[];
   countryCode: string;
-  address?: address;
+  address?: string
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
