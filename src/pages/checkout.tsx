@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Info, Trash, TriangleAlert } from "lucide-react";
+import { Info, InfoIcon, Terminal, Trash, TriangleAlert } from "lucide-react";
 import type { CartItem } from "../context/cartContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -339,6 +339,13 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
+            <Alert>
+              <InfoIcon className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                We will gather your shipping address on the next page
+              </AlertDescription>
+            </Alert>
             {shippingServices.isError && (
               <Alert variant={"destructive"} className="w-full">
                 <TriangleAlert className="h-4 w-4" />
