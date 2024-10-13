@@ -123,10 +123,9 @@ export function Checkout() {
       itemId: item.listingId,
       quantity: item.quantity,
     }));
-    console.log(address);
+
     const params = new URLSearchParams({
       items: JSON.stringify(items),
-      address: address.formattedAddress!,
       name,
       email,
       countryCode: shipToCountryCode,
@@ -134,7 +133,7 @@ export function Checkout() {
     });
 
     if (shipToCountryCode === "AU") {
-      params.append("address", JSON.stringify(address));
+      params.append("address", address.formattedAddress!);
     }
 
     try {
