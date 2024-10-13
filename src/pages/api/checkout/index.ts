@@ -129,7 +129,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const order = await prisma?.order.create({
       data: {
         email,
-        shippingAddress: address?.formattedAddress,
+        shippingAddress: address,
         name,
         status: "PENDING",
         subtotal: stripeLineItems.reduce(
