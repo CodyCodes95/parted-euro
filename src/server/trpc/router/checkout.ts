@@ -411,11 +411,13 @@ export const checkoutRouter = router({
         return shippingServices;
       }
       let shippingServices;
+      let interparcelServices = []
       if ([width, length, height].every((dimension) => dimension < 105)) {
         shippingServices = await getDomesticShippingServices(input);
+        interparcelServices = await getInterparcelShippingServices(input);
       } else {
         shippingServices = await getInterparcelShippingServices(input);
       }
-      return [...shippingServices, pickupShippingOption];
+      return [...shippingServices, ...interparcelServices, pickupShippingOption];
     }),
 });
