@@ -153,6 +153,8 @@ const supportedShippingMethods = ["Standard", "Express"];
 const interparcelBaseUrl = "https://au.interparcel.com/api";
 
 const partedEuroAddress = {
+  addrOne: "26 Rushdale Street",
+  addrTwo: "2",
   postcode: "3180",
   city: "Knoxfield",
   state: "VIC",
@@ -255,37 +257,56 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
     weight,
     b2b,
   } = input;
-  const interparcelParams = {
-    source: "booking",
-    coll_country: "Australia",
-    coll_state: partedEuroAddress.state,
-    coll_city: partedEuroAddress.city,
-    coll_postcode: partedEuroAddress.postcode,
-    del_postcode: destinationPostcode ?? "",
-    del_city: destinationCity ?? "",
-    del_state: destinationState ?? "",
-    del_country: destinationCountry,
-    "pkg[0][0]": weight.toString(),
-    "pkg[0][1]": length.toString(),
-    "pkg[0][2]": width.toString(),
-    "pkg[0][3]": height.toString(),
-  };
+  const interparcelParams =
+    weight > 35
+      ? {
+          "pkg[0][0]": weight.toString(),
+          "pkg[0][1]": (length + 30).toString(),
+          "pkg[0][2]": (width + 30).toString(),
+          "pkg[0][3]": (height + 10).toString(),
+          source: "booking",
+          coll_country: "Australia",
+          coll_state: partedEuroAddress.state,
+          coll_city: partedEuroAddress.city,
+          coll_postcode: partedEuroAddress.postcode,
+          del_postcode: destinationPostcode ?? "",
+          del_city: destinationCity ?? "",
+          del_state: destinationState ?? "",
+          del_country: destinationCountry,
+        }
+      : {
+          source: "booking",
+          coll_country: "Australia",
+          coll_state: partedEuroAddress.state,
+          coll_city: partedEuroAddress.city,
+          coll_postcode: partedEuroAddress.postcode,
+          del_postcode: destinationPostcode ?? "",
+          del_city: destinationCity ?? "",
+          del_state: destinationState ?? "",
+          del_country: destinationCountry,
+          "pkg[0][0]": weight.toString(),
+          "pkg[0][1]": length.toString(),
+          "pkg[0][2]": width.toString(),
+          "pkg[0][3]": height.toString(),
+        };
+
   const searchParams = new URLSearchParams({
     ...interparcelParams,
-    type: "parcel",
+    type: weight >= 35 ? "pallet" : "parcel",
   });
   const shippingServicesAvailableResponse = await fetch(
     `${interparcelBaseUrl}/quote/availability?${searchParams.toString()}`,
   );
   const shippingServicesAvailableData =
     (await shippingServicesAvailableResponse.json()) as InterparcelShippingServicesResponse;
+  console.log(JSON.stringify(shippingServicesAvailableData, null, 2));
   if (shippingServicesAvailableData.errorMessage) {
     throw new Error(shippingServicesAvailableData.errorMessage);
   }
   const requests = shippingServicesAvailableData.services
     .filter((service) => !service.service.includes("Hunter"))
     .filter((service) => {
-      if (!b2b) return true;
+      if (b2b) return true;
       return !service.service.toLowerCase().includes("b2b");
     })
     .map(async (service) => {
@@ -392,7 +413,6 @@ export const checkoutRouter = router({
     .input(getShippingServicesInputSchema)
     .query(async ({ input }): Promise<StripeShippingOption[]> => {
       const { weight, destinationCountry, length, width, height } = input;
-      if (weight > 35) return [pickupShippingOption];
       if (weight >= 20) {
         let shippingServices = await getInterparcelShippingServices(input);
         if (destinationCountry === "AU") {
@@ -411,13 +431,17 @@ export const checkoutRouter = router({
         return shippingServices;
       }
       let shippingServices;
-      let interparcelServices = []
+      let interparcelServices = [] as StripeShippingOption[];
       if ([width, length, height].every((dimension) => dimension < 105)) {
         shippingServices = await getDomesticShippingServices(input);
         interparcelServices = await getInterparcelShippingServices(input);
       } else {
         shippingServices = await getInterparcelShippingServices(input);
       }
-      return [...shippingServices, ...interparcelServices, pickupShippingOption];
+      return [
+        ...shippingServices,
+        ...interparcelServices,
+        pickupShippingOption,
+      ];
     }),
 });

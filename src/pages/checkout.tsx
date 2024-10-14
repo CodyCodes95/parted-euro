@@ -30,19 +30,37 @@ import { useCartStore } from "../context/cartStore";
 import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
 
 export default function CheckoutPage() {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+  return <Checkout />;
+}
+
+export function Checkout() {
   const { cart, setCart, removeItemFromCart } = useCartStore();
   // const [parent] = useAutoAnimate();
 
-  const [address, setAddress] = useState<AddressType>({
-    formattedAddress: "",
-    city: "",
-    region: "",
-    postalCode: "",
-  });
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState<AddressType>(
+    localStorage.getItem("checkout-address")
+      ? (JSON.parse(localStorage.getItem("checkout-address")!) as AddressType)
+      : {
+          formattedAddress: "",
+          city: "",
+          region: "",
+          postalCode: "",
+        },
+  );
+  const [name, setName] = useState(localStorage.getItem("checkout-name") ?? "");
+  const [email, setEmail] = useState(
+    localStorage.getItem("checkout-email") ?? "",
+  );
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [shipToCountryCode, setShipToCountryCode] = useState("AU");
+  const [shipToCountryCode, setShipToCountryCode] = useState(
+    localStorage.getItem("shipToCountryCode") ?? "AU",
+  );
   const [isB2B, setIsB2B] = useState(false);
 
   useEffect(() => {
@@ -57,11 +75,13 @@ export default function CheckoutPage() {
     localStorage.setItem("checkout-email", email);
   }, [email]);
 
+  useEffect(() => {
+    localStorage.setItem("shipToCountryCode", shipToCountryCode);
+  }, [shipToCountryCode]);
+
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
   }, [cart]);
-
-  const pickupOnly = cartWeight > 35;
 
   const largestCartItem = useMemo(() => {
     return cart.reduce(
@@ -91,8 +111,7 @@ export default function CheckoutPage() {
     },
     {
       enabled:
-        !!cart.length &&
-        (!!address.postalCode || shipToCountryCode !== "AU" || pickupOnly),
+        !!cart.length && (!!address.postalCode || shipToCountryCode !== "AU"),
       retry: false,
     },
   );
@@ -265,39 +284,36 @@ export default function CheckoutPage() {
                   placeholder="Enter your email address"
                 />
               </div>
-              {!pickupOnly && (
-                <>
-                  <div className="grid gap-1.5">
-                    <Label className="text-sm">Country</Label>
-                    <Select
-                      value={shipToCountryCode}
-                      onValueChange={(value) => setShipToCountryCode(value)}
-                    >
-                      <SelectTrigger id="country" className="w-full">
-                        <SelectValue placeholder="Select a country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="AU">Australia</SelectItem>
-                        {ausPostShippingCountries.data?.map((country) => (
-                          <SelectItem key={country.code} value={country.code}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {shipToCountryCode === "AU" && (
-                    <div className="grid gap-1.5">
-                      <Label className="text-sm" htmlFor="zip">
-                        Shipping Suburb
-                      </Label>
-                      <AddressAutoComplete
-                        address={address}
-                        setAddress={setAddress}
-                      />
-                    </div>
-                  )}
-                </>
+
+              <div className="grid gap-1.5">
+                <Label className="text-sm">Country</Label>
+                <Select
+                  value={shipToCountryCode}
+                  onValueChange={(value) => setShipToCountryCode(value)}
+                >
+                  <SelectTrigger id="country" className="w-full">
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AU">Australia</SelectItem>
+                    {ausPostShippingCountries.data?.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {shipToCountryCode === "AU" && (
+                <div className="grid gap-1.5">
+                  <Label className="text-sm" htmlFor="zip">
+                    Shipping Suburb
+                  </Label>
+                  <AddressAutoComplete
+                    address={address}
+                    setAddress={setAddress}
+                  />
+                </div>
               )}
               <div className="flex flex-col gap-4">
                 <div className="grid gap-1.5">
@@ -352,15 +368,6 @@ export default function CheckoutPage() {
                 <AlertTitle>Shipping not available</AlertTitle>
                 <AlertDescription>
                   {shippingServices.error.message}
-                </AlertDescription>
-              </Alert>
-            )}
-            {pickupOnly && (
-              <Alert className="w-full">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Pickup only</AlertTitle>
-                <AlertDescription>
-                  This item must be picked up from our warehouse in Knoxfield.
                 </AlertDescription>
               </Alert>
             )}
