@@ -323,8 +323,9 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
         },
       );
       const data = (await response.json()) as InterparcelShippingQuote;
-      if (!data.services.length)
-        throw new Error("Unable to ship this item to the destination country");
+      if (!data.services.length) {
+        return null;
+      }
       return {
         shipping_rate_data: {
           type: "fixed_amount",
@@ -339,7 +340,10 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
       };
     });
   const availableServices = await Promise.all(requests);
-  return availableServices.slice(0, 4);
+  if (!availableServices.length) {
+    throw new Error("Unable to ship this item to the destination country");
+  }
+  return availableServices.filter(Boolean).slice(0, 4) as StripeShippingOption[];
 };
 
 export const checkoutRouter = router({
@@ -418,7 +422,7 @@ export const checkoutRouter = router({
         if (destinationCountry === "AU") {
           shippingServices = [...shippingServices, pickupShippingOption];
         }
-        return shippingServices;
+        return shippingServices
       }
       if (destinationCountry !== "AU") {
         let shippingServices;
