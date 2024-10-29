@@ -589,7 +589,7 @@ const CategoryFilters = () => {
                 size="sm"
                 className={`w-full justify-start ${
                   router.query.category === category.name
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-slate-200 text-accent-foreground"
                     : ""
                 }`}
                 onClick={() => updateCategory("category", category.name)}
@@ -605,7 +605,7 @@ const CategoryFilters = () => {
                       size="sm"
                       className={`w-full justify-start ${
                         router.query.subcat === subCategory.name
-                          ? "bg-accent text-accent-foreground"
+                          ? "bg-slate-200 text-accent-foreground"
                           : ""
                       }`}
                       onClick={() => updateCategory("subcat", subCategory.name)}
