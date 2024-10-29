@@ -60,7 +60,7 @@ const Home: NextPage<HomeProps> = ({ images }) => {
           <Carousel
             plugins={[
               Autoplay({
-                delay: 5000,
+                delay: 10000,
               }),
             ]}
             className="w-full"
