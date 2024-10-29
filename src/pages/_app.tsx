@@ -36,7 +36,7 @@ const FacebookPixel = () => {
       void import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {
-          ReactPixel.init("YOUR_PIXEL_ID_HERE"); // Replace with your Pixel ID
+          ReactPixel.init("1009808854280120"); // Replace with your Pixel ID
           ReactPixel.pageView();
 
           // Track page views on route changes
@@ -70,7 +70,7 @@ const FacebookPixel = () => {
           height="1"
           width="1"
           style={{ display: "none" }}
-          src={`https://www.facebook.com/tr?id=YOUR_PIXEL_ID_HERE&ev=PageView&noscript=1`}
+          src={`https://www.facebook.com/tr?id=1009808854280120&ev=PageView&noscript=1`}
           alt=""
         />
       </noscript>
