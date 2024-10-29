@@ -4,6 +4,15 @@ import { router, publicProcedure } from "../trpc";
 import { type Prisma } from "@prisma/client";
 
 export const listingRouter = router({
+  warmup: publicProcedure.query(async ({ ctx }) => {
+    const listings = await ctx.prisma.listing.findMany({
+      where: {
+        active: true,
+      },
+      take: 1,
+    });
+    return listings;
+  }),
   createListing: adminProcedure
     .input(
       z.object({
@@ -82,9 +91,9 @@ export const listingRouter = router({
           include: {
             partDetails: {
               include: {
-                cars: true
-              }
-            }
+                cars: true,
+              },
+            },
           },
         },
         images: {
