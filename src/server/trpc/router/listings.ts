@@ -3,6 +3,14 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import { type Prisma } from "@prisma/client";
 
+const prepareSearchTerms = (search: string | undefined): string[] => {
+  if (!search) return [];
+  return search
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((term) => term.length > 0);
+};
+
 export const listingRouter = router({
   warmup: publicProcedure.query(async ({ ctx }) => {
     const listings = await ctx.prisma.listing.findMany({
@@ -124,6 +132,41 @@ export const listingRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const searchTerms = prepareSearchTerms(input.search);
+      const searchConditions = searchTerms.map((term) => ({
+        OR: [
+          {
+            title: {
+              contains: term,
+              mode: "insensitive",
+            },
+          },
+          {
+            parts: {
+              some: {
+                partDetails: {
+                  partNo: {
+                    contains: term,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          },
+          {
+            parts: {
+              some: {
+                partDetails: {
+                  alternatePartNumbers: {
+                    contains: term,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          },
+        ],
+      }));
       const orderBy: Record<string, "asc" | "desc"> = {};
       orderBy[input.sortBy] = input.sortOrder as "asc" | "desc";
       if (
@@ -134,44 +177,7 @@ export const listingRouter = router({
       ) {
         const queryWhere = {
           active: true,
-          OR: [
-            // {
-            //   description: {
-            //     contains: input.search || "",
-            //     mode: "insensitive",
-            //   },
-            // },
-            {
-              title: {
-                contains: input.search ?? "",
-                mode: "insensitive",
-              },
-            },
-            {
-              parts: {
-                some: {
-                  partDetails: {
-                    partNo: {
-                      contains: input.search ?? "",
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-            {
-              parts: {
-                some: {
-                  partDetails: {
-                    alternatePartNumbers: {
-                      contains: input.search ?? "",
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-          ],
+          AND: searchTerms.length > 0 ? searchConditions : undefined,
         } as Prisma.ListingWhereInput;
         const listingsRequest = ctx.prisma.listing.findMany({
           take: 20,
@@ -197,47 +203,38 @@ export const listingRouter = router({
       } else {
         const queryWhere = {
           active: true,
-          OR: [
-            // {
-            //   description: {
-            //     contains: input.search || "",
-            //     mode: "insensitive",
-            //   },
-            // },
+          AND: [
+            ...searchConditions,
             {
-              title: {
-                contains: input.search ?? "",
-                mode: "insensitive",
+              parts: {
+                some: {
+                  partDetails: {
+                    partTypes: {
+                      some: {
+                        parent: {
+                          name: {
+                            contains: input.category ?? "",
+                          },
+                        },
+                        name: {
+                          contains: input.subcat ?? "",
+                        },
+                      },
+                    },
+                    cars: {
+                      some: {
+                        generation: {
+                          contains: input.generation ?? "",
+                        },
+                        model: input.model,
+                        series: input.series,
+                      },
+                    },
+                  },
+                },
               },
             },
           ],
-          parts: {
-            some: {
-              partDetails: {
-                partTypes: {
-                  some: {
-                    parent: {
-                      name: {
-                        contains: input.category ?? "",
-                      },
-                    },
-                    name: {
-                      contains: input.subcat ?? "",
-                    },
-                  },
-                },
-                cars: {
-                  some: {
-                    generation: {
-                      contains: input.generation ?? "",
-                    },
-                    model: input.model,
-                    series: input.series,
-                  },
-                },
-              },
-            },
-          },
         } as Prisma.ListingWhereInput;
         const listingsRequest = ctx.prisma.listing.findMany({
           take: 20,
