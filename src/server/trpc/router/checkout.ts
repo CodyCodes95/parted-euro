@@ -343,7 +343,9 @@ const getInterparcelShippingServices = async (input: ShippingServicesInput) => {
   if (!availableServices.length) {
     throw new Error("Unable to ship this item to the destination country");
   }
-  return availableServices.filter(Boolean).slice(0, 4) as StripeShippingOption[];
+  return availableServices
+    .filter(Boolean)
+    .slice(0, 4) as StripeShippingOption[];
 };
 
 export const checkoutRouter = router({
@@ -422,7 +424,7 @@ export const checkoutRouter = router({
         if (destinationCountry === "AU") {
           shippingServices = [...shippingServices, pickupShippingOption];
         }
-        return shippingServices
+        return shippingServices;
       }
       if (destinationCountry !== "AU") {
         let shippingServices;
@@ -443,9 +445,9 @@ export const checkoutRouter = router({
         shippingServices = await getInterparcelShippingServices(input);
       }
       return [
+        pickupShippingOption,
         ...shippingServices,
         ...interparcelServices,
-        pickupShippingOption,
-      ];
+      ].slice(0, 4);
     }),
 });
