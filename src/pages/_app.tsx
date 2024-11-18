@@ -12,6 +12,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Script from "next/script";
+import { NuqsAdapter } from "nuqs/adapters/next/pages";
 
 const geist = localFont({
   src: [
@@ -86,12 +87,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Analytics />
       <FacebookPixel />
-      <Toaster position="bottom-right" richColors />
-      <main className={cn(geist.variable, "font-sans")}>
-        <Nav />
-        <Component {...pageProps} />
-        <Footer />
-      </main>
+      <NuqsAdapter>
+        <Toaster position="bottom-right" richColors />
+        <main className={cn(geist.variable, "font-sans")}>
+          <Nav />
+          <Component {...pageProps} />
+          <Footer />
+        </main>
+      </NuqsAdapter>
     </SessionProvider>
   );
 };

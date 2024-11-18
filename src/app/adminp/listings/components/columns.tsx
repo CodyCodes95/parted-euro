@@ -113,6 +113,22 @@ export const columns: ColumnDef<QueryListingsGetAllAdmin>[] = [
       );
     },
   },
+  {
+    id: "price",
+    accessorKey: "price",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Price" />
+    ),
+    accessorFn: (row) => `$${row.price}`,
+  },
+  {
+    id: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Listed On" />
+    ),
+    accessorKey: "Listed on",
+    accessorFn: (d) => d.createdAt.toLocaleString(),
+  },
   // {
   //   accessorKey: "status",
   //   header: ({ column }) => (

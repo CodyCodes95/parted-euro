@@ -18,7 +18,6 @@ import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import { toast } from "sonner";
 import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
-import { Listing } from "@prisma/client";
 import { type CheckoutItem } from "../api/checkout";
 
 export type OrderItem = {
