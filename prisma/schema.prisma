@@ -101,7 +101,7 @@ model Listing {
   images           Image[]
   active           Boolean            @default(true)
   listedOnEbay     Boolean            @default(false)
-  // ebaySku      String?
+  ebayOfferId      String?
   OrderItem        OrderItem[]
   ListingAnalytics ListingAnalytics[]
 }
