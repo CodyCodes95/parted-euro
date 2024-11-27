@@ -203,11 +203,11 @@ const Nav = () => {
                 </AccordionContent>
               </AccordionItem>
             </Accordion> */}
-            <Link className="group" href="/wrecking">
+            {/* <Link className="group" href="/wrecking">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
                 Cars Wrecking Now
               </p>
-            </Link>
+            </Link> */}
             <Link className="group" href="/returns-refunds">
               <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
                 Warranty & Return Policy
