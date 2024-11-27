@@ -348,6 +348,7 @@ export const ebayRouter = router({
           },
           data: {
             listedOnEbay: true,
+            ebayOfferId: createOffer.offerId,
           },
         });
         console.log("PUBLISHED OFFER");
@@ -417,6 +418,7 @@ export const ebayRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const offer = await ebay.sell.inventory.getOffer(input.offerId);
       await initEbay();
       try {
         const publishOffer = await ebay.sell.inventory.publishOffer(
