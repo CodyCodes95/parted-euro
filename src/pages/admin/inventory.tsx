@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AllPartsQuery, trpc } from "../../utils/trpc";
+import { type AllPartsQuery, trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import type { Part } from "@prisma/client";
@@ -14,6 +14,7 @@ import { Button } from "../../components/ui/button";
 import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import AddInventory from "../../components/inventory/AddInventory";
 import EditInventoryModal from "../../components/inventory/EditInventory";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 const Inventory: NextPage = () => {
   const { status } = useSession({
@@ -22,7 +23,10 @@ const Inventory: NextPage = () => {
       window.location.href = "/";
     },
   });
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useQueryState(
+    "showModal",
+    parseAsBoolean.withDefault(false),
+  );
   const [selected, setSelected] = useState<Part | undefined>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
@@ -33,7 +37,6 @@ const Inventory: NextPage = () => {
   const router = useRouter();
 
   const { vin } = router.query;
-
 
   const parts = trpc.parts.getAll.useQuery({ vin: (vin as string) || "" });
   const deletePart = trpc.parts.deletePart.useMutation();
@@ -95,7 +98,7 @@ const Inventory: NextPage = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   const deletePartFunc = async () => {
@@ -130,7 +133,7 @@ const Inventory: NextPage = () => {
             isOpen={!!selectedPartToEdit}
             onClose={() => setSelectedPartToEdit(undefined)}
             inventoryItem={selectedPartToEdit}
-            existingDonor={selectedPartToEdit.donorVin as string}
+            existingDonor={selectedPartToEdit.donorVin!}
           />
         )}
         <ConfirmDelete

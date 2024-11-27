@@ -6,6 +6,7 @@ import type { Car } from "@prisma/client";
 import { Button } from "../ui/button";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
+import { useRouter } from "next/router";
 
 type AddPartProps = {
   showModal: boolean;
@@ -40,6 +41,8 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [width, setWidth] = useState<string>("");
   const [height, setHeight] = useState<string>("");
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
+
+  const router = useRouter();
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
@@ -101,12 +104,21 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partLength: Number(length),
         width: Number(width),
         height: Number(height),
-        partTypes: partTypeIds as string[],
+        partTypes: partTypeIds!,
         alternatePartNos: alternatePartNos,
       },
       {
         onSuccess: () => {
-          toast.success(`Part ${partNo} successfully created`);
+          toast.success(`Part ${partNo} successfully created`, {
+            action: {
+              label: "Add inventory",
+              onClick: () => {
+                void router.push(
+                  `/admin/inventory?showModal=true&selectedParts=${partNo}`,
+                );
+              },
+            },
+          });
           setPartNo("");
           setName("");
           setCompatibleCars([]);
@@ -227,38 +239,15 @@ const AddPartDetails: React.FC<AddPartProps> = ({
                 value: partType.id,
               };
             })}
-            className="basic-multi-select"
+            className="basic-multi-select h-11"
             classNamePrefix="select"
           />
         </div>
-        <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+        <div className="mb-6 flex flex-col gap-4">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Compatible Cars
           </label>
-          <div className="flex justify-between">
-            <Select
-              onChange={(e: any) => {
-                setCompatibleCars(e.map((car: Options) => car));
-              }}
-              isMulti
-              onInputChange={(e) => {
-                if (e.length > 1) {
-                  setCarSearchInput(e);
-                }
-              }}
-              closeMenuOnSelect={false}
-              options={carOptions.map((group) => {
-                return {
-                  label: group.label,
-                  options: group.options.sort((a, b) =>
-                    a.label.localeCompare(b.label),
-                  ),
-                };
-              })}
-              className="basic-multi-select w-full"
-              classNamePrefix="select"
-              value={compatibleCars as any}
-            />
+          {!!carOptions.length && (
             <Button
               onClick={() =>
                 setCompatibleCars([
@@ -277,7 +266,37 @@ const AddPartDetails: React.FC<AddPartProps> = ({
             >
               Select All
             </Button>
-          </div>
+          )}
+          <Select
+            styles={{
+              valueContainer: (provided) => ({
+                ...provided,
+                maxHeight: "50px",
+                overflow: "auto",
+              }),
+            }}
+            onChange={(e: any) => {
+              setCompatibleCars(e.map((car: Options) => car));
+            }}
+            isMulti
+            onInputChange={(e) => {
+              if (e.length > 1) {
+                setCarSearchInput(e);
+              }
+            }}
+            closeMenuOnSelect={false}
+            options={carOptions.map((group) => {
+              return {
+                label: group.label,
+                options: group.options.sort((a, b) =>
+                  a.label.localeCompare(b.label),
+                ),
+              };
+            })}
+            className="basic-multi-select w-full"
+            classNamePrefix="select"
+            value={compatibleCars as any}
+          />
         </div>
       </div>
       <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">

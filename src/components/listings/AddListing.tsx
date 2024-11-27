@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { QueryListingsGetAllAdmin} from "../../utils/trpc";
+import type { QueryListingsGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { FaCamera } from "react-icons/fa";
@@ -11,6 +11,7 @@ import ImageSorter from "./ImageSorter";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
 interface AddListingProps {
   showModal: boolean;
@@ -32,7 +33,7 @@ const AddListing: React.FC<AddListingProps> = ({
 }) => {
   const [title, setTitle] = useState<string>(listing?.title || "");
   const [description, setDescription] = useState<string>(
-    listing?.description || ""
+    listing?.description || "",
   );
   const [condition, setCondition] = useState<string>(listing?.condition || "");
 
@@ -45,9 +46,14 @@ const AddListing: React.FC<AddListingProps> = ({
 
   const [price, setPrice] = useState<number>(listing?.price || 0);
   const [images, setImages] = useState<Array<string>>([]);
-  const [parts, setParts] = useState<Array<string>>(listing ? listing.parts.map((part) => part.id) : [] || []);
+  const [parts, setParts] = useQueryState<Array<string>>(
+    "parts",
+    parseAsArrayOf(parseAsString).withDefault(
+      listing ? listing.parts.map((part) => part.id) : [],
+    ),
+  );
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
-    listing?.images || []
+    listing?.images || [],
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
 
@@ -97,7 +103,7 @@ const AddListing: React.FC<AddListingProps> = ({
           onError: (err) => {
             toast.error(err.message);
           },
-        }
+        },
       );
       const imagePromises = images.map(async (image: string, i: number) => {
         return await uploadImage.mutateAsync({
@@ -132,7 +138,7 @@ const AddListing: React.FC<AddListingProps> = ({
         onError: (err) => {
           toast.error(err.message);
         },
-      }
+      },
     );
     const imagePromises = images.map(async (image: string, i: number) => {
       return await uploadImage.mutateAsync({
@@ -178,7 +184,10 @@ const AddListing: React.FC<AddListingProps> = ({
     <Modal
       isOpen={showModal}
       title={listing ? "Edit Listing" : "Create Listing"}
-      setIsOpen={setShowModal}
+      setIsOpen={() => {
+        void setParts([]);
+        setShowModal(false);
+      }}
     >
       <div className="space-y-6 p-6">
         <div className="">
@@ -198,9 +207,13 @@ const AddListing: React.FC<AddListingProps> = ({
         </div>
         <div className="">
           <Select
-            value={conditionOptions.find(option => option.value === condition)}
+            value={conditionOptions.find(
+              (option) => option.value === condition,
+            )}
             options={conditionOptions}
-            onChange={(selectedOption) => setCondition(selectedOption?.value || "")}
+            onChange={(selectedOption) =>
+              setCondition(selectedOption?.value || "")
+            }
             placeholder="Condition"
             className="basic-select"
             classNamePrefix="select"
@@ -214,38 +227,36 @@ const AddListing: React.FC<AddListingProps> = ({
             onChange={(e) => setPrice(Number(e.target.value))}
           />
         </div>
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Parts
-            </label>
-            <Select
-              onChange={(e: any) => {
-                setParts(e.map((part: any) => part.value));
-              }}
-              isMulti
-              styles={{
-                option: (styles, { data }) => ({
-                  ...styles,
-                  // @ts-ignore
-                  color: data.listing ? "green" : "black",
-                }),
-              }}
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Parts
+          </label>
+          <Select
+            onChange={(e: any) => {
+              setParts(e.map((part: any) => part.value));
+            }}
+            isMulti
+            styles={{
+              option: (styles, { data }) => ({
+                ...styles,
+                // @ts-ignore
+                color: data.listing ? "green" : "black",
+              }),
+            }}
             options={partOptions.data}
             value={partOptions.data?.reduce((acc: any[], part) => {
               part.options.forEach((option) => {
                 if (parts.includes(option.value)) {
                   acc.push(option);
                 }
-              }
-              )
-              return acc
-            }
-            , [])}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              closeMenuOnSelect={false}
-            />
-          </div>
+              });
+              return acc;
+            }, [])}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            closeMenuOnSelect={false}
+          />
+        </div>
         <div className="flex items-center justify-between">
           <div onClick={() => photoUploadRef.current?.click()}>
             <input
@@ -266,9 +277,7 @@ const AddListing: React.FC<AddListingProps> = ({
             Sort Order
           </a>
         </div>
-        <Button
-          onClick={onSave}
-  >Create Listing</Button>
+        <Button onClick={onSave}>Create Listing</Button>
       </div>
     </Modal>
   );

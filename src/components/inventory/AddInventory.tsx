@@ -6,6 +6,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Plus, Save } from "lucide-react";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { useRouter } from "next/router";
 
 type AddInventoryProps = {
   existingDonor?: string;
@@ -20,12 +22,17 @@ const AddInventory = ({
 }: AddInventoryProps) => {
   const [donorVin, setDonorVin] = useState(existingDonor || "");
   const [variant, setVariant] = useState("");
-  const [selectedParts, setSelectedParts] = useState<string[]>();
+  const [selectedParts, setSelectedParts] = useQueryState<string[]>(
+    "selectedParts",
+    parseAsArrayOf(parseAsString),
+  );
   const [inventoryLocation, setInventoryLocation] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [newInventoryLocation, setNewInventoryLocation] = useState<
     string | undefined
   >();
+
+  const router = useRouter();
 
   const inventoryLocations = trpc.inventoryLocations.getAll.useQuery();
   const parts = trpc.partDetails.getAll.useQuery();
@@ -52,9 +59,9 @@ const AddInventory = ({
   const onSave = async () => {
     if (!selectedParts?.length)
       return toast.error("Please select at least one part");
-    await Promise.all(
+    const savedParts = await Promise.all(
       selectedParts.map(async (partNo) => {
-        await savePart.mutateAsync({
+        return await savePart.mutateAsync({
           partDetailsId: partNo,
           donorVin,
           variant,
@@ -63,15 +70,33 @@ const AddInventory = ({
         });
       }),
     );
-    toast.success(`Parts assigned to ${donorVin}`);
+    toast.success(`Parts assigned to ${donorVin}`, {
+      action: {
+        label: "Create listing",
+        onClick: () => {
+          void router.push(
+            `/admin/listings?showModal=true&parts=${savedParts
+              .map((p) => p.id)
+              .join(",")}`,
+          );
+        },
+      },
+    });
     setVariant("");
-    setSelectedParts([]);
+    void setSelectedParts([]);
     setInventoryLocation("");
     setQuantity(1);
   };
 
   return (
-    <ModalNew isOpen={isOpen} onClose={onClose} title="Add Inventory">
+    <ModalNew
+      isOpen={isOpen}
+      onClose={() => {
+        void setSelectedParts([]);
+        onClose();
+      }}
+      title="Add Inventory"
+    >
       <div className="flex w-full flex-col gap-6 p-4">
         <div className="">
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
@@ -115,7 +140,7 @@ const AddInventory = ({
               };
             })}
             onChange={(e) => {
-              setSelectedParts(e?.map((part) => part.value) || []);
+              void setSelectedParts(e?.map((part) => part.value) || []);
             }}
             closeMenuOnSelect
           />

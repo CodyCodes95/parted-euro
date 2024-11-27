@@ -249,6 +249,13 @@ const EditPartDetails: React.FC<EditPartProps> = ({
             Compatible Cars
           </label>
           <Select
+            styles={{
+              valueContainer: (provided) => ({
+                ...provided,
+                maxHeight: "50px",
+                overflow: "auto",
+              }),
+            }}
             onChange={(e: any) => {
               setCompatibleCars(e.map((car: Options) => car.value));
             }}

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
 import { type CheckoutItem } from "../api/checkout";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 export type OrderItem = {
   inventoryId: string;
@@ -55,7 +56,7 @@ const Listings: NextPage = () => {
 
   const { code } = router.query;
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useQueryState("showModal", parseAsBoolean.withDefault(false));
   const [selected, setSelected] = useState<QueryListingsGetAllAdmin>();
   const [showEbayModal, setShowEbayModal] = useState(false);
   const [filter, setFilter] = useState<string>("");
