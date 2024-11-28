@@ -252,8 +252,7 @@ const Orders = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            data: ["donors", "inventory", "listings", "orders", "data"],
-            cars: ["categories", "parts", "cars"],
+            orders: ["donors", "inventory", "listings", "orders", "data"],
           }}
         />
         <Spacer amount="2" />
