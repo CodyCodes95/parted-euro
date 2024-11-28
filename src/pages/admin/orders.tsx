@@ -64,7 +64,7 @@ const Orders = () => {
   const sendOrderReadyForPickup =
     trpc.order.sendOrderReadyForPickup.useMutation({
       onSuccess: () => {
-        order.refetch();
+        orders.refetch();
       },
     });
 
