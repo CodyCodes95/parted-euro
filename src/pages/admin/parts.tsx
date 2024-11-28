@@ -2,16 +2,16 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { type AllPartDetailsQuery, trpc } from "../../../utils/trpc";
-import AddPartDetails from "../../../components/partDetails/AddPartDetails";
+import { type AllPartDetailsQuery, trpc } from "../../utils/trpc";
+import AddPartDetails from "../../components/partDetails/AddPartDetails";
 import type { Column } from "react-table";
-import AdminTable from "../../../components/tables/AdminTable";
-import ConfirmDelete from "../../../components/modals/ConfirmDelete";
-import EditPartDetails from "../../../components/partDetails/EditPartDetails";
+import AdminTable from "../../components/tables/AdminTable";
+import ConfirmDelete from "../../components/modals/ConfirmDelete";
+import EditPartDetails from "../../components/partDetails/EditPartDetails";
 import { useSession } from "next-auth/react";
-import FilterInput from "../../../components/tables/FilterInput";
-import BreadCrumbs from "../../../components/admin/BreadCrumbs";
-import { Button } from "../../../components/ui/button";
+import FilterInput from "../../components/tables/FilterInput";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import { Button } from "../../components/ui/button";
 
 const Inventory: NextPage = () => {
   const { status } = useSession({
@@ -117,8 +117,15 @@ const Inventory: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            data: ["donors", "inventory", "listings", "orders", "data"],
-            parts: ["categories", "parts", "cars"],
+            parts: [
+              "donors",
+              "inventory",
+              "listings",
+              "orders",
+              "categories",
+              "parts",
+              "cars",
+            ],
           }}
         />
         {showConfirmDelete ? (

@@ -222,7 +222,15 @@ const Listings: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            listings: ["donors", "inventory", "listings", "orders", "data"],
+            listings: [
+              "donors",
+              "inventory",
+              "listings",
+              "orders",
+              "categories",
+              "parts",
+              "cars",
+            ],
           }}
         />
         <Spacer amount="2" />

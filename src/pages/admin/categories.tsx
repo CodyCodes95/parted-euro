@@ -1,15 +1,15 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import type { GetAllSubCategoriesQuery} from "../../../utils/trpc";
-import { trpc } from "../../../utils/trpc";
+import type { GetAllSubCategoriesQuery} from "../../utils/trpc";
+import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
-import AdminTable from "../../../components/tables/AdminTable";
+import AdminTable from "../../components/tables/AdminTable";
 import { useSession } from "next-auth/react";
 import type { PartTypes } from "@prisma/client";
-import AddCategory from "../../../components/categories/AddCategory";
-import { Button } from "../../../components/ui/button";
-import BreadCrumbs from "../../../components/admin/BreadCrumbs";
+import AddCategory from "../../components/categories/AddCategory";
+import { Button } from "../../components/ui/button";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 
 const Categories: NextPage = () => {
   const { status } = useSession({
@@ -68,8 +68,15 @@ const Categories: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            data: ["donors", "inventory", "listings", "orders", "data"],
-            categories: ["categories", "parts", "cars"],
+            categories: [
+              "donors",
+              "inventory",
+              "listings",
+              "orders",
+              "categories",
+              "parts",
+              "cars",
+            ],
           }}
         />
         <div className="py-4">

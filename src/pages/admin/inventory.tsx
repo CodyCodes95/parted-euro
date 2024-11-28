@@ -166,7 +166,15 @@ const Inventory: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            inventory: ["donors", "inventory", "listings", "orders", "data"],
+            inventory: [
+              "donors",
+              "inventory",
+              "listings",
+              "orders",
+              "categories",
+              "parts",
+              "cars",
+            ],
           }}
         />
         {showModal ? (

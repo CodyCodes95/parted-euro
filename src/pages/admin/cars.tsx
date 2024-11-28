@@ -2,17 +2,17 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
-import AdminTable from "../../../components/tables/AdminTable";
-import AddCar from "../../../components/cars/AddCar";
-import ConfirmDelete from "../../../components/modals/ConfirmDelete";
+import AdminTable from "../../components/tables/AdminTable";
+import AddCar from "../../components/cars/AddCar";
+import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import type { Car } from "@prisma/client";
-import Spacer from "../../../components/Spacer";
+import Spacer from "../../components/Spacer";
 import { useSession } from "next-auth/react";
-import FilterInput from "../../../components/tables/FilterInput";
-import { Button } from "../../../components/ui/button";
-import BreadCrumbs from "../../../components/admin/BreadCrumbs";
+import FilterInput from "../../components/tables/FilterInput";
+import { Button } from "../../components/ui/button";
+import BreadCrumbs from "../../components/admin/BreadCrumbs";
 
 const Cars: NextPage = () => {
   const { status } = useSession({
@@ -32,7 +32,7 @@ const Cars: NextPage = () => {
   const deleteCarFunction = async () => {
     if (selectedCar) {
       await deleteCar.mutateAsync({ id: selectedCar.id });
-      cars.refetch();
+      void cars.refetch();
       setShowDeleteModal(false);
     }
   };
@@ -99,8 +99,7 @@ const Cars: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col gap-2 bg-white">
         <BreadCrumbs
           selectOptions={{
-            data: ["donors", "inventory", "listings", "orders", "data"],
-            cars: ["categories", "parts", "cars"],
+            cars: ["donors", "inventory", "listings", "orders", "categories", "parts", "cars"], 
           }}
         />
         {showModal && (
