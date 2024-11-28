@@ -61,6 +61,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { notFound: true };
   }
 
+  console.log({
+    listingMeta: {
+      title: listing.title,
+      description: listing.description,
+      image: listing.images[0]?.url,
+      partNo: listing.parts[0]?.partDetails.partNo,
+    },
+  });
+
   return {
     props: {
       listingMeta: {
@@ -177,10 +186,11 @@ const Listing: NextPage<{
     });
   }, [listing]);
 
-  const quantityAvailable = listing?.parts.reduce((acc, cur) => {
-    acc += cur.quantity;
-    return acc;
-  }, 0);
+  const quantityAvailable =
+    listing?.parts.reduce((acc, cur) => {
+      acc += cur.quantity;
+      return acc;
+    }, 0) ?? 1;
 
   const skeletonClasses = "animate-pulse rounded-md bg-gray-200";
 
@@ -245,34 +255,48 @@ const Listing: NextPage<{
               {quantityAvailable === 0 ? (
                 <Button disabled>Out of stock</Button>
               ) : (
-                <div className="flex items-center justify-center gap-4 md:justify-normal">
-                  <Button
-                    onClick={() => {
-                      if (quantity > 1) {
-                        setQuantity(quantity - 1);
-                      }
-                    }}
-                    className="text-lg"
-                    variant="outline"
+                <div className="flex flex-col gap-2">
+                  <p
+                    className={cn(
+                      "pt-8 text-xl font-bold",
+                      isLoading && `${skeletonClasses} h-8 w-full`,
+                    )}
                   >
-                    -
-                  </Button>
-                  <span className="text-lg">{quantity}</span>
-                  <Button
-                    onClick={() => {
-                      if (quantityAvailable && quantity < quantityAvailable) {
-                        setQuantity(quantity + 1);
-                      }
-                    }}
-                    className="text-lg"
-                    variant="outline"
-                  >
-                    +
-                  </Button>
-                  <span className="text-sm">{quantityAvailable} In stock</span>
-                  <Button onClick={() => addToCart(listing!)}>
-                    Add to cart
-                  </Button>
+                   Quantity
+                  </p>
+                  <div className="flex items-center justify-center gap-4 md:justify-normal">
+                    <Button
+                      disabled={quantity <= 1}
+                      onClick={() => {
+                        if (quantity > 1) {
+                          setQuantity(quantity - 1);
+                        }
+                      }}
+                      className="text-lg"
+                      variant="outline"
+                    >
+                      -
+                    </Button>
+                    <span className="text-lg">{quantity}</span>
+                    <Button
+                      disabled={quantityAvailable >= quantity}
+                      onClick={() => {
+                        if (quantityAvailable && quantity < quantityAvailable) {
+                          setQuantity(quantity + 1);
+                        }
+                      }}
+                      className="text-lg"
+                      variant="outline"
+                    >
+                      +
+                    </Button>
+                    <span className="text-sm">
+                      {quantityAvailable} In stock
+                    </span>
+                    <Button onClick={() => addToCart(listing!)}>
+                      Add to cart
+                    </Button>
+                  </div>
                 </div>
               )}
             </>
