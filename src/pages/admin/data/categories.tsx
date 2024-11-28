@@ -67,7 +67,12 @@ const Categories: NextPage = () => {
         />
       )}
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        <BreadCrumbs />
+        <BreadCrumbs
+          selectOptions={{
+            data: ["donors", "inventory", "listings", "orders", "data"],
+            categories: ["categories", "parts", "cars"],
+          }}
+        />
         <div className="py-4">
           <Button
             onClick={() => {

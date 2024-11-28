@@ -97,7 +97,12 @@ const Cars: NextPage = () => {
         showModal={showDeleteModal}
       />
       <main className="m-20 flex min-h-screen flex-col gap-2 bg-white">
-        <BreadCrumbs />
+        <BreadCrumbs
+          selectOptions={{
+            data: ["donors", "inventory", "listings", "orders", "data"],
+            cars: ["categories", "parts", "cars"],
+          }}
+        />
         {showModal && (
           <AddCar
             car={selectedCar}

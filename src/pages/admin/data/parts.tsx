@@ -115,7 +115,12 @@ const Inventory: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        <BreadCrumbs />
+        <BreadCrumbs
+          selectOptions={{
+            data: ["donors", "inventory", "listings", "orders", "data"],
+            parts: ["categories", "parts", "cars"],
+          }}
+        />
         {showConfirmDelete ? (
           <ConfirmDelete
             showModal={showConfirmDelete}

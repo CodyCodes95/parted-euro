@@ -1,15 +1,68 @@
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { FiHome, FiChevronRight } from "react-icons/fi";
+import { useRouter } from "next/router";
+import { FiHome, FiChevronRight, FiChevronDown } from "react-icons/fi";
 
-const BreadCrumbs = () => {
-  const [client, setClient] = useState(false);
+// Define types for the component props
+interface BreadCrumbsProps {
+  // selectOptions is an object where keys are path segments and values are arrays of possible options
+  selectOptions?: Record<string, string[]>;
+}
+
+// Type for handling path segments
+type PathSegments = string[];
+
+const BreadCrumbs: React.FC<BreadCrumbsProps> = ({ selectOptions = {} }) => {
+  const router = useRouter();
+  const [client, setClient] = useState<boolean>(false);
 
   useEffect(() => {
     setClient(true);
   }, []);
 
   if (!client) return null;
+
+  // Handle select change with typed parameters
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, pathSegments: PathSegments): void => {
+    const newPath = [...pathSegments];
+    newPath[newPath.length - 1] = e.target.value;
+    router.push("/" + newPath.join("/"));
+  };
+
+  // Render breadcrumb item with typed parameters
+  const renderBreadcrumbItem = (path: string, index: number, pathSegments: PathSegments): React.ReactNode => {
+    const hasOptions = selectOptions[path] && Array.isArray(selectOptions[path]);
+
+    if (hasOptions) {
+      return (
+        <div className="relative inline-flex items-center">
+          <select
+            value={path}
+            onChange={(e) => handleSelectChange(e, pathSegments)}
+            className="appearance-none bg-transparent pr-8 font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white cursor-pointer focus:outline-none"
+          >
+            {selectOptions[path]?.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <FiChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
+      );
+    }
+
+    return (
+      <Link
+        href={`/${pathSegments.join("/")}`}
+        className="inline-flex items-center font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+      >
+        {path}
+      </Link>
+    );
+  };
+
+  const pathSegments: PathSegments = window.location.pathname.split("/").filter((x) => x);
 
   return (
     <nav className="flex w-3/4 text-xl" aria-label="Breadcrumb">
@@ -24,30 +77,14 @@ const BreadCrumbs = () => {
           </Link>
         </li>
         <FiChevronRight />
-        {window.location.pathname
-          .split("/")
-          .filter((x) => x)
-          .map((path, index) => {
-            return (
-              <>
-                <li className="inline-flex items-center" key={index}>
-                  <Link
-                    href={`/${window.location.pathname
-                      .split("/")
-                      .filter((x) => x)
-                      .slice(0, index + 1)
-                      .join("/")}`}
-                    className="inline-flex items-center font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    {path}
-                  </Link>
-                </li>
-                {index !==
-                  window.location.pathname.split("/").filter((x) => x).length -
-                    1 && <FiChevronRight />}
-              </>
-            );
-          })}
+        {pathSegments.map((path, index) => (
+          <React.Fragment key={index}>
+            <li className="inline-flex items-center">
+              {renderBreadcrumbItem(path, index, pathSegments.slice(0, index + 1))}
+            </li>
+            {index !== pathSegments.length - 1 && <FiChevronRight />}
+          </React.Fragment>
+        ))}
       </ol>
     </nav>
   );
