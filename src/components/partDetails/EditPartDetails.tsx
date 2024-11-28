@@ -252,7 +252,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
             styles={{
               valueContainer: (provided) => ({
                 ...provided,
-                maxHeight: "50px",
+                maxHeight: "100px",
                 overflow: "auto",
               }),
             }}

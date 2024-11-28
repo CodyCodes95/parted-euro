@@ -271,7 +271,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
             styles={{
               valueContainer: (provided) => ({
                 ...provided,
-                maxHeight: "50px",
+                maxHeight: "100px",
                 overflow: "auto",
               }),
             }}
