@@ -32,10 +32,10 @@ const Modal: FC<ModalProps> = ({
       className="relative z-50"
     >
       {/* The backdrop, rendered as a fixed sibling to the panel container */}
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+      <Dialog.Overlay className="fixed inset-0 bg-black/30 pointer-events-none" aria-hidden="true" />
 
       {/* Full-screen container to center the panel */}
-      <div className="fixed inset-0 flex items-center justify-center p-4">
+      <Dialog.Panel className="fixed inset-0 flex items-center justify-center p-4">
         {/* The actual dialog panel  */}
         {/* <Dialog.Panel className="mx-auto w-1/2 rounded-lg bg-white p-2 max-h-[45rem] overflow-y-scroll"> */}
         <Dialog.Panel
@@ -53,7 +53,7 @@ const Modal: FC<ModalProps> = ({
           </div>
           {children}
         </Dialog.Panel>
-      </div>
+      </Dialog.Panel>
     </Dialog>
   );
 };

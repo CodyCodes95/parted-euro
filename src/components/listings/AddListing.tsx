@@ -20,11 +20,6 @@ interface AddListingProps {
   listing: QueryListingsGetAllAdmin | undefined;
 }
 
-interface Options {
-  label: string;
-  value: string;
-}
-
 const AddListing: React.FC<AddListingProps> = ({
   showModal,
   setShowModal,

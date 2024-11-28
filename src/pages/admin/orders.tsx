@@ -51,7 +51,7 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<
     OrderWithItems | undefined
   >();
-  const { status } = useSession({
+  useSession({
     required: true,
     onUnauthenticated() {
       window.location.href = "/";
