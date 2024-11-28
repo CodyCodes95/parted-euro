@@ -169,7 +169,15 @@ export const orderRouter = router({
         },
       });
       if (!order) return;
-      await sendOrderReadyForPickupEmail(order);
+      void sendOrderReadyForPickupEmail(order);
+      await ctx.prisma.order.update({
+        where: {
+          id: order.id,
+        },
+        data: {
+          status: "Ready for pickup",
+        },
+      });
     }),
   sendOrderShippedEmail: adminProcedure
     .input(
@@ -198,6 +206,14 @@ export const orderRouter = router({
         },
       });
       if (!order) throw new Error("Order not found");
-      sendOrderShippedEmail(order);
+      void sendOrderShippedEmail(order);
+      await ctx.prisma.order.update({
+        where: {
+          id: order.id,
+        },
+        data: {
+          status: "Completed",
+        },
+      });
     }),
 });
