@@ -155,6 +155,10 @@ const Orders = () => {
         accessor: "email",
       },
       {
+        Header: "Phone",
+        accessor: "phoneNumber",
+      },
+      {
         Header: "Status",
         accessor: "status",
       },
@@ -189,10 +193,6 @@ const Orders = () => {
             <DialogContent className="sm:max-w-[850px]">
               <DialogHeader>
                 <DialogTitle>Order</DialogTitle>
-                {/* <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription> */}
               </DialogHeader>
               <Table
                 columns={orderItemColumns}

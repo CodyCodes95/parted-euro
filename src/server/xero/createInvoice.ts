@@ -113,6 +113,7 @@ export const createInvoice = async (
       },
       data: {
         shipping: shipping ?? 0,
+        phoneNumber: event.customer_details?.phone,
         paymentIntentId: event.payment_intent as string,
         xeroInvoiceId: invoice?.invoiceNumber,
         shippingAddress: `${event.shipping_details!.address!.line1}, ${

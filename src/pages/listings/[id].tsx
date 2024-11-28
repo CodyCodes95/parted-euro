@@ -279,7 +279,7 @@ const Listing: NextPage<{
                     </Button>
                     <span className="text-lg">{quantity}</span>
                     <Button
-                      disabled={quantityAvailable >= quantity}
+                      disabled={quantityAvailable <= quantity}
                       onClick={() => {
                         if (quantityAvailable && quantity < quantityAvailable) {
                           setQuantity(quantity + 1);

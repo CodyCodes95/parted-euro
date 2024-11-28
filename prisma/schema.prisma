@@ -180,6 +180,7 @@ model Order {
   xeroInvoiceId   String?       @unique
   name            String
   email           String
+  phoneNumber     String?
   subtotal        Float
   shippingRateId  String?
   shipping        Float?
