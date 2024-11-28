@@ -62,7 +62,11 @@ const Orders = () => {
 
   const regenerateInvoice = trpc.order.regenerateInvoice.useMutation();
   const sendOrderReadyForPickup =
-    trpc.order.sendOrderReadyForPickup.useMutation();
+    trpc.order.sendOrderReadyForPickup.useMutation({
+      onSuccess: () => {
+        order.refetch();
+      },
+    });
 
   type PartFromOrder = {
     part: string;
@@ -270,6 +274,7 @@ const Orders = () => {
         />
       </main>
       <TrackingNumberModal
+        onSuccess={() => void order.refetch()}
         order={selectedOrder}
         open={!!selectedOrder}
         onOpenChange={(open) => {
@@ -286,9 +291,11 @@ type TrackingNumberModalProps = {
   order: OrderWithItems | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess: () => void;
 };
 
 const TrackingNumberModal = ({
+  onSuccess,
   order,
   onOpenChange,
   open,
@@ -298,7 +305,11 @@ const TrackingNumberModal = ({
   );
   const [carrier, setCarrier] = useState<string>(order?.shippingMethod ?? "");
 
-  const sendOrderShippedEmail = trpc.order.sendOrderShippedEmail.useMutation();
+  const sendOrderShippedEmail = trpc.order.sendOrderShippedEmail.useMutation({
+    onSuccess: () => {
+      onSuccess();
+    },
+  });
   const updateOrder = trpc.order.updateOrder.useMutation();
 
   const onSave = async () => {
