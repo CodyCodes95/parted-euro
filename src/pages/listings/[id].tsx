@@ -241,37 +241,41 @@ const Listing: NextPage<{
           {isLoading ? (
             <SkeletonCell classNames="h-8 w-full" />
           ) : (
-            <div className="flex items-center justify-center gap-4 md:justify-normal">
-              <Button
-                onClick={() => {
-                  if (quantity > 1) {
-                    setQuantity(quantity - 1);
-                  }
-                }}
-                className="text-lg"
-                variant="outline"
-              >
-                -
-              </Button>
-              <span className="text-lg">{quantity}</span>
-              <Button
-                onClick={() => {
-                  if (quantityAvailable && quantity < quantityAvailable) {
-                    setQuantity(quantity + 1);
-                  }
-                }}
-                className="text-lg"
-                variant="outline"
-              >
-                +
-              </Button>
-              <span className="text-sm">{quantityAvailable} In stock</span>
+            <>
               {quantityAvailable === 0 ? (
                 <Button disabled>Out of stock</Button>
               ) : (
-                <Button onClick={() => addToCart(listing!)}>Add to cart</Button>
+                <div className="flex items-center justify-center gap-4 md:justify-normal">
+                  <Button
+                    onClick={() => {
+                      if (quantity > 1) {
+                        setQuantity(quantity - 1);
+                      }
+                    }}
+                    className="text-lg"
+                    variant="outline"
+                  >
+                    -
+                  </Button>
+                  <span className="text-lg">{quantity}</span>
+                  <Button
+                    onClick={() => {
+                      if (quantityAvailable && quantity < quantityAvailable) {
+                        setQuantity(quantity + 1);
+                      }
+                    }}
+                    className="text-lg"
+                    variant="outline"
+                  >
+                    +
+                  </Button>
+                  <span className="text-sm">{quantityAvailable} In stock</span>
+                  <Button onClick={() => addToCart(listing!)}>
+                    Add to cart
+                  </Button>
+                </div>
               )}
-            </div>
+            </>
           )}
           <div className="p-4" />
         </div>

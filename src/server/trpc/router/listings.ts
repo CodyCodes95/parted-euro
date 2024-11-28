@@ -377,11 +377,6 @@ export const listingRouter = router({
             },
           },
           parts: {
-            where: {
-              quantity: {
-                gt: 0,
-              },
-            },
             select: {
               donor: {
                 select: {

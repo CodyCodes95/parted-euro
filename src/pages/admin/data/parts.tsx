@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AllPartDetailsQuery, trpc } from "../../../utils/trpc";
+import { type AllPartDetailsQuery, trpc } from "../../../utils/trpc";
 import AddPartDetails from "../../../components/partDetails/AddPartDetails";
 import type { Column } from "react-table";
 import AdminTable from "../../../components/tables/AdminTable";
@@ -23,10 +23,10 @@ const Inventory: NextPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const [selectedPart, setSelectedPart] =
-    useState<AllPartDetailsQuery | null>(null);
+  const [selectedPart, setSelectedPart] = useState<AllPartDetailsQuery | null>(
+    null,
+  );
   const [filter, setFilter] = useState<string>("");
-
 
   const parts = trpc.partDetails.getAll.useQuery();
   const deletePart = trpc.partDetails.deletePartDetail.useMutation({
@@ -97,13 +97,13 @@ const Inventory: NextPage = () => {
         ),
       },
     ],
-    [parts.data]
+    [parts.data],
   );
 
   const deletePartDetailFunc = async () => {
     if (selectedPart) {
       await deletePart.mutateAsync({ partNo: selectedPart.partNo });
-      parts.refetch();
+      void parts.refetch();
       setShowConfirmDelete(false);
     }
   };
