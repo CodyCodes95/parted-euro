@@ -117,6 +117,7 @@ const Inventory: NextPage = () => {
             <Button
               variant={"outline"}
               onClick={() => {
+                console.log(d.partDetails.name);
                 setListingToCreate({
                   // @ts-expect-error: bad types
                   parts: [{ id: d.id }],
@@ -178,12 +179,14 @@ const Inventory: NextPage = () => {
             }}
           />
         ) : null}
-        <AddListing
-          showModal={!!listingToCreate}
-          setShowModal={() => setListingToCreate(undefined)}
-          listing={listingToCreate}
-          refetch={parts.refetch}
-        />
+        {!!listingToCreate && (
+          <AddListing
+            showModal={!!listingToCreate}
+            setShowModal={() => setListingToCreate(undefined)}
+            listing={listingToCreate}
+            refetch={parts.refetch}
+          />
+        )}
         {selectedPartToEdit && (
           <EditInventoryModal
             isOpen={!!selectedPartToEdit}
