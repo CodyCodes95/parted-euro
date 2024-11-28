@@ -274,7 +274,7 @@ const Orders = () => {
         />
       </main>
       <TrackingNumberModal
-        onSuccess={() => void order.refetch()}
+        onSuccess={() => void orders.refetch()}
         order={selectedOrder}
         open={!!selectedOrder}
         onOpenChange={(open) => {
