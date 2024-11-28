@@ -17,7 +17,7 @@ const Data: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Data</title>
+        <title>Admin -Data</title>
       </Head>
       <div className="p-20" />
       <main className="flex min-h-screen w-full flex-col items-center">

@@ -212,7 +212,7 @@ const Listings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Admin - Orders</title>
+        <title>Admin - Listings</title>
       </Head>
       <ConfirmDelete
         deleteFunction={onDeleteListing}
