@@ -222,7 +222,11 @@ const Listings: NextPage = () => {
         showModal={showDeleteModal}
       />
       <main className="m-20 flex min-h-screen flex-col bg-white">
-        <BreadCrumbs />
+        <BreadCrumbs
+          selectOptions={{
+            listings: ["donors", "inventory", "listings", "orders", "data"],
+          }}
+        />
         <Spacer amount="2" />
         {showModal && (
           <AddListing

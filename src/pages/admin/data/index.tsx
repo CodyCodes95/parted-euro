@@ -21,7 +21,11 @@ const Data: NextPage = () => {
       </Head>
       <div className="p-20" />
       <main className="flex min-h-screen w-full flex-col items-center">
-        <BreadCrumbs />
+        <BreadCrumbs
+          selectOptions={{
+            data: ["donors", "inventory", "listings", "orders", "data"],
+          }}
+        />
         <section className="w-full bg-white py-10 sm:py-16 lg:py-24">
           <div className="mx-auto w-[50%] px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-12 text-center sm:grid-cols-2 md:grid-cols-2 lg:gap-y-16">
