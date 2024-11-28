@@ -162,6 +162,9 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ["card", "afterpay_clearpay"],
+      phone_number_collection: {
+        enabled: true,
+      },
       shipping_address_collection: {
         allowed_countries: [countryCode as any],
       },
