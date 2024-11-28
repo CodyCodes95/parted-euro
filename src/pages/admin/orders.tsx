@@ -64,7 +64,7 @@ const Orders = () => {
   const sendOrderReadyForPickup =
     trpc.order.sendOrderReadyForPickup.useMutation({
       onSuccess: () => {
-        orders.refetch();
+        void orders.refetch();
       },
     });
 
@@ -169,6 +169,10 @@ const Orders = () => {
       {
         Header: "Shipping method",
         accessor: "shippingMethod",
+      },
+      {
+        Header: "Tracking number",
+        accessor: "trackingNumber",
       },
       {
         Header: "Shipping Address",
