@@ -66,7 +66,9 @@ export const orderRouter = router({
   getAllAdmin: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.order.findMany({
       where: {
-        status: "Paid",
+        NOT: {
+          status: "PENDING",
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -119,7 +121,7 @@ export const orderRouter = router({
         },
       });
       if (!failedOrder) return;
-      createInvoice(
+      void createInvoice(
         failedOrder.stripeEvent as unknown as Stripe.Checkout.Session,
         failedOrder.lineItems as any,
       );

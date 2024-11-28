@@ -86,7 +86,7 @@ const AddListing: React.FC<AddListingProps> = ({
   };
 
   const onSave = async () => {
-    if (listing) {
+    if (listing?.id) {
       const result = await updateListing.mutateAsync(
         {
           id: listing.id,
@@ -183,7 +183,7 @@ const AddListing: React.FC<AddListingProps> = ({
   return (
     <Modal
       isOpen={showModal}
-      title={listing ? "Edit Listing" : "Create Listing"}
+      title={listing?.id ? "Edit Listing" : "Create Listing"}
       setIsOpen={() => {
         void setParts([]);
         setShowModal(false);

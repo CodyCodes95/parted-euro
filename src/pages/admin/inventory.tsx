@@ -54,7 +54,7 @@ const Inventory: NextPage = () => {
     if (!parts.data) return parts;
     const filtered = parts.data.filter((part) => {
       if (!showOnlyUnlisted) return true;
-      return part.listing.length === 0
+      return part.listing.length === 0;
     });
     return {
       ...parts,
@@ -119,7 +119,8 @@ const Inventory: NextPage = () => {
               onClick={() => {
                 setListingToCreate({
                   // @ts-expect-error: bad types
-                  parts: [{id: d.id}],
+                  parts: [{ id: d.id }],
+                  title: d.partDetails.name,
                 });
               }}
             >
