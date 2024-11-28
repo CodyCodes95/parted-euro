@@ -2,7 +2,11 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { type AllPartsQuery, trpc } from "../../utils/trpc";
+import {
+  type AllPartsQuery,
+  type QueryListingsGetAllAdmin,
+  trpc,
+} from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import type { Part } from "@prisma/client";
@@ -11,13 +15,16 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
+import { Switch } from "../../components/ui/switch";
 import BreadCrumbs from "../../components/admin/BreadCrumbs";
 import AddInventory from "../../components/inventory/AddInventory";
 import EditInventoryModal from "../../components/inventory/EditInventory";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import { Edit, Edit2, ExternalLink, Trash2 } from "lucide-react";
+import AddListing from "@/components/listings/AddListing";
 
 const Inventory: NextPage = () => {
-  const { status } = useSession({
+  useSession({
     required: true,
     onUnauthenticated() {
       window.location.href = "/";
@@ -33,7 +40,9 @@ const Inventory: NextPage = () => {
   const [selectedPartToEdit, setSelectedPartToEdit] = useState<
     Part | undefined
   >();
-
+  const [showOnlyUnlisted, setShowOnlyUnlisted] = useState(false);
+  const [listingToCreate, setListingToCreate] =
+    useState<QueryListingsGetAllAdmin>();
   const router = useRouter();
 
   const { vin } = router.query;
@@ -41,22 +50,34 @@ const Inventory: NextPage = () => {
   const parts = trpc.parts.getAll.useQuery({ vin: (vin as string) || "" });
   const deletePart = trpc.parts.deletePart.useMutation();
 
+  const partsFiltered = useMemo(() => {
+    if (!parts.data) return parts;
+    const filtered = parts.data.filter((part) => {
+      if (!showOnlyUnlisted) return true;
+      return part.listing.length === 0
+    });
+    return {
+      ...parts,
+      data: filtered,
+    };
+  }, [parts, showOnlyUnlisted]);
+
   const columns = useMemo<Array<Column<AllPartsQuery>>>(
     () => [
       {
         Header: "Part",
         // TODO: Ts ignoring, I think new Tanstack table allows for types like this?
-        // @ts-ignore
+        // @ts-expect-error: bad types
         accessor: "partDetails.name",
       },
       {
         Header: "Partno",
-        // @ts-ignore
+        // @ts-expect-error: bad types
         accessor: "partDetails.partNo",
       },
       {
         Header: "Location",
-        // @ts-ignore
+        // @ts-expect-error: bad types
         accessor: "inventoryLocation.name",
       },
       {
@@ -72,28 +93,52 @@ const Inventory: NextPage = () => {
         accessor: "donorVin",
       },
       {
+        Header: "Listed",
+        accessor: (d) => <p>{d.listing.length ? "Yes" : "No"}</p>,
+      },
+      {
         Header: "Edit",
         accessor: (d: Part) => (
           <Button
+            variant={"outline"}
             onClick={() => {
               setSelectedPartToEdit(d);
             }}
           >
-            Edit Part
+            <Edit className="text-black" />
           </Button>
         ),
+      },
+      {
+        Header: "Add listing",
+        accessor: (d) => {
+          if (!!d.listing.length) return null;
+          return (
+            <Button
+              variant={"outline"}
+              onClick={() => {
+                setListingToCreate({
+                  // @ts-expect-error: bad types
+                  parts: [{id: d.id}],
+                });
+              }}
+            >
+              <ExternalLink className="text-black" />
+            </Button>
+          );
+        },
       },
       {
         Header: "Delete",
         accessor: (d: Part) => (
           <Button
-            variant={"destructive"}
+            variant={"outline"}
             onClick={() => {
               setSelected(d);
               setShowDeleteModal(true);
             }}
           >
-            Delete Part
+            <Trash2 className="text-red-500" />
           </Button>
         ),
       },
@@ -105,7 +150,7 @@ const Inventory: NextPage = () => {
     if (!selected) return;
     await deletePart.mutateAsync({ id: selected.id });
     toast.success("Part deleted successfully");
-    parts.refetch();
+    void parts.refetch();
     setShowDeleteModal(false);
     setSelected(undefined);
   };
@@ -126,12 +171,18 @@ const Inventory: NextPage = () => {
           <AddInventory
             isOpen={showModal}
             onClose={() => {
-              parts.refetch();
               setSelected(undefined);
-              setShowModal(false);
+              void parts.refetch();
+              void setShowModal(false);
             }}
           />
         ) : null}
+        <AddListing
+          showModal={!!listingToCreate}
+          setShowModal={() => setListingToCreate(undefined)}
+          listing={listingToCreate}
+          refetch={parts.refetch}
+        />
         {selectedPartToEdit && (
           <EditInventoryModal
             isOpen={!!selectedPartToEdit}
@@ -146,10 +197,20 @@ const Inventory: NextPage = () => {
           showModal={showDeleteModal}
         />
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
-          <div>
+          <div className="flex items-center gap-4">
             <Button onClick={() => setShowModal(true)}>
               Add Inventory Item
             </Button>
+            <div className="flex items-center gap-2">
+              <label htmlFor="listed-toggle" className="text-sm font-medium">
+                Show unlisted parts only
+              </label>
+              <Switch
+                id="listed-toggle"
+                checked={showOnlyUnlisted}
+                onCheckedChange={setShowOnlyUnlisted}
+              />
+            </div>
           </div>
           <FilterInput
             filter={filter}
@@ -161,7 +222,7 @@ const Inventory: NextPage = () => {
           columns={columns}
           filter={filter}
           setFilter={setFilter}
-          data={parts}
+          data={partsFiltered}
         />
       </main>
     </>

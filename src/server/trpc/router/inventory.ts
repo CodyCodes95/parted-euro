@@ -148,13 +148,18 @@ export const partRouter = router({
     }),
   getAll: adminProcedure
     .input(z.object({ vin: z.string().optional() }))
-    .query(({ input, ctx }) => {
+    .query(async ({ input, ctx }) => {
       if (input.vin) {
         return ctx.prisma.part.findMany({
           where: {
             donorVin: input.vin,
           },
           include: {
+            listing: {
+              select: {
+                id: true,
+              },
+            },
             partDetails: true,
             donor: {
               include: {
@@ -165,8 +170,13 @@ export const partRouter = router({
           },
         });
       }
-      return ctx.prisma.part.findMany({
+      const parts = await ctx.prisma.part.findMany({
         include: {
+          listing: {
+            select: {
+              id: true,
+            },
+          },
           partDetails: true,
           donor: {
             include: {
@@ -176,6 +186,7 @@ export const partRouter = router({
           inventoryLocation: true,
         },
       });
+      return parts;
     }),
   decreaseQuantity: adminProcedure
     .input(

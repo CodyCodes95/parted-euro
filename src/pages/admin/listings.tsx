@@ -145,7 +145,7 @@ const Listings: NextPage = () => {
           <Button
             onClick={() => {
               setSelected(d);
-              setShowModal(true);
+              void setShowModal(true);
             }}
           >
             Edit
@@ -261,7 +261,7 @@ const Listings: NextPage = () => {
           <Button
             onClick={() => {
               setSelected(undefined);
-              setShowModal(true);
+              void setShowModal(true);
             }}
           >
             Add Listing

@@ -346,11 +346,11 @@ const Nav = () => {
             </NavigationMenuContent>
           </NavigationMenuItem> */}
           <NavigationMenuItem>
-            <Link href="/wrecking" legacyBehavior passHref>
+            {/* <Link href="/wrecking" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Cars Wrecking Now
               </NavigationMenuLink>
-            </Link>
+            </Link> */}
           </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/returns-refunds" legacyBehavior passHref>

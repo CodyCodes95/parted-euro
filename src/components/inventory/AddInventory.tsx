@@ -156,12 +156,13 @@ const AddInventory = ({
                   value={newInventoryLocation}
                   onChange={(e) => setNewInventoryLocation(e.target.value)}
                 />
-                <div
+                <Button
+                  disabled={saveInventoryLocationMutation.isLoading}
                   onClick={() => saveInventoryLocation()}
                   className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
                 >
                   <Save />
-                </div>
+                </Button>
               </>
             ) : (
               <>
