@@ -154,7 +154,7 @@ const AddListing: React.FC<AddListingProps> = ({
     setImages([]);
   };
 
-  if (showImageSorter && listing) {
+  if (showImageSorter && listing?.id) {
     return (
       <ImageSorter
         setImages={setUploadedImages}
@@ -165,7 +165,7 @@ const AddListing: React.FC<AddListingProps> = ({
     );
   }
 
-  if (showImageSorter && !listing) {
+  if (showImageSorter && !listing?.id) {
     return (
       <ImageSorter
         setImages={setImages}
