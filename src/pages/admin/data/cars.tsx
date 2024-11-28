@@ -89,7 +89,7 @@ const Cars: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Parts</title>
+        <title>Admin - Cars</title>
       </Head>
       <ConfirmDelete
         deleteFunction={deleteCarFunction}

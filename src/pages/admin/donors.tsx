@@ -202,7 +202,7 @@ const Donors: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Donors</title>
+        <title>Admin - Donors</title>
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs

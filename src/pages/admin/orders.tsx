@@ -246,8 +246,7 @@ const Orders = () => {
   return (
     <>
       <Head>
-        <title>Listings</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Admin - Orders</title>
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs

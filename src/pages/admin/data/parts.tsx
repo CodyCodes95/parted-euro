@@ -111,7 +111,7 @@ const Inventory: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Parts</title>
+        <title>Admin - Parts</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="m-20 flex min-h-screen flex-col bg-white">

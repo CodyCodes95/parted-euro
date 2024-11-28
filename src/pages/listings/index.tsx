@@ -42,6 +42,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import Head from "next/head";
 
 const Listings: NextPage = () => {
   const router = useRouter();
@@ -149,158 +150,164 @@ const Listings: NextPage = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <div className="grid min-h-screen w-full lg:grid-cols-[300px_1fr]">
-        <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
-          <CategoryFilters />
-        </div>
-        <div className="flex flex-col p-4">
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="relative w-full md:w-1/2">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full appearance-none bg-white pl-8 shadow-none dark:bg-gray-950"
-                placeholder="Search products..."
-                type="search"
-              />
-            </div>
-            <div className="flex w-full flex-wrap items-center gap-2">
-              <Button
-                variant={"outline"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowCarSelection(true);
-                }}
-                className="flex items-center gap-2"
-              >
-                <BsCarFront />
-                {selectedCar || "Select car"}
-              </Button>
-              {selectedCar && (
-                <X
-                  onClick={() => {
-                    const query = router.query;
-                    delete query.series;
-                    delete query.generation;
-                    delete query.model;
-                    void router.push(
-                      {
-                        pathname: router.pathname,
-                        query: query,
-                      },
-                      undefined,
-                      {
-                        shallow: true,
-                      },
-                    );
-                    setSelectedCar("");
-                  }}
-                  className="cursor-pointer hover:text-red-500"
-                />
-              )}
-              <Button
-                variant={"outline"}
-                className="md:hidden"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowCategorySelection(true);
-                }}
-              >
-                {category
-                  ? `${category.toString()} ${
-                      subcat ? `- ${subcat.toString()}` : ""
-                    }`
-                  : "Categories"}
-              </Button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="ml-0 flex items-center gap-4 md:ml-auto"
-                    variant="outline"
-                  >
-                    {sortChoices[sortBy]}
-                    {sortOrder === "asc" ? <ArrowUp /> : <ArrowDown />}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-32 p-0">
-                  <div className="flex flex-col">
-                    <PopoverClose asChild>
-                      <button
-                        onClick={() => changeSort("title")}
-                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
-                      >
-                        <span>Title</span>
-                        {sortBy == "title" && sortOrder === "asc" ? (
-                          <ArrowUp />
-                        ) : sortBy == "title" && sortOrder === "desc" ? (
-                          <ArrowDown />
-                        ) : null}
-                      </button>
-                    </PopoverClose>
-                    <PopoverClose asChild>
-                      <button
-                        onClick={() => changeSort("price")}
-                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
-                      >
-                        <span>Price</span>
-                        {sortBy == "price" && sortOrder === "asc" ? (
-                          <ArrowUp />
-                        ) : sortBy == "price" && sortOrder === "desc" ? (
-                          <ArrowDown />
-                        ) : null}
-                      </button>
-                    </PopoverClose>
-                    <PopoverClose asChild>
-                      <button
-                        onClick={() => changeSort("updatedAt")}
-                        className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
-                      >
-                        <span>Updated</span>
-                        {sortBy == "updatedAt" && sortOrder === "asc" ? (
-                          <ArrowUp />
-                        ) : sortBy == "updatedAt" && sortOrder === "desc" ? (
-                          <ArrowDown />
-                        ) : null}
-                      </button>
-                    </PopoverClose>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
+    <>
+      <Head>
+        <title>Parted Euro - Listings</title>
+        <meta name="description" content="Parted Euro - Listings" />
+      </Head>
+      <div className="flex w-full flex-col gap-4">
+        <div className="grid min-h-screen w-full lg:grid-cols-[300px_1fr]">
+          <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
+            <CategoryFilters />
           </div>
-          <ListingsResults
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            router={router}
-            query={router.query}
-            debouncedSearch={debouncedSearch}
-          />
-          <div className="p-2" />
+          <div className="flex flex-col p-4">
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="relative w-full md:w-1/2">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full appearance-none bg-white pl-8 shadow-none dark:bg-gray-950"
+                  placeholder="Search products..."
+                  type="search"
+                />
+              </div>
+              <div className="flex w-full flex-wrap items-center gap-2">
+                <Button
+                  variant={"outline"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowCarSelection(true);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <BsCarFront />
+                  {selectedCar || "Select car"}
+                </Button>
+                {selectedCar && (
+                  <X
+                    onClick={() => {
+                      const query = router.query;
+                      delete query.series;
+                      delete query.generation;
+                      delete query.model;
+                      void router.push(
+                        {
+                          pathname: router.pathname,
+                          query: query,
+                        },
+                        undefined,
+                        {
+                          shallow: true,
+                        },
+                      );
+                      setSelectedCar("");
+                    }}
+                    className="cursor-pointer hover:text-red-500"
+                  />
+                )}
+                <Button
+                  variant={"outline"}
+                  className="md:hidden"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowCategorySelection(true);
+                  }}
+                >
+                  {category
+                    ? `${category.toString()} ${
+                        subcat ? `- ${subcat.toString()}` : ""
+                      }`
+                    : "Categories"}
+                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      className="ml-0 flex items-center gap-4 md:ml-auto"
+                      variant="outline"
+                    >
+                      {sortChoices[sortBy]}
+                      {sortOrder === "asc" ? <ArrowUp /> : <ArrowDown />}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-32 p-0">
+                    <div className="flex flex-col">
+                      <PopoverClose asChild>
+                        <button
+                          onClick={() => changeSort("title")}
+                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                        >
+                          <span>Title</span>
+                          {sortBy == "title" && sortOrder === "asc" ? (
+                            <ArrowUp />
+                          ) : sortBy == "title" && sortOrder === "desc" ? (
+                            <ArrowDown />
+                          ) : null}
+                        </button>
+                      </PopoverClose>
+                      <PopoverClose asChild>
+                        <button
+                          onClick={() => changeSort("price")}
+                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                        >
+                          <span>Price</span>
+                          {sortBy == "price" && sortOrder === "asc" ? (
+                            <ArrowUp />
+                          ) : sortBy == "price" && sortOrder === "desc" ? (
+                            <ArrowDown />
+                          ) : null}
+                        </button>
+                      </PopoverClose>
+                      <PopoverClose asChild>
+                        <button
+                          onClick={() => changeSort("updatedAt")}
+                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                        >
+                          <span>Updated</span>
+                          {sortBy == "updatedAt" && sortOrder === "asc" ? (
+                            <ArrowUp />
+                          ) : sortBy == "updatedAt" && sortOrder === "desc" ? (
+                            <ArrowDown />
+                          ) : null}
+                        </button>
+                      </PopoverClose>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            <ListingsResults
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              router={router}
+              query={router.query}
+              debouncedSearch={debouncedSearch}
+            />
+            <div className="p-2" />
+          </div>
         </div>
+        {showCarSelection ? (
+          <Drawer
+            title="Find your car"
+            onOpenChange={(open) => setShowCarSelection(open)}
+            onClose={() => setShowCarSelection(false)}
+            open={showCarSelection}
+          >
+            <CarSelection />
+          </Drawer>
+        ) : null}
+        {showCategorySelection && (
+          <Drawer
+            title="Select category"
+            onOpenChange={(open) => setShowCarSelection(open)}
+            onClose={() => setShowCategorySelection(false)}
+            open={true}
+          >
+            <CategoryFilters />
+          </Drawer>
+        )}
       </div>
-      {showCarSelection ? (
-        <Drawer
-          title="Find your car"
-          onOpenChange={(open) => setShowCarSelection(open)}
-          onClose={() => setShowCarSelection(false)}
-          open={showCarSelection}
-        >
-          <CarSelection />
-        </Drawer>
-      ) : null}
-      {showCategorySelection && (
-        <Drawer
-          title="Select category"
-          onOpenChange={(open) => setShowCarSelection(open)}
-          onClose={() => setShowCategorySelection(false)}
-          open={true}
-        >
-          <CategoryFilters />
-        </Drawer>
-      )}
-    </div>
+    </>
   );
 };
 

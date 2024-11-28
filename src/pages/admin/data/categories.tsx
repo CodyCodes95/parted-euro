@@ -55,8 +55,7 @@ const Categories: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Categories</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Admin - Categories</title>
       </Head>
       {showModal && (
         <AddCategory

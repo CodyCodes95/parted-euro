@@ -212,9 +212,7 @@ const Listings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>BMW Parts</title>
-        <meta name="description" content="BMW Parts" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Admin - Orders</title>
       </Head>
       <ConfirmDelete
         deleteFunction={onDeleteListing}
