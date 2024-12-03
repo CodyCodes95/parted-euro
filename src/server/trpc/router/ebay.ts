@@ -342,7 +342,7 @@ export const ebayRouter = router({
         const publishOffer = await ebay.sell.inventory.publishOffer(
           createOffer.offerId,
         );
-        void ctx.prisma.listing.update({
+        await ctx.prisma.listing.update({
           where: {
             id: input.listingId,
           },
