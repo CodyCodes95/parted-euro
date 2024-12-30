@@ -110,6 +110,10 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       {
         onSuccess: () => {
           toast.success(`Part ${partNo} successfully created`, {
+            duration: Infinity,
+            cancel: {
+              label: "Cancel",
+            },
             action: {
               label: "Add inventory",
               onClick: () => {
