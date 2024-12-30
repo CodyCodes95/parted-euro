@@ -45,12 +45,14 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { toast } from "sonner";
 import Table from "../../components/tables/Table";
+import { useQueryState } from "nuqs";
 
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
   const [selectedOrder, setSelectedOrder] = useState<
     OrderWithItems | undefined
   >();
+  const [selectedOrderId, setSelectedOrderId] = useQueryState("orderId");
   useSession({
     required: true,
     onUnauthenticated() {
@@ -192,22 +194,12 @@ const Orders = () => {
       {
         Header: "View Order",
         accessor: (d) => (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <File />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[850px]">
-              <DialogHeader>
-                <DialogTitle>Order</DialogTitle>
-              </DialogHeader>
-              <Table
-                columns={orderItemColumns}
-                data={getPartsFromOrdeQuery(d)}
-              />
-            </DialogContent>
-          </Dialog>
+          <Button 
+            variant="outline" 
+            onClick={() => setSelectedOrderId(d.id)}
+          >
+            <File />
+          </Button>
         ),
       },
       {
@@ -251,6 +243,10 @@ const Orders = () => {
     [],
   );
 
+  const selectedOrderDetails = orders.data?.find(
+    (order) => order.id === selectedOrderId
+  );
+
   return (
     <>
       <Head>
@@ -277,6 +273,15 @@ const Orders = () => {
           data={orders}
         />
       </main>
+      <ViewOrderModal 
+        open={!!selectedOrderId}
+        onOpenChange={(open) => {
+          if (!open) void setSelectedOrderId(null);
+        }}
+        order={selectedOrderDetails}
+        columns={orderItemColumns}
+        getPartsFromOrder={getPartsFromOrdeQuery}
+      />
       <TrackingNumberModal
         onSuccess={() => void orders.refetch()}
         order={selectedOrder}
@@ -286,6 +291,38 @@ const Orders = () => {
         }}
       />
     </>
+  );
+};
+
+type ViewOrderModalProps = {
+  order: QueryOrderGetAllAdmin | undefined;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  columns: Column<PartFromOrder>[];
+  getPartsFromOrder: (order: QueryOrderGetAllAdmin) => PartFromOrder[];
+};
+
+const ViewOrderModal = ({
+  order,
+  open,
+  onOpenChange,
+  columns,
+  getPartsFromOrder,
+}: ViewOrderModalProps) => {
+  if (!order) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[850px]">
+        <DialogHeader>
+          <DialogTitle>Order</DialogTitle>
+        </DialogHeader>
+        <Table
+          columns={columns}
+          data={getPartsFromOrder(order)}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };
 

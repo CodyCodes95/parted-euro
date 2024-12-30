@@ -12,7 +12,7 @@ import {
 import * as React from "react";
 import type { Order } from "@prisma/client";
 type NewOrderEmailprops = {
-  order: Order
+  order: Order;
 };
 
 const baseUrl = process.env.VERCEL_URL
@@ -33,9 +33,12 @@ export const NewOrderEmail = ({ order }: NewOrderEmailprops) => (
         />
         <Text style={{ ...text }}>Hi Huddy</Text>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Great News! You are ${order!.subtotal / 100} richer.
+          Great News! You are ${order.subtotal / 100} richer.
         </Text>
-        <Link style={link} href="https://www.partedeuro.com.au/admin/orders">
+        <Link
+          style={link}
+          href={`https://www.partedeuro.com.au/admin/orders?orderId=${order.id}`}
+        >
           View
         </Link>
       </Container>
