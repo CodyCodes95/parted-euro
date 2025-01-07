@@ -194,10 +194,7 @@ const Orders = () => {
       {
         Header: "View Order",
         accessor: (d) => (
-          <Button 
-            variant="outline" 
-            onClick={() => setSelectedOrderId(d.id)}
-          >
+          <Button variant="outline" onClick={() => setSelectedOrderId(d.id)}>
             <File />
           </Button>
         ),
@@ -244,7 +241,7 @@ const Orders = () => {
   );
 
   const selectedOrderDetails = orders.data?.find(
-    (order) => order.id === selectedOrderId
+    (order) => order.id === selectedOrderId,
   );
 
   return (
@@ -273,7 +270,7 @@ const Orders = () => {
           data={orders}
         />
       </main>
-      <ViewOrderModal 
+      <ViewOrderModal
         open={!!selectedOrderId}
         onOpenChange={(open) => {
           if (!open) void setSelectedOrderId(null);
@@ -298,8 +295,8 @@ type ViewOrderModalProps = {
   order: QueryOrderGetAllAdmin | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  columns: Column<PartFromOrder>[];
-  getPartsFromOrder: (order: QueryOrderGetAllAdmin) => PartFromOrder[];
+  columns: Column<any>[];
+  getPartsFromOrder: (order: QueryOrderGetAllAdmin) => any[];
 };
 
 const ViewOrderModal = ({
@@ -317,10 +314,7 @@ const ViewOrderModal = ({
         <DialogHeader>
           <DialogTitle>Order</DialogTitle>
         </DialogHeader>
-        <Table
-          columns={columns}
-          data={getPartsFromOrder(order)}
-        />
+        <Table columns={columns} data={getPartsFromOrder(order)} />
       </DialogContent>
     </Dialog>
   );
