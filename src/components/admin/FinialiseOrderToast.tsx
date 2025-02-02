@@ -1,6 +1,6 @@
 import { type CheckoutItem } from "@/pages/api/checkout";
 import type { OrderItem } from "../../pages/admin/listings";
-import FinialiseOrder from "../modals/FinialiseOrder";
+
 import { Button } from "../ui/button";
 import {
   DialogContent,
@@ -13,28 +13,25 @@ import {
 
 type FinialiseOrderToastProps = {
   order: CheckoutItem[];
-  setOrder: (order: CheckoutItem[]) => void;
+  setShowFinialiseOrder: (showFinialiseOrder: boolean) => void;
 };
 
-const FinialiseOrderToast = ({ order, setOrder }: FinialiseOrderToastProps) => {
+const FinialiseOrderToast = ({
+  order,
+  setShowFinialiseOrder,
+}: FinialiseOrderToastProps) => {
   if (!order?.length) return null;
 
   return (
     <div className="flex w-full items-center justify-between">
       <p>{order?.length} items in order</p>
-      <Dialog>
-        <DialogTrigger>
-          <Button>Finialise</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Finialise Order</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            <FinialiseOrder order={order} setOrder={setOrder} />
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
+      <Button
+        onClick={() => {
+          setShowFinialiseOrder(true);
+        }}
+      >
+        Finialise
+      </Button>
     </div>
   );
 };

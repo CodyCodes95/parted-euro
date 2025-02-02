@@ -20,6 +20,14 @@ import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
 import { type CheckoutItem } from "../api/checkout";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import FinialiseOrder from "@/components/modals/FinialiseOrder";
 
 export type OrderItem = {
   inventoryId: string;
@@ -56,13 +64,17 @@ const Listings: NextPage = () => {
 
   const { code } = router.query;
 
-  const [showModal, setShowModal] = useQueryState("showModal", parseAsBoolean.withDefault(false));
+  const [showModal, setShowModal] = useQueryState(
+    "showModal",
+    parseAsBoolean.withDefault(false),
+  );
   const [selected, setSelected] = useState<QueryListingsGetAllAdmin>();
   const [showEbayModal, setShowEbayModal] = useState(false);
   const [filter, setFilter] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMarkAsSold, setShowMarkAsSold] = useState(false);
   const [order, setOrder] = useState<CheckoutItem[] | undefined>();
+  const [showFinialiseOrder, setShowFinialiseOrder] = useState(false);
 
   const listings = trpc.listings.getAllAdmin.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -74,10 +86,16 @@ const Listings: NextPage = () => {
 
   useEffect(() => {
     if (order?.length) {
-      toast(<FinialiseOrderToast setOrder={setOrder} order={order} />, {
-        duration: 5000000,
-        id: "order",
-      });
+      toast(
+        <FinialiseOrderToast
+          setShowFinialiseOrder={setShowFinialiseOrder}
+          order={order}
+        />,
+        {
+          duration: 5000000,
+          id: "order",
+        },
+      );
     }
   }, [order]);
 
@@ -263,6 +281,16 @@ const Listings: NextPage = () => {
             listing={selected!}
           />
         )}
+        <Dialog open={showFinialiseOrder} onOpenChange={setShowFinialiseOrder}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Finialise Order</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              <FinialiseOrder order={order!} setOrder={setOrder} />
+            </DialogDescription>
+          </DialogContent>
+        </Dialog>
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
             onClick={() => {

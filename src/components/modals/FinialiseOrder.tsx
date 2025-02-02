@@ -86,7 +86,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
   }, [createCheckout.data]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="grid gap-4 border p-4">
         <h4 className="text-lg font-bold">Items</h4>
         {order.map((checkoutItem) => (
@@ -104,102 +104,110 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
           </p>
         </div>
       </div>
-      <div className="z-50 grid grid-cols-2 gap-4 p-4">
-        <p>Shipping Method:</p>
-        <div>
-          <Controller
-            name="shippingMethod"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} className="w-full" tabIndex={1} />
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <div className="z-50 grid grid-cols-2 gap-4 p-4">
+          <p>Shipping Method:</p>
+          <div>
+            <Controller
+              name="shippingMethod"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} className="w-full" tabIndex={1} />
+              )}
+            />
+            {errors.shippingMethod && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.shippingMethod.message}
+              </p>
             )}
-          />
-          {errors.shippingMethod && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.shippingMethod.message}
-            </p>
-          )}
-        </div>
-        <p>Postage Cost:</p>
-        <div>
-          <Controller
-            name="postageCost"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="number"
-                tabIndex={2}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
+          </div>
+          <p>Postage Cost:</p>
+          <div>
+            <Controller
+              name="postageCost"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  tabIndex={2}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            />
+            {errors.postageCost && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.postageCost.message}
+              </p>
             )}
-          />
-          {errors.postageCost && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.postageCost.message}
-            </p>
-          )}
-        </div>
-        <p>Name</p>
-        <div>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => <Input {...field} tabIndex={3} />}
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
-          )}
-        </div>
-        <p>Email</p>
-        <div>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => <Input {...field} tabIndex={4} />}
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-          )}
-        </div>
-        <p>Country</p>
-        <div>
-          <Controller
-            name="countryCode"
-            control={control}
-            render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
-                value={field.value}
-                defaultValue={field.value}
-              >
-                <SelectTrigger id="country" className="w-full" tabIndex={5}>
-                  <SelectValue placeholder="Select a country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AU">Australia</SelectItem>
-                  {ausPostShippingCountries.data?.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
-                      {country.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          </div>
+          <p>Name</p>
+          <div>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => <Input {...field} tabIndex={3} />}
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
             )}
-          />
-          {errors.countryCode && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.countryCode.message}
-            </p>
-          )}
+          </div>
+          <p>Email</p>
+          <div>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => <Input {...field} tabIndex={4} />}
+            />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+          <p>Country</p>
+          <div>
+            <Controller
+              name="countryCode"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger id="country" className="w-full" tabIndex={5}>
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AU">Australia</SelectItem>
+                    {ausPostShippingCountries.data?.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.countryCode && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.countryCode.message}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="flex w-full justify-end">
-        <Button type="submit" loading={createCheckout.isFetching} tabIndex={6}>
-          Get Stripe URL
-        </Button>
-      </div>
-    </form>
+        <div className="flex w-full justify-end">
+          <Button
+            type="submit"
+            loading={createCheckout.isFetching}
+            tabIndex={6}
+          >
+            Get Stripe URL
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 
