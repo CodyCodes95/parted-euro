@@ -1,15 +1,6 @@
 import { type CheckoutItem } from "@/pages/api/checkout";
-import type { OrderItem } from "../../pages/admin/listings";
-
 import { Button } from "../ui/button";
-import {
-  DialogContent,
-  Dialog,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+
 
 type FinialiseOrderToastProps = {
   order: CheckoutItem[];
