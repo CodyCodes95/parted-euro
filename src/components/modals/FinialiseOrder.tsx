@@ -110,7 +110,9 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
           <Controller
             name="shippingMethod"
             control={control}
-            render={({ field }) => <Input {...field} className="w-full" />}
+            render={({ field }) => (
+              <Input {...field} className="w-full" tabIndex={1} />
+            )}
           />
           {errors.shippingMethod && (
             <p className="mt-1 text-sm text-red-500">
@@ -127,6 +129,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
               <Input
                 {...field}
                 type="number"
+                tabIndex={2}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             )}
@@ -142,7 +145,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
           <Controller
             name="name"
             control={control}
-            render={({ field }) => <Input {...field} />}
+            render={({ field }) => <Input {...field} tabIndex={3} />}
           />
           {errors.name && (
             <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
@@ -153,7 +156,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
           <Controller
             name="email"
             control={control}
-            render={({ field }) => <Input {...field} />}
+            render={({ field }) => <Input {...field} tabIndex={4} />}
           />
           {errors.email && (
             <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -165,8 +168,12 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
             name="countryCode"
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger id="country" className="w-full">
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                defaultValue={field.value}
+              >
+                <SelectTrigger id="country" className="w-full" tabIndex={5}>
                   <SelectValue placeholder="Select a country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -188,7 +195,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
         </div>
       </div>
       <div className="flex w-full justify-end">
-        <Button type="submit" loading={createCheckout.isFetching}>
+        <Button type="submit" loading={createCheckout.isFetching} tabIndex={6}>
           Get Stripe URL
         </Button>
       </div>

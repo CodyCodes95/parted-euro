@@ -1,4 +1,4 @@
-import { CheckoutItem } from "@/pages/api/checkout";
+import { type CheckoutItem } from "@/pages/api/checkout";
 import type { OrderItem } from "../../pages/admin/listings";
 import FinialiseOrder from "../modals/FinialiseOrder";
 import { Button } from "../ui/button";
@@ -29,10 +29,10 @@ const FinialiseOrderToast = ({ order, setOrder }: FinialiseOrderToastProps) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Finialise Order</DialogTitle>
-            <DialogDescription>
-              <FinialiseOrder order={order} setOrder={setOrder} />
-            </DialogDescription>
           </DialogHeader>
+          <DialogDescription>
+            <FinialiseOrder order={order} setOrder={setOrder} />
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </div>
