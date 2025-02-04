@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../trpc";
-import { createInvoice } from "../../xero/createInvoice";
+import { createInvoiceFromStripeEvent } from "../../xero/createInvoice";
 import type Stripe from "stripe";
 import {
   sendOrderReadyForPickupEmail,
@@ -121,7 +121,7 @@ export const orderRouter = router({
         },
       });
       if (!failedOrder) return;
-      void createInvoice(
+      void createInvoiceFromStripeEvent(
         failedOrder.stripeEvent as unknown as Stripe.Checkout.Session,
         failedOrder.lineItems as any,
       );

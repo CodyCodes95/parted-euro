@@ -75,6 +75,27 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
     },
   );
 
+  const createCashOrder = trpc.xero.createCashOrder.useMutation({
+    onSuccess: () => {
+      toast.success("Order created and invoice sent");
+      setOrder([]); // Clear the order
+    },
+    onError: (error) => {
+      toast.error("Failed to create order: " + error.message);
+    },
+  });
+
+  const handleCashPayment = async (data: FormData) => {
+    createCashOrder.mutate({
+      name: data.name,
+      email: data.email,
+      shippingMethod: data.shippingMethod,
+      postageCost: data.postageCost,
+      countryCode: data.countryCode,
+      items: order,
+    });
+  };
+
   const onSubmit = async (data: FormData) => {
     await createCheckout.refetch();
   };
@@ -197,11 +218,20 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
             )}
           </div>
         </div>
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-end gap-2">
+          <Button
+            type="button"
+            onClick={() => handleSubmit(handleCashPayment)()}
+            loading={createCashOrder.isLoading}
+            variant="secondary"
+            tabIndex={6}
+          >
+            Paid in Cash
+          </Button>
           <Button
             type="submit"
             loading={createCheckout.isFetching}
-            tabIndex={6}
+            tabIndex={7}
           >
             Get Stripe URL
           </Button>

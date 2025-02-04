@@ -1,6 +1,6 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import { createInvoice } from "../../../server/xero/createInvoice";
+import { createInvoiceFromStripeEvent } from "../../../server/xero/createInvoice";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
@@ -36,7 +36,7 @@ export default async function stripeWebhook(
         expand: ["data.price.product"],
       });
       try {
-        await createInvoice(data, lineItems.data);
+        await createInvoiceFromStripeEvent(data, lineItems.data);
         return res.status(200).send(`Invoice created`);
       } catch (err: any) {
         console.log(err);
