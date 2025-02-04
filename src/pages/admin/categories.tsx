@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import type { PartTypes } from "@prisma/client";
 import AddCategory from "../../components/categories/AddCategory";
 import { Button } from "../../components/ui/button";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 
 const Categories: NextPage = () => {
   const { status } = useSession({
@@ -68,16 +68,7 @@ const Categories: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            categories: [
-              "donors",
-              "inventory",
-              "inventory-locations",
-              "listings",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            categories: adminPages,
           }}
         />
         <div className="py-4">

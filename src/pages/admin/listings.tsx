@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import { Button } from "../../components/ui/button";
 import FilterInput from "../../components/tables/FilterInput";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 import { toast } from "sonner";
 import AddToOrder from "../../components/listings/AddToOrder";
 import FinialiseOrderToast from "../../components/admin/FinialiseOrderToast";
@@ -240,16 +240,7 @@ const Listings: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            listings: [
-              "donors",
-              "inventory",
-              "listings",
-              "inventory-locations",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            listings: adminPages
           }}
         />
         <Spacer amount="2" />

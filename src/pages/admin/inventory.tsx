@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
 import { Switch } from "../../components/ui/switch";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 import AddInventory from "../../components/inventory/AddInventory";
 import EditInventoryModal from "../../components/inventory/EditInventory";
 import { parseAsBoolean, useQueryState } from "nuqs";
@@ -166,16 +166,7 @@ const Inventory: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            inventory: [
-              "donors",
-              "inventory",
-              "inventory-locations",
-              "listings",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            inventory: adminPages
           }}
         />
         {showModal ? (

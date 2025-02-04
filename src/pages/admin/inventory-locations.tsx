@@ -6,7 +6,7 @@ import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
 import { useSession } from "next-auth/react";
 import { Button } from "../../components/ui/button";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -102,16 +102,7 @@ const InventoryLocations: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            "inventory-locations": [
-              "donors",
-              "inventory",
-              "inventory-locations",
-              "listings",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            "inventory-locations": adminPages
           }}
         />
         <div className="flex items-center justify-between bg-white py-4">

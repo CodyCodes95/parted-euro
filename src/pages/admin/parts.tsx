@@ -10,7 +10,7 @@ import ConfirmDelete from "../../components/modals/ConfirmDelete";
 import EditPartDetails from "../../components/partDetails/EditPartDetails";
 import { useSession } from "next-auth/react";
 import FilterInput from "../../components/tables/FilterInput";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 import { Button } from "../../components/ui/button";
 
 const Inventory: NextPage = () => {
@@ -117,16 +117,7 @@ const Inventory: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            parts: [
-              "donors",
-              "inventory",
-              "inventory-locations",
-              "listings",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            parts: adminPages,
           }}
         />
         {showConfirmDelete ? (

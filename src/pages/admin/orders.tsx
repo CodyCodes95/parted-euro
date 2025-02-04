@@ -5,7 +5,7 @@ import AdminTable from "../../components/tables/AdminTable";
 import { useMemo, useState } from "react";
 import Head from "next/head";
 import Spacer from "../../components/Spacer";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
@@ -252,14 +252,7 @@ const Orders = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            orders: [
-              "donors",
-              "inventory",
-              "listings",
-              "inventory-locations",
-              "orders",
-              "data",
-            ],
+            orders: adminPages
           }}
         />
         <Spacer amount="2" />

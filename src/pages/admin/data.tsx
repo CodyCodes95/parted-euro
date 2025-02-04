@@ -5,7 +5,7 @@ import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { MdCategory } from "react-icons/md";
 import { TbMapPin } from "react-icons/tb";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 
 const Data: NextPage = () => {
   const { status } = useSession({
@@ -24,17 +24,7 @@ const Data: NextPage = () => {
       <main className="flex min-h-screen w-full flex-col items-center">
         <BreadCrumbs
           selectOptions={{
-            data: [
-              "donors",
-              "data",
-              "inventory",
-              "inventory-locations",
-              "listings",
-              "orders",
-              "categories",
-              "parts",
-              "cars",
-            ],
+            data: adminPages
           }}
         />
         <section className="w-full bg-white py-10 sm:py-16 lg:py-24">

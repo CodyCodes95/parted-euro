@@ -12,7 +12,7 @@ import Spacer from "../../components/Spacer";
 import { useSession } from "next-auth/react";
 import FilterInput from "../../components/tables/FilterInput";
 import { Button } from "../../components/ui/button";
-import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 
 const Cars: NextPage = () => {
   const { status } = useSession({
@@ -99,7 +99,7 @@ const Cars: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col gap-2 bg-white">
         <BreadCrumbs
           selectOptions={{
-            cars: ["donors", "inventory", "listings", "orders", "categories", "parts", "cars"], 
+            cars: adminPages,
           }}
         />
         {showModal && (
