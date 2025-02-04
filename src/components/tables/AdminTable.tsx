@@ -7,7 +7,7 @@ type AdminTableProps = {
   data: any;
   columns: Array<Column<any>>;
   filter?: string;
-  setFilter?: React.Dispatch<React.SetStateAction<string>>;
+  setFilter?: (filter: string) => void;
 };
 
 const AdminTable: FC<AdminTableProps> = ({

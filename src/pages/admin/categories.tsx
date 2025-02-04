@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import type { GetAllSubCategoriesQuery} from "../../utils/trpc";
+import type { GetAllSubCategoriesQuery } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
@@ -49,7 +49,7 @@ const Categories: NextPage = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   return (

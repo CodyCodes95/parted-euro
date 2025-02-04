@@ -7,6 +7,13 @@ export const inventoryLocationsRouter = router({
       orderBy: {
         name: "asc",
       },
+      include: {
+        _count: {
+          select: {
+            parts: true,
+          },
+        },
+      },
     });
   }),
 

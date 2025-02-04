@@ -36,7 +36,7 @@ const Inventory: NextPage = () => {
   );
   const [selected, setSelected] = useState<Part | undefined>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>("");
+  const [filter, setFilter] = useQueryState("filter");
   const [selectedPartToEdit, setSelectedPartToEdit] = useState<
     Part | undefined
   >();
@@ -226,14 +226,14 @@ const Inventory: NextPage = () => {
             </div>
           </div>
           <FilterInput
-            filter={filter}
+            filter={filter ?? ""}
             setFilter={setFilter}
             placeholder="Search for parts..."
           />
         </div>
         <AdminTable
           columns={columns}
-          filter={filter}
+          filter={filter ?? ""}
           setFilter={setFilter}
           data={partsFiltered}
         />

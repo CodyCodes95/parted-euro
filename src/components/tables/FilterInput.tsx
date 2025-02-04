@@ -1,14 +1,18 @@
-import React, { FC } from 'react'
-import { FaSearch } from 'react-icons/fa';
-import { Input } from '../ui/input';
+import React, { type FC } from "react";
+import { FaSearch } from "react-icons/fa";
+import { Input } from "../ui/input";
 
 type FilterInputProps = {
-    filter: string;
-    setFilter: React.Dispatch<React.SetStateAction<string>>;
-    placeholder: string
-}
+  filter: string;
+  setFilter: (filter: string) => void;
+  placeholder: string;
+};
 
-const FilterInput:FC<FilterInputProps> = ({filter, setFilter, placeholder}) => {
+const FilterInput: FC<FilterInputProps> = ({
+  filter,
+  setFilter,
+  placeholder,
+}) => {
   return (
     <div className="relative">
       <label className="sr-only">Search</label>
@@ -23,6 +27,6 @@ const FilterInput:FC<FilterInputProps> = ({filter, setFilter, placeholder}) => {
       />
     </div>
   );
-}
+};
 
-export default FilterInput
+export default FilterInput;

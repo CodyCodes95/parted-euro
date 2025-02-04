@@ -7,6 +7,8 @@ import AdminTable from "../../components/tables/AdminTable";
 import { useSession } from "next-auth/react";
 import { Button } from "../../components/ui/button";
 import BreadCrumbs from "../../components/admin/BreadCrumbs";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 import type { InventoryLocations } from "@prisma/client";
 import AddInventoryLocation from "@/components/inventory/AddInventoryLocation";
@@ -24,6 +26,7 @@ const InventoryLocations: NextPage = () => {
     InventoryLocations | undefined
   >();
   const [filter, setFilter] = useState<string>("");
+  const router = useRouter();
 
   const locations = trpc.inventoryLocations.getAllLocations.useQuery();
   const deleteLocation = trpc.inventoryLocations.deleteLocation.useMutation({
@@ -32,11 +35,24 @@ const InventoryLocations: NextPage = () => {
     },
   });
 
-  const locationCols = useMemo<Array<Column<InventoryLocations>>>(
+  const locationCols = useMemo<
+    Array<Column<InventoryLocations & { _count: { parts: number } }>>
+  >(
     () => [
       {
         Header: "Name",
         accessor: "name",
+      },
+      {
+        Header: "Parts",
+        accessor: (d) => (
+          <Link
+            href={`/admin/inventory?filter=${encodeURIComponent(d.name)}`}
+            className="cursor-pointer text-blue-500 hover:underline"
+          >
+            {d._count.parts}
+          </Link>
+        ),
       },
       {
         Header: "Edit",
@@ -113,9 +129,9 @@ const InventoryLocations: NextPage = () => {
             placeholder="Search locations..."
           />
         </div>
-        <AdminTable 
-          columns={locationCols} 
-          data={locations} 
+        <AdminTable
+          columns={locationCols}
+          data={locations}
           filter={filter}
           setFilter={setFilter}
         />
