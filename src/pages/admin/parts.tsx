@@ -120,6 +120,7 @@ const Inventory: NextPage = () => {
             parts: [
               "donors",
               "inventory",
+              "inventory-locations",
               "listings",
               "orders",
               "categories",

@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { QueryDonorGetAllDashboard} from "../../utils/trpc";
+import type { QueryDonorGetAllDashboard } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import type { Column } from "react-table";
 import AdminTable from "../../components/tables/AdminTable";
@@ -26,10 +26,10 @@ const Donors: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showPartModal, setShowPartModal] = useState(false);
   const [donorVin, setDonorVin] = useState("");
-  const [selectedDonor, setSelectedDonor] = useState<QueryDonorGetAllDashboard | null>(null);
+  const [selectedDonor, setSelectedDonor] =
+    useState<QueryDonorGetAllDashboard | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filter, setFilter] = useState("");
-
 
   const donors = trpc.donors.getAllDashboard.useQuery();
   const deleteDonor = trpc.donors.deleteDonor.useMutation();
@@ -50,7 +50,7 @@ const Donors: NextPage = () => {
       },
       {
         Header: "Model",
-             // TODO: Ts ignoring, I think new Tanstack table allows for types like this?
+        // TODO: Ts ignoring, I think new Tanstack table allows for types like this?
         // @ts-ignore
         accessor: "car.model",
       },
@@ -90,7 +90,7 @@ const Donors: NextPage = () => {
                     if (cur.listing.length === 0) return acc;
                     if (
                       !acc.some(
-                        (part: any) => part.listing.id === cur.listing.id
+                        (part: any) => part.listing.id === cur.listing.id,
                       )
                     ) {
                       acc.push(cur);
@@ -104,10 +104,10 @@ const Donors: NextPage = () => {
                         if (listing.active) return accum + listing.price;
                         return accum;
                       },
-                      0
+                      0,
                     );
                     return listingsTotal + acc;
-                  }, 0)
+                  }, 0),
               ) || 0}
             </p>
           </>
@@ -133,7 +133,7 @@ const Donors: NextPage = () => {
                 d.parts.reduce((acc: any, part: any) => {
                   if (part.soldPrice === null || !part.sold) return acc;
                   return part.soldPrice + acc;
-                }, 0)
+                }, 0),
               )}
             </p>
           </>
@@ -182,7 +182,7 @@ const Donors: NextPage = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   const deleteDonorFunc = async () => {
@@ -193,7 +193,7 @@ const Donors: NextPage = () => {
           onError: (err) => {
             toast.error(err.message);
           },
-        }
+        },
       );
       toast.success("Donor deleted successfully");
     }
@@ -211,6 +211,7 @@ const Donors: NextPage = () => {
               "donors",
               "inventory",
               "listings",
+              "inventory-locations",
               "orders",
               "categories",
               "parts",

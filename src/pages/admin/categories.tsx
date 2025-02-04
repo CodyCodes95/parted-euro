@@ -71,6 +71,7 @@ const Categories: NextPage = () => {
             categories: [
               "donors",
               "inventory",
+              "inventory-locations",
               "listings",
               "orders",
               "categories",

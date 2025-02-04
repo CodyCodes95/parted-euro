@@ -8,7 +8,6 @@ import { imagesRouter } from "./images";
 import { partDetailsRouter } from "./partDetails";
 import { xeroRouter } from "./xero";
 import { ebayRouter } from "./ebay";
-import { inventoryLocationRouter } from "./inventoryLocations";
 import { categoryRouter } from "./categories";
 import { orderRouter } from "./order";
 import { orderItemsRouter } from "./orderItems";
@@ -16,6 +15,7 @@ import { checkoutRouter } from "./checkout";
 import { adminRouter } from "./admin";
 import { analyticsRouter } from "./analytics";
 import { homepageImagesRouter } from "./homepageImages";
+import { inventoryLocationsRouter } from "./inventoryLocations";
 
 export const appRouter = router({
   cars: carRouter,
@@ -27,14 +27,14 @@ export const appRouter = router({
   partDetails: partDetailsRouter,
   xero: xeroRouter,
   ebay: ebayRouter,
-  inventoryLocations: inventoryLocationRouter,
+  inventoryLocations: inventoryLocationsRouter,
   categories: categoryRouter,
   order: orderRouter,
   orderItems: orderItemsRouter,
   checkout: checkoutRouter,
   admin: adminRouter,
   analytics: analyticsRouter,
-  homepageImages: homepageImagesRouter
+  homepageImages: homepageImagesRouter,
 });
 
 // export type definition of API

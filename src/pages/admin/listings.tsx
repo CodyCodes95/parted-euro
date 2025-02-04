@@ -244,6 +244,7 @@ const Listings: NextPage = () => {
               "donors",
               "inventory",
               "listings",
+              "inventory-locations",
               "orders",
               "categories",
               "parts",

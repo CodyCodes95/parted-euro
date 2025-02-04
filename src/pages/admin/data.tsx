@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { MdCategory } from "react-icons/md";
+import { TbMapPin } from "react-icons/tb";
 import BreadCrumbs from "../../components/admin/BreadCrumbs";
 
 const Data: NextPage = () => {
@@ -27,6 +28,7 @@ const Data: NextPage = () => {
               "donors",
               "data",
               "inventory",
+              "inventory-locations",
               "listings",
               "orders",
               "categories",
@@ -65,6 +67,17 @@ const Data: NextPage = () => {
                 </div>
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Categories
+                </h3>
+              </Link>
+              <Link
+                href="/admin/inventory-locations"
+                className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
+              >
+                <div className="relative mx-auto flex items-center justify-center">
+                  <TbMapPin className="text-5xl" />
+                </div>
+                <h3 className="mt-8 text-lg font-semibold text-black">
+                  Inventory Locations
                 </h3>
               </Link>
             </div>

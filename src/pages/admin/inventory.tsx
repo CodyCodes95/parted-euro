@@ -169,6 +169,7 @@ const Inventory: NextPage = () => {
             inventory: [
               "donors",
               "inventory",
+              "inventory-locations",
               "listings",
               "orders",
               "categories",
