@@ -29,6 +29,7 @@ type StripeSessionRequest = {
   name: string;
   items: CheckoutItem[];
   countryCode: string;
+  adminCreated?: boolean;
 };
 
 export const createStripeSession = async (input: StripeSessionRequest) => {
@@ -38,14 +39,6 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
         : `https://partedeuro.com.au`;
-
-    // const {
-    //   items,
-    //   shippingOptions,
-    //   email,
-    //   name,
-    //   countryCode,
-    // }: StripeSessionRequest = JSON.parse(req.body);
 
     // get items from query
 
@@ -126,7 +119,7 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
       data: {
         email,
         name,
-        status: "PENDING",
+        status: input.adminCreated ? "Pending payment" : "PENDING",
         subtotal: stripeLineItems.reduce(
           (acc, cur) => acc + cur.price_data.unit_amount * cur.quantity,
           0,

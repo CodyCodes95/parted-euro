@@ -362,13 +362,6 @@ export const checkoutRouter = router({
         name: z.string(),
         email: z.string(),
         countryCode: z.string(),
-        // address: z.object({
-        //   address1: z.string(),
-        //   address2: z.string(),
-        //   city: z.string(),
-        //   region: z.string(),
-        //   postalCode: z.string(),
-        // }),
         shippingOptions: z.array(
           z.object({
             shipping_rate_data: z.object({
@@ -384,7 +377,7 @@ export const checkoutRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const url = await createStripeSession(input);
+      const url = await createStripeSession({ ...input, adminCreated: true });
       return url;
     }),
   getShippingCountries: publicProcedure.query(async () => {
