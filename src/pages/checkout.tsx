@@ -28,6 +28,28 @@ import { Delete, Loader2 } from "lucide-react";
 import { Command as CommandPrimitive } from "cmdk";
 import { useCartStore } from "../context/cartStore";
 import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const checkoutFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address")
+    .transform((val) => val.trim()),
+  shipToCountryCode: z.string().min(1, "Country is required"),
+  isB2B: z.boolean().default(false),
+  acceptTerms: z
+    .boolean()
+    .default(false)
+    .refine((val) => val === true, {
+      message: "You must accept the terms and conditions",
+    }),
+});
+
+type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 export default function CheckoutPage() {
   const [isClient, setIsClient] = useState(false);
@@ -53,31 +75,29 @@ export function Checkout() {
           postalCode: "",
         },
   );
-  const [name, setName] = useState(localStorage.getItem("checkout-name") ?? "");
-  const [email, setEmail] = useState(
-    localStorage.getItem("checkout-email") ?? "",
-  );
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [shipToCountryCode, setShipToCountryCode] = useState(
-    localStorage.getItem("shipToCountryCode") ?? "AU",
-  );
-  const [isB2B, setIsB2B] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("checkout-address", JSON.stringify(address));
-  }, [address]);
+  const form = useForm<CheckoutFormValues>({
+    resolver: zodResolver(checkoutFormSchema),
+    defaultValues: {
+      name: localStorage.getItem("checkout-name") ?? "",
+      email: localStorage.getItem("checkout-email") ?? "",
+      shipToCountryCode: localStorage.getItem("shipToCountryCode") ?? "AU",
+      isB2B: false,
+      acceptTerms: false,
+    },
+  });
 
+  // Save form values to localStorage when they change
   useEffect(() => {
-    localStorage.setItem("checkout-name", name);
-  }, [name]);
-
-  useEffect(() => {
-    localStorage.setItem("checkout-email", email);
-  }, [email]);
-
-  useEffect(() => {
-    localStorage.setItem("shipToCountryCode", shipToCountryCode);
-  }, [shipToCountryCode]);
+    const subscription = form.watch((value) => {
+      if (value.name) localStorage.setItem("checkout-name", value.name);
+      if (value.email) localStorage.setItem("checkout-email", value.email);
+      if (value.shipToCountryCode) {
+        localStorage.setItem("shipToCountryCode", value.shipToCountryCode);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   const cartWeight = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.weight * item.quantity, 0);
@@ -104,21 +124,20 @@ export function Checkout() {
       length: largestCartItem.length,
       width: largestCartItem.width,
       height: largestCartItem.height,
-      destinationCountry: shipToCountryCode || "AUSTRALIA",
+      destinationCountry: form.watch("shipToCountryCode") || "AUSTRALIA",
       destinationCity: address.city ?? "",
       destinationState: address.region ?? "",
-      b2b: isB2B,
+      b2b: form.watch("isB2B"),
     },
     {
       enabled:
-        !!cart.length && (!!address.postalCode || shipToCountryCode !== "AU"),
+        !!cart.length &&
+        (!!address.postalCode || form.watch("shipToCountryCode") !== "AU"),
       retry: false,
     },
   );
 
-  const submitCheckout = async () => {
-    if (!validated) return toast.error("Please fill out all fields");
-
+  const onSubmit = async (data: CheckoutFormValues) => {
     const items = cart.map((item) => ({
       itemId: item.listingId,
       quantity: item.quantity,
@@ -126,13 +145,13 @@ export function Checkout() {
 
     const params = new URLSearchParams({
       items: JSON.stringify(items),
-      name,
-      email,
-      countryCode: shipToCountryCode,
+      name: data.name,
+      email: data.email,
+      countryCode: data.shipToCountryCode,
       shippingOptions: JSON.stringify(shippingServices.data),
     });
 
-    if (shipToCountryCode === "AU") {
+    if (data.shipToCountryCode === "AU") {
       params.append("address", JSON.stringify(address));
     }
 
@@ -152,10 +171,6 @@ export function Checkout() {
       toast.error("An error occurred during checkout. Please try again.");
     }
   };
-
-  const validated = useMemo(() => {
-    return shippingServices.data && name && email && acceptTerms;
-  }, [shippingServices.data, name, email, acceptTerms]);
 
   return (
     <div className="bg-white p-8 md:px-40">
@@ -253,12 +268,7 @@ export function Checkout() {
             </div>
           </div>
         </section>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void submitCheckout();
-          }}
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <section className="grid gap-4 py-6">
             <h2 className="text-lg font-semibold md:text-xl">
               Shipping information
@@ -269,27 +279,39 @@ export function Checkout() {
                   Full name
                 </Label>
                 <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  {...form.register("name")}
                   id="name"
                   placeholder="Enter your full name"
                 />
+                {form.formState.errors.name && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.name.message}
+                  </p>
+                )}
               </div>
+
               <div className="grid gap-1.5">
                 <Label className="text-sm">Email Address</Label>
                 <Input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="address"
+                  {...form.register("email")}
+                  id="email"
+                  type="email"
                   placeholder="Enter your email address"
                 />
+                {form.formState.errors.email && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.email.message}
+                  </p>
+                )}
               </div>
 
               <div className="grid gap-1.5">
                 <Label className="text-sm">Country</Label>
                 <Select
-                  value={shipToCountryCode}
-                  onValueChange={(value) => setShipToCountryCode(value)}
+                  value={form.watch("shipToCountryCode")}
+                  onValueChange={(value) =>
+                    form.setValue("shipToCountryCode", value)
+                  }
                 >
                   <SelectTrigger id="country" className="w-full">
                     <SelectValue placeholder="Select a country" />
@@ -303,8 +325,14 @@ export function Checkout() {
                     ))}
                   </SelectContent>
                 </Select>
+                {form.formState.errors.shipToCountryCode && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.shipToCountryCode.message}
+                  </p>
+                )}
               </div>
-              {shipToCountryCode === "AU" && (
+
+              {form.watch("shipToCountryCode") === "AU" && (
                 <div className="grid gap-1.5">
                   <Label className="text-sm" htmlFor="zip">
                     Shipping Suburb
@@ -315,31 +343,33 @@ export function Checkout() {
                   />
                 </div>
               )}
+
               <div className="flex flex-col gap-4">
                 <div className="grid gap-1.5">
-                  <Label className="text-sm" htmlFor="zip">
+                  <Label className="text-sm" htmlFor="isB2B">
                     B2B Delivery
                   </Label>
                   <div className="flex items-center gap-2">
                     <input
-                      checked={isB2B}
-                      className="h-4 w-4"
+                      {...form.register("isB2B")}
+                      id="isB2B"
                       type="checkbox"
-                      onChange={(e) => setIsB2B(e.target.checked)}
+                      className="h-4 w-4"
                     />
                     <span>This is a business address</span>
                   </div>
                 </div>
+
                 <div className="mt-4 grid gap-1.5">
-                  <Label className="text-sm" htmlFor="zip">
+                  <Label className="text-sm" htmlFor="acceptTerms">
                     Terms and conditions
                   </Label>
                   <div className="flex items-center gap-2">
                     <input
-                      className="h-4 w-4"
+                      {...form.register("acceptTerms")}
+                      id="acceptTerms"
                       type="checkbox"
-                      checked={acceptTerms}
-                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                      className="h-4 w-4"
                     />
                     <span>
                       I have read & agree to the{" "}
@@ -352,6 +382,11 @@ export function Checkout() {
                       </Link>
                     </span>
                   </div>
+                  {form.formState.errors.acceptTerms && (
+                    <p className="text-sm text-red-500">
+                      {form.formState.errors.acceptTerms.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -371,10 +406,13 @@ export function Checkout() {
                 </AlertDescription>
               </Alert>
             )}
-          </section>
-          <section className="flex flex-col gap-4 py-6">
-            <div className="grid gap-4"></div>
-            <Button type="submit" disabled={validated ? false : true}>
+            <Button
+              type="submit"
+              disabled={!shippingServices.data || form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
               Pay & Review
             </Button>
           </section>
