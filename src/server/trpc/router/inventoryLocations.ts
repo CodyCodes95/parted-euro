@@ -2,6 +2,9 @@ import { z } from "zod";
 import { router, adminProcedure } from "../trpc";
 
 export const inventoryLocationsRouter = router({
+  getAll: adminProcedure.query(({ ctx }) => {
+    return ctx.prisma.inventoryLocations.findMany({});
+  }),
   getAllLocations: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.inventoryLocations.findMany({
       orderBy: {
@@ -59,6 +62,32 @@ export const inventoryLocationsRouter = router({
       return ctx.prisma.inventoryLocations.delete({
         where: {
           id: input.id,
+        },
+      });
+    }),
+
+  mergeLocations: adminProcedure
+    .input(
+      z.object({
+        sourceId: z.string(),
+        targetId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // First update all parts to the new location
+      await ctx.prisma.part.updateMany({
+        where: {
+          inventoryLocationId: input.sourceId,
+        },
+        data: {
+          inventoryLocationId: input.targetId,
+        },
+      });
+
+      // Then delete the source location
+      return ctx.prisma.inventoryLocations.delete({
+        where: {
+          id: input.sourceId,
         },
       });
     }),

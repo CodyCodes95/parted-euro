@@ -12,6 +12,7 @@ import Link from "next/link";
 
 import type { InventoryLocations } from "@prisma/client";
 import AddInventoryLocation from "@/components/inventory/AddInventoryLocation";
+import MergeLocationModal from "@/components/inventory/MergeLocationModal";
 import FilterInput from "../../components/tables/FilterInput";
 
 const InventoryLocations: NextPage = () => {
@@ -22,8 +23,12 @@ const InventoryLocations: NextPage = () => {
     },
   });
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showMergeModal, setShowMergeModal] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<
     InventoryLocations | undefined
+  >();
+  const [selectedMergeLocation, setSelectedMergeLocation] = useState<
+    (InventoryLocations & { _count: { parts: number } }) | undefined
   >();
   const [filter, setFilter] = useState<string>("");
   const router = useRouter();
@@ -68,6 +73,20 @@ const InventoryLocations: NextPage = () => {
         ),
       },
       {
+        Header: "Merge",
+        accessor: (d) => (
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setSelectedMergeLocation(d);
+              setShowMergeModal(true);
+            }}
+          >
+            Merge
+          </Button>
+        ),
+      },
+      {
         Header: "Delete",
         accessor: (d) => (
           <Button
@@ -99,10 +118,19 @@ const InventoryLocations: NextPage = () => {
           selection={selectedLocation}
         />
       )}
+      {showMergeModal && selectedMergeLocation && locations.data && (
+        <MergeLocationModal
+          showModal={showMergeModal}
+          setShowModal={setShowMergeModal}
+          sourceLocation={selectedMergeLocation}
+          locations={locations.data}
+          refetch={locations.refetch}
+        />
+      )}
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            "inventory-locations": adminPages
+            "inventory-locations": adminPages,
           }}
         />
         <div className="flex items-center justify-between bg-white py-4">
