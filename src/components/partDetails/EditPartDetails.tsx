@@ -41,6 +41,9 @@ const EditPartDetails: React.FC<EditPartProps> = ({
   const [length, setLength] = useState<string>(selection.length.toString());
   const [width, setWidth] = useState<string>(selection.width.toString());
   const [height, setHeight] = useState<string>(selection.height.toString());
+  const [costPrice, setCostPrice] = useState<string>(
+    selection.costPrice?.toString() ?? "0",
+  );
   const [compatibleCars, setCompatibleCars] = useState<Array<string>>(
     selection.cars.map((car: any) => car.id),
   );
@@ -98,6 +101,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
         partLength: Number(length),
         width: Number(width),
         height: Number(height),
+        costPrice: Number(costPrice),
         partTypes: partTypeIds,
         alternatePartNos: alternatePartNos,
       },
@@ -111,6 +115,7 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           setLength("");
           setWidth("");
           setHeight("");
+          setCostPrice("0");
           setPartTypeIds([]);
           setCompatibleCars([]);
           refetch();
@@ -209,6 +214,18 @@ const EditPartDetails: React.FC<EditPartProps> = ({
           <input
             value={height}
             onChange={(e) => setHeight(e.target.value)}
+            type="numeric"
+            className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Cost Price
+          </label>
+          <input
+            value={costPrice}
+            onChange={(e) => setCostPrice(e.target.value)}
             type="numeric"
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}

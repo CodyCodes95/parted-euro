@@ -66,6 +66,10 @@ const Inventory: NextPage = () => {
         accessor: "height",
       },
       {
+        Header: "Cost Price",
+        accessor: "costPrice",
+      },
+      {
         Header: "Type",
         accessor: (d) => d.partTypes.map((type) => type.name).join(", "),
       },

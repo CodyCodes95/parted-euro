@@ -40,6 +40,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
   const [length, setLength] = useState<string>("");
   const [width, setWidth] = useState<string>("");
   const [height, setHeight] = useState<string>("");
+  const [costPrice, setCostPrice] = useState<string>("");
   const [debouncedSearch] = useDebounce(carSearchInput, 200);
 
   const router = useRouter();
@@ -104,6 +105,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
         partLength: Number(length),
         width: Number(width),
         height: Number(height),
+        costPrice: Number(costPrice),
         partTypes: partTypeIds!,
         alternatePartNos: alternatePartNos,
       },
@@ -130,6 +132,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           setLength("");
           setWidth("");
           setHeight("");
+          setCostPrice("");
           setPartTypeIds([]);
           refetch();
           if (exit) {
@@ -223,6 +226,18 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           <input
             value={height}
             onChange={(e) => setHeight(e.target.value)}
+            type="numeric"
+            className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
+              dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Cost Price
+          </label>
+          <input
+            value={costPrice}
+            onChange={(e) => setCostPrice(e.target.value)}
             type="numeric"
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
