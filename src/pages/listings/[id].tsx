@@ -274,7 +274,7 @@ const Listing: NextPage<{
                       <div className="flex items-center rounded-md border border-gray-200">
                         <Button
                           disabled={quantity <= 1}
-                          onClick={() => {
+                          onMouseDown={() => {
                             if (quantity > 1) {
                               setQuantity(quantity - 1);
                             }
@@ -289,7 +289,7 @@ const Listing: NextPage<{
                         </span>
                         <Button
                           disabled={quantityAvailable <= quantity}
-                          onClick={() => {
+                          onMouseDown={() => {
                             if (
                               quantityAvailable &&
                               quantity < quantityAvailable
@@ -307,7 +307,7 @@ const Listing: NextPage<{
                         {quantityAvailable} available
                       </span>
                       <Button
-                        onClick={() => addToCart(listing!)}
+                        onMouseDown={() => addToCart(listing!)}
                         className="ml-auto"
                       >
                         Add to cart
@@ -555,7 +555,7 @@ const ImageCarousel = ({ images }: ImageCarouselProps) => {
             <CarouselItem key={image.id}>
               <div className="overflow-hidden rounded-lg bg-gray-100">
                 <img
-                  onClick={() => setLightboxOpen(true)}
+                  onMouseDown={() => setLightboxOpen(true)}
                   alt=""
                   className="h-auto w-full cursor-zoom-in transition-transform duration-300 hover:scale-105"
                   height="500"

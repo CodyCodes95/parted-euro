@@ -235,7 +235,7 @@ export function Checkout() {
                       </span>
                     </p>
                     <Trash
-                      onClick={(e) => {
+                      onMouseDown={(e) => {
                         e.preventDefault();
                         removeItemFromCart(item.listingId);
                       }}
@@ -489,7 +489,7 @@ export function AddressAutoComplete(props: AddressAutoCompleteProps) {
           />
           <Button
             type="reset"
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedPlaceId("");
               setAddress({
                 formattedAddress: "",

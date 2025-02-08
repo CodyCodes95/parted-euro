@@ -43,7 +43,7 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={() => setSelectedListing(listing)}>
+        <DropdownMenuItem onMouseDown={() => setSelectedListing(listing)}>
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem>Make a copy</DropdownMenuItem>

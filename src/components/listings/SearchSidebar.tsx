@@ -129,7 +129,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                         key={series}
                         variant="ghost"
                         size="sm"
-                        onClick={() => updateQuery("series", series)}
+                        onMouseDown={() => updateQuery("series", series)}
                         className={`flex w-full justify-between hover:bg-accent hover:text-accent-foreground`}
                       >
                         <p>{series}</p>
@@ -161,7 +161,9 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                         key={generation}
                         variant="ghost"
                         size="sm"
-                        onClick={() => updateQuery("generation", generation)}
+                        onMouseDown={() =>
+                          updateQuery("generation", generation)
+                        }
                         className="flex w-full justify-between 
                       hover:bg-accent hover:text-accent-foreground
                     "
@@ -194,7 +196,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                         key={model}
                         variant="ghost"
                         size="sm"
-                        onClick={() => updateQuery("model", model)}
+                        onMouseDown={() => updateQuery("model", model)}
                         className="flex w-full justify-between 
                       hover:bg-accent hover:text-accent-foreground
                     "
@@ -224,7 +226,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
           </h2>
           <div className="space-y-1">
             <Button
-              onClick={() => updateCategory("category", "engine")}
+              onMouseDown={() => updateCategory("category", "engine")}
               variant="ghost"
               size="sm"
               className={`w-full justify-start ${
@@ -243,7 +245,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateCategory("category", "suspension")}
+              onMouseDown={() => updateCategory("category", "suspension")}
             >
               Suspension & Brakes
             </Button>
@@ -255,7 +257,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateCategory("category", "interior")}
+              onMouseDown={() => updateCategory("category", "interior")}
             >
               Interior
             </Button>
@@ -267,7 +269,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateCategory("category", "exterior")}
+              onMouseDown={() => updateCategory("category", "exterior")}
             >
               Exterior
             </Button>
@@ -279,7 +281,7 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
                   ? "bg-accent text-accent-foreground"
                   : ""
               }`}
-              onClick={() => updateCategory("category", "electrical")}
+              onMouseDown={() => updateCategory("category", "electrical")}
             >
               Electrical
             </Button>

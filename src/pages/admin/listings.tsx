@@ -137,7 +137,7 @@ const Listings: NextPage = () => {
         accessor: (d) =>
           d.listedOnEbay ? (
             <Button
-              onClick={() => {
+              onMouseDown={() => {
                 markAsNotListedEbay.mutate({ id: d.id });
                 setShowEbayModal(true);
                 setSelected(d);
@@ -148,7 +148,7 @@ const Listings: NextPage = () => {
             </Button>
           ) : (
             <Button
-              onClick={() => {
+              onMouseDown={() => {
                 setSelected(d);
                 setShowEbayModal(true);
               }}
@@ -161,7 +161,7 @@ const Listings: NextPage = () => {
         Header: "Edit",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelected(d);
               void setShowModal(true);
             }}
@@ -174,7 +174,7 @@ const Listings: NextPage = () => {
         Header: order ? "Add to order" : "Create order",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelected(d);
               setShowMarkAsSold(true);
             }}
@@ -188,7 +188,7 @@ const Listings: NextPage = () => {
         Header: "Delete",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelected(d);
               setShowDeleteModal(true);
             }}
@@ -240,7 +240,7 @@ const Listings: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            listings: adminPages
+            listings: adminPages,
           }}
         />
         <Spacer amount="2" />
@@ -285,7 +285,7 @@ const Listings: NextPage = () => {
         </Dialog>
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelected(undefined);
               void setShowModal(true);
             }}
@@ -305,7 +305,7 @@ const Listings: NextPage = () => {
           data={listings}
         />
         <div>
-          <Button onClick={authenticateEbay}>Renew Ebay</Button>
+          <Button onMouseDown={authenticateEbay}>Renew Ebay</Button>
           <Button>
             <Link href="/admin/ebay">Ebay Dashboard</Link>
           </Button>

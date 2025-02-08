@@ -96,7 +96,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
           onMouseLeave={() => setHoveredListing("")}
           className="h-fit rounded-xl bg-white shadow-md duration-500 hover:scale-105 hover:shadow-xl"
         >
-          <div onClick={() => router.push(`/listings/${listing.id}`)}>
+          <div onMouseDown={() => router.push(`/listings/${listing.id}`)}>
             <img
               src={
                 hoveredListing === listing.id
@@ -115,7 +115,7 @@ const ListingsGrid: FC<ListingsGridProps> = ({ listings, isLoading }) => {
                   ${listing.price}
                 </p>
                 <div
-                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className="z-50 ml-auto rounded-md p-2 hover:bg-gray-200"
                 >
                   <ShoppingBag />

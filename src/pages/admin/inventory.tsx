@@ -101,7 +101,7 @@ const Inventory: NextPage = () => {
         accessor: (d: Part) => (
           <Button
             variant={"outline"}
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedPartToEdit(d);
             }}
           >
@@ -116,7 +116,7 @@ const Inventory: NextPage = () => {
           return (
             <Button
               variant={"outline"}
-              onClick={() => {
+              onMouseDown={() => {
                 console.log(d.partDetails.name);
                 setListingToCreate({
                   // @ts-expect-error: bad types
@@ -135,7 +135,7 @@ const Inventory: NextPage = () => {
         accessor: (d: Part) => (
           <Button
             variant={"outline"}
-            onClick={() => {
+            onMouseDown={() => {
               setSelected(d);
               setShowDeleteModal(true);
             }}
@@ -166,7 +166,7 @@ const Inventory: NextPage = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            inventory: adminPages
+            inventory: adminPages,
           }}
         />
         {showModal ? (
@@ -202,7 +202,7 @@ const Inventory: NextPage = () => {
         />
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div className="flex items-center gap-4">
-            <Button onClick={() => setShowModal(true)}>
+            <Button onMouseDown={() => setShowModal(true)}>
               Add Inventory Item
             </Button>
             <div className="flex items-center gap-2">

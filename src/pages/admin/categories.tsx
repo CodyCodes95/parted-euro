@@ -39,7 +39,7 @@ const Categories: NextPage = () => {
         Header: "Edit",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedCategory(d);
               setShowModal(true);
             }}
@@ -73,7 +73,7 @@ const Categories: NextPage = () => {
         />
         <div className="py-4">
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedCategory(undefined);
               setShowModal(true);
             }}

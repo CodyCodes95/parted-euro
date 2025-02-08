@@ -48,14 +48,14 @@ const ModalNew = ({
           <Dialog.Title className="text-xl font-medium">{title}</Dialog.Title>
           <X
             className="h-10 w-10 cursor-pointer rounded-md p-2 hover:bg-gray-200"
-            onClick={onClose}
+            onMouseDown={onClose}
           />
         </div>
         <Dialog.Panel
           id="modal-panel"
           className={cn(
             `mx-auto overflow-y-auto rounded-b-md bg-white shadow-2xl ${widthClasses}`,
-            className
+            className,
           )}
         >
           {children}

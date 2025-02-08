@@ -65,7 +65,7 @@ const AddInventoryLocation = ({
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <Button onClick={handleSubmit}>
+          <Button onMouseDown={handleSubmit}>
             {selection ? "Update" : "Create"}
           </Button>
         </div>

@@ -83,7 +83,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
     <>
       {showSearch && (
         <div
-          onClick={() => setShowSearch(!showSearch)}
+          onMouseDown={() => setShowSearch(!showSearch)}
           className="fixed left-0 top-20 z-[51] h-screen w-full bg-[#00000063]"
         />
       )}
@@ -126,7 +126,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                     <>
                       {listings.data?.slice(0, 5).map((listing, index) => (
                         <li
-                          onClick={async () => {
+                          onMouseDown={async () => {
                             setShowSearch(false);
                             await router.push(`/listings/${listing.id}`);
                           }}
@@ -152,7 +152,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
                         </li>
                       ))}
                       <li
-                        onClick={async () => {
+                        onMouseDown={async () => {
                           setShowSearch(false);
                           await router.push(`/listings?search=${search}`);
                         }}

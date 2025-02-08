@@ -10,7 +10,7 @@ type AddCategoryProps = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
   selection: PartTypes | undefined;
-}
+};
 
 const AddCategory: React.FC<AddCategoryProps> = ({
   showModal,
@@ -82,8 +82,8 @@ const AddCategory: React.FC<AddCategoryProps> = ({
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={(e) => {
-                if (!e?.value) return
-                setParentCategoryId(e.value)
+                if (!e?.value) return;
+                setParentCategoryId(e.value);
               }}
               options={parentCategories.data?.map((category: PartTypes) => {
                 return {
@@ -95,7 +95,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({
           </div>
         )}
         <button
-          onClick={async () => {
+          onMouseDown={async () => {
             if (selection) {
               await onUpdate();
             } else {

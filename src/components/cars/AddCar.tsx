@@ -11,7 +11,7 @@ type AddCarProps = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   car?: Car | null;
   refetch: () => void;
-}
+};
 
 const AddCar: React.FC<AddCarProps> = ({
   showModal,
@@ -53,7 +53,7 @@ const AddCar: React.FC<AddCarProps> = ({
         onError: (err) => {
           toast.error(err.message);
         },
-      }
+      },
     );
   };
 
@@ -91,7 +91,7 @@ const AddCar: React.FC<AddCarProps> = ({
         />
         <p
           className="cursor-pointer text-blue-600"
-          onClick={() => setShowBody(!showBody)}
+          onMouseDown={() => setShowBody(!showBody)}
         >
           There are multiple bodies for this model
         </p>
@@ -102,7 +102,7 @@ const AddCar: React.FC<AddCarProps> = ({
               ...new Set(
                 cars.data
                   ?.filter((car: Car) => car.body !== null)
-                  .map((car) => car.body)
+                  .map((car) => car.body),
               ),
             ]}
             value={body}
@@ -111,8 +111,8 @@ const AddCar: React.FC<AddCarProps> = ({
         )}
       </div>
       <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-        <Button onClick={() => onSave(true)}>Save and Exit</Button>
-        <Button onClick={() => onSave(false)}>Save</Button>
+        <Button onMouseDown={() => onSave(true)}>Save and Exit</Button>
+        <Button onMouseDown={() => onSave(false)}>Save</Button>
       </div>
     </Modal>
   );

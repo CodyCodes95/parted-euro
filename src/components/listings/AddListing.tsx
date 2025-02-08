@@ -254,7 +254,7 @@ const AddListing: React.FC<AddListingProps> = ({
           />
         </div>
         <div className="flex items-center justify-between">
-          <div onClick={() => photoUploadRef.current?.click()}>
+          <div onMouseDown={() => photoUploadRef.current?.click()}>
             <input
               hidden
               ref={photoUploadRef}
@@ -267,13 +267,13 @@ const AddListing: React.FC<AddListingProps> = ({
           </div>
           <p>{uploadedImages.length || images.length} Photos attached</p>
           <a
-            onClick={() => setShowImageSorter(true)}
+            onMouseDown={() => setShowImageSorter(true)}
             className="cursor-pointer text-blue-500"
           >
             Sort Order
           </a>
         </div>
-        <Button onClick={onSave}>Create Listing</Button>
+        <Button onMouseDown={onSave}>Create Listing</Button>
       </div>
     </Modal>
   );

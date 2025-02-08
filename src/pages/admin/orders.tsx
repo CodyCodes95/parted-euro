@@ -194,7 +194,10 @@ const Orders = () => {
       {
         Header: "View Order",
         accessor: (d) => (
-          <Button variant="outline" onClick={() => setSelectedOrderId(d.id)}>
+          <Button
+            variant="outline"
+            onMouseDown={() => setSelectedOrderId(d.id)}
+          >
             <File />
           </Button>
         ),
@@ -209,12 +212,12 @@ const Orders = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuItem onClick={() => setSelectedOrder(d)}>
+              <DropdownMenuItem onMouseDown={() => setSelectedOrder(d)}>
                 <Package className="mr-2 h-4 w-4" />
                 <span>Add tracking number</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={async () => {
+                onMouseDown={async () => {
                   await sendOrderReadyForPickup.mutateAsync({ order: d });
                   toast.success("Email sent");
                 }}
@@ -223,7 +226,7 @@ const Orders = () => {
                 <span>Ready for pickup</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={async () => {
+                onMouseDown={async () => {
                   await regenerateInvoice.mutateAsync({ id: d.id });
                   toast.success("Email sent");
                 }}
@@ -252,7 +255,7 @@ const Orders = () => {
       <main className="m-20 flex min-h-screen flex-col bg-white">
         <BreadCrumbs
           selectOptions={{
-            orders: adminPages
+            orders: adminPages,
           }}
         />
         <Spacer amount="2" />
@@ -382,7 +385,7 @@ const TrackingNumberModal = ({
         </div>
         <div className="flex w-full justify-end">
           <DialogClose>
-            <Button onClick={onSave}>Send</Button>
+            <Button onMouseDown={onSave}>Send</Button>
           </DialogClose>
         </div>
       </DialogContent>

@@ -175,7 +175,7 @@ const Listings: NextPage = () => {
               <div className="flex w-full flex-wrap items-center gap-3">
                 <Button
                   variant={"outline"}
-                  onClick={(e) => {
+                  onMouseDown={(e) => {
                     e.preventDefault();
                     setShowCarSelection(true);
                   }}
@@ -188,7 +188,7 @@ const Listings: NextPage = () => {
                 </Button>
                 {selectedCar && (
                   <X
-                    onClick={() => {
+                    onMouseDown={() => {
                       const query = router.query;
                       delete query.series;
                       delete query.generation;
@@ -211,7 +211,7 @@ const Listings: NextPage = () => {
                 <Button
                   variant={"outline"}
                   className="shadow-sm ring-1 ring-gray-200 md:hidden dark:ring-gray-800"
-                  onClick={(e) => {
+                  onMouseDown={(e) => {
                     e.preventDefault();
                     setShowCategorySelection(true);
                   }}
@@ -240,7 +240,7 @@ const Listings: NextPage = () => {
                     <div className="flex flex-col">
                       <PopoverClose asChild>
                         <button
-                          onClick={() => changeSort("title")}
+                          onMouseDown={() => changeSort("title")}
                           className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Title</span>
@@ -253,7 +253,7 @@ const Listings: NextPage = () => {
                       </PopoverClose>
                       <PopoverClose asChild>
                         <button
-                          onClick={() => changeSort("price")}
+                          onMouseDown={() => changeSort("price")}
                           className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Price</span>
@@ -266,7 +266,7 @@ const Listings: NextPage = () => {
                       </PopoverClose>
                       <PopoverClose asChild>
                         <button
-                          onClick={() => changeSort("updatedAt")}
+                          onMouseDown={() => changeSort("updatedAt")}
                           className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Updated</span>
@@ -491,7 +491,7 @@ const ListingsResults = ({
             <PaginationItem>
               <PaginationPrevious
                 className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
-                onClick={() =>
+                onMouseDown={() =>
                   handlePageClick(Number(router.query.page ?? 0) - 1)
                 }
               />
@@ -519,7 +519,7 @@ const ListingsResults = ({
                   <PaginationLink
                     className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                     key={page}
-                    onClick={() => handlePageClick(page)}
+                    onMouseDown={() => handlePageClick(page)}
                     isActive={Number(router.query.page ?? 0) === page}
                   >
                     {page}
@@ -533,7 +533,7 @@ const ListingsResults = ({
               <PaginationItem className="cursor-pointer">
                 <PaginationLink
                   className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
-                  onClick={() => handlePageClick(listings.data!.totalPages)}
+                  onMouseDown={() => handlePageClick(listings.data!.totalPages)}
                 >
                   {listings.data?.totalPages}
                 </PaginationLink>
@@ -544,7 +544,7 @@ const ListingsResults = ({
             <PaginationItem className="cursor-pointer">
               <PaginationNext
                 className="shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
-                onClick={() =>
+                onMouseDown={() =>
                   handlePageClick(Number(router.query.page ?? 0) + 1)
                 }
               />
@@ -609,7 +609,7 @@ const CategoryFilters = () => {
                 ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
                 : ""
             }`}
-            onClick={() => updateCategory("category", "")}
+            onMouseDown={() => updateCategory("category", "")}
           >
             All
           </Button>
@@ -623,7 +623,7 @@ const CategoryFilters = () => {
                     ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
                     : ""
                 }`}
-                onClick={() => updateCategory("category", category.name)}
+                onMouseDown={() => updateCategory("category", category.name)}
               >
                 {category.name}
               </Button>
@@ -639,7 +639,9 @@ const CategoryFilters = () => {
                           ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
                           : ""
                       }`}
-                      onClick={() => updateCategory("subcat", subCategory.name)}
+                      onMouseDown={() =>
+                        updateCategory("subcat", subCategory.name)
+                      }
                     >
                       {subCategory.name}
                     </Button>
@@ -728,7 +730,7 @@ const CarSelection = () => {
                   variant="outline"
                   className="relative h-12 overflow-hidden border p-2 transition-all hover:border-primary hover:bg-primary/5"
                   key={series.value}
-                  onClick={() => {
+                  onMouseDown={() => {
                     router.query.series = series.value;
                     void router.push(router);
                     router.query.generation = undefined;
@@ -759,7 +761,7 @@ const CarSelection = () => {
                   variant="outline"
                   className="relative h-12 overflow-hidden border p-2 transition-all hover:border-primary hover:bg-primary/5"
                   key={generation.value}
-                  onClick={() => {
+                  onMouseDown={() => {
                     router.query.generation = generation.value;
                     void router.push(router);
                   }}
@@ -789,7 +791,7 @@ const CarSelection = () => {
                   variant="outline"
                   className="relative h-12 overflow-hidden border p-2 transition-all hover:border-primary hover:bg-primary/5"
                   key={model.value}
-                  onClick={() => {
+                  onMouseDown={() => {
                     router.query.model = model.value;
                     void router.push(router);
                   }}

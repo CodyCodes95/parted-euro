@@ -143,7 +143,7 @@ const Donors: NextPage = () => {
         Header: "Add Parts",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setDonorVin(d.vin);
               setShowPartModal(true);
             }}
@@ -158,7 +158,7 @@ const Donors: NextPage = () => {
         Header: "Edit",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedDonor(d);
               setShowModal(true);
             }}
@@ -171,7 +171,7 @@ const Donors: NextPage = () => {
         Header: "Delete",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedDonor(d);
               setShowDeleteModal(true);
             }}
@@ -247,7 +247,7 @@ const Donors: NextPage = () => {
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedDonor(null);
               setShowModal(true);
             }}

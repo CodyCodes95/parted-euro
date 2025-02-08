@@ -22,7 +22,7 @@ const ImageSorter: React.FC<ImageSorterProps> = ({
     oldIndex: number,
     newIndex: number,
     images: string[],
-    setImages: any
+    setImages: any,
   ) => {
     const newImages = [...images] as any[];
     const [removedImage] = newImages.splice(oldIndex, 1);
@@ -47,11 +47,11 @@ const ImageSorter: React.FC<ImageSorterProps> = ({
     if (image.url) {
       await deleteImage.mutateAsync({ id: image.id });
       setImages((uploadedImages: any) =>
-        uploadedImages.filter((img: any) => img.id !== image.id)
+        uploadedImages.filter((img: any) => img.id !== image.id),
       );
     } else {
       setImages((uploadedImages: any) =>
-        uploadedImages.filter((img: any) => img !== image)
+        uploadedImages.filter((img: any) => img !== image),
       );
     }
   };
@@ -69,7 +69,7 @@ const ImageSorter: React.FC<ImageSorterProps> = ({
           <SortableItem key={image.url || image}>
             <div className="relative">
               <RxCross2
-                onClick={() => onImageDelete(image)}
+                onMouseDown={() => onImageDelete(image)}
                 className="absolute right-0 cursor-pointer text-xl text-red-500"
               />
               <img className="h-56 w-32" src={image.url || image} />
@@ -78,8 +78,8 @@ const ImageSorter: React.FC<ImageSorterProps> = ({
         ))}
       </SortableList>
       <button
-        className="mr-2 mt-4 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        onClick={() => {
+        className="mb-2 mr-2 mt-4 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        onMouseDown={() => {
           if (images[0].url) {
             runUpdateImageOrder();
           } else {

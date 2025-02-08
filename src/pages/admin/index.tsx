@@ -141,7 +141,7 @@ const Admin: NextPage = () => {
           <div className="flex flex-col items-center">
             <p className="text-xl">0 Days until Xero expiry.</p>
             <div className="p-2"></div>
-            <button className="hover:underline" onClick={onRenew}>
+            <button className="hover:underline" onMouseDown={onRenew}>
               Renew token
             </button>
           </div>

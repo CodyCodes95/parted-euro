@@ -141,7 +141,7 @@ const WreckingPage: NextPage = () => {
               `${search || seriesFilter ? " • " : ""}Year: ${yearFilter}`}
           </p>
           <button
-            onClick={() => {
+            onMouseDown={() => {
               setSearch("");
               setSeriesFilter("");
               setYearFilter("");

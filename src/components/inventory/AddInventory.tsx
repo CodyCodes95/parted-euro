@@ -158,7 +158,7 @@ const AddInventory = ({
                 />
                 <Button
                   disabled={saveInventoryLocationMutation.isLoading}
-                  onClick={() => saveInventoryLocation()}
+                  onMouseDown={() => saveInventoryLocation()}
                   className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
                 >
                   <Save />
@@ -191,7 +191,7 @@ const AddInventory = ({
                   }}
                 />
                 <div
-                  onClick={() => setNewInventoryLocation("")}
+                  onMouseDown={() => setNewInventoryLocation("")}
                   className="cursor-pointer rounded-md bg-gray-100 p-2 hover:bg-gray-200"
                 >
                   <Plus />
@@ -216,8 +216,8 @@ const AddInventory = ({
           <Input value={variant} onChange={(e) => setVariant(e.target.value)} />
         </div>
         <div className="flex w-full justify-end gap-2">
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onSave}>Save</Button>
+          <Button onMouseDown={onClose}>Cancel</Button>
+          <Button onMouseDown={onSave}>Save</Button>
         </div>
       </div>
     </ModalNew>

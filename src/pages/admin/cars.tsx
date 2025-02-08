@@ -59,7 +59,7 @@ const Cars: NextPage = () => {
         Header: "Edit Car",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedCar(d);
               setShowModal(true);
             }}
@@ -72,7 +72,7 @@ const Cars: NextPage = () => {
         Header: "Delete Car",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedCar(d);
               setShowDeleteModal(true);
             }}
@@ -113,7 +113,7 @@ const Cars: NextPage = () => {
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
           <div>
             <Button
-              onClick={() => {
+              onMouseDown={() => {
                 setSelectedCar(null);
                 setShowModal(true);
               }}

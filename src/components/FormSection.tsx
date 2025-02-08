@@ -7,8 +7,12 @@ interface FormSectionProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const FormSection: React.FC<FormSectionProps> = ({ title, data, value, setValue }) => {
-  
+const FormSection: React.FC<FormSectionProps> = ({
+  title,
+  data,
+  value,
+  setValue,
+}) => {
   const [newValue, setNewValue] = React.useState<boolean>(false);
 
   return (
@@ -25,7 +29,7 @@ const FormSection: React.FC<FormSectionProps> = ({ title, data, value, setValue 
           }`}
         >
           <option value="">{title}</option>
-          {data?.map((item: any, i:number) => (
+          {data?.map((item: any, i: number) => (
             <option key={i} value={item}>
               {item}
             </option>
@@ -39,7 +43,10 @@ const FormSection: React.FC<FormSectionProps> = ({ title, data, value, setValue 
             newValue ? "visible" : "hidden"
           }`}
         />
-        <button onClick={() => setNewValue(!newValue)} className="rounded-full bg-gray-800 px-4 py-1 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-blue-700 dark:focus:ring-blue-700">
+        <button
+          onMouseDown={() => setNewValue(!newValue)}
+          className="rounded-full bg-gray-800 px-4 py-1 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-blue-700 dark:focus:ring-blue-700"
+        >
           {newValue ? "Cancel" : "+"}
         </button>
       </div>

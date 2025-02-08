@@ -40,17 +40,21 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
     {
       columns,
       data,
-      initialState: { pageSize: 15, pageIndex: currentPage, globalFilter: filter },
+      initialState: {
+        pageSize: 15,
+        pageIndex: currentPage,
+        globalFilter: filter,
+      },
     },
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useRowSelect
+    useRowSelect,
   );
 
   useEffect(() => {
     if (filter) {
-      setPreviousSetPage( pageIndex === 0 ? previousSetPage : pageIndex);
+      setPreviousSetPage(pageIndex === 0 ? previousSetPage : pageIndex);
       setCurrentPage(0);
     } else if (previousSetPage && !filter) {
       setCurrentPage(previousSetPage);
@@ -101,7 +105,11 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
               >
                 {row.cells.map((cell, i) => {
                   return (
-                    <td className="px-4 py-3 text-center" {...cell.getCellProps()} key={i}>
+                    <td
+                      className="px-4 py-3 text-center"
+                      {...cell.getCellProps()}
+                      key={i}
+                    >
                       {cell.render("Cell")}
                     </td>
                   );
@@ -129,7 +137,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
           <ul className="inline-flex items-center -space-x-px">
             <li
               className="cursor-pointer rounded-l-md border-2 p-2 hover:bg-gray-200"
-              onClick={() => {
+              onMouseDown={() => {
                 gotoPage(0);
               }}
             >
@@ -137,7 +145,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
             </li>
             <li
               className="cursor-pointer border-2 p-2 hover:bg-gray-200"
-              onClick={previousPage}
+              onMouseDown={previousPage}
             >
               Prev
             </li>
@@ -157,11 +165,12 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
                 return (
                   <li
                     key={page}
-                    onClick={() => {
+                    onMouseDown={() => {
                       gotoPage(page - 1);
                     }}
-                    className={`cursor-pointer border-2 py-2 px-4 hover:bg-gray-200 ${pageIndex + 1 === page ? "bg-gray-200 font-semibold" : ""
-                      }`}
+                    className={`cursor-pointer border-2 px-4 py-2 hover:bg-gray-200 ${
+                      pageIndex + 1 === page ? "bg-gray-200 font-semibold" : ""
+                    }`}
                   >
                     {page}
                   </li>
@@ -169,13 +178,13 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
               })}
             <li
               className="cursor-pointer border-2 p-2 hover:bg-gray-200"
-              onClick={nextPage}
+              onMouseDown={nextPage}
             >
               Next
             </li>
             <li
               className="cursor-pointer rounded-r-md border-2 p-2 hover:bg-gray-200"
-              onClick={() => {
+              onMouseDown={() => {
                 gotoPage(pageCount - 1);
               }}
             >

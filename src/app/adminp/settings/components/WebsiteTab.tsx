@@ -167,7 +167,7 @@ const WebsiteTabClient: React.FC<WebsiteTabClientProps> = ({
             className="hidden"
           />
           <Button
-            onClick={() => photoUploadRef.current?.click()}
+            onMouseDown={() => photoUploadRef.current?.click()}
             disabled={uploadImageMutation.isLoading}
             className="gap-2"
           >
@@ -250,7 +250,7 @@ function SortableItem({ id, url, onDelete, isDeleting }: SortableItemProps) {
           />
         </div>
       </div>
-      <Button onClick={() => onDelete(id)} disabled={isDeleting}>
+      <Button onMouseDown={() => onDelete(id)} disabled={isDeleting}>
         {isDeleting ? "Deleting..." : "Delete"}
       </Button>
     </div>

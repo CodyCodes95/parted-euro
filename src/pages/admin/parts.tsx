@@ -77,7 +77,7 @@ const Inventory: NextPage = () => {
         Header: "Edit",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedPart(d);
               setShowEditModal(true);
             }}
@@ -90,7 +90,7 @@ const Inventory: NextPage = () => {
         Header: "Delete",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedPart(d);
               setShowConfirmDelete(true);
             }}
@@ -147,7 +147,7 @@ const Inventory: NextPage = () => {
           />
         ) : null}
         <div className="flex items-center justify-between bg-white py-4 dark:bg-gray-800">
-          <Button onClick={() => setShowModal(true)}>Add Part</Button>
+          <Button onMouseDown={() => setShowModal(true)}>Add Part</Button>
           <FilterInput
             filter={filter}
             setFilter={setFilter}

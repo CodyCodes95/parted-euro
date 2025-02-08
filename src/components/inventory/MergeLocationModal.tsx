@@ -93,12 +93,12 @@ export default function MergeLocationModal({
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowModal(false)}>
+          <Button variant="outline" onMouseDown={() => setShowModal(false)}>
             Cancel
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
+            onMouseDown={() => {
               if (selectedTargetId) {
                 mergeLocation.mutate({
                   sourceId: sourceLocation.id,

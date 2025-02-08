@@ -63,7 +63,7 @@ const InventoryLocations: NextPage = () => {
         Header: "Edit",
         accessor: (d) => (
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedLocation(d);
               setShowModal(true);
             }}
@@ -77,7 +77,7 @@ const InventoryLocations: NextPage = () => {
         accessor: (d) => (
           <Button
             variant="secondary"
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedMergeLocation(d);
               setShowMergeModal(true);
             }}
@@ -91,7 +91,7 @@ const InventoryLocations: NextPage = () => {
         accessor: (d) => (
           <Button
             variant="destructive"
-            onClick={() => {
+            onMouseDown={() => {
               if (confirm("Are you sure you want to delete this location?")) {
                 deleteLocation.mutate({ id: d.id });
               }
@@ -135,7 +135,7 @@ const InventoryLocations: NextPage = () => {
         />
         <div className="flex items-center justify-between bg-white py-4">
           <Button
-            onClick={() => {
+            onMouseDown={() => {
               setSelectedLocation(undefined);
               setShowModal(true);
             }}

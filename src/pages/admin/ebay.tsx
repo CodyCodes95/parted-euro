@@ -28,7 +28,7 @@ const Ebay: NextPage = () => {
     {
       enabled: false,
       onSuccess: (data) => console.log(data),
-    }
+    },
   );
   const getOffers = trpc.ebay.getOffers.useQuery(
     {
@@ -37,7 +37,7 @@ const Ebay: NextPage = () => {
     {
       enabled: false,
       onSuccess: (data) => console.log(data),
-    }
+    },
   );
 
   const getReturnId = async () => {
@@ -70,26 +70,26 @@ const Ebay: NextPage = () => {
     <div className="flex min-h-screen flex-col items-center justify-center">
       <div>
         <button
-          onClick={getReturnId}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={getReturnId}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get returns policy
         </button>
         <button
-          onClick={getPaymentId}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={getPaymentId}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get Payment ID
         </button>
         <button
-          onClick={getMerchantName}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={getMerchantName}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Create Merchant Key
         </button>
         <button
-          onClick={getShippingPolicies}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={getShippingPolicies}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get policies
         </button>
@@ -100,19 +100,19 @@ const Ebay: NextPage = () => {
           onChange={(e) => setOffer(e.target.value)}
         />
         <button
-          onClick={() => getOffer.refetch()}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={() => getOffer.refetch()}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get Offer
         </button>
         <button
-          onClick={async () => {
+          onMouseDown={async () => {
             const res = await publishOffer.mutateAsync({
               offerId: offer,
             });
             console.log(res);
           }}
-          className="mr-2 mb-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800"
+          className="mb-2 mr-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800"
         >
           PUBLISH Offer
         </button>
@@ -131,13 +131,13 @@ const Ebay: NextPage = () => {
           onChange={(e) => setQuantity(Number(e.target.value))}
         />
         <button
-          onClick={() => getOffers.refetch()}
-          className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onMouseDown={() => getOffers.refetch()}
+          className="mb-2 mr-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Get Offer
         </button>
         <Button
-          onClick={() => {
+          onMouseDown={() => {
             const res = updateQuantity.mutateAsync({
               sku,
               quantity,

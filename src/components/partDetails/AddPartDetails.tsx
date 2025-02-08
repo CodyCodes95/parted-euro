@@ -268,7 +268,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           </label>
           {!!carOptions.length && (
             <Button
-              onClick={() =>
+              onMouseDown={() =>
                 setCompatibleCars([
                   ...compatibleCars,
                   ...carOptions.reduce((acc: any, car: any) => {
@@ -320,7 +320,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
       </div>
       <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
         <button
-          onClick={() => onSave(true)}
+          onMouseDown={() => onSave(true)}
           data-modal-toggle="defaultModal"
           type="button"
           className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -328,7 +328,7 @@ const AddPartDetails: React.FC<AddPartProps> = ({
           Save and Exit
         </button>
         <button
-          onClick={() => onSave(false)}
+          onMouseDown={() => onSave(false)}
           data-modal-toggle="defaultModal"
           type="button"
           className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

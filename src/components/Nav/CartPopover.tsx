@@ -86,7 +86,7 @@ const CartPopover = () => {
                   <div className="relative">
                     <button
                       className="group absolute -right-2 -top-2 z-10 rounded-full bg-white p-1.5 shadow-md transition-colors hover:bg-gray-100"
-                      onClick={() => removeItemFromCart(item.listingId)}
+                      onMouseDown={() => removeItemFromCart(item.listingId)}
                     >
                       <X className="h-4 w-4 group-hover:text-red-500" />
                     </button>

@@ -73,7 +73,7 @@ const AddToOrder = ({
           />
         </div>
         <div className="flex w-full justify-end gap-2">
-          <Button onClick={addToOrder}>Add</Button>
+          <Button onMouseDown={addToOrder}>Add</Button>
         </div>
       </div>
     </Modal>

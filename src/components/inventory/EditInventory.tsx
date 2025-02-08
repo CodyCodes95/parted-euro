@@ -22,13 +22,13 @@ const EditInventoryModal = ({
 }: EditInventoryModalProps) => {
   const [variant, setVariant] = useState<string>(inventoryItem?.variant || "");
   const [partDetailsId, setPartDetailsId] = useState(
-    inventoryItem?.partDetailsId || ""
+    inventoryItem?.partDetailsId || "",
   );
   const [inventoryLocation, setInventoryLocation] = useState<string>(
-    inventoryItem?.inventoryLocationId || ""
+    inventoryItem?.inventoryLocationId || "",
   );
   const [quantity, setQuantity] = useState<number>(
-    inventoryItem?.quantity || 1
+    inventoryItem?.quantity || 1,
   );
 
   const inventoryLocations = trpc.inventoryLocations.getAll.useQuery();
@@ -123,8 +123,8 @@ const EditInventoryModal = ({
           />
         </div>
         <div className="flex w-full justify-end gap-2">
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onSave}>Save</Button>
+          <Button onMouseDown={onClose}>Cancel</Button>
+          <Button onMouseDown={onSave}>Save</Button>
         </div>
       </div>
     </ModalNew>

@@ -168,7 +168,7 @@ export function Command() {
     <>
       <div className="relative">
         <Button
-          onClick={() => setOpen(true)}
+          onMouseDown={() => setOpen(true)}
           variant={"outline"}
           className="flex w-52 justify-between"
         >

@@ -221,7 +221,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
         <div className="flex w-full justify-end gap-2">
           <Button
             type="button"
-            onClick={() => handleSubmit(handleCashPayment)()}
+            onMouseDown={() => handleSubmit(handleCashPayment)()}
             loading={createCashOrder.isLoading}
             variant="secondary"
             tabIndex={6}

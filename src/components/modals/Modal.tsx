@@ -32,7 +32,10 @@ const Modal: FC<ModalProps> = ({
       className="relative z-50"
     >
       {/* The backdrop, rendered as a fixed sibling to the panel container */}
-      <Dialog.Overlay className="fixed inset-0 bg-black/30 pointer-events-none" aria-hidden="true" />
+      <Dialog.Overlay
+        className="pointer-events-none fixed inset-0 bg-black/30"
+        aria-hidden="true"
+      />
 
       {/* Full-screen container to center the panel */}
       <Dialog.Panel className="fixed inset-0 flex items-center justify-center p-4">
@@ -48,7 +51,7 @@ const Modal: FC<ModalProps> = ({
             <Dialog.Title className="text-xl font-medium">{title}</Dialog.Title>
             <X
               className="h-10 w-10 cursor-pointer rounded-md p-2 hover:bg-gray-200"
-              onClick={() => setIsOpen(false)}
+              onMouseDown={() => setIsOpen(false)}
             />
           </div>
           {children}

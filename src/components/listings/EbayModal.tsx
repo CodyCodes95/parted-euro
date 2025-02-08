@@ -270,7 +270,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
           <>
             <div className="cursor-auto bg-gray-200 p-2">
               <ChevronLeft
-                onClick={() => setCreateNewFulfillmentPolicy(false)}
+                onMouseDown={() => setCreateNewFulfillmentPolicy(false)}
               />
             </div>
             <div className="flex">
@@ -310,7 +310,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
               classNamePrefix="select"
             />
             <a
-              onClick={() => {
+              onMouseDown={() => {
                 setFulfillmentPolicy(null);
                 setCreateNewFulfillmentPolicy(true);
               }}
@@ -320,7 +320,7 @@ const EbayModal: React.FC<EbayModalProps> = ({
             </a>
           </>
         )}
-        <Button onClick={onSubmit}>List</Button>
+        <Button onMouseDown={onSubmit}>List</Button>
       </div>
     </Modal>
   );

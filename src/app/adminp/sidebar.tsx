@@ -47,7 +47,7 @@ export function Sidebar({
     >
       {/* Overlay in mobile */}
       <div
-        onClick={() => setNavOpened(false)}
+        onMouseDown={() => setNavOpened(false)}
         className={`absolute inset-0 transition-[opacity] delay-100 duration-700 ${
           navOpened ? "h-svh opacity-50" : "h-0 opacity-0"
         } w-full bg-black md:hidden`}
@@ -84,7 +84,7 @@ export function Sidebar({
             aria-label="Toggle Navigation"
             aria-controls="sidebar-menu"
             aria-expanded={navOpened}
-            onClick={() => setNavOpened((prev) => !prev)}
+            onMouseDown={() => setNavOpened((prev) => !prev)}
           >
             {navOpened ? <IconX /> : <IconMenu2 />}
           </Button>
@@ -103,7 +103,7 @@ export function Sidebar({
 
         {/* Scrollbar width toggle button */}
         <Button
-          onClick={() => setIsCollapsed((prev) => !prev)}
+          onMouseDown={() => setIsCollapsed((prev) => !prev)}
           size="icon"
           variant="outline"
           className="absolute -right-5 top-1/2 z-50 hidden rounded-full md:inline-flex"
@@ -308,7 +308,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      onClick={closeNav}
+      onMouseDown={closeNav}
       className={cn(
         buttonVariants({
           variant: checkActiveNav(href) ? "secondary" : "ghost",

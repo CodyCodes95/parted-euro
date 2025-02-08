@@ -74,13 +74,13 @@ const Nav = () => {
         </Link>
         {menuOpen ? (
           <X
-            onClick={toggleMenu}
+            onMouseDown={toggleMenu}
             className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
           />
         ) : (
           <div className="flex items-center gap-4">
             <div
-              onClick={() => setShowSearch(!showSearch)}
+              onMouseDown={() => setShowSearch(!showSearch)}
               className="cursor-pointer rounded-full p-2 transition-colors hover:bg-gray-100"
             >
               <Search className="h-5 w-5 text-gray-700" />
@@ -89,7 +89,7 @@ const Nav = () => {
               <CartPopover />
             </div>
             <Menu
-              onClick={toggleMenu}
+              onMouseDown={toggleMenu}
               className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
             />
           </div>
@@ -133,7 +133,7 @@ const Nav = () => {
   return (
     <div className="sticky top-0 z-50 flex w-full items-center justify-between overflow-x-clip border-b bg-white/95 px-8 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <button
-        onClick={() => {
+        onMouseDown={() => {
           if (session) return;
           setShowLogin(!showLogin);
         }}
@@ -198,7 +198,7 @@ const Nav = () => {
       </NavigationMenu>
       <div className="flex items-center gap-2">
         <Button
-          onClick={() => setShowSearch(!showSearch)}
+          onMouseDown={() => setShowSearch(!showSearch)}
           className="h-10 w-10 rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
           variant="ghost"
         >
@@ -217,7 +217,7 @@ const Nav = () => {
           ) : (
             <LogIn
               className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
-              onClick={() => signIn("google", {})}
+              onMouseDown={() => signIn("google", {})}
             />
           )}
         </div>

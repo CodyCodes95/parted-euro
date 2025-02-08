@@ -215,7 +215,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
             <SortableItem key={image.url}>
               <div className="relative">
                 <RxCross2
-                  onClick={() => onImageDelete(image)}
+                  onMouseDown={() => onImageDelete(image)}
                   className="absolute right-0 cursor-pointer text-xl text-red-500"
                 />
                 <img className="h-56 w-32" src={image.url} />
@@ -225,7 +225,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         </SortableList>
         <button
           className="mb-2 mr-2 mt-4 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          onClick={() => {
+          onMouseDown={() => {
             runUpdateImageOrder();
           }}
         >
@@ -316,7 +316,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           />
         </div>
         <div className="flex items-center justify-between">
-          <div onClick={() => photoUploadRef.current?.click()}>
+          <div onMouseDown={() => photoUploadRef.current?.click()}>
             <input
               hidden
               ref={photoUploadRef}
@@ -329,14 +329,14 @@ const AddDonor: React.FC<AddDonorProps> = ({
           </div>
           <p>{images.length || uploadedImages.length} Photos attached</p>
           <a
-            onClick={() => setShowImageSorter(true)}
+            onMouseDown={() => setShowImageSorter(true)}
             className="cursor-pointer text-blue-500"
           >
             Sort Order
           </a>
         </div>
         <button
-          onClick={() => onSave()}
+          onMouseDown={() => onSave()}
           data-modal-toggle="defaultModal"
           type="button"
           className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
