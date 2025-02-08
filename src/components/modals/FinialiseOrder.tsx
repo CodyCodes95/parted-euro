@@ -14,6 +14,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { X } from "lucide-react";
 
 // Define the form schema using Zod
 const formSchema = z.object({
@@ -262,9 +263,32 @@ const ItemsByListing = ({
     checkoutItem.itemId,
   );
 
+  const handleDelete = () => {
+    const newOrder = order.filter(
+      (item) => item.itemId !== checkoutItem.itemId,
+    );
+    setOrder(newOrder);
+    if (newOrder.length === 0) {
+      toast.dismiss();
+    } else {
+      toast.success("Item removed from order");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      <h4 className="text-lg font-bold">{listing.data?.title}</h4>
+      <div className="flex items-center justify-between">
+        <h4 className="text-lg font-bold">{listing.data?.title}</h4>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleDelete}
+          className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Remove item</span>
+        </Button>
+      </div>
       {inventoryItems.data?.map((item) => (
         <>
           <p className="flex">{item.partDetails.name}</p>
