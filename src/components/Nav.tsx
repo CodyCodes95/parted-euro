@@ -86,14 +86,6 @@ const Nav = () => {
               <Search className="h-5 w-5 text-gray-700" />
             </div>
             <div className="relative">
-              {cart.length ? (
-                <Badge
-                  className="absolute -right-1 -top-1 text-xs"
-                  variant={"destructive"}
-                >
-                  {cart.length}
-                </Badge>
-              ) : null}
               <CartPopover />
             </div>
             <Menu
@@ -213,14 +205,6 @@ const Nav = () => {
           <SearchIcon className="h-6 w-6" />
         </Button>
         <div className="relative">
-          {cart.length ? (
-            <Badge
-              className="absolute -right-1 -top-1 text-xs"
-              variant={"destructive"}
-            >
-              {cart.length}
-            </Badge>
-          ) : null}
           <CartPopover />
         </div>
         <div
