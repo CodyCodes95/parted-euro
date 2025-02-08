@@ -99,13 +99,15 @@ const WreckPage: NextPage = () => {
       )}
 
       <Tabs defaultValue={partTypes[0] ?? "all"} className="w-full">
-        <TabsList className="mb-8">
-          {partTypes.map((type: string) => (
-            <TabsTrigger key={type} value={type}>
-              {type}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="mb-6 w-max">
+            {partTypes.map((type: string) => (
+              <TabsTrigger key={type} value={type}>
+                {type}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
         {partTypes.map((type: string) => (
           <TabsContent key={type} value={type}>
