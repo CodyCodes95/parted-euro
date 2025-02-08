@@ -155,34 +155,36 @@ const Listings: NextPage = () => {
         <title>Parted Euro - Listings</title>
         <meta name="description" content="Parted Euro - Listings" />
       </Head>
-      <div className="flex w-full flex-col gap-4">
-        <div className="grid min-h-screen w-full lg:grid-cols-[300px_1fr]">
-          <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
+      <div className="flex w-full flex-col">
+        <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+          <div className="hidden border-r bg-white/50 shadow-sm backdrop-blur-sm lg:block dark:bg-gray-900/50">
             <CategoryFilters />
           </div>
-          <div className="flex flex-col p-4">
+          <div className="flex flex-col p-6">
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="relative w-full md:w-1/2">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full appearance-none bg-white pl-8 shadow-none dark:bg-gray-950"
+                  className="w-full appearance-none bg-white pl-10 shadow-sm ring-1 ring-gray-200 transition-shadow focus-visible:ring-2 dark:bg-gray-900 dark:ring-gray-800"
                   placeholder="Search products..."
                   type="search"
                 />
               </div>
-              <div className="flex w-full flex-wrap items-center gap-2">
+              <div className="flex w-full flex-wrap items-center gap-3">
                 <Button
                   variant={"outline"}
                   onClick={(e) => {
                     e.preventDefault();
                     setShowCarSelection(true);
                   }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                 >
-                  <BsCarFront />
-                  {selectedCar || "Select car"}
+                  <BsCarFront className="text-gray-500" />
+                  <span className="font-medium">
+                    {selectedCar || "Select car"}
+                  </span>
                 </Button>
                 {selectedCar && (
                   <X
@@ -203,12 +205,12 @@ const Listings: NextPage = () => {
                       );
                       setSelectedCar("");
                     }}
-                    className="cursor-pointer hover:text-red-500"
+                    className="h-5 w-5 cursor-pointer text-gray-400 transition-colors hover:text-red-500"
                   />
                 )}
                 <Button
                   variant={"outline"}
-                  className="md:hidden"
+                  className="shadow-sm ring-1 ring-gray-200 md:hidden dark:ring-gray-800"
                   onClick={(e) => {
                     e.preventDefault();
                     setShowCategorySelection(true);
@@ -223,51 +225,55 @@ const Listings: NextPage = () => {
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
-                      className="ml-0 flex items-center gap-4 md:ml-auto"
+                      className="ml-0 flex items-center gap-4 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 md:ml-auto dark:ring-gray-800 dark:hover:bg-gray-900"
                       variant="outline"
                     >
                       {sortChoices[sortBy]}
-                      {sortOrder === "asc" ? <ArrowUp /> : <ArrowDown />}
+                      {sortOrder === "asc" ? (
+                        <ArrowUp className="h-4 w-4" />
+                      ) : (
+                        <ArrowDown className="h-4 w-4" />
+                      )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-32 p-0">
+                  <PopoverContent className="w-36 p-1 shadow-lg">
                     <div className="flex flex-col">
                       <PopoverClose asChild>
                         <button
                           onClick={() => changeSort("title")}
-                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                          className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Title</span>
                           {sortBy == "title" && sortOrder === "asc" ? (
-                            <ArrowUp />
+                            <ArrowUp className="h-4 w-4" />
                           ) : sortBy == "title" && sortOrder === "desc" ? (
-                            <ArrowDown />
+                            <ArrowDown className="h-4 w-4" />
                           ) : null}
                         </button>
                       </PopoverClose>
                       <PopoverClose asChild>
                         <button
                           onClick={() => changeSort("price")}
-                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                          className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Price</span>
                           {sortBy == "price" && sortOrder === "asc" ? (
-                            <ArrowUp />
+                            <ArrowUp className="h-4 w-4" />
                           ) : sortBy == "price" && sortOrder === "desc" ? (
-                            <ArrowDown />
+                            <ArrowDown className="h-4 w-4" />
                           ) : null}
                         </button>
                       </PopoverClose>
                       <PopoverClose asChild>
                         <button
                           onClick={() => changeSort("updatedAt")}
-                          className="flex w-full justify-between p-2 duration-75 hover:bg-slate-100"
+                          className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           <span>Updated</span>
                           {sortBy == "updatedAt" && sortOrder === "asc" ? (
-                            <ArrowUp />
+                            <ArrowUp className="h-4 w-4" />
                           ) : sortBy == "updatedAt" && sortOrder === "desc" ? (
-                            <ArrowDown />
+                            <ArrowDown className="h-4 w-4" />
                           ) : null}
                         </button>
                       </PopoverClose>
@@ -283,7 +289,6 @@ const Listings: NextPage = () => {
               query={router.query}
               debouncedSearch={debouncedSearch}
             />
-            <div className="p-2" />
           </div>
         </div>
         {showCarSelection ? (
@@ -406,9 +411,9 @@ const ListingsResults = ({
   if (listings.data?.listings.length === 0) {
     return (
       <div className="mt-16 flex flex-col items-center justify-center">
-        <Search className="h-20 w-20 text-gray-400" />
-        <h2 className="mt-6 text-xl font-bold">No Results Found</h2>
-        <p className="text-md mt-2 text-gray-500">
+        <Search className="h-20 w-20 text-gray-300" />
+        <h2 className="mt-6 text-2xl font-semibold">No Results Found</h2>
+        <p className="mt-2 text-base text-gray-500">
           Try adjusting your search to find what you{"'"}re looking for.
         </p>
       </div>
@@ -417,61 +422,69 @@ const ListingsResults = ({
   return (
     <>
       {isMobile && (
-        <div className="mt-8 flex flex-col gap-8">
+        <div className="mt-8 flex flex-col gap-4">
           {listings.data?.listings.map((listing) => (
             <Link
               href={`/listings/${listing.id}`}
               key={listing.id}
-              className="flex justify-between rounded-lg p-2 shadow-md"
+              className="group flex justify-between overflow-hidden rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-md dark:bg-gray-900 dark:ring-gray-800"
             >
-              <div className="flex flex-col gap-4">
-                <p className="text-sm font-medium">{listing.title}</p>
-                <p className="text-lg font-bold">${listing.price}</p>
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 dark:text-gray-100">
+                  {listing.title}
+                </p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                  ${listing.price}
+                </p>
               </div>
-              <img
-                src={listing.images[0]?.url}
-                className="h-36 w-36 rounded-md object-cover"
-                alt=""
-              />
+              <div className="relative h-36 w-36 overflow-hidden rounded-md">
+                <img
+                  src={listing.images[0]?.url}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  alt=""
+                />
+              </div>
             </Link>
           ))}
         </div>
       )}
       {!isMobile && (
         <>
-          <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
+          <div className="7xl:grid-cols-10 mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
             {listings.data?.listings.map((listing) => (
-              <Card key={listing.id}>
-                <Link href={`/listings/${listing.id}`}>
-                  <CardContent className="p-0">
-                    <img
-                      alt="Product image"
-                      className="max-h-80 w-full rounded-md object-cover"
-                      src={listing.images[0]?.url}
-                    />
-                    <div className="p-2">
-                      <div className="mt-2 text-sm font-medium">
+              <Link href={`/listings/${listing.id}`} key={listing.id}>
+                <Card className="group h-[320px] overflow-hidden transition-all hover:shadow-md">
+                  <CardContent className="flex h-full flex-col p-0">
+                    <div className="relative h-[192px] w-full overflow-hidden">
+                      <img
+                        alt="Product image"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        src={listing.images[0]?.url}
+                      />
+                    </div>
+                    <div className="flex h-[128px] flex-col justify-between p-4">
+                      <div className="line-clamp-2 text-sm font-medium text-gray-900 group-hover:text-blue-600 dark:text-gray-100">
                         {listing.title}
                       </div>
-                      <div className="mt-1 text-lg font-bold">
+                      <div className="text-lg font-semibold text-gray-900 dark:text-white">
                         ${listing.price}
                       </div>
                     </div>
                   </CardContent>
-                </Link>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         </>
       )}
       <div className="p-4" />
 
-      <Pagination>
+      <Pagination className="py-4">
         <PaginationContent>
           {Number(router.query.page ?? 0) > 1 && (
             <PaginationItem>
               <PaginationPrevious
-                className="cursor-pointer"
+                className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                 onClick={() =>
                   handlePageClick(Number(router.query.page ?? 0) - 1)
                 }
@@ -498,7 +511,7 @@ const ListingsResults = ({
               return (
                 <PaginationItem key={page}>
                   <PaginationLink
-                    className="cursor-pointer"
+                    className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                     key={page}
                     onClick={() => handlePageClick(page)}
                     isActive={Number(router.query.page ?? 0) === page}
@@ -513,7 +526,7 @@ const ListingsResults = ({
               <PaginationEllipsis />
               <PaginationItem className="cursor-pointer">
                 <PaginationLink
-                  className="cursor-pointer"
+                  className="cursor-pointer shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                   onClick={() => handlePageClick(listings.data!.totalPages)}
                 >
                   {listings.data?.totalPages}
@@ -524,6 +537,7 @@ const ListingsResults = ({
           {listings.data?.hasNextPage && (
             <PaginationItem className="cursor-pointer">
               <PaginationNext
+                className="shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                 onClick={() =>
                   handlePageClick(Number(router.query.page ?? 0) + 1)
                 }
@@ -575,15 +589,19 @@ const CategoryFilters = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="p-2 text-2xl">Categories</h2>
-      <div className="flex-1 overflow-clip py-2">
-        <nav className="grid items-start px-4 text-sm font-medium">
+    <div className="flex h-full flex-col">
+      <h2 className="p-4 text-xl font-semibold text-gray-900 dark:text-white">
+        Categories
+      </h2>
+      <div className="flex-1 overflow-auto py-2">
+        <nav className="grid items-start px-4 text-sm">
           <Button
             variant="ghost"
             size="sm"
-            className={`w-full justify-start ${
-              !router.query.category ? "bg-accent text-accent-foreground" : ""
+            className={`w-full justify-start font-medium ${
+              !router.query.category
+                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+                : ""
             }`}
             onClick={() => updateCategory("category", "")}
           >
@@ -594,9 +612,9 @@ const CategoryFilters = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`w-full justify-start ${
+                className={`w-full justify-start font-medium ${
                   router.query.category === category.name
-                    ? "bg-slate-200 text-accent-foreground"
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
                     : ""
                 }`}
                 onClick={() => updateCategory("category", category.name)}
@@ -604,15 +622,15 @@ const CategoryFilters = () => {
                 {category.name}
               </Button>
               {category.name === router.query.category && subCategories && (
-                <div className="ml-4">
+                <div className="ml-4 space-y-1">
                   {subCategories.data?.map((subCategory) => (
                     <Button
                       key={subCategory.id}
                       variant="ghost"
                       size="sm"
-                      className={`w-full justify-start ${
+                      className={`w-full justify-start text-sm font-medium ${
                         router.query.subcat === subCategory.name
-                          ? "bg-slate-200 text-accent-foreground"
+                          ? "bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
                           : ""
                       }`}
                       onClick={() => updateCategory("subcat", subCategory.name)}
