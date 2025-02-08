@@ -231,4 +231,43 @@ export const donorRouter = router({
         },
       });
     }),
+  getByVin: publicProcedure
+    .input(
+      z.object({
+        vin: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.donor.findUnique({
+        where: {
+          vin: input.vin,
+        },
+        include: {
+          car: true,
+          images: {
+            orderBy: {
+              order: "asc",
+            },
+          },
+        },
+      });
+    }),
+  getAllPublic: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.donor.findMany({
+      where: {
+        hideFromSearch: false,
+      },
+      include: {
+        car: true,
+        images: {
+          orderBy: {
+            order: "asc",
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }),
 });

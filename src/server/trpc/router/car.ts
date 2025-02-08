@@ -60,9 +60,9 @@ export const carRouter = router({
         },
         AND: {
           NOT: {
-            series: "SS000"
-          }
-        }
+            series: "SS000",
+          },
+        },
       },
       select: {
         series: true,
@@ -142,4 +142,13 @@ export const carRouter = router({
         },
       });
     }),
+  getAllMakes: publicProcedure.query(async ({ ctx }) => {
+    const cars = await ctx.prisma.car.findMany({
+      select: {
+        make: true,
+      },
+    });
+    const makes = [...new Set(cars.map((car) => car.make))].sort();
+    return makes;
+  }),
 });

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, adminProcedure } from "../trpc";
+import { router, adminProcedure, publicProcedure } from "../trpc";
 
 export const partRouter = router({
   createPartDetail: adminProcedure
@@ -240,5 +240,42 @@ export const partRouter = router({
         },
       });
       return parts;
+    }),
+  getByDonorVin: publicProcedure
+    .input(
+      z.object({
+        donorVin: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.part.findMany({
+        where: {
+          donorVin: input.donorVin,
+          listing: {
+            some: {
+              active: true,
+            },
+          },
+        },
+        include: {
+          partDetails: {
+            include: {
+              partTypes: true,
+            },
+          },
+          listing: {
+            where: {
+              active: true,
+            },
+            include: {
+              images: {
+                orderBy: {
+                  order: "asc",
+                },
+              },
+            },
+          },
+        },
+      });
     }),
 });
