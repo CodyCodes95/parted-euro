@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { Skeleton } from "../../components/ui/skeleton";
 import type { Donor, Car, Image as PrismaImage } from "@prisma/client";
 import { trpc } from "@/utils/trpc";
 
@@ -24,6 +25,28 @@ interface DonorWithCar extends Omit<Donor, "car"> {
   car: Pick<Car, "make" | "model" | "body">;
   images: PrismaImage[];
 }
+
+const SkeletonDonorCard = () => {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>
+          <Skeleton className="h-6 w-48" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="relative mb-4 h-48 w-full overflow-hidden rounded-lg">
+          <Skeleton className="h-full w-full" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const WreckingPage: NextPage = () => {
   const [search, setSearch] = useState("");
@@ -95,7 +118,11 @@ const WreckingPage: NextPage = () => {
       </div>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonDonorCard key={index} />
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredDonors?.map((donor: DonorWithCar) => (
