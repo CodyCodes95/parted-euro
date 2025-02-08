@@ -371,15 +371,18 @@ const ListingsResults = ({
 
   if (listings.isLoading && !isMobile) {
     return (
-      <div className="7xl:grid-cols-10 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
+      <div className="7xl:grid-cols-10 mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-7 5xl:grid-cols-8 6xl:grid-cols-9">
         {/* eslint-disable-next-line */}
         {[...Array(20)].map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-0">
-              <div className="h-80 w-full animate-pulse rounded-md bg-gray-200" />
-              <div className="p-2">
-                <div className="mt-2 h-4 w-1/2 animate-pulse bg-gray-200 text-sm font-medium" />
-                <div className="mt-1 h-4 w-1/4 animate-pulse bg-gray-200 text-lg font-bold" />
+          <Card key={i} className="h-[320px] overflow-hidden">
+            <CardContent className="flex h-full flex-col p-0">
+              <div className="relative h-[192px] w-full animate-pulse bg-gray-200" />
+              <div className="flex h-[128px] flex-col justify-between p-4">
+                <div className="space-y-2">
+                  <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-2/3 animate-pulse rounded bg-gray-200" />
+                </div>
+                <div className="h-6 w-24 animate-pulse rounded bg-gray-200" />
               </div>
             </CardContent>
           </Card>
@@ -390,18 +393,21 @@ const ListingsResults = ({
 
   if (listings.isLoading && isMobile) {
     return (
-      <div className="mt-8 flex flex-col gap-8">
+      <div className="mt-8 flex flex-col gap-4">
         {/* eslint-disable-next-line */}
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="flex justify-between rounded-lg p-2 shadow-md"
+            className="flex justify-between overflow-hidden rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-800"
           >
-            <div className="flex flex-col gap-2">
-              <div className="h-4 w-40 animate-pulse bg-gray-200 text-sm font-medium" />
-              <div className="mt-1 h-4 animate-pulse bg-gray-200 text-lg font-bold" />
+            <div className="flex flex-col justify-between gap-2">
+              <div className="space-y-2">
+                <div className="h-4 w-40 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+              </div>
+              <div className="h-6 w-24 animate-pulse rounded bg-gray-200" />
             </div>
-            <div className="h-36 w-36 animate-pulse rounded-md bg-gray-200 object-cover" />
+            <div className="relative h-36 w-36 animate-pulse overflow-hidden rounded-md bg-gray-200" />
           </div>
         ))}
       </div>
