@@ -1,4 +1,4 @@
-import { useState, useEffect, type KeyboardEvent } from "react";
+import { useState, useEffect, type KeyboardEvent, useRef } from "react";
 import { useRouter } from "next/router";
 import { useDebounce } from "use-debounce";
 import { trpc } from "../../utils/trpc";
@@ -16,6 +16,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
   const [search, setSearch] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [debouncedSearch] = useDebounce(search, 500);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
 
@@ -27,6 +28,16 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
       enabled: debouncedSearch !== "",
     },
   );
+
+  useEffect(() => {
+    if (showSearch) {
+      // Small delay to ensure the animation has started and element is visible
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showSearch]);
 
   // Reset selected index when search changes
   useEffect(() => {
@@ -96,6 +107,7 @@ const SearchBar: React.FC<searchBarProps> = ({ showSearch, setShowSearch }) => {
           <div className="relative w-full md:w-1/2">
             <Search className="absolute left-2 top-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
             <Input
+              ref={inputRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={handleKeyDown}
