@@ -6,18 +6,27 @@ const Footer: React.FC = () => {
   return (
     <div className="flex w-full flex-col items-center justify-around border-t-2 bg-zinc-100 p-6">
       <div className="flex flex-col items-center justify-between  md:flex-row">
-        <div className="text-md flex flex-col justify-center p-4 text-[#4d4d4d] items-center">
+        <div className="text-md flex flex-col items-center justify-center p-4 text-[#4d4d4d]">
           <h4 className="text-xl font-bold">
             Looking for something we don&apos;t have listed?
           </h4>
           <div className="p-2 text-xl"></div>
           <p>Feel free to call or email us at:</p>
-          <p>Mobile: <a
-            className="text-blue-500"
-            href="tel:0431133764">0431 133 764</a></p>
-          <p>Email: <a
-            className="text-blue-500"
-            href="mailto:contact@partedeuro.com.au">contact@partedeuro.com.au</a></p>
+          <p>
+            Mobile:{" "}
+            <a className="text-blue-500" href="tel:0431133764">
+              0431 133 764
+            </a>
+          </p>
+          <p>
+            Email:{" "}
+            <a
+              className="text-blue-500"
+              href="mailto:contact@partedeuro.com.au"
+            >
+              contact@partedeuro.com.au
+            </a>
+          </p>
         </div>
         <div className="text-md flex w-full flex-col p-4 text-[#4d4d4d] md:w-[50%]">
           <p className="p-1">
@@ -35,11 +44,11 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="flex justify-between gap-4">
-        <Link href="https://www.facebook.com/partedeuro">
-          <FaFacebookSquare className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998]" />
+        <Link target="_blank" href="https://www.facebook.com/partedeuro">
+          <FaFacebookSquare className="h-8 w-8 duration-300 ease-in-out hover:fill-[#3b5998] hover:underline" />
         </Link>
-        <Link href="https://www.instagram.com/partedeuro/">
-          <FiInstagram className="h-8 w-8 duration-300 ease-in-out hover:text-[#d62976]" />
+        <Link target="_blank" href="https://www.instagram.com/partedeuro/">
+          <FiInstagram className="h-8 w-8 duration-300 ease-in-out hover:text-[#d62976] hover:underline" />
         </Link>
       </div>
     </div>
