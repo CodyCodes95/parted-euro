@@ -17,7 +17,7 @@ import CartPopover from "./Nav/CartPopover";
 import AdminMenu from "./Nav/AdminMenu";
 import SearchBar from "./Nav/SearchBar";
 import { useEffect, useState } from "react";
-import { LogIn, Menu, Search, X } from "lucide-react";
+import { LogIn, Menu, Search, SearchIcon, X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -68,24 +68,27 @@ const Nav = () => {
 
   if (isMobile) {
     return (
-      <div className="z-50 flex w-full items-center justify-between overflow-x-clip border-b-2 pb-1 pt-2">
+      <div className="sticky top-0 z-50 flex w-full items-center justify-between overflow-x-clip border-b bg-white/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <Link href="/">
-          <img className="mr-6 inline h-10" src={logo.src} alt="" />
+          <img className="h-8 w-auto" src={logo.src} alt="Logo" />
         </Link>
         {menuOpen ? (
-          <X onClick={toggleMenu} className="h-8 w-8 cursor-pointer" />
+          <X
+            onClick={toggleMenu}
+            className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
+          />
         ) : (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             <div
               onClick={() => setShowSearch(!showSearch)}
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full p-2 transition-colors hover:bg-gray-100"
             >
-              <Search className="text-xl" />
+              <Search className="h-5 w-5 text-gray-700" />
             </div>
             <div className="relative">
               {cart.length ? (
                 <Badge
-                  className="absolute -top-2 left-5 text-xs"
+                  className="absolute -right-1 -top-1 text-xs"
                   variant={"destructive"}
                 >
                   {cart.length}
@@ -93,134 +96,37 @@ const Nav = () => {
               ) : null}
               <CartPopover />
             </div>
-            <Menu onClick={toggleMenu} className="h-8 w-8 cursor-pointer" />
+            <Menu
+              onClick={toggleMenu}
+              className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
+            />
           </div>
         )}
         {menuOpen && (
-          <nav className="h-[calc(screen -5rem)] absolute top-[50px] z-50 w-screen bg-white">
-            <Link className="group" href="/listings">
-              <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+          <nav className="absolute left-0 top-[60px] z-50 h-[calc(100vh-60px)] w-full overflow-y-auto border-t bg-white shadow-lg">
+            <Link className="group block" href="/listings">
+              <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                 Browse Store
               </p>
             </Link>
-            {/* <Accordion type="single" collapsible>
-              <AccordionItem value="shop-generation">
-                <AccordionTrigger className="pl-4 duration-75 hover:bg-accent">
-                  Shop by Generation
-                </AccordionTrigger>
-                <AccordionContent>
-                  {generations.map((generation, i) => {
-                    return (
-                      <Accordion
-                        key={generation.generation}
-                        type="single"
-                        collapsible
-                      >
-                        <AccordionItem
-                          key={generation.generation}
-                          value={generation.generation}
-                        >
-                          <AccordionTrigger className="pl-6">
-                            {generation.generation} - {generation.series}
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <ul className="">
-                              <li className="flex flex-col" key={i}>
-                                <Link
-                                  href={`/listings?generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    All {generation.generation} Parts
-                                  </div>
-                                </Link>
-
-                                <Link
-                                  href={`/listings?category=engine&generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Engine/Driveline
-                                    Parts & Accessories
-                                  </div>
-                                </Link>
-
-                                <Link
-                                  href={`/listings?category=suspension&generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Suspension & Brakes
-                                  </div>
-                                </Link>
-
-                                <Link
-                                  href={`/listings?category=interior&generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Interior
-                                  </div>
-                                </Link>
-
-                                <Link
-                                  href={`/listings?category=exterior&generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Exterior
-                                  </div>
-                                </Link>
-
-                                <Link
-                                  href={`/listings?category=electrical&generation=${generation.param}`}
-                                  className={cn(
-                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                  )}
-                                >
-                                  <div className="pl-8 text-sm font-medium leading-none">
-                                    {generation.generation} Electrical Modules &
-                                    Controllers
-                                  </div>
-                                </Link>
-                              </li>
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    );
-                  })}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion> */}
-            <Link className="group" href="/wrecking">
-              <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+            <Link className="group block" href="/wrecking">
+              <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                 Cars Wrecking Now
               </p>
             </Link>
-            <Link className="group" href="/returns-refunds">
-              <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+            <Link className="group block" href="/returns-refunds">
+              <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                 Warranty & Return Policy
               </p>
             </Link>
-            <Link className="group" href="/contact">
-              <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+            <Link className="group block" href="/contact">
+              <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                 Contact
               </p>
             </Link>
             {session && (
-              <Link className="group" href="/admin">
-                <p className="border-b-2 p-4 duration-75 group-hover:bg-accent group-hover:underline">
+              <Link className="group block" href="/admin">
+                <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                   Admin
                 </p>
               </Link>
@@ -233,7 +139,7 @@ const Nav = () => {
   }
 
   return (
-    <div className="flex w-full items-center justify-between overflow-x-clip border-b-2 bg-white px-8 py-4">
+    <div className="sticky top-0 z-50 flex w-full items-center justify-between overflow-x-clip border-b bg-white/95 px-8 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <button
         onClick={() => {
           if (session) return;
@@ -243,143 +149,73 @@ const Nav = () => {
       >
         G
       </button>
-      <Link href="/">
-        <img className="mr-6 inline h-8 min-w-[6rem]" src={logo.src} alt="" />
+      <Link href="/" className="flex items-center">
+        <img className="h-8 w-auto" src={logo.src} alt="Logo" />
       </Link>
-      <NavigationMenu>
-        <NavigationMenuList>
+      <NavigationMenu className="hidden md:block">
+        <NavigationMenuList className="gap-1">
           <NavigationMenuItem>
             <Link href="/listings" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "font-medium text-gray-700 transition-colors hover:text-gray-900",
+                )}
+              >
                 Browse Store
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          {/* <NavigationMenuItem>
-            <NavigationMenuTrigger>Shop By Generation</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="right-0 grid w-screen gap-x-5 gap-y-8 p-6 lg:grid-cols-6">
-                {generations.map((generation, i) => {
-                  return (
-                    <li className="flex flex-col" key={i}>
-                      <h4 className="rounded-md bg-accent p-2 shadow-md">
-                        {generation.generation} - {generation.series}
-                      </h4>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            All {generation.generation} Parts
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?category=engine&generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {generation.generation} Engine/Driveline Parts &
-                            Accessories
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?category=suspension&generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {generation.generation} Suspension & Brakes
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?category=interior&generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {generation.generation} Interior
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?category=exterior&generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {generation.generation} Exterior
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/listings?category=electrical&generation=${generation.param}`}
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {generation.generation} Electrical Modules &
-                            Controllers
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  );
-                })}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem> */}
           <NavigationMenuItem>
             <Link href="/wrecking" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "font-medium text-gray-700 transition-colors hover:text-gray-900",
+                )}
+              >
                 Cars Wrecking Now
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/returns-refunds" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "font-medium text-gray-700 transition-colors hover:text-gray-900",
+                )}
+              >
                 Warranty & Return Policy
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/contact" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "font-medium text-gray-700 transition-colors hover:text-gray-900",
+                )}
+              >
                 Contact
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
         <Button
           onClick={() => setShowSearch(!showSearch)}
-          className="h-10 w-10 rounded-full p-1"
+          className="h-10 w-10 rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
           variant="ghost"
         >
-          <Search className="text-xl" />
+          <SearchIcon className="h-6 w-6" />
         </Button>
         <div className="relative">
           {cart.length ? (
             <Badge
-              className="absolute -top-2 left-5 text-xs"
+              className="absolute -right-1 -top-1 text-xs"
               variant={"destructive"}
             >
               {cart.length}
@@ -388,14 +224,17 @@ const Nav = () => {
           <CartPopover />
         </div>
         <div
-          className={`p-2 ${!session && !showLogin ? "invisible" : ""} ${
+          className={`${!session && !showLogin ? "invisible" : ""} ${
             showLogin && !session ? "visible" : ""
-          }`}
+          } p-2`}
         >
           {session ? (
             <AdminMenu />
           ) : (
-            <LogIn className="text-2xl" onClick={() => signIn("google", {})} />
+            <LogIn
+              className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
+              onClick={() => signIn("google", {})}
+            />
           )}
         </div>
       </div>

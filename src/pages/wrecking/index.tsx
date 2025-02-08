@@ -50,11 +50,11 @@ const SkeletonDonorCard = () => {
 
 const WreckingPage: NextPage = () => {
   const [search, setSearch] = useState("");
-  const [makeFilter, setMakeFilter] = useState<string>("");
+  const [seriesFilter, setSeriesFilter] = useState<string>("");
   const [yearFilter, setYearFilter] = useState<string>("");
 
   const { data: donors, isLoading } = trpc.donors.getAllPublic.useQuery();
-  const { data: makes } = trpc.cars.getAllMakes.useQuery();
+  const { data: series } = trpc.cars.getAllSeries.useQuery();
 
   const filteredDonors = donors?.filter((donor) => {
     const matchesSearch =
@@ -62,12 +62,14 @@ const WreckingPage: NextPage = () => {
       donor.car.model.toLowerCase().includes(search.toLowerCase()) ||
       donor.vin.toLowerCase().includes(search.toLowerCase());
 
-    const matchesMake = makeFilter ? donor.car.make === makeFilter : true;
+    const matchesSeries = seriesFilter
+      ? donor.car.series === seriesFilter
+      : true;
     const matchesYear = yearFilter
       ? donor.year.toString() === yearFilter
       : true;
 
-    return matchesSearch && matchesMake && matchesYear;
+    return matchesSearch && matchesSeries && matchesYear;
   }) as DonorWithCar[];
 
   const years = donors
@@ -88,15 +90,15 @@ const WreckingPage: NextPage = () => {
           className="w-full"
         />
 
-        <Select value={makeFilter} onValueChange={setMakeFilter}>
+        <Select value={seriesFilter} onValueChange={setSeriesFilter}>
           <SelectTrigger>
-            <SelectValue placeholder="Filter by make" />
+            <SelectValue placeholder="Filter by series" />
           </SelectTrigger>
           <SelectContent>
-            {/* <SelectItem value="">All Makes</SelectItem> */}
-            {makes?.map((make: string) => (
-              <SelectItem key={make} value={make}>
-                {make}
+            {/* <SelectItem value="">All Series</SelectItem> */}
+            {series?.series.map((s) => (
+              <SelectItem key={s.value} value={s.value}>
+                {s.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -122,6 +124,32 @@ const WreckingPage: NextPage = () => {
           {Array.from({ length: 6 }).map((_, index) => (
             <SkeletonDonorCard key={index} />
           ))}
+        </div>
+      ) : filteredDonors?.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-12 text-center">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">
+            No vehicles found
+          </h3>
+          <p className="text-sm text-gray-500">
+            {search && `Search term: "${search}"`}
+            {seriesFilter &&
+              `${search ? " • " : ""}Series: ${
+                series?.series.find((s) => s.value === seriesFilter)?.label ??
+                seriesFilter
+              }`}
+            {yearFilter &&
+              `${search || seriesFilter ? " • " : ""}Year: ${yearFilter}`}
+          </p>
+          <button
+            onClick={() => {
+              setSearch("");
+              setSeriesFilter("");
+              setYearFilter("");
+            }}
+            className="mt-4 text-sm font-medium text-blue-600 hover:text-blue-500"
+          >
+            Clear all filters
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

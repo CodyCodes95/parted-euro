@@ -485,4 +485,42 @@ export const listingRouter = router({
         )
         .flat();
     }),
+  getByDonorVin: publicProcedure
+    .input(
+      z.object({
+        donorVin: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findMany({
+        where: {
+          active: true,
+          parts: {
+            some: {
+              donorVin: input.donorVin,
+            },
+          },
+        },
+        include: {
+          images: {
+            orderBy: {
+              order: "asc",
+            },
+          },
+          parts: {
+            include: {
+              partDetails: {
+                include: {
+                  partTypes: true,
+                },
+              },
+            },
+            where: {
+              donorVin: input.donorVin,
+            },
+          },
+        },
+      });
+      return listings;
+    }),
 });
