@@ -23,6 +23,7 @@ import type {
 } from "@prisma/client";
 import { trpc } from "@/utils/trpc";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ExtendedListing extends PrismaListing {
   images: PrismaImage[];
@@ -34,6 +35,38 @@ interface ExtendedListing extends PrismaListing {
     }
   >;
 }
+
+const LoadingSkeleton = () => {
+  return (
+    <div className="container mx-auto py-8">
+      <div className="mb-8">
+        <Skeleton className="mb-4 h-12 w-2/3" />
+        <Skeleton className="mb-2 h-6 w-1/3" />
+        <Skeleton className="h-6 w-1/4" />
+      </div>
+
+      <Skeleton className="mb-8 h-96 w-full rounded-lg" />
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Card key={index} className="h-full">
+            <CardHeader>
+              <Skeleton className="h-8 w-3/4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="mb-4 h-48 w-full rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-2/3" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const WreckPage: NextPage = () => {
   const router = useRouter();
@@ -49,7 +82,7 @@ const WreckPage: NextPage = () => {
     );
 
   if (donorLoading || listingsLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSkeleton />;
   }
 
   if (!donor) {

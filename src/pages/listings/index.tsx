@@ -156,7 +156,7 @@ const Listings: NextPage = () => {
         <meta name="description" content="Parted Euro - Listings" />
       </Head>
       <div className="flex w-full flex-col">
-        <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+        <div className="grid min-h-screen w-full lg:grid-cols-[300px_1fr]">
           <div className="hidden border-r bg-white/50 shadow-sm backdrop-blur-sm lg:block dark:bg-gray-900/50">
             <CategoryFilters />
           </div>
