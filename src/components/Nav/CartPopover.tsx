@@ -80,36 +80,38 @@ const CartPopover = () => {
               </Link>
             </div>
           ) : (
-            <div className="divide-y">
+            <div className="divide-y divide-gray-100">
               {cart.map((item) => (
-                <div key={item.listingId} className="flex gap-4 p-4">
+                <div key={item.listingId} className="flex gap-6 px-4 py-6">
                   <div className="relative">
                     <button
-                      className="group absolute -right-2 -top-2 z-10 rounded-full bg-white p-1 shadow-md hover:bg-gray-100"
+                      className="group absolute -right-2 -top-2 z-10 rounded-full bg-white p-1.5 shadow-md transition-colors hover:bg-gray-100"
                       onClick={() => removeItemFromCart(item.listingId)}
                     >
-                      <X className="h-3 w-3 group-hover:text-red-500" />
+                      <X className="h-4 w-4 group-hover:text-red-500" />
                     </button>
                     <Link href={`/listings/${item.listingId}`}>
                       <img
                         alt={item.listingTitle}
-                        className="h-20 w-20 rounded-lg object-cover"
+                        className="h-24 w-24 rounded-lg border border-gray-100 object-cover"
                         src={item.listingImage}
                       />
                     </Link>
                   </div>
-                  <div className="flex flex-1 flex-col">
+                  <div className="flex flex-1 flex-col space-y-2">
                     <Link
                       href={`/listings/${item.listingId}`}
-                      className="font-medium hover:underline"
+                      className="text-lg font-medium hover:underline"
                     >
                       {item.listingTitle}
                     </Link>
-                    <div className="mt-auto flex items-end justify-between">
-                      <p className="text-sm text-gray-500">
-                        Qty: {item.quantity}
-                      </p>
-                      <p className="font-medium">
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-600">
+                          Quantity: {item.quantity}
+                        </span>
+                      </div>
+                      <p className="text-lg font-semibold">
                         {item.listingPrice.toLocaleString("en-AU", {
                           style: "currency",
                           currency: "AUD",
