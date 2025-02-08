@@ -487,47 +487,51 @@ const FitsFollowingCars: React.FC<{ partsGrouped: GroupedBySeries }> = ({
       defaultValue={Object.keys(partsGrouped ?? {})[0]}
       className="grid w-full gap-6 md:grid-cols-2"
     >
-      <TabsList className="h-fit w-full flex-row rounded-md bg-gray-100 p-1 md:flex-col">
-        {Object.entries(partsGrouped).map(([series]) => (
-          <TabsTrigger
-            className="w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
-            key={series}
-            value={series}
-          >
-            {series}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      <div className="overflow-x-auto md:overflow-x-visible">
+        <TabsList className="inline-flex h-fit w-auto min-w-full flex-nowrap rounded-md bg-gray-100 p-1 md:w-full md:flex-col">
+          {Object.entries(partsGrouped).map(([series]) => (
+            <TabsTrigger
+              className="min-w-[120px] shrink-0 whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-sm md:w-full"
+              key={series}
+              value={series}
+            >
+              {series}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
       {Object.entries(partsGrouped).map(([series, cars]) => (
         <TabsContent
-          className="h-80 w-full overflow-y-auto rounded-md border border-gray-200"
+          className="h-80 w-full overflow-y-auto overflow-x-hidden rounded-md border border-gray-200"
           key={series}
           value={series}
         >
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Generation
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Models
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {Object.entries(cars).map(([generation, models]) => (
-                <tr className="hover:bg-gray-50" key={generation}>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                    {generation}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
-                    {models.join(", ")}
-                  </td>
+          <div className="min-w-full overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Generation
+                  </th>
+                  <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Models
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {Object.entries(cars).map(([generation, models]) => (
+                  <tr className="hover:bg-gray-50" key={generation}>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                      {generation}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                      {models.join(", ")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </TabsContent>
       ))}
     </Tabs>
