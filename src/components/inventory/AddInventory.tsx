@@ -40,7 +40,7 @@ const AddInventory = ({
 
   const savePart = trpc.parts.createPart.useMutation();
   const saveInventoryLocationMutation =
-    trpc.inventoryLocations.createInventoryLocation.useMutation();
+    trpc.inventoryLocations.createLocation.useMutation();
 
   const saveInventoryLocation = async () => {
     if (!newInventoryLocation) return toast.error("Please enter a location");
