@@ -14,7 +14,7 @@ type TableProps = {
   data: any;
   columns: Array<Column<any>>;
   filter?: string;
-  setFilter?: React.Dispatch<React.SetStateAction<string>>;
+  setFilter?: (filter: string) => void;
 };
 
 const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
@@ -35,7 +35,7 @@ const Table: React.FC<TableProps> = ({ data, columns, filter }) => {
     previousPage,
     setPageSize,
     gotoPage,
-    state: { pageIndex, pageSize, globalFilter },
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,

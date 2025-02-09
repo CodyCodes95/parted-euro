@@ -122,7 +122,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
         <div className="gap-2">
           <p className="font-bold">Total</p>
           <p>
-            ${order.reduce((acc, cur) => acc + cur.price! * cur.quantity, 0)}
+            ${order.reduce((acc, cur) => acc + cur.price * cur.quantity, 0)}
           </p>
         </div>
       </div>

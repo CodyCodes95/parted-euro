@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 export type CheckoutItem = {
   itemId: string;
   quantity: number;
-  price?: number;
+  price: number;
 };
 
 type CheckoutQuery = {

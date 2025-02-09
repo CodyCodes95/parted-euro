@@ -98,7 +98,7 @@ const WreckPage: NextPage = () => {
       if (!acc[type]) {
         acc[type] = [];
       }
-      acc[type].push(listing as ExtendedListing);
+      acc[type]!.push(listing as ExtendedListing);
       return acc;
     },
     {},

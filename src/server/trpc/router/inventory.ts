@@ -14,11 +14,10 @@ export const partRouter = router({
         weight: z.number(),
         partTypes: z.array(z.string()),
         alternatePartNos: z.string().optional(),
+        costPrice: z.number(),
       }),
     )
     .mutation(({ ctx, input }) => {
-      console.log(`INPUT -----`);
-      console.log(input.partTypes);
       return ctx.prisma.partDetail.create({
         data: {
           name: input.name,
@@ -44,6 +43,7 @@ export const partRouter = router({
   updatePartDetail: adminProcedure
     .input(
       z.object({
+        costPrice: z.number(),
         partNo: z.string().min(3),
         name: z.string().min(3),
         partLength: z.number(),
