@@ -152,14 +152,24 @@ const Orders = () => {
       {
         Header: "Price",
         accessor: "price",
-        Cell: ({ value }) =>
-          value.toLocaleString("en-AU", { style: "currency", currency: "AUD" }),
+        // eslint-disable-next-line
+        Cell: (data: any) =>
+          // eslint-disable-next-line
+          data.value.toLocaleString("en-AU", {
+            style: "currency",
+            currency: "AUD",
+          }),
       },
       {
         Header: "Total",
         accessor: "total",
-        Cell: ({ value }) =>
-          value.toLocaleString("en-AU", { style: "currency", currency: "AUD" }),
+        // eslint-disable-next-line
+        Cell: (data: any) =>
+          // eslint-disable-next-line
+          data.value.toLocaleString("en-AU", {
+            style: "currency",
+            currency: "AUD",
+          }),
       },
     ],
     [],
