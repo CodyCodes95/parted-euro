@@ -26,7 +26,6 @@ const AddListing: React.FC<AddListingProps> = ({
   listing,
   refetch,
 }) => {
-  console.log(listing?.title);
   const [title, setTitle] = useState<string>(listing?.title || "");
   const [description, setDescription] = useState<string>(
     listing?.description || "",
