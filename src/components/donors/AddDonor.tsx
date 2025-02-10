@@ -9,6 +9,10 @@ import { RxCross2 } from "react-icons/rx";
 import Compressor from "compressorjs";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
+import type { TRPCClientError } from "@trpc/client";
+import type { AppRouter } from "../../server/trpc/router/_app";
+import type { SingleValue } from "react-select";
+import type { TRPCError } from "@trpc/server";
 
 interface AddDonorProps {
   showModal: boolean;
@@ -17,7 +21,15 @@ interface AddDonorProps {
   refetch: () => void;
 }
 
-interface ISelectOptions {
+interface GroupedOption {
+  label: string;
+  options: Array<{
+    label: string;
+    value: string;
+  }>;
+}
+
+interface SelectOption {
   label: string;
   value: string;
 }
@@ -28,61 +40,81 @@ const AddDonor: React.FC<AddDonorProps> = ({
   donor,
   refetch,
 }) => {
-  const [vin, setVin] = useState<string>(donor?.vin || "");
-  const [cost, setCost] = useState<number>(donor?.cost || 0);
-  const [carId, setCarId] = useState<string>(donor?.car.id || "");
-  const [year, setYear] = useState<number>(donor?.year || 0);
-  const [mileage, setMileage] = useState<number>(donor?.mileage || 0);
-  const [options, setOptions] = useState<ISelectOptions[]>([]);
+  const [vin, setVin] = useState<string>(() => donor?.vin ?? "");
+  const [cost, setCost] = useState<number>(() => donor?.cost ?? 0);
+  const [carId, setCarId] = useState<string>(() => donor?.car?.id ?? "");
+  const [year, setYear] = useState<number>(() => donor?.year ?? 0);
+  const [mileage, setMileage] = useState<number>(() => donor?.mileage ?? 0);
+  const [options, setOptions] = useState<GroupedOption[]>([]);
   const [images, setImages] = useState<Array<string>>([]);
   const [hideFromSearch, setHideFromSearch] = useState<boolean>(false);
-  const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
-    donor?.images || [],
+  const [dateInStock, setDateInStock] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
+  const [uploadedImages, setUploadedImages] = useState<Array<Image>>(
+    () => donor?.images ?? [],
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
   const photoUploadRef = useRef<HTMLInputElement>(null);
+
+  const saveDonor = trpc.donors.createDonor.useMutation({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  const updateDonor = trpc.donors.updateDonor.useMutation({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  const uploadImage = trpc.images.uploadDonorImage.useMutation();
+  const updateImageOrder = trpc.images.updateImageOrder.useMutation();
+  const deleteImage = trpc.images.deleteImage.useMutation();
 
   const cars = trpc.cars.getAll.useQuery(undefined, {
     onSuccess: (data) => {
       setOptions([]);
       data.forEach((car) => {
         setOptions((prevState) => {
-          if (prevState.some((group) => group.label === car.series)) {
-            return prevState.map((group: any) => {
+          const existingGroup = prevState.find(
+            (group) => group.label === car.series,
+          );
+          if (existingGroup) {
+            return prevState.map((group) => {
               if (group.label === car.series) {
-                group.options.push({
-                  label: `${car.generation} ${car.model} ${car.body || ""}`,
-                  value: car.id,
-                });
+                return {
+                  ...group,
+                  options: [
+                    ...group.options,
+                    {
+                      label: `${car.generation} ${car.model} ${car.body ?? ""}`,
+                      value: car.id,
+                    },
+                  ],
+                };
               }
               return group;
             });
-          } else {
-            return [
-              ...prevState,
-              {
-                label: car.series,
-                options: [
-                  {
-                    label: `${car.generation} ${car.model} ${car.body || ""}`,
-                    value: car.id,
-                  },
-                ],
-              },
-            ];
           }
+          return [
+            ...prevState,
+            {
+              label: car.series,
+              options: [
+                {
+                  label: `${car.generation} ${car.model} ${car.body ?? ""}`,
+                  value: car.id,
+                },
+              ],
+            },
+          ];
         });
       });
     },
-    onError: (err: any) => {
-      toast.error(err.message);
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
-  const saveDonor = trpc.donors.createDonor.useMutation();
-  const updateDonor = trpc.donors.updateDonor.useMutation();
-  const uploadImage = trpc.images.uploadDonorImage.useMutation();
-  const updateImageOrder = trpc.images.updateImageOrder.useMutation();
-  const deleteImage = trpc.images.deleteImage.useMutation();
 
   const onSave = async () => {
     if (donor) {
@@ -94,6 +126,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           year: year,
           mileage: mileage,
           hideFromSearch: hideFromSearch,
+          dateInStock: new Date(dateInStock),
         },
         {
           onError: (err: any) => {
@@ -129,6 +162,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         year: year,
         mileage: mileage,
         hideFromSearch,
+        dateInStock: new Date(dateInStock),
       },
       {
         onError: (err: any) => {
@@ -204,10 +238,10 @@ const AddDonor: React.FC<AddDonorProps> = ({
           ))}
         </SortableList>
         <button
-          className="mb-2 mr-2 mt-4 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           onMouseDown={() => {
-            runUpdateImageOrder();
+            void runUpdateImageOrder();
           }}
+          className="mb-2 mr-2 mt-4 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Save Order
         </button>
@@ -226,8 +260,12 @@ const AddDonor: React.FC<AddDonorProps> = ({
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Car
           </label>
-          <Select
-            onChange={(e: any) => setCarId(e.value)}
+          <Select<SelectOption>
+            onChange={(selected: SingleValue<SelectOption>) => {
+              if (selected) {
+                setCarId(selected.value);
+              }
+            }}
             isDisabled={carId ? true : false}
             options={options}
             className="basic-multi-select"
@@ -283,6 +321,17 @@ const AddDonor: React.FC<AddDonorProps> = ({
             onChange={(e) => setMileage(Number(e.target.value))}
             className={` block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500
               dark:focus:ring-blue-500`}
+          />
+        </div>
+        <div className="mb-6">
+          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Date in stock
+          </label>
+          <input
+            type="date"
+            value={dateInStock}
+            onChange={(e) => setDateInStock(e.target.value)}
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           />
         </div>
         <div className="mb-6 flex items-center gap-4">

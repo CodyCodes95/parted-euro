@@ -259,7 +259,7 @@ const AddListing: React.FC<AddListingProps> = ({
                     maxHeight: 1422,
                     maxWidth: 800,
                     success(result) {
-                      reader.readAsDataURL(result);
+                      reader.readAsDataURL(result)
                     },
                   });
                 });
