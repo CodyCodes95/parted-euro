@@ -68,7 +68,7 @@ const Nav = () => {
 
   if (isMobile) {
     return (
-      <div className="sticky top-0 z-50 flex w-full items-center justify-between overflow-x-clip border-b bg-white/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="z-50 flex w-full items-center justify-between overflow-x-clip border-b-2 pb-1 pt-2">
         <Link href="/">
           <img className="h-8 w-auto" src={logo.src} alt="Logo" />
         </Link>
