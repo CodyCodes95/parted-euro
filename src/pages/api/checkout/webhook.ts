@@ -2,6 +2,7 @@ import { buffer } from "micro";
 import Stripe from "stripe";
 import { createInvoiceFromStripeEvent } from "../../../server/xero/createInvoice";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { isError } from "../../../utils/error";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: "2022-11-15",
@@ -38,18 +39,22 @@ export default async function stripeWebhook(
       try {
         await createInvoiceFromStripeEvent(data, lineItems.data);
         return res.status(200).send(`Invoice created`);
-      } catch (err: any) {
-        console.log(err);
+      } catch (err: unknown) {
+        console.error("Error creating Xero invoice:", err);
+        const errorMessage = isError(err)
+          ? err.message
+          : "Unknown error occurred";
         return res
           .status(500)
-          .send(`Error while trying to create Xero invoice: ${err.message}`);
+          .send(`Error while trying to create Xero invoice: ${errorMessage}`);
       }
     }
 
     console.log(`Webhook received: ${stripeEvent.type}`);
     return res.status(200).send(`Webhook received: ${stripeEvent.type}`);
-  } catch (err: any) {
-    console.log(`Webhook failed ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  } catch (err: unknown) {
+    console.error("Webhook error:", err);
+    const errorMessage = isError(err) ? err.message : "Unknown error occurred";
+    return res.status(400).send(`Webhook Error: ${errorMessage}`);
   }
 }
