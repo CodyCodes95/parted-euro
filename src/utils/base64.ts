@@ -21,7 +21,7 @@ export async function filesToBase64(fileList: File[]): Promise<string[]> {
   }
 
   // array with base64 strings
-  return await Promise.all(promises);
+  return await Promise.all(promises) as string[];
 }
 
 export async function compressImage(file: File): Promise<File> {

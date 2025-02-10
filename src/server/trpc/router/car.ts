@@ -21,10 +21,10 @@ export const carRouter = router({
       return ctx.prisma.car.findMany({
         where: {
           OR: [
-            { model: { contains: input.search } },
-            { generation: { contains: input.search } },
-            { series: { contains: input.search } },
-            { body: { contains: input.search } },
+            { model: { contains: input.search, mode: "insensitive" } },
+            { generation: { contains: input.search, mode: "insensitive" } },
+            { series: { contains: input.search, mode: "insensitive" } },
+            { body: { contains: input.search, mode: "insensitive" } },
           ],
         },
         orderBy: {

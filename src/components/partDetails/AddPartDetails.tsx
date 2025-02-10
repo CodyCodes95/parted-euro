@@ -47,10 +47,6 @@ const AddPartDetails: React.FC<AddPartProps> = ({
 
   const partTypes = trpc.partDetails.getAllPartTypes.useQuery();
 
-  useEffect(() => {
-    console.log(carOptions);
-  }, [carOptions]);
-
   const cars = trpc.cars.getAllSearch.useQuery(
     { search: debouncedSearch },
     {

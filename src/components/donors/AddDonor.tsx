@@ -2,17 +2,13 @@ import { useRef, useState } from "react";
 import type { QueryDonorGetAllDashboard } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
-import type { Car, Image } from "@prisma/client";
+import type { Image } from "@prisma/client";
 import { FaCamera } from "react-icons/fa";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { RxCross2 } from "react-icons/rx";
-import Compressor from "compressorjs";
 import Modal from "../modals/Modal";
 import { toast } from "sonner";
-import type { TRPCClientError } from "@trpc/client";
-import type { AppRouter } from "../../server/trpc/router/_app";
 import type { SingleValue } from "react-select";
-import type { TRPCError } from "@trpc/server";
 import { filesToBase64 } from "@/utils/base64";
 import { compressImage } from "@/utils/base64";
 

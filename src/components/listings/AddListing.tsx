@@ -218,8 +218,7 @@ const AddListing: React.FC<AddListingProps> = ({
             styles={{
               option: (styles, { data }) => ({
                 ...styles,
-                // @ts-expect-error: bad types
-                //
+                // eslint-disable-next-line
                 color: data.listing ? "green" : "black",
               }),
             }}
