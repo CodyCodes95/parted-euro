@@ -202,7 +202,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
                     <SelectValue placeholder="Select a country" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="AU">Australia</SelectItem>
+                    <SelectItem value="AU">AUSTRALIA</SelectItem>
                     {ausPostShippingCountries.data?.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         {country.name}

@@ -159,10 +159,14 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
         enabled: true,
       },
       shipping_address_collection: {
-        allowed_countries: [countryCode as any],
+        allowed_countries: [
+          countryCode,
+        ] as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[],
       },
-      shipping_options: shippingOptions as any,
-      line_items: stripeLineItems as any,
+      shipping_options:
+        shippingOptions as Stripe.Checkout.SessionCreateParams.ShippingOption[],
+      line_items:
+        stripeLineItems as Stripe.Checkout.SessionCreateParams.LineItem[],
       mode: "payment",
       success_url: `${redirectURL}/orders/confirmation?orderId=${order?.id}`,
       cancel_url: `${redirectURL}/checkout`,
@@ -174,9 +178,12 @@ export const createStripeSession = async (input: StripeSessionRequest) => {
     return {
       url: session.url,
     };
-  } catch (err: any) {
-    console.log(err.message);
-    throw new Error(err.message);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log(err.message);
+      throw new Error(err.message);
+    }
+    throw new Error("Unknown error");
   }
 };
 
