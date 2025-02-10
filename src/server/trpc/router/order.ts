@@ -123,7 +123,7 @@ export const orderRouter = router({
       if (!failedOrder) return;
       void createInvoiceFromStripeEvent(
         failedOrder.stripeEvent as unknown as Stripe.Checkout.Session,
-        failedOrder.lineItems as any,
+        failedOrder.lineItems as unknown as Stripe.LineItem[],
       );
     }),
   updateOrder: adminProcedure
@@ -142,6 +142,23 @@ export const orderRouter = router({
         data: {
           trackingNumber: input.trackingNumber,
           shippingMethod: input.shippingMethod,
+        },
+      });
+    }),
+  updateOrderStatus: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        status: z.enum(["Completed", "Cancelled"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.order.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: input.status,
         },
       });
     }),
@@ -214,7 +231,7 @@ export const orderRouter = router({
           id: order.id,
         },
         data: {
-          status: "Completed",
+          status: "Shipped",
         },
       });
     }),

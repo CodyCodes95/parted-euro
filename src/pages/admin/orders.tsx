@@ -47,6 +47,27 @@ import { toast } from "sonner";
 import Table from "../../components/tables/Table";
 import { useQueryState } from "nuqs";
 
+type PartFromOrder = {
+  part: string;
+  donorVin: string | null;
+  quantity: number;
+  inventoryLocation: string | undefined;
+  partNo: string;
+  price: number;
+  total: number;
+};
+
+type OrderPart = {
+  partDetails: {
+    name: string;
+    partNo: string;
+  };
+  donorVin: string | null;
+  inventoryLocation: {
+    name: string;
+  } | null;
+};
+
 const Orders = () => {
   const [filter, setFilter] = useState<string>("");
   const [selectedOrder, setSelectedOrder] = useState<
@@ -69,19 +90,19 @@ const Orders = () => {
         void orders.refetch();
       },
     });
+  const updateOrderStatus = trpc.order.updateOrderStatus.useMutation({
+    onSuccess: () => {
+      void orders.refetch();
+      toast.success("Order status updated");
+    },
+  });
 
-  type PartFromOrder = {
-    part: string;
-    donorVin: string | null;
-    quantity: number;
-    inventoryLocation: string | undefined;
-    partNo: string;
-  };
-
-  const getPartsFromOrdeQuery = (order: QueryOrderGetAllAdmin) => {
+  const getPartsFromOrdeQuery = (
+    order: QueryOrderGetAllAdmin,
+  ): PartFromOrder[] => {
     const parts = order.orderItems.map((item) => {
       return item.listing.parts
-        .reduce((acc, cur) => {
+        .reduce((acc: OrderPart[], cur: OrderPart) => {
           if (
             !acc.some(
               (part) => part.partDetails.partNo === cur.partDetails.partNo,
@@ -90,15 +111,16 @@ const Orders = () => {
             acc.push(cur);
           }
           return acc;
-        }, [] as any[])
-
-        .map((part) => {
+        }, [])
+        .map((part: OrderPart): PartFromOrder => {
           return {
             part: part.partDetails.name,
             donorVin: part.donorVin,
             quantity: item.quantity,
             inventoryLocation: part.inventoryLocation?.name,
             partNo: part.partDetails.partNo,
+            price: item.listing.price,
+            total: item.listing.price * item.quantity,
           };
         });
     });
@@ -126,6 +148,18 @@ const Orders = () => {
       {
         Header: "Inventory Location",
         accessor: "inventoryLocation",
+      },
+      {
+        Header: "Price",
+        accessor: "price",
+        Cell: ({ value }) =>
+          value.toLocaleString("en-AU", { style: "currency", currency: "AUD" }),
+      },
+      {
+        Header: "Total",
+        accessor: "total",
+        Cell: ({ value }) =>
+          value.toLocaleString("en-AU", { style: "currency", currency: "AUD" }),
       },
     ],
     [],
@@ -235,6 +269,37 @@ const Orders = () => {
                 <RefreshCcw className="mr-2 h-4 w-4" />
                 <span>Regenerate invoice</span>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Update Status</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem
+                      onMouseDown={async () => {
+                        await updateOrderStatus.mutateAsync({
+                          id: d.id,
+                          status: "Completed",
+                        });
+                      }}
+                    >
+                      <span>Completed</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onMouseDown={async () => {
+                        await updateOrderStatus.mutateAsync({
+                          id: d.id,
+                          status: "Cancelled",
+                        });
+                      }}
+                    >
+                      <span>Cancelled</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             </DropdownMenuContent>
           </DropdownMenu>
         ),
@@ -298,8 +363,8 @@ type ViewOrderModalProps = {
   order: QueryOrderGetAllAdmin | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  columns: Column<any>[];
-  getPartsFromOrder: (order: QueryOrderGetAllAdmin) => any[];
+  columns: Array<Column<PartFromOrder>>;
+  getPartsFromOrder: (order: QueryOrderGetAllAdmin) => PartFromOrder[];
 };
 
 const ViewOrderModal = ({
@@ -311,13 +376,47 @@ const ViewOrderModal = ({
 }: ViewOrderModalProps) => {
   if (!order) return null;
 
+  const parts = getPartsFromOrder(order);
+  const subtotal = parts.reduce((sum, part) => sum + part.total, 0);
+  const shipping = order.shipping ?? 0;
+  const total = subtotal + shipping;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[850px]">
         <DialogHeader>
           <DialogTitle>Order</DialogTitle>
         </DialogHeader>
-        <Table columns={columns} data={getPartsFromOrder(order)} />
+        <Table columns={columns} data={parts} />
+        <div className="mt-4 flex flex-col gap-2 border-t pt-4">
+          <div className="flex justify-between">
+            <span className="font-medium">Subtotal:</span>
+            <span>
+              {subtotal.toLocaleString("en-AU", {
+                style: "currency",
+                currency: "AUD",
+              })}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium">Shipping:</span>
+            <span>
+              {shipping.toLocaleString("en-AU", {
+                style: "currency",
+                currency: "AUD",
+              })}
+            </span>
+          </div>
+          <div className="flex justify-between border-t pt-2">
+            <span className="text-lg font-bold">Total:</span>
+            <span className="text-lg font-bold">
+              {total.toLocaleString("en-AU", {
+                style: "currency",
+                currency: "AUD",
+              })}
+            </span>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
