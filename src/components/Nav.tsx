@@ -73,10 +73,12 @@ const Nav = () => {
           <img className="h-8 w-auto" src={logo.src} alt="Logo" />
         </Link>
         {menuOpen ? (
-          <X
-            onMouseDown={toggleMenu}
-            className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
-          />
+          <div className="flex items-center gap-4">
+            <X
+              onMouseDown={toggleMenu}
+              className="h-6 w-6 cursor-pointer text-gray-700 transition-colors hover:text-gray-900"
+            />
+          </div>
         ) : (
           <div className="flex items-center gap-4">
             <div
@@ -95,7 +97,7 @@ const Nav = () => {
           </div>
         )}
         {menuOpen && (
-          <nav className="absolute left-0 top-[60px] z-50 h-[calc(100vh-60px)] w-full overflow-y-auto border-t bg-white shadow-lg">
+          <nav className="h-[calc(screen -5rem)] absolute top-[50px] z-50 w-screen bg-white">
             <Link className="group block" href="/listings">
               <p className="border-b px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900">
                 Browse Store
