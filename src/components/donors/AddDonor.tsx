@@ -13,6 +13,8 @@ import type { TRPCClientError } from "@trpc/client";
 import type { AppRouter } from "../../server/trpc/router/_app";
 import type { SingleValue } from "react-select";
 import type { TRPCError } from "@trpc/server";
+import { filesToBase64 } from "@/utils/base64";
+import { compressImage } from "@/utils/base64";
 
 interface AddDonorProps {
   showModal: boolean;
@@ -118,7 +120,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
 
   const onSave = async () => {
     if (donor) {
-      const result = await updateDonor.mutateAsync(
+      await updateDonor.mutateAsync(
         {
           vin: vin,
           cost: Math.round(cost),
@@ -129,7 +131,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
           dateInStock: new Date(dateInStock),
         },
         {
-          onError: (err: any) => {
+          onError: (err) => {
             toast.error(err.message);
           },
         },
@@ -154,7 +156,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
       return;
     }
 
-    const result = await saveDonor.mutateAsync(
+    await saveDonor.mutateAsync(
       {
         vin: vin,
         cost: Math.round(cost),
@@ -165,7 +167,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
         dateInStock: new Date(dateInStock),
       },
       {
-        onError: (err: any) => {
+        onError: (err) => {
           toast.error(err.message);
         },
       },
