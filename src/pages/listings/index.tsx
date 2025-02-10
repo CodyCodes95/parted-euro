@@ -545,7 +545,7 @@ const ListingsResults = ({
               <PaginationNext
                 className="shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 dark:ring-gray-800 dark:hover:bg-gray-900"
                 onMouseDown={() =>
-                  handlePageClick(Number(router.query.page ?? 0) + 1)
+                  handlePageClick(Number(router.query.page ?? 1) + 1)
                 }
               />
             </PaginationItem>
