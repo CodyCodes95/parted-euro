@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { QueryListingsGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
@@ -13,12 +13,12 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
-interface AddListingProps {
+type AddListingProps = {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
   listing: QueryListingsGetAllAdmin | undefined;
-}
+};
 
 const AddListing: React.FC<AddListingProps> = ({
   showModal,
@@ -43,9 +43,7 @@ const AddListing: React.FC<AddListingProps> = ({
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useQueryState<Array<string>>(
     "parts",
-    parseAsArrayOf(parseAsString).withDefault(
-      listing ? listing.parts.map((part) => part.id) : [],
-    ),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
     listing?.images || [],
@@ -60,25 +58,11 @@ const AddListing: React.FC<AddListingProps> = ({
   const updateListing = trpc.listings.updateListing.useMutation();
   const uploadImage = trpc.images.uploadListingImage.useMutation();
 
-  const handleImageAttach = (e: any) => {
-    Array.from(e.target.files).forEach((file: any) => {
-      const reader = new FileReader();
-      reader.onload = (onLoadEvent: any) => {
-        setImages((imageState: any) => [
-          ...imageState,
-          onLoadEvent.target.result,
-        ]);
-      };
-      new Compressor(file, {
-        quality: 0.6,
-        maxHeight: 1422,
-        maxWidth: 800,
-        success(result) {
-          reader.readAsDataURL(result);
-        },
-      });
-    });
-  };
+  useEffect(() => {
+    if (listing?.parts) {
+      void setParts(listing.parts.map((part) => part.id));
+    }
+  }, [listing]);
 
   const onSave = async () => {
     if (listing?.id) {
@@ -180,7 +164,7 @@ const AddListing: React.FC<AddListingProps> = ({
       isOpen={showModal}
       title={listing?.id ? "Edit Listing" : "Create Listing"}
       setIsOpen={() => {
-        void setParts([]);
+        void setParts(null);
         setShowModal(false);
       }}
     >
@@ -234,7 +218,8 @@ const AddListing: React.FC<AddListingProps> = ({
             styles={{
               option: (styles, { data }) => ({
                 ...styles,
-                // @ts-ignore
+                // @ts-expect-error: bad types
+                //
                 color: data.listing ? "green" : "black",
               }),
             }}
@@ -260,7 +245,25 @@ const AddListing: React.FC<AddListingProps> = ({
               accept="image/*"
               type="file"
               multiple={true}
-              onChange={handleImageAttach}
+              onChange={(e) => {
+                Array.from(e.target.files!).forEach((file) => {
+                  const reader = new FileReader();
+                  reader.onload = (onLoadEvent) => {
+                    setImages((imageState) => [
+                      ...imageState,
+                      onLoadEvent.target!.result as string,
+                    ]);
+                  };
+                  new Compressor(file, {
+                    quality: 0.6,
+                    maxHeight: 1422,
+                    maxWidth: 800,
+                    success(result) {
+                      reader.readAsDataURL(result);
+                    },
+                  });
+                });
+              }}
             />
             <FaCamera className="text-xl text-blue-500" />
           </div>

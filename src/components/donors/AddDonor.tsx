@@ -154,26 +154,6 @@ const AddDonor: React.FC<AddDonorProps> = ({
     setShowModal(false);
   };
 
-  const handleImageAttach = (e: any) => {
-    Array.from(e.target.files).forEach((file: any) => {
-      const reader = new FileReader();
-      reader.onload = (onLoadEvent: any) => {
-        setImages((imageState: any) => [
-          ...imageState,
-          onLoadEvent.target.result,
-        ]);
-      };
-      new Compressor(file, {
-        quality: 0.6,
-        maxHeight: 1422,
-        maxWidth: 800,
-        success(result) {
-          reader.readAsDataURL(result);
-        },
-      });
-    });
-  };
-
   const runUpdateImageOrder = async () => {
     const imagePromises = uploadedImages.map(
       async (image: Image, i: number) => {
@@ -323,7 +303,25 @@ const AddDonor: React.FC<AddDonorProps> = ({
               accept="image/*"
               type="file"
               multiple={true}
-              onChange={handleImageAttach}
+              onChange={(e) => {
+                Array.from(e.target.files!).forEach((file) => {
+                  const reader = new FileReader();
+                  reader.onload = (onLoadEvent) => {
+                    setImages((imageState) => [
+                      ...imageState,
+                      onLoadEvent.target!.result as string,
+                    ]);
+                  };
+                  new Compressor(file, {
+                    quality: 0.6,
+                    maxHeight: 1422,
+                    maxWidth: 800,
+                    success(result) {
+                      reader.readAsDataURL(result);
+                    },
+                  });
+                });
+              }}
             />
             <FaCamera className="text-xl text-blue-500" />
           </div>
