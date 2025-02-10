@@ -3,7 +3,6 @@ import type { QueryListingsGetAllAdmin } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
 import Select from "react-select";
 import { FaCamera } from "react-icons/fa";
-import Compressor from "compressorjs";
 import type { Image } from "@prisma/client";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -12,6 +11,7 @@ import Modal from "../modals/Modal";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { compressImage, filesToBase64 } from "@/utils/base64";
 
 type AddListingProps = {
   showModal: boolean;
@@ -245,24 +245,14 @@ const AddListing: React.FC<AddListingProps> = ({
               accept="image/*"
               type="file"
               multiple={true}
-              onChange={(e) => {
-                Array.from(e.target.files!).forEach((file) => {
-                  const reader = new FileReader();
-                  reader.onload = (onLoadEvent) => {
-                    setImages((imageState) => [
-                      ...imageState,
-                      onLoadEvent.target!.result as string,
-                    ]);
-                  };
-                  new Compressor(file, {
-                    quality: 0.6,
-                    maxHeight: 1422,
-                    maxWidth: 800,
-                    success(result) {
-                      reader.readAsDataURL(result)
-                    },
-                  });
-                });
+              onChange={async (e) => {
+                const compressedImages = await Promise.all(
+                  Array.from(e.target.files!).map(async (file) => {
+                    return await compressImage(file);
+                  }),
+                );
+                const base64Images = await filesToBase64(compressedImages);
+                setImages(base64Images);
               }}
             />
             <FaCamera className="text-xl text-blue-500" />

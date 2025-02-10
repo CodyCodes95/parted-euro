@@ -49,7 +49,7 @@ const AddDonor: React.FC<AddDonorProps> = ({
   const [images, setImages] = useState<Array<string>>([]);
   const [hideFromSearch, setHideFromSearch] = useState<boolean>(false);
   const [dateInStock, setDateInStock] = useState<string>(
-    new Date().toISOString().split("T")[0],
+    new Date().toISOString().split("T")[0]!,
   );
   const [uploadedImages, setUploadedImages] = useState<Array<Image>>(
     () => donor?.images ?? [],
@@ -352,24 +352,14 @@ const AddDonor: React.FC<AddDonorProps> = ({
               accept="image/*"
               type="file"
               multiple={true}
-              onChange={(e) => {
-                Array.from(e.target.files!).forEach((file) => {
-                  const reader = new FileReader();
-                  reader.onload = (onLoadEvent) => {
-                    setImages((imageState) => [
-                      ...imageState,
-                      onLoadEvent.target!.result as string,
-                    ]);
-                  };
-                  new Compressor(file, {
-                    quality: 0.6,
-                    maxHeight: 1422,
-                    maxWidth: 800,
-                    success(result) {
-                      reader.readAsDataURL(result);
-                    },
-                  });
-                });
+              onChange={async (e) => {
+                const compressedImages = await Promise.all(
+                  Array.from(e.target.files!).map(async (file) => {
+                    return await compressImage(file);
+                  }),
+                );
+                const base64Images = await filesToBase64(compressedImages);
+                setImages(base64Images);
               }}
             />
             <FaCamera className="text-xl text-blue-500" />
