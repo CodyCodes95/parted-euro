@@ -26,11 +26,11 @@ const AddListing: React.FC<AddListingProps> = ({
   listing,
   refetch,
 }) => {
-  const [title, setTitle] = useState<string>(listing?.title || "");
+  const [title, setTitle] = useState<string>(listing?.title ?? "");
   const [description, setDescription] = useState<string>(
-    listing?.description || "",
+    listing?.description ?? "",
   );
-  const [condition, setCondition] = useState<string>(listing?.condition || "");
+  const [condition, setCondition] = useState<string>(listing?.condition ?? "");
 
   // Add this new constant for condition options
   const conditionOptions = [
@@ -39,14 +39,14 @@ const AddListing: React.FC<AddListingProps> = ({
     { label: "For Parts Or Not Working", value: "FOR_PARTS_OR_NOT_WORKING" },
   ];
 
-  const [price, setPrice] = useState<number>(listing?.price || 0);
+  const [price, setPrice] = useState<number>(listing?.price ?? 0);
   const [images, setImages] = useState<Array<string>>([]);
   const [parts, setParts] = useQueryState<Array<string>>(
     "parts",
     parseAsArrayOf(parseAsString).withDefault([]),
   );
   const [uploadedImages, setUploadedImages] = useState<Array<Image> | []>(
-    listing?.images || [],
+    listing?.images ?? [],
   );
   const [showImageSorter, setShowImageSorter] = useState<boolean>(false);
 
@@ -191,7 +191,7 @@ const AddListing: React.FC<AddListingProps> = ({
             )}
             options={conditionOptions}
             onChange={(selectedOption) =>
-              setCondition(selectedOption?.value || "")
+              setCondition(selectedOption?.value ?? "")
             }
             placeholder="Condition"
             className="basic-select"

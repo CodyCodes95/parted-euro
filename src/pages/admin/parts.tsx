@@ -30,7 +30,7 @@ const Inventory: NextPage = () => {
 
   const parts = trpc.partDetails.getAll.useQuery();
   const deletePart = trpc.partDetails.deletePartDetail.useMutation({
-    onError: (err: any) => {
+    onError: (err) => {
       toast.error(err.message);
     },
   });
