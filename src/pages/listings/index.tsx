@@ -433,23 +433,17 @@ const ListingsResults = ({
             <Link
               href={`/listings/${listing.id}`}
               key={listing.id}
-              className="group flex justify-between overflow-hidden rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-md dark:bg-gray-900 dark:ring-gray-800"
+              className="flex justify-between rounded-lg p-2 shadow-md"
             >
-              <div className="flex flex-col gap-2">
-                <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 dark:text-gray-100">
-                  {listing.title}
-                </p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  ${listing.price}
-                </p>
+              <div className="flex flex-col gap-4">
+                <p className="text-sm font-medium">{listing.title}</p>
+                <p className="text-lg font-bold">${listing.price}</p>
               </div>
-              <div className="relative h-36 w-36 overflow-hidden rounded-md">
-                <img
-                  src={listing.images[0]?.url}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  alt=""
-                />
-              </div>
+              <img
+                src={listing.images[0]?.url}
+                className="h-36 w-36 rounded-md object-cover"
+                alt=""
+              />
             </Link>
           ))}
         </div>
@@ -508,7 +502,7 @@ const ListingsResults = ({
             .filter((page) => page > 0)
             .filter((page) => page <= listings.data!.totalPages)
             .map((page, i) => {
-              if (i > 4) return null;
+              if (i > 2) return null;
               if (
                 (!listings.data?.hasNextPage && i === 3) ||
                 (!listings.data?.hasNextPage && i === 3)
