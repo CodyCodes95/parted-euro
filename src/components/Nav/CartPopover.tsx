@@ -59,7 +59,7 @@ const CartPopover = () => {
           )}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="z-[100] h-[96vh]">
+      <DrawerContent className="z-[100] h-[100dvh]">
         <DrawerHeader className="border-b px-4 py-3">
           <DrawerTitle>Shopping Cart</DrawerTitle>
         </DrawerHeader>
