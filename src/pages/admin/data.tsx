@@ -5,6 +5,7 @@ import { IoCarSharp, IoBuildSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { MdCategory } from "react-icons/md";
 import { TbMapPin } from "react-icons/tb";
+import { FaUsers } from "react-icons/fa";
 import BreadCrumbs, { adminPages } from "../../components/admin/BreadCrumbs";
 
 const Data: NextPage = () => {
@@ -24,7 +25,7 @@ const Data: NextPage = () => {
       <main className="flex min-h-screen w-full flex-col items-center">
         <BreadCrumbs
           selectOptions={{
-            data: adminPages
+            data: adminPages,
           }}
         />
         <section className="w-full bg-white py-10 sm:py-16 lg:py-24">
@@ -69,6 +70,15 @@ const Data: NextPage = () => {
                 <h3 className="mt-8 text-lg font-semibold text-black">
                   Inventory Locations
                 </h3>
+              </Link>
+              <Link
+                href="/admin/users"
+                className="cursor-pointer duration-150 ease-linear hover:scale-[1.2]"
+              >
+                <div className="relative mx-auto flex items-center justify-center">
+                  <FaUsers className="text-5xl" />
+                </div>
+                <h3 className="mt-8 text-lg font-semibold text-black">Users</h3>
               </Link>
             </div>
           </div>

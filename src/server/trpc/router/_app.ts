@@ -16,6 +16,7 @@ import { adminRouter } from "./admin";
 import { analyticsRouter } from "./analytics";
 import { homepageImagesRouter } from "./homepageImages";
 import { inventoryLocationsRouter } from "./inventoryLocations";
+import { usersRouter } from "./users";
 
 export const appRouter = router({
   cars: carRouter,
@@ -35,6 +36,7 @@ export const appRouter = router({
   admin: adminRouter,
   analytics: analyticsRouter,
   homepageImages: homepageImagesRouter,
+  users: usersRouter,
 });
 
 // export type definition of API

@@ -21,6 +21,7 @@ export const adminPages = [
   "listings",
   "orders",
   "parts",
+  "users"
 ];
 
 const BreadCrumbs: React.FC<BreadCrumbsProps> = ({ selectOptions = {} }) => {
