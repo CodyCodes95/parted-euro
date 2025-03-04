@@ -52,9 +52,11 @@ const WreckingPage: NextPage = () => {
   const [search, setSearch] = useState("");
   const [seriesFilter, setSeriesFilter] = useState<string>("");
   const [yearFilter, setYearFilter] = useState<string>("");
+  const [makeFilter, setMakeFilter] = useState<string>("BMW");
 
   const { data: donors, isLoading } = trpc.donors.getAllPublic.useQuery();
-  const { data: series } = trpc.cars.getAllSeries.useQuery();
+  const { data: makes } = trpc.cars.getAllMakes.useQuery();
+  const { data: series } = trpc.cars.getAllSeries.useQuery({ make: makeFilter });
 
   const filteredDonors = donors?.filter((donor) => {
     const matchesSearch =
@@ -62,14 +64,13 @@ const WreckingPage: NextPage = () => {
       donor.car.model.toLowerCase().includes(search.toLowerCase()) ||
       donor.vin.toLowerCase().includes(search.toLowerCase());
 
-    const matchesSeries = seriesFilter
-      ? donor.car.series === seriesFilter
-      : true;
+    const matchesMake = makeFilter === "" || donor.car.make === makeFilter;
+    const matchesSeries = seriesFilter === "" || donor.car.series === seriesFilter;
     const matchesYear = yearFilter
       ? donor.year.toString() === yearFilter
       : true;
 
-    return matchesSearch && matchesSeries && matchesYear;
+    return matchesSearch && matchesMake && matchesSeries && matchesYear;
   }) as DonorWithCar[];
 
   const years = donors

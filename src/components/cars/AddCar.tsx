@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import FormSection from "../FormSection";
 import type { Car } from "@prisma/client";
@@ -19,26 +19,96 @@ const AddCar: React.FC<AddCarProps> = ({
   car,
   refetch,
 }) => {
-  const [make, setMake] = useState<string>(car?.make || "BMW");
-  const [series, setSeries] = useState<string>(car?.series || "");
-  const [generation, setGeneration] = useState<string>(car?.generation || "");
-  const [model, setModel] = useState<string>(car?.model || "");
+  const [make, setMake] = useState<string>(car?.make ?? "BMW");
+  const [series, setSeries] = useState<string>(car?.series ?? "");
+  const [generation, setGeneration] = useState<string>(car?.generation ?? "");
+  const [model, setModel] = useState<string>(car?.model ?? "");
   const [showBody, setShowBody] = useState<boolean>(false);
-  const [body, setBody] = useState<string>(car?.body || "");
+  const [body, setBody] = useState<string>(car?.body ?? "");
 
-  const cars = trpc.cars.getAll.useQuery();
+  // Get all available car makes
+  const makes = trpc.cars.getAllMakes.useQuery();
+
+  // Get series filtered by the selected make
+  const seriesData = trpc.cars.getAllSeries.useQuery({ make });
+
+  // Get generations when series is selected
+  const generationsData = trpc.cars.getMatchingGenerations.useQuery(
+    { series, make },
+    { enabled: !!series },
+  );
+
+  // Get models when generation is selected
+  const modelsData = trpc.cars.getMatchingModels.useQuery(
+    { series, generation, make },
+    { enabled: !!series && !!generation },
+  );
+
   const saveCar = trpc.cars.createCar.useMutation();
+  const updateCar = trpc.cars.updateCar.useMutation();
+
+  // Reset dependent fields when make changes
+  useEffect(() => {
+    if (!car) {
+      // Only reset fields when not editing an existing car
+      setSeries("");
+      setGeneration("");
+      setModel("");
+      setBody("");
+    }
+  }, [make, car]);
+
+  // Reset dependent fields when series changes
+  useEffect(() => {
+    if (!car) {
+      // Only reset fields when not editing an existing car
+      setGeneration("");
+      setModel("");
+      setBody("");
+    }
+  }, [series, car]);
+
+  // Reset dependent fields when generation changes
+  useEffect(() => {
+    if (!car) {
+      // Only reset fields when not editing an existing car
+      setModel("");
+      setBody("");
+    }
+  }, [generation, car]);
 
   const onSave = async (exit: boolean) => {
-    const result = await saveCar.mutateAsync(
-      {
-        make: make,
-        series: series,
-        generation: generation,
-        model: model,
-        body: body || null,
-      },
-      {
+    const carData = {
+      make,
+      series,
+      generation,
+      model,
+      body: body ?? null,
+    };
+
+    if (car) {
+      // Update existing car
+      await updateCar.mutateAsync(
+        {
+          id: car.id,
+          ...carData,
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(`${generation} ${model} updated successfully`);
+            refetch();
+            if (exit) {
+              setShowModal(false);
+            }
+          },
+          onError: (err) => {
+            toast.error(err.message);
+          },
+        },
+      );
+    } else {
+      // Create new car
+      await saveCar.mutateAsync(carData, {
         onSuccess: (data) => {
           toast.success(`${generation} ${model} added successfully`);
           refetch();
@@ -53,41 +123,49 @@ const AddCar: React.FC<AddCarProps> = ({
         onError: (err) => {
           toast.error(err.message);
         },
-      },
-    );
+      });
+    }
   };
 
+  // Convert makes array to the format expected by FormSection
+  const makeOptions =
+    makes.data?.map((make) => ({
+      value: make,
+      label: make,
+    })) ?? [];
+
   return (
-    <Modal isOpen={showModal} setIsOpen={setShowModal} title="Add Car">
+    <Modal
+      isOpen={showModal}
+      setIsOpen={setShowModal}
+      title={car ? "Edit Car" : "Add Car"}
+    >
       <div className="space-y-6 p-6">
-        <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-            Make
-          </label>
-          <select
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            disabled={true}
-          >
-            <option value="BMW">BMW</option>
-          </select>
-        </div>
+        <FormSection
+          title="Make"
+          data={makeOptions}
+          value={make}
+          setValue={setMake}
+        />
         <FormSection
           title="Series"
-          data={[...new Set(cars.data?.map((car) => car.series))]}
+          data={seriesData.data?.series ?? []}
           value={series}
           setValue={setSeries}
         />
         <FormSection
           title="Generation"
-          data={[...new Set(cars.data?.map((car) => car.generation))]}
+          data={generationsData.data?.generations ?? []}
           value={generation}
           setValue={setGeneration}
+          disabled={!series}
         />
         <FormSection
           title="Model"
-          data={[...new Set(cars.data?.map((car) => car.model))]}
+          data={modelsData.data?.models ?? []}
           value={model}
           setValue={setModel}
+          disabled={!generation}
         />
         <p
           className="cursor-pointer text-blue-600"
@@ -96,18 +174,7 @@ const AddCar: React.FC<AddCarProps> = ({
           There are multiple bodies for this model
         </p>
         {showBody && (
-          <FormSection
-            title="Body"
-            data={[
-              ...new Set(
-                cars.data
-                  ?.filter((car: Car) => car.body !== null)
-                  .map((car) => car.body),
-              ),
-            ]}
-            value={body}
-            setValue={setBody}
-          />
+          <FormSection title="Body" data={[]} value={body} setValue={setBody} />
         )}
       </div>
       <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">

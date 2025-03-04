@@ -35,60 +35,74 @@ export const carRouter = router({
   getAll: adminProcedure.query(async ({ ctx }) => {
     return ctx.prisma.car.findMany();
   }),
-  getAllData: publicProcedure.query(async ({ ctx }) => {
-    const cars = await ctx.prisma.car.findMany({
-      where: {
-        make: "BMW",
-      },
-    });
-    const series = new Set(cars.map((car) => car.series));
-    const generations = new Set(cars.map((car) => car.generation));
-    const models = new Set(cars.map((car) => car.model));
-    return {
-      series: [...series],
-      generations: [...generations],
-      models: [...models],
-    };
-  }),
-  // getAllSearch:
-  getAllSeries: publicProcedure.query(async ({ ctx }) => {
-    const cars = await ctx.prisma.car.findMany({
-      where: {
-        make: "BMW",
-        NOT: {
-          series: "PE000",
+  getAllData: publicProcedure
+    .input(
+      z.object({
+        make: z.string().default("BMW"),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const cars = await ctx.prisma.car.findMany({
+        where: {
+          make: input.make,
         },
-        AND: {
+      });
+      const series = new Set(cars.map((car) => car.series));
+      const generations = new Set(cars.map((car) => car.generation));
+      const models = new Set(cars.map((car) => car.model));
+      return {
+        series: [...series],
+        generations: [...generations],
+        models: [...models],
+      };
+    }),
+  // getAllSearch:
+  getAllSeries: publicProcedure
+    .input(
+      z.object({
+        make: z.string().default("BMW"),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const cars = await ctx.prisma.car.findMany({
+        where: {
+          make: input.make,
           NOT: {
-            series: "SS000",
+            series: "PE000",
+          },
+          AND: {
+            NOT: {
+              series: "SS000",
+            },
           },
         },
-      },
-      select: {
-        series: true,
-      },
-    });
-    const series = cars.map((car) => car.series).sort();
-    const uniqueSeries = [...new Set(series)].sort().map((series) => {
+        select: {
+          series: true,
+        },
+      });
+      const series = cars.map((car) => car.series).sort();
+      const uniqueSeries = [...new Set(series)].sort().map((series) => {
+        return {
+          label: series,
+          value: series,
+        };
+      });
       return {
-        label: series,
-        value: series,
+        series: uniqueSeries,
       };
-    });
-    return {
-      series: uniqueSeries,
-    };
-  }),
+    }),
   getMatchingGenerations: publicProcedure
     .input(
       z.object({
         series: z.string().min(2),
+        make: z.string().default("BMW"),
       }),
     )
     .query(async ({ ctx, input }) => {
       const cars = await ctx.prisma.car.findMany({
         where: {
           series: input.series,
+          make: input.make,
         },
       });
       const generations = cars.map((car) => car.generation).sort();
@@ -109,6 +123,7 @@ export const carRouter = router({
       z.object({
         series: z.string().min(2),
         generation: z.string().min(2),
+        make: z.string().default("BMW"),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -116,6 +131,7 @@ export const carRouter = router({
         where: {
           series: input.series,
           generation: input.generation,
+          make: input.make,
         },
       });
       const models = cars.map((car) => car.model).sort();
@@ -140,6 +156,24 @@ export const carRouter = router({
         where: {
           id: input.id,
         },
+      });
+    }),
+  updateCar: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        make: z.string().min(2),
+        series: z.string().min(2),
+        generation: z.string().min(2),
+        model: z.string().min(2),
+        body: z.string().nullish(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      const { id, ...data } = input;
+      return ctx.prisma.car.update({
+        where: { id },
+        data,
       });
     }),
   getAllMakes: publicProcedure.query(async ({ ctx }) => {

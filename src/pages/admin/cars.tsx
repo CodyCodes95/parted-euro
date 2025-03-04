@@ -40,6 +40,10 @@ const Cars: NextPage = () => {
   const columns = useMemo<Array<Column<Car>>>(
     () => [
       {
+        Header: "Make",
+        accessor: "make",
+      },
+      {
         Header: "Series",
         accessor: "series",
       },

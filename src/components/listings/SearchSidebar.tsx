@@ -11,12 +11,20 @@ import {
 } from "../ui/accordion";
 import { useRouter } from "next/router";
 import { Badge } from "../ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 type SearchSidebarProps = {
   listings: ListingsSearchQuery;
 };
 
 const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
+  const [selectedMake, setSelectedMake] = useState<string>("BMW");
   const [carsCount, setCarsCount] = useState<{
     series: { [key: string]: number };
     generation: { [key: string]: number };
@@ -25,15 +33,48 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
 
   const router = useRouter();
 
-  const cars = trpc.cars.getAllData.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
+  // Get all available makes
+  const makes = trpc.cars.getAllMakes.useQuery();
+
+  // Get all car data for the selected make
+  const cars = trpc.cars.getAllData.useQuery(
+    { make: selectedMake },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   useEffect(() => {
     if (listings) {
       setCarsCount(countCars(listings));
     }
   }, [listings]);
+
+  useEffect(() => {
+    // Update URL query parameter when make changes
+    if (selectedMake && selectedMake !== "BMW") {
+      updateQuery("make", selectedMake);
+    } else if (selectedMake === "BMW" && router.query.make) {
+      // Remove make from URL if it's the default
+      const query = { ...router.query };
+      delete query.make;
+      router.push({
+        pathname: router.pathname,
+        query,
+      });
+    }
+  }, [selectedMake]);
+
+  // Initialize selected make from URL on load
+  useEffect(() => {
+    if (
+      router.isReady &&
+      router.query.make &&
+      typeof router.query.make === "string"
+    ) {
+      setSelectedMake(router.query.make);
+    }
+  }, [router.isReady]);
 
   const countCars = (listings: ListingsSearchQuery) => {
     const seriesMap = new Map<string, number>();
@@ -46,9 +87,12 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
       const modelSet = new Set<string>();
       listing.parts.forEach((part) => {
         part.partDetails.cars.forEach((car) => {
-          seriesSet.add(car.series);
-          generationSet.add(car.generation);
-          modelSet.add(car.model);
+          // Only count cars that match the selected make
+          if (car.make === selectedMake) {
+            seriesSet.add(car.series);
+            generationSet.add(car.generation);
+            modelSet.add(car.model);
+          }
         });
       });
       seriesSet.forEach((series) => {
@@ -117,6 +161,25 @@ const SearchSidebar: FC<SearchSidebarProps> = ({ listings }) => {
     <div className="w-1/4">
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
+          {/* Make selector */}
+          <div className="mb-4">
+            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+              Make
+            </label>
+            <Select value={selectedMake} onValueChange={setSelectedMake}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Make" />
+              </SelectTrigger>
+              <SelectContent>
+                {makes.data?.map((make) => (
+                  <SelectItem key={make} value={make}>
+                    {make}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="item-1">
               <AccordionTrigger>Series</AccordionTrigger>

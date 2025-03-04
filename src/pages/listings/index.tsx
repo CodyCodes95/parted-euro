@@ -652,20 +652,23 @@ const CategoryFilters = () => {
 
 const CarSelection = () => {
   const router = useRouter();
-  const { series, generation } = router.query;
+  const { series, generation, make } = router.query;
   const [currentTab, setCurrentTab] = useState(
     "series" as "series" | "generation" | "model",
   );
 
-  const cars = trpc.cars.getAllSeries.useQuery();
+  // Default to BMW if make is not specified
+  const selectedMake = typeof make === 'string' ? make : "BMW";
+
+  const cars = trpc.cars.getAllSeries.useQuery({ make: selectedMake });
   const generations = trpc.cars.getMatchingGenerations.useQuery(
-    { series } as { series: string },
+    { series, make: selectedMake } as { series: string, make: string },
     {
       enabled: !!series,
     },
   );
   const models = trpc.cars.getMatchingModels.useQuery(
-    { series, generation } as { series: string; generation: string },
+    { series, generation, make: selectedMake } as { series: string; generation: string, make: string },
     {
       enabled: !!generation,
     },
