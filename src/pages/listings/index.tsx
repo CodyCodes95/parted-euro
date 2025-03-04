@@ -654,55 +654,68 @@ const CarSelection = () => {
   const router = useRouter();
   const { series, generation, make } = router.query;
   const [currentTab, setCurrentTab] = useState(
-    "series" as "series" | "generation" | "model",
+    "make" as "make" | "series" | "generation" | "model",
   );
 
   // Default to BMW if make is not specified
-  const selectedMake = typeof make === 'string' ? make : "BMW";
+  const selectedMake = typeof make === "string" ? make : "BMW";
 
+  const makes = trpc.cars.getAllMakes.useQuery();
   const cars = trpc.cars.getAllSeries.useQuery({ make: selectedMake });
   const generations = trpc.cars.getMatchingGenerations.useQuery(
-    { series, make: selectedMake } as { series: string, make: string },
+    { series, make: selectedMake } as { series: string; make: string },
     {
       enabled: !!series,
     },
   );
   const models = trpc.cars.getMatchingModels.useQuery(
-    { series, generation, make: selectedMake } as { series: string; generation: string, make: string },
+    { series, generation, make: selectedMake } as {
+      series: string;
+      generation: string;
+      make: string;
+    },
     {
       enabled: !!generation,
     },
   );
 
   useEffect(() => {
-    if (!series) {
+    if (!make) {
+      setCurrentTab("make");
+    } else if (!series) {
       setCurrentTab("series");
-    }
-    if (series && !generation) {
+    } else if (!generation) {
       setCurrentTab("generation");
-    }
-    if (series && generation) {
+    } else {
       setCurrentTab("model");
     }
-  }, [series, generation]);
+  }, [make, series, generation]);
 
   return (
     <div className="flex w-full flex-col gap-4">
       <Tabs
         value={currentTab}
         onValueChange={(tab) => {
-          if (tab === "series") {
+          if (tab === "make") {
+            delete router.query.make;
+            delete router.query.series;
             delete router.query.generation;
             delete router.query.model;
+          } else if (tab === "series") {
             delete router.query.series;
+            delete router.query.generation;
+            delete router.query.model;
           }
-          setCurrentTab(tab as "series" | "generation" | "model");
+          setCurrentTab(tab as "make" | "series" | "generation" | "model");
         }}
-        defaultValue="series"
+        defaultValue="make"
         className="flex flex-col gap-4"
       >
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="series">{series ?? "Series"}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="make">{make ?? "Make"}</TabsTrigger>
+          <TabsTrigger disabled={!make} value="series">
+            {series ?? "Series"}
+          </TabsTrigger>
           <TabsTrigger disabled={!series} value="generation">
             {generation ?? "Generation"}
           </TabsTrigger>
@@ -710,6 +723,36 @@ const CarSelection = () => {
             Model
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="make" className="flex">
+          {makes.isLoading ? (
+            <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-12 animate-pulse rounded-md bg-gray-200 dark:bg-gray-800"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+              {makes.data?.map((make) => (
+                <Button
+                  variant="outline"
+                  className="relative h-12 overflow-hidden border p-2 transition-all hover:border-primary hover:bg-primary/5"
+                  key={make}
+                  onMouseDown={() => {
+                    router.query.make = make;
+                    void router.push(router);
+                  }}
+                >
+                  <span className="absolute inset-0 flex items-center justify-center font-medium">
+                    {make}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          )}
+        </TabsContent>
         <TabsContent value="series" className="flex">
           {cars.isLoading ? (
             <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
