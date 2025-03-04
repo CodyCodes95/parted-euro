@@ -153,7 +153,7 @@ export const createInvoiceFromStripeEvent = async (
             name: "VIN",
             // @ts-expect-error: bad types on stripe event
             // eslint-disable-next-line
-            option: item.price.product.metadata.VIN,
+            option: item.price.product.metadata.VIN.slice(-7),
           },
         ],
       } as XeroItem;
