@@ -56,7 +56,9 @@ const WreckingPage: NextPage = () => {
 
   const { data: donors, isLoading } = trpc.donors.getAllPublic.useQuery();
   const { data: makes } = trpc.cars.getAllMakes.useQuery();
-  const { data: series } = trpc.cars.getAllSeries.useQuery({ make: makeFilter });
+  const { data: series } = trpc.cars.getAllSeries.useQuery({
+    make: makeFilter,
+  });
 
   const filteredDonors = donors?.filter((donor) => {
     const matchesSearch =
@@ -65,7 +67,8 @@ const WreckingPage: NextPage = () => {
       donor.vin.toLowerCase().includes(search.toLowerCase());
 
     const matchesMake = makeFilter === "" || donor.car.make === makeFilter;
-    const matchesSeries = seriesFilter === "" || donor.car.series === seriesFilter;
+    const matchesSeries =
+      seriesFilter === "" || donor.car.series === seriesFilter;
     const matchesYear = yearFilter
       ? donor.year.toString() === yearFilter
       : true;
@@ -176,7 +179,10 @@ const WreckingPage: NextPage = () => {
                   <div className="space-y-2">
                     <p>VIN: {donor.vin}</p>
                     <p>Mileage: {donor.mileage.toLocaleString()} km</p>
-                    <p>Body: {donor.car.body ?? "N/A"}</p>
+                    <p>
+                      Date in stock:{" "}
+                      {donor.createdAt.toLocaleDateString("en-AU")}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
