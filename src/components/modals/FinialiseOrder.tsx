@@ -23,6 +23,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   countryCode: z.string().min(1, "Country is required"),
+  phone: z.string().min(1, "Phone number is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -46,6 +47,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
       name: "",
       email: "",
       countryCode: "",
+      phone: "",
     },
   });
 
@@ -91,6 +93,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
       name: data.name,
       email: data.email,
       shippingMethod: data.shippingMethod,
+      phone: data.phone,
       postageCost: data.postageCost,
       countryCode: data.countryCode,
       items: order,
@@ -187,6 +190,19 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
               </p>
             )}
           </div>
+          <p>Phone</p>
+          <div>
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field }) => <Input {...field} tabIndex={5} />}
+            />
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
           <p>Country</p>
           <div>
             <Controller
@@ -198,7 +214,7 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
                   value={field.value}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger id="country" className="w-full" tabIndex={5}>
+                  <SelectTrigger id="country" className="w-full" tabIndex={6}>
                     <SelectValue placeholder="Select a country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -225,14 +241,14 @@ const FinializeOrder = ({ order, setOrder }: FinializeOrderProps) => {
             onMouseDown={() => handleSubmit(handleCashPayment)()}
             loading={createCashOrder.isLoading}
             variant="secondary"
-            tabIndex={6}
+            tabIndex={7}
           >
             Paid in Cash
           </Button>
           <Button
             type="submit"
             loading={createCheckout.isFetching}
-            tabIndex={7}
+            tabIndex={8}
           >
             Get Stripe URL
           </Button>

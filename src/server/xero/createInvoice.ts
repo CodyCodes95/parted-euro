@@ -25,6 +25,7 @@ type CreateInvoiceOptions = {
   shippingMethod?: string;
   carrier?: string;
   shippingRateId?: string;
+  customerPhone: string | undefined;
   shippingAddress?: {
     line1?: string;
     line2?: string;
@@ -45,6 +46,7 @@ export const createXeroInvoice = async (input: CreateInvoiceOptions) => {
     shippingMethod,
     carrier,
     shippingRateId,
+    customerPhone,
   } = input;
   const xero = await initXero();
   // eslint-disable-next-line
@@ -120,7 +122,7 @@ export const createXeroInvoice = async (input: CreateInvoiceOptions) => {
     },
     data: {
       shipping: shippingCost ?? 0,
-      phoneNumber: customerEmail,
+      phoneNumber: customerPhone,
       xeroInvoiceId: invoice?.invoiceNumber,
       shippingAddress: `${shippingAddress?.line1}, ${
         shippingAddress?.line2 ?? " "
@@ -177,6 +179,7 @@ export const createInvoiceFromStripeEvent = async (
       customerEmail: event.customer_details!.email!,
       customerName: event.customer_details!.name!,
       orderId: event.metadata!.orderId!,
+      customerPhone: event.customer_details?.phone ?? undefined,
       shippingAddress: {
         line1: event.customer_details!.address!.line1!,
         line2: event.customer_details!.address!.line2!,

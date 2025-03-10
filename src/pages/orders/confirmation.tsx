@@ -4,7 +4,6 @@ import {
   CardContent,
   Card,
 } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";

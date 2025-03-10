@@ -103,6 +103,7 @@ export const xeroRouter = router({
       z.object({
         name: z.string(),
         email: z.string(),
+        phone: z.string(),
         shippingMethod: z.string(),
         postageCost: z.number(),
         countryCode: z.string(),
@@ -163,6 +164,7 @@ export const xeroRouter = router({
         // Create Xero invoice
         await createXeroInvoice({
           items: lineItemsFormatted,
+          customerPhone: input.phone,
           customerEmail: input.email,
           customerName: input.name,
           orderId: order.id,
