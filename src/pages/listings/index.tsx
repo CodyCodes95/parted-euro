@@ -167,7 +167,7 @@ const Listings: NextPage = () => {
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full appearance-none bg-white pl-10 shadow-sm ring-1 ring-gray-200 transition-shadow focus-visible:ring-2 dark:bg-gray-900 dark:ring-gray-800"
+                  className="w-full appearance-none bg-white pl-10 text-[14px] shadow-sm ring-1 ring-gray-200 transition-shadow focus-visible:ring-2 dark:bg-gray-900 dark:ring-gray-800"
                   placeholder="Search products..."
                   type="search"
                 />
