@@ -5,11 +5,12 @@ import { createContext } from "../../../server/trpc/context";
 import { appRouter } from "../../../server/trpc/router/_app";
 
 export const config = {
+  maxDuration: 20,
   api: {
     bodyParser: {
       sizeLimit: "15mb",
-    }
-  }
+    },
+  },
 };
 
 // export API handler
